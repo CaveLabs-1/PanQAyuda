@@ -15,4 +15,4 @@
  * [Linguine](https://github.com/CaveLabs-1/PanQAyuda/blob/master/Arquitectura/Formato%20Linguine%20Le%20Pane%20Q'%20Ayud%C3%A9.pdf)
  * [Ernie](https://github.com/CaveLabs-1/PanQAyuda/blob/master/Arquitectura/Ernie.pdf)
  * [Herson](https://github.com/CaveLabs-1/PanQAyuda/blob/master/Arquitectura/Herson.pdf)
-* [Tecnologías]()
+* [Tecnologías](https://github.com/CaveLabs-1/PanQAyuda/blob/master/Tecnolog%C3%ADas.md)
