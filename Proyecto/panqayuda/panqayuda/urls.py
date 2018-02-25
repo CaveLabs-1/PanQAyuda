@@ -22,5 +22,5 @@ from recetas import views as recetas_views
 urlpatterns = [
     # path('admin/', admin.site.urls),
     # path('agregar_receta/', 'recetas.urls'),
-    path('recetas', recetas_views.recetas_list, name='index'),
+    path('recetas', recetas_views.lista_recetas, name='index'),
 ]
