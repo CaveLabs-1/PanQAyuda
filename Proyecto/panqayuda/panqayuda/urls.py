@@ -23,4 +23,5 @@ urlpatterns = [
     # path('admin/', admin.site.urls),
     # path('agregar_receta/', 'recetas.urls'),
     path('recetas', recetas_views.lista_recetas, name='index'),
+    path('agregar_receta/', recetas_views.agregar_receta),
 ]

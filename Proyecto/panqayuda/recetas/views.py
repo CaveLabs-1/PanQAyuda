@@ -13,6 +13,6 @@ def lista_recetas(request):
     template_name = 'lista_recetas.html'
     recetas = list(Receta.objects.all())
     return render(request, 'recetas/lista_recetas.html', {'recetas': recetas})
-def nueva_receta(request):
+def agregar_receta(request):
     form = RecetaForm()
     return render(request, 'recetas/agregar_receta.html', {'form': form})
