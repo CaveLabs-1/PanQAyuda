@@ -15,7 +15,12 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path
+from recetas import views as recetas_views
+# from django.conf.urls import patterns, include, url
 
+# from django.contrib.auth.decorators import login_required
 urlpatterns = [
-    path('admin/', admin.site.urls),
+    # path('admin/', admin.site.urls),
+    # path('agregar_receta/', 'recetas.urls'),
+    path('recetas', recetas_views.lista_recetas, name='index'),
 ]
