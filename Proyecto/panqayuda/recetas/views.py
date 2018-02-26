@@ -9,18 +9,24 @@ from django.shortcuts import redirect
 #     return render(request, 'receta/agregar_receta.html', {})
 # def index
 from django.http import HttpResponse
-
+"""
+    Función que enlista todas las recetas guardadas dentro de la base de datos.
+    Regresa objetos de recetas.
+"""
 def lista_recetas(request):
     template_name = 'lista_recetas.html'
     recetas = list(Receta.objects.all())
     return render(request, 'recetas/lista_recetas.html', {'recetas': recetas})
+
+
 def agregar_receta(request):
     if request.method == "POST":
         form = RecetaForm(request.POST)
         if form.is_valid():
             receta = form.save(commit=False)
+            print(request.POST)
             receta.save()
-            # return redirect('recetas', pk=receta.pk)
+            return redirect('recetas/', pk=receta.pk)
     else:
         form = RecetaForm()
     return render(request, 'recetas/agregar_receta.html', {'form': form})
