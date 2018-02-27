@@ -7,39 +7,47 @@
     <h1 class="center-align">Recetas</h1>
   </header>
 {% endblock header %}
-<div  class="container">
-  {% block content %}
-  <div class="row">
-    <div class="col s10 offset-s1">
-      <table>
-          <thead>
-            <tr>
-              <th>Nombre</th>
-              <th>Cantidad que produce</th>
-              <th>Duración</th>
-              <th>Editar</th>
-              <th>Eliminar</th>
-            </tr>
-          </thead>
-          <tbody>
-            {% for receta in recetas %}
-            <tr>
-              <td>{{ receta.nombre }}</td>
-              <td>{{ receta.cantidad }}</td>
-              <td>{{ receta.duration }}</td>
-              <td><a href="agregar_materiales/{{ receta.id }}"><i class="material-icons">edit</i></a></td>
-              <td><a onclick="return confirm('¿Seguro que quieres borrar la receta de {{receta.nombre}}?')" href="borrar_receta/{{ receta.id }}"><i class="material-icons">delete</i></a></td>
-            </tr>
-            {% endfor %}
-          </tbody>
-      </table>
-    </div>
-    <div  position="absolute" bottom="5%" right="20%">
-      <a href="agregar_receta" class="btn-floating right-align btn-large waves-effect waves-light pink"><i class="material-icons">add</i></a>
+{% block content %}
+  <div  class="container">
+
+    <div class="card">
+      <div class="card-content">
+        <div class="">
+          <div class="col s6">
+            <table>
+                <thead>
+                  <tr>
+                    <th>Nombre</th>
+                    <th>Cantidad que produce</th>
+                    <th>Duración</th>
+                    <th>Editar</th>
+                    <!--<th>Eliminar</th>-->
+                  </tr>
+                </thead>
+                <tbody>
+                  {% for receta in recetas %}
+                  <tr>
+                      <td><a href="/recetas/receta/{{ receta.id }}">{{ receta.nombre }}</a></td>
+                      <td>{{ receta.cantidad }}</td>
+                      <td>{{ receta.duration }}</td>
+                      <td><a href="agregar_materiales/{{ receta.id }}"><i class="material-icons">edit</i></a></td>
+                      <!--<td><a onclick="return confirm('¿Seguro que quieres borrar la receta de {{receta.nombre}}?')" href="borrar_receta/{{ receta.id }}"><i class="material-icons">delete</i></a></td>-->
+                  </tr>
+                  {% endfor %}
+                </tbody>
+            </table>
+            <br>
+            <div class="row">
+              <div class="right-align">
+                <a href="agregar_receta" class="btn-floating btn-large waves-effect waves-light pink"><i class="material-icons">add</i></a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
-  {% endblock content %}
-</div>
+{% endblock content %}
 {% block js %}
   <script type="text/javascript">
     $(document).ready(function(){

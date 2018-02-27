@@ -7,19 +7,28 @@
     <h1 class="center-align">Recetas</h1>
   </header>
 {% endblock header %}
-<div  class="container">
   {% block content %}
-  <div class="row">
-    <div class="col s10 offset-s1">
-      <h1>Nueva Receta</h1>
+  <div  class="container">
+    <div class="card">
+      <div class="card-content">
+      <span class="card-title">
+        <div class="row">
+          <div class="col s6">
+            <h1><strong>Nueva Receta</strong></h1>
+          </div>
+          <div class="col s6 right-align">
+            <a href="/recetas"><i class="medium material-icons">close</i></a>
+          </div>
+        </div>
+      </span>
       <form method="POST" class="post-form">{% csrf_token %}
           {{ form.as_p }}
           <button type="submit" class="save btn btn-default">Save</button>
       </form>
+      </div>
     </div>
   </div>
   {% endblock content %}
-</div>
 {% block js %}
   <script type="text/javascript">
     $(document).ready(function(){

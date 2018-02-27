@@ -21,11 +21,17 @@ def agregar_receta(request):
         if form.is_valid():
             receta = form.save(commit=False)
             receta.save()
-            messages.add_message(request, SUCCESS, 'Receta agregada exitosamente.')
+            # messages.add_message(request, SUCCESS, 'Receta agregada exitosamente.')
             return redirect('agregar_materiales', id_receta=receta.id)
     else:
         form = RecetaForm()
     return render(request, 'recetas/agregar_receta.html', {'form': form})
+
+def detallar_receta(request, id_receta):
+    receta_madre = get_object_or_404(Receta, pk=id_receta)
+    materiales = list(RelacionRecetaMaterial.objects.filter(receta=receta_madre, status=1))
+    print(materiales)
+    return render(request, 'recetas/receta.html', {'receta': receta_madre, 'materiales': materiales})
 
 def borrar_receta(request, id_receta):
     receta = get_object_or_404(Receta, pk=id_receta)
@@ -33,27 +39,28 @@ def borrar_receta(request, id_receta):
     receta.deleted_at = datetime.datetime.now()
     receta.save()
     # messages.add_message(request, SUCCESS, 'Receta borrada exitosamente.')
-    return redirect('../../recetas')
+    return HttpResponseRedirect(request.META.get('HTTP_REFERER', '/'))
 
 def agregar_materiales(request, id_receta):
-    receta = get_object_or_404(Receta, pk=id_receta)
-    materiales = list(RelacionRecetaMaterial.objects.all())
+    receta_madre = get_object_or_404(Receta, pk=id_receta)
+    materiales = list(RelacionRecetaMaterial.objects.filter(receta=receta_madre, status=1))
     if request.method == "POST":
         form = MaterialRecetaForm(request.POST)
         if form.is_valid():
             material = form.save(commit=False)
-            material.receta = receta
+            material.receta = receta_madre
             material.save()
-            return render('')
+            return HttpResponseRedirect(request.META.get('HTTP_REFERER', '/'))
     else:
         form = MaterialRecetaForm()
     print(materiales)
-    return render(request, 'recetas/agregar_materiales.html', {'form': form, 'receta': receta, 'materiales': materiales})
+    # return HttpResponseRedirect(request.META.get('HTTP_REFERER', '/'))
+    return render(request, 'recetas/agregar_materiales.html', {'form': form, 'receta': receta_madre, 'materiales': materiales})
 
 def borrar_material(request, id_material):
     material = get_object_or_404(RelacionRecetaMaterial, pk=id_material)
-    receta = material.receta.id
+    id_receta=material.receta.id
     material.status = 0
     material.save()
     # messages.add_message(request, SUCCESS, 'Receta borrada exitosamente.')
-    # return render(request, 'recetas/agregar_materiales.html')
+    return HttpResponseRedirect(request.META.get('HTTP_REFERER', '/'))

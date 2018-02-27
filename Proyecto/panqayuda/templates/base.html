@@ -32,7 +32,7 @@
     {% block js %}{% endblock js %}
     {% if messages %}
     <script type="text/javascript">
-      {%for message in messages %}
+      {% for message in messages %}
           {% if message.level != 40 %}
             M.toast({html: '{{ message }}'})
           {% endif %}
