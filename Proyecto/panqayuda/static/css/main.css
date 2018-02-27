@@ -1,0 +1,37 @@
+header, main, footer {
+  padding-left: 300px;
+  background-color: #F5F5F5;
+}
+
+@media only screen and (max-width : 992px) {
+  header, main, footer {
+    padding-left: 0;
+    background-color: #F5F5F5;
+  }
+}
+
+body{
+  background-color: #F5F5F5;
+}
+
+.navbar-logo{
+  width: 100%;
+}
+
+.navbar-color{
+  background-color: white;
+}
+
+
+.banner-prueba{
+  color: #333333;
+  background:
+        linear-gradient(
+          rgba(255, 255, 255, 0.50),
+          rgba(255, 255, 255, 0.50)
+        ),
+        url(../img/prueba/banner-prueba.jpeg);
+  margin-top: -2em;
+  padding-top: .8em;
+  padding-bottom: .8em;
+}
