@@ -1,14 +1,10 @@
-from django.shortcuts import render
-from django.utils import timezone
+from django.shortcuts import render, reverse, redirect, get_object_or_404
+# from django.utils import timezone
 from .models import Receta
-from .forms import RecetaForm
-from django.shortcuts import redirect
-#
-# # Create your views here.
-# def agregar_receta(request):
-#     return render(request, 'receta/agregar_receta.html', {})
-# def index
-from django.http import HttpResponse
+from .forms import RecetaForm, MaterialRecetaForm
+# from django.shortcuts import
+from django.http import HttpResponse, HttpResponseRedirect
+
 """
     Función que enlista todas las recetas guardadas dentro de la base de datos.
     Regresa objetos de recetas.
@@ -24,9 +20,21 @@ def agregar_receta(request):
         form = RecetaForm(request.POST)
         if form.is_valid():
             receta = form.save(commit=False)
-            print(request.POST)
             receta.save()
-            return redirect('recetas/', pk=receta.pk)
+            return redirect('agregar_materiales', id_receta=receta.id)
     else:
         form = RecetaForm()
     return render(request, 'recetas/agregar_receta.html', {'form': form})
+
+def agregar_materiales(request, id_receta):
+    receta = get_object_or_404(Receta, pk=id_receta)
+    if request.method == "POST":
+        form = MaterialRecetaForm(request.POST)
+        if form.is_valid():
+            material = form.save(commit=False)
+            material.receta = receta
+            material.save()
+            return render('')
+    else:
+        form = MaterialRecetaForm()
+    return render(request, 'recetas/agregar_materiales.html', {'form': form, 'receta': receta})
