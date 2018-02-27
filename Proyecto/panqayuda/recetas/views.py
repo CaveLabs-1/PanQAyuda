@@ -11,7 +11,7 @@ from django.http import HttpResponse, HttpResponseRedirect
 """
 def lista_recetas(request):
     template_name = 'lista_recetas.html'
-    recetas = list(Receta.objects.all())
+    recetas = list(Receta.objects.filter(status=1))
     return render(request, 'recetas/lista_recetas.html', {'recetas': recetas})
 
 
@@ -38,3 +38,9 @@ def agregar_materiales(request, id_receta):
     else:
         form = MaterialRecetaForm()
     return render(request, 'recetas/agregar_materiales.html', {'form': form, 'receta': receta})
+
+def borrar_material(request, id_receta):
+    receta = get_object_or_404(Receta, pk=id_receta)
+    receta.status = 0
+    receta.save()
+    return render(request, 'recetas/lista_recetas.html', {'recetas': recetas})
