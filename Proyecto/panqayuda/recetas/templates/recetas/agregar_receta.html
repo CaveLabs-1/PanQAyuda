@@ -1,8 +1,29 @@
-{% extends 'base.html' %}
-{% block content %}
-    <h1>Nueva Receta</h1>
-    <form method="POST" class="post-form">{% csrf_token %}
-        {{ form.as_p }}
-        <button type="submit" class="save btn btn-default">Save</button>
-    </form>
-{% endblock %}
+{% extends "base.html" %}
+{% block title %}Recetas{% endblock title %}
+{% block navbar %}{% include "navbar.html" %}{% endblock navbar %}
+{% block header %}
+  <header class="banner-prueba">
+    {# buscar clase banner-prueba en main.css #}
+    <h1 class="center-align">Recetas</h1>
+  </header>
+{% endblock header %}
+<div  class="container">
+  {% block content %}
+  <div class="row">
+    <div class="col s10 offset-s1">
+      <h1>Nueva Receta</h1>
+      <form method="POST" class="post-form">{% csrf_token %}
+          {{ form.as_p }}
+          <button type="submit" class="save btn btn-default">Save</button>
+      </form>
+    </div>
+  </div>
+  {% endblock content %}
+</div>
+{% block js %}
+  <script type="text/javascript">
+    $(document).ready(function(){
+      $('.collapsible').collapsible();
+    });
+  </script>
+{% endblock js %}
