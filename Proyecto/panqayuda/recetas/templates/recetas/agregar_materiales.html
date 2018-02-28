@@ -1,65 +1,107 @@
 {% extends "base.html" %}
 {% block title %}Recetas{% endblock title %}
 {% block navbar %}{% include "navbar.html" %}{% endblock navbar %}
-{% block header %}
-    <header class="banner-prueba">
-        {# buscar clase banner-prueba en main.css #}
-        <h1 class="center-align">Recetas</h1>
-    </header>
-{% endblock header %}
-{% block content %}
-<div class="container">
-    <div class="card">
-        <div class="card-content">
-        <span class="card-title">
-            <div class="row">
-                <div class="col s6">
-                    <h1><strong>{{ receta.nombre }}</strong></h1>
-                </div>
-                <div class="col s6 right-align">
-                    <a href="/recetas"><i class="medium material-icons">close</i></a>
-                </div>
+<div  class="container">
+  {% block content %}
+  <div class="row">
+    <div class="col s10 offset-s1">
+      <h2>Ingredientes para <strong>{{ receta.nombre }}</strong></h2>
+    <hr>
+    <h4> Agregar ingredientes </h4>
+        <form class="row" method="POST" class="post-form">
+            {% csrf_token %}
+            <!--Material-->
+            <div class="input-field col l7 m7 s7">
+                  <input type="text" id="material" name="material" class="autocomplete" required>
+                  <label for="material">Material</label>
             </div>
-        </span>
-        <span class="card-title">
-            <div class="row">
+            <input type="text" hidden name="id_material" id="id_material"/>
+            <!--Cantidad de Material-->
+            <div class="input-field col l2 m2 s1">
+                {% if form.cantidad.errors %}
+                    <span class="text-red">{{ form.cantidad.errors }} </span>
+                {% endif %}
+                {{ form.cantidad.label_tag }}
+                {{ form.cantidad }}
             </div>
-        </span>
-        <div class="container">
-            <form method="POST" class="post-form">{% csrf_token %}
-                    {{ form.as_p }}
-                    <button type="submit" class="save btn btn-default">Save</button>
-            </form>
-            <table>
-                    <thead>
-                        <tr>
-                            <th>Nombre</th>
-                            <th>Cantidad necesitada</th>
-                            <th>Unidades</th>
-                            <th>Eliminar</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {% for material in materiales %}
-                        <tr>
-                            <td>{{ material.material.nombre }}</td>
-                            <td>{{ material.cantidad }}</td>
-                            <td>{{ material.material.unidad }}</td>
-                            <td><a href="borrar_material/{{ material.id }}"><i class="material-icons">delete</i></a></td>
-                        </tr>
-                        <tr>
-                        {% endfor %}
-                    </tbody>
-                </table>
+            <!--Unidad-->
+            <div class="input-field col l2 m2 s1">
+                <p id="unidad" disabled></p>
+            </div>
+            <!-- Botón de agregar -->
+            <div class="col l1 m1 s1">
+                <button class="btn-floating red disabled" id="boton_agregar" type="submit"><i class="material-icons">add</i></button>
+            </div>
+        </form>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col s10 offset-s1">
+        <table>
+            <thead>
+              <tr>
+                <th>Nombre</th>
+                <th>Cantidad necesitada</th>
+                <th>Unidades</th>
+                <th>Eliminar</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for material in materiales_actuales %}
+              <tr>
+                <td>{{ material.material.nombre }}</td>
+                <td>{{ material.cantidad }}</td>
+                <td>{{ material.material.unidad }}</td>
+                <td><a href="borrar_material/{{ material.id }}"><i class="material-icons">delete</i></a></td>
+              </tr>
+              <tr>
+              {% endfor %}
+            </tbody>
+          </table>
+    </div>
+    </div>
+    <div class="row">
+        <div class="col s3 offset-s9">
+         <a href="{% url 'recetas:detallar_receta' receta.id %}" class="waves-effect waves-light btn"><i class="material-icons right">send</i>Terminar</a>
         </div>
     </div>
+  {% endblock content %}
 </div>
-</div>
-{% endblock content %}
 {% block js %}
-    <script type="text/javascript">
-        $(document).ready(function(){
-            $('.collapsible').collapsible();
-        });
-    </script>
+  <script type="text/javascript">
+    $(document).ready(function(){
+        $('.collapsible').collapsible();
+        //Diccionario con unidades para cada material
+        var dict = {
+                    {% for material in materiales_disponibles %}
+                     '{{ material.nombre }}': '{{ material.unidad }}',
+                    {% endfor %}
+                    };
+        //Autocompletar para escoger materiales
+          $('input.autocomplete').autocomplete({
+            data: {
+                 {% for material in materiales_disponibles %}
+                     '{{ material.nombre }}':null,
+                 {% endfor %}
+            },
+            limit: 20,
+            onAutocomplete: function(val) {
+                //Cambiar campo de unidades
+                $('#unidad').html(dict[val]);
+                $('#boton_agregar').removeClass('disabled');
+            },
+            minLength: 1, // The minimum length of the input for the autocomplete to start. Default: 1.
+          });
+
+          $('#material').keyup(function(){
+              var val = $('#material').val();
+              if (dict[val] === undefined) {
+                  $('#id_material').val('');
+                  $('#unidad').html('');
+                  $('#boton_agregar').addClass('disabled');
+              }
+          });
+
+    });
+  </script>
 {% endblock js %}

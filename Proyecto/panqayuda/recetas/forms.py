@@ -26,3 +26,4 @@ class MaterialRecetaForm(ModelForm):
     class Meta:
         model = RelacionRecetaMaterial
         fields = ('material', 'cantidad')
+
