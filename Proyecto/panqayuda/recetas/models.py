@@ -14,5 +14,5 @@ class Receta(models.Model):
 class RelacionRecetaMaterial(models.Model):
     receta = models.ForeignKey('Receta', on_delete = models.CASCADE)
     material = models.ForeignKey('materiales.Material',  on_delete = models.CASCADE)
-    cantidad = models.PositiveIntegerField()
+    cantidad = models.FloatField()
     status = models.IntegerField(default=1)
