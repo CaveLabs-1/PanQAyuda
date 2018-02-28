@@ -26,4 +26,6 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('prueba/', include('prueba.urls', namespace='prueba')),
     path('recetas', recetas_views.lista_recetas, name='index'),
+    path('paquetes/', include('paquetes.urls', namespace='paquetes')),
+
 ]
