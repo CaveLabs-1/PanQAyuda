@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+{% block title %}Prueba{% endblock title %}
+{% block navbar %}{% include "navbar.html" %}{% endblock navbar %}
+{% block header %}
+    <header class="banner-prueba">
+        {# buscar clase banner-prueba en main.css #}
+        <h1 class="center-align">Prueba</h1>
+    </header>
+{% endblock header %}
+
+{% block content %}
+    
+{% endblock content %}
+
+{% block js %}
+    <script type="text/javascript">
+        $(document).ready(function(){
+            $('.collapsible').collapsible();
+        });
+    </script>
+{% endblock js %}

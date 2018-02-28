@@ -4,6 +4,8 @@ from .forms import RecetaForm, MaterialRecetaForm
 from django.http import HttpResponse, HttpResponseRedirect
 import datetime
 from django.contrib import messages
+from django.views.generic.edit import UpdateView
+from django.views import generic
 
 """
     Función que enlista todas las recetas guardadas dentro de la base de datos.
@@ -19,7 +21,7 @@ def agregar_receta(request):
     if request.method == "POST":
         form = RecetaForm(request.POST)
         if form.is_valid():
-            receta = form.save(commit=False)
+            receta = form.save()
             receta.save()
             # messages.add_message(request, SUCCESS, 'Receta agregada exitosamente.')
             return redirect('agregar_materiales', id_receta=receta.id)
@@ -40,6 +42,16 @@ def borrar_receta(request, id_receta):
     receta.save()
     # messages.add_message(request, SUCCESS, 'Receta borrada exitosamente.')
     return HttpResponseRedirect(request.META.get('HTTP_REFERER', '/'))
+
+def editar_receta(request, receta):
+    receta = get_object_or_404(Receta, pk=receta.id_receta)
+
+# class EditarReceta(UpdateView):
+#     model = Receta
+#     fields = ['nombre', 'cantidad', 'duration']
+#     template_name = 'editar_receta'
+
+    # return render(request, 'editar_receta')
 
 def agregar_materiales(request, id_receta):
     receta_madre = get_object_or_404(Receta, pk=id_receta)

@@ -3,12 +3,12 @@ from django import forms
 
 from .models import Receta, RelacionRecetaMaterial
 
-class RecetaModelForm(ModelForm):
+class RecetaForm(ModelForm):
     class Meta:
         model = Receta
         fields = ('nombre', 'cantidad', 'duration')
 
-class RecetaForm(forms.Form):
+class RecetaFormManual(forms.Form):
     nombre=forms.CharField(max_length=100, help_text='Nombre de la receta')
     cantidad = forms.IntegerField(help_text='Cantidad de productos que produce')
     duracion = forms.DurationField(help_text='Tiempo de vida del producto')
@@ -19,7 +19,7 @@ class RecetaForm(forms.Form):
         cantidad = cleaned_data.get('cantidad')
         duration = cleaned_data.get('duracion')
         if not nombre and not cantidad and not duration:
-            raise forms.ValidationError('Campos Obligatorio')
+            raise forms.ValidationError('Campos Obligatorios')
 
 
 class MaterialRecetaForm(ModelForm):
