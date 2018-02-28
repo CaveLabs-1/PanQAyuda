@@ -21,9 +21,26 @@
           </div>
         </div>
       </span>
-      <form method="POST" class="post-form">{% csrf_token %}
-          {{ form.as_p }}
-          <button type="submit" class="save btn btn-default">Save</button>
+      <form method="POST" novalidate>
+        {% csrf_token %}
+        {{ form.non_field_errors }}
+        {% for hidden_field in form.hidden_fields %}
+          {{ hidden_field.errors }}
+          {{ hidden_field }}
+        {% endfor %}
+        <div class="col s12">
+          <div class="row">
+          {% for field in form.visible_fields %}
+          <tr>
+            <div class="input field col s4">
+              {{ field }}
+              {{ field.label_tag }}
+            </div>
+          </tr>
+         {% endfor %}
+        </div>
+      </div>
+        <button type="submit" class="save btn right-align">Crear</button>
       </form>
       </div>
     </div>
