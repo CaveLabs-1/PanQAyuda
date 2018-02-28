@@ -2,4 +2,4 @@ from django.apps import AppConfig
 
 
 class PaquetesConfig(AppConfig):
-    name = 'Paquetes'
+    name = 'paquetes'

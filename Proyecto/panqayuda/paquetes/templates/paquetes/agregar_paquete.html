@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+{% block title %}Prueba{% endblock title %}
+{% block navbar %}{% include "navbar.html" %}{% endblock navbar %}
+{% block header %}
+  <header>
+    <h2 class="center-align">Agregar Paquete al Catálogo</h2>
+  </header>
+{% endblock header %}
+{% block content %}
+  <div class="container">
+    {% for paquete in paquetes %}
+      <p>{{paquete.nombre}}</p>
+    {% endfor %}
+
+
+  </div>
+{% endblock content %}
+
+{% block js %}
+{% endblock js %}
