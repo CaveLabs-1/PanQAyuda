@@ -18,14 +18,13 @@ from django.contrib import admin
 from django.urls import include, path
 from django.conf import settings
 from django.conf.urls.static import static
-from recetas import views as recetas_views
+
 # from django.conf.urls import patterns, include, url
 
 # from django.contrib.auth.decorators import login_required
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('prueba/', include('prueba.urls', namespace='prueba')),
-    path('recetas', recetas_views.lista_recetas, name='index'),
+    path('recetas/', include('recetas.urls', namespace='recetas')),
     path('paquetes/', include('paquetes.urls', namespace='paquetes')),
-
 ]

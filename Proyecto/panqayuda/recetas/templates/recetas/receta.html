@@ -1,0 +1,77 @@
+{% extends "base.html" %}
+{% block title %}Recetas{% endblock title %}
+{% block navbar %}{% include "navbar.html" %}{% endblock navbar %}
+{% block header %}
+    <header class="banner-prueba">
+        {# buscar clase banner-prueba en main.css #}
+        <h1 class="center-align">Recetas</h1>
+    </header>
+{% endblock header %}
+    <div class="container">
+        {% block content %}
+        <div class="container">
+            <div class="card">
+                <div class="card-content">
+                <span class="card-title">
+                    <div class="row">
+                        <div class="col s6">
+                            <h1><strong>{{ receta.nombre }}</strong></h1>
+                        </div>
+                        <div class="col s6 right-align">
+                            <a href="/recetas"><i class="material-icons">close</i></a>
+                        </div>
+                    </div>
+                </span>
+                <span class="card-title">
+                    <div class="row">
+                        <div class="col s6 center-align">
+                            <h5>Cantidad que produce: {{ receta.cantidad }}</h5>
+                        </div>
+                        <div class="col s6 center-align">
+                            <h5>Duración del producto: {{ receta.duration }}</h5>
+                        </div>
+                    </div>
+                </span>
+                <div class="container">
+                    <table>
+                            <thead>
+                                <tr>
+                                    <th>Nombre</th>
+                                    <th>Cantidad necesitada</th>
+                                    <th>Unidades</th>
+                                    <th>Eliminar</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for material in materiales %}
+                                <tr>
+                                    <td>{{ material.material.nombre }}</td>
+                                    <td>{{ material.cantidad }}</td>
+                                    <td>{{ material.material.unidad }}</td>
+                                    <td><a href="borrar_material/{{ material.id }}"><i class="material-icons">delete</i></a></td>
+                                </tr>
+                                <tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                        <br>
+                        <!-- <div class="row">
+                            <div class="right-align">
+                                <a onclick="return confirm('¿Seguro que quieres borrar la receta de {{receta.nombre}}?')" href="borrar_receta/{{ receta.id }}">
+                                    <i class="medium material-icons">delete</i>
+                                </a>
+                            </div>
+                    </div>
+                    -->
+                </div>
+            </div>
+            {% endblock content %}
+        </div>
+    </div>
+{% block js %}
+    <script type="text/javascript">
+        $(document).ready(function(){
+            $('.collapsible').collapsible();
+        });
+    </script>
+{% endblock js %}
