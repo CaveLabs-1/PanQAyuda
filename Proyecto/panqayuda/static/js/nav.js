@@ -1,8 +1,8 @@
 
 $(document).ready(function(){
-    $('.sidenav').sidenav();
+    //$('.sidenav').sidenav();
     $('.tooltipped').tooltip();
-    $('.button-collapse').sidenav()({
-        draggable: true,
-    })
+    //$('.button-collapse').sidenav()({
+    //    draggable: true,
+    //  });
 });
