@@ -26,7 +26,7 @@ def agregar_receta(request):
             receta.save()
             # messages.add_message(request, SUCCESS, 'Receta agregada exitosamente.')
             #messages.add_message(request, SUCCESS, 'Receta agregada exitosamente.')
-            return redirect('agregar_materiales', id_receta=receta.id)
+            return redirect('recetas:agregar_materiales', id_receta=receta.id)
     else:
         form = RecetaForm()
     return render(request, 'recetas/agregar_receta.html', {'form': form})
