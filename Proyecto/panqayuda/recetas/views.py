@@ -44,8 +44,19 @@ def borrar_receta(request, id_receta):
     # messages.add_message(request, SUCCESS, 'Receta borrada exitosamente.')
     return HttpResponseRedirect(request.META.get('HTTP_REFERER', '/'))
 
-def editar_receta(request, receta):
-    receta = get_object_or_404(Receta, pk=receta.id_receta)
+def editar_receta(request, id_receta):
+    receta = get_object_or_404(Receta, pk=id_receta)
+    if request.method == "POST":
+        form = RecetaForm(request.POST or None, instance=receta)
+        if form.is_valid():
+            receta = form.save()
+            receta.save
+            materiales = list(RelacionRecetaMaterial.objects.filter(receta=receta, status=1))
+            return render(request, 'recetas/receta.html', {'receta': receta, 'materiales': materiales})
+    else:
+        form = RecetaForm(initial={ "nombre":receta.nombre, "cantidad":receta.cantidad, "duration":receta.duration})
+    return render(request, 'recetas/editar_receta.html', {'form':form, 'receta':receta})
+
 
 # class EditarReceta(UpdateView):
 #     model = Receta
