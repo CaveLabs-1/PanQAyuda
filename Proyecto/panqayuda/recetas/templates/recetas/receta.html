@@ -55,6 +55,13 @@
                             </tbody>
                         </table>
                         <br>
+                        <div class="row">
+                            <div class="right-align">
+                                <a onclick="return confirm('¿Seguro que quieres editar la receta de {{receta.nombre}}?')" href="editar_receta/{{ receta.id }}">
+                                    <i class="medium material-icons">delete</i>
+                                </a>
+                            </div>
+                        </div>
                         <!-- <div class="row">
                             <div class="right-align">
                                 <a onclick="return confirm('¿Seguro que quieres borrar la receta de {{receta.nombre}}?')" href="borrar_receta/{{ receta.id }}">

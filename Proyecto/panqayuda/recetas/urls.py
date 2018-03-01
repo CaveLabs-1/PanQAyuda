@@ -12,5 +12,5 @@ urlpatterns = [
     path('agregar_materiales/borrar_material/<int:id_material>', views.borrar_material, name="borrar_material"),
     path('receta/borrar_material/<int:id_material>', views.borrar_material, name="borrar_material"),
     path('receta/<int:id_receta>', views.detallar_receta, name='detallar_receta'),
-    # path('editar_receta/<int:pk>', views.EditarReceta.as_view(), name='editar_receta')
+    path('receta/editar_receta/<int:id_receta>', views.editar_receta, name='editar_receta')
 ]
