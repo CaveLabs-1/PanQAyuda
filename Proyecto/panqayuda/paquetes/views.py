@@ -10,7 +10,7 @@ from django.urls import reverse
 #indice
 def lista_paquetes(request):
     lista_de_paquetes=Paquete.objects.filter(estatus=1)
-    return render(request, 'paquetes/lista_paquetes.html', {'paquetes':lista_de_paquetes})
+    return render(request, 'paquetes/ver_paquetes.html', {'paquetes':lista_de_paquetes})
 
 #agregar paquete
 def agregar_paquete(request):
