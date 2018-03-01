@@ -7,7 +7,7 @@ class Paquete (models.Model):
 	nombre = models.CharField(max_length=70)
 	recetas = models.ManyToManyField(Receta, through='Recetas_por_paquete', through_fields=('paquete', 'receta'),)
 	precio = models.FloatField()
-	estatus = models.IntegerField()
+	estatus = models.IntegerField(default=1)
 	created_at = models.DateTimeField(default=timezone.now)
 	updated_at = models.DateTimeField(default=timezone.now)
 	deleted_at = models.DateTimeField(blank=True, null=True)
