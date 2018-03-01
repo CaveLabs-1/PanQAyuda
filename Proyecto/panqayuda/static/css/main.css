@@ -1,17 +1,15 @@
 header, main, footer {
   padding-left: 300px;
-  background-color: #F5F5F5;
 }
 
 @media only screen and (max-width : 992px) {
   header, main, footer {
     padding-left: 0;
-    background-color: #F5F5F5;
   }
 }
 
 body{
-  background-color: #F5F5F5;
+  background-color: #EBEBEB;
 }
 
 .navbar-logo{
@@ -22,6 +20,13 @@ body{
   background-color: white;
 }
 
+.paquete-catalogo-form{
+  margin-top: 10em;
+}
+
+.btn-agregar-paquete{
+  margin-bottom: 2em;
+}
 
 .banner-prueba{
   color: #333333;
