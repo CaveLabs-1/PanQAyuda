@@ -1,4 +1,4 @@
-from django.shortcuts import render
+from django.shortcuts import render, get_object_or_404
 from .models import Paquete
 from .models import Recetas_por_paquete
 from recetas.models import Receta
@@ -15,23 +15,30 @@ def lista_paquetes(request):
 #agregar paquete
 def agregar_paquete(request):
     if request.method == 'POST':
+
         forma_post=FormPaquete(request.POST)
+    
+        print("before if")
+        print(forma_post)
         if forma_post.is_valid():
+            print("in if")
             forma_post.save()
             messages.success(request, 'Se ha agregado el paquete al catálogo!')
-            return HttpResponseRedirect(reverse('paquetes:agregar_recetas_a_paquete', kwargs={'id_paquete':id_paquete}))
+            paquete = Paquete.objects.latest('id')
+            return HttpResponseRedirect(reverse('paquetes:agregar_recetas_a_paquete', kwargs={'id_paquete':paquete.id}))
         else:
             messages.error(request, 'Hubo un error y no se agregó el paquete. Intentalo de nuevo.')
             return HttpResponseRedirect(reverse('paquetes:agregar_paquete'))
     else:
         forma=FormPaquete()
+        messages.error(request, ' Esta entrando aqui :( )')
         return render(request, 'paquetes/agregar_paquete.html', {'forma':forma})
 
 #agregar recetas a paquete
 def agregar_recetas_a_paquete(request, id_paquete):
     paquete = get_object_or_404(Paquete, id=id_paquete)
     forma = FormRecetasPorPaquete()
-    recetas = Receta.objects.filter(deleted_at = null, paquete = paquete)
+    recetas = Receta.objects.filter(deleted_at__isnull=True, paquete = paquete)
     return render(request, 'paquetes/agregar_recetas_a_paquete.html', {'recetas': recetas, 'forma':forma, 'recetas':recetas})
 
 def agregar_receta_a_paquete(request):
