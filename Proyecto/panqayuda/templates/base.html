@@ -2,6 +2,7 @@
 <!DOCTYPE html>
 <html lang="es">
   <head>
+    <link rel="icon" href="http://example.com/favicon.png">
     <meta charset="utf-8">
     <!--Import Google Icon Font-->
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
@@ -31,9 +32,9 @@
     {% block js %}{% endblock js %}
     {% if messages %}
     <script type="text/javascript">
-      {%for message in messages %}
+      {% for message in messages %}
           {% if message.level != 40 %}
-            M.toast({html: '{{message}}'})
+            M.toast({html: '{{ message }}'})
           {% endif %}
       {% endfor %}
     </script>

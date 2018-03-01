@@ -1,0 +1,59 @@
+{% extends "base.html" %}
+{% block title %}Recetas{% endblock title %}
+{% block navbar %}{% include "navbar.html" %}{% endblock navbar %}
+{% block header %}
+    <header class="banner-prueba">
+        {# buscar clase banner-prueba en main.css #}
+        <h1 class="center-align">Recetas</h1>
+    </header>
+{% endblock header %}
+    {% block content %}
+    <div class="valign-wrapper">
+        <div class="container">
+            <div class="card">
+                <div class="card-content">
+                <span class="card-title">
+                    <div class="row">
+                        <div class="col s6">
+                            <h1><strong>Nueva Receta</strong></h1>
+                        </div>
+                        <div class="col s6 right-align">
+                            <a href="/recetas"><i class="material-icons">close</i></a>
+                        </div>
+                    </div>
+                </span>
+                <form method="POST" novalidate>
+                  {% csrf_token %}
+                    {{ form.non_field_errors }}
+                    {% for hidden_field in form.hidden_fields %}
+                        {{ hidden_field.errors }}
+                        {{ hidden_field }}
+                    {% endfor %}
+                    <div class="col s12">
+                        <div class="row">
+                        {% for field in form.visible_fields %}
+                        <tr>
+                            <div class="input field col s4">
+                                {{ field.label_tag }}
+                                {{ field }}
+                            </div>
+                        </tr>
+                     {% endfor %}
+                    </div>
+                </div>
+                <div class="right-align">
+                    <button type="submit" class="save btn right-align btn-large">Crear <i class="material-icons right">send</i></button>
+                </div>
+                </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endblock content %}
+{% block js %}
+    <script type="text/javascript">
+        $(document).ready(function(){
+            $('.collapsible').collapsible();
+        });
+    </script>
+{% endblock js %}
