@@ -1,0 +1,56 @@
+{% extends "base.html" %}
+{% block title %}Ver Paquete{% endblock title %}
+{% block navbar %}{% include "navbar.html" %}{% endblock navbar %}
+{% block header %}
+  <header class="banner-prueba">
+    {# buscar clase banner-prueba en main.css #}
+    <h1 class="center-align">Catálogo de Paquetes</h1>
+  </header>
+{% endblock header %}
+{% block content %}
+
+<div class="row">
+  <div class="col s10 offset-s1">
+    <table>
+      <thead>
+        <th>Nombre</th>
+        <th>Precio</th>
+        <th>Fecha de Creacion</th>
+        <th> </th>
+      </thead>
+      <tbody>
+        {% for item in paquetes %}
+        <tr>
+          <td>{{ item.nombre }}</td>
+          <td>{{ item.precio }}</td>
+          <td>{{ item.created_at }}</td>
+          <td>
+            <div class="row">
+              <div class="col s3 offset-s3 center">
+                <a>
+                  <i class="small material-icons">edit</i>
+                </a>
+              </div>
+              <div class="col s3 center">
+                <a>
+                  <i class="small material-icons">delete</i>
+                </a>
+              </div>
+            </div>
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+
+  </div>
+  <!--Aqui termina mi prueba-->
+</div>
+
+  <a href={% url 'paquetes:agregar_paquete' %}><i class="material-icons">add</i></a>
+{% endblock content %}
+
+{% block js %}
+<!-- Escribe aquí funciones JS extras -->
+
+{% endblock js %}
