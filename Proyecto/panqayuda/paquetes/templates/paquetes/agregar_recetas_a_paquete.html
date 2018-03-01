@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+{% block title %}Prueba{% endblock title %}
+{% block navbar %}{% include "navbar.html" %}{% endblock navbar %}
+{% block header %}
+  <header>
+    <h2 class="center-align">Recetas</h2>
+  </header>
+{% endblock header %}
+{% block content %}
+  <div class="container paquete-catalogo-form">
+    <form class="" action="" method="post">
+      <div class="row">
+        <div class="input-field col m6">
+          <!-- Agregar aqui lista de recetas-->
+          </div>
+        <div class="input-field col m3">
+          <input type="number" step = "1" name="{{forma.cantidad.html_name}}" id={{forma.cantidad.id_for_label}} value="">
+          <label for="{{forma.cantidad.id_for_label}}" data-error='Cantidad invalida'  data-success="Cantidad correcta">Cantidad</label>
+        </div>
+      </div>
+    </form>
+    <hr>
+
+    {% for receta in recetas %}
+      <p>{{receta.nombre}}</p>
+    {% endfor %}
+
+
+  </div>
+{% endblock content %}
+
+{% block js %}
+{% endblock js %}
