@@ -10,6 +10,7 @@ urlpatterns = [
     path('agregar_paquete/', views.agregar_paquete, name='agregar_paquete'),
     path('agregar_recetas_a_paquete/<int:id_paquete>/', views.agregar_recetas_a_paquete, name='agregar_recetas_a_paquete'),
     path('ver_paquetes/', views.lista_paquetes, name='ver_paquetes'),
+    path('agregar_inventario/', views.lista_paquetes, name='agregar_inventario'),
     # path('prueba_view/', views.prueba_view, name='prueba_view')
     # path('prueba_view/', views.prueba_view, name='prueba_view')
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

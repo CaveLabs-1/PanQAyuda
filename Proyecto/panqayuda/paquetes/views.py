@@ -34,6 +34,27 @@ def agregar_paquete(request):
         messages.error(request, ' Esta entrando aqui :( )')
         return render(request, 'paquetes/agregar_paquete.html', {'forma':forma})
 
+def agregar_paquete_inventario(request):
+    if request.method == 'POST':
+
+        forma_post=FormPaqueteInventario(request.POST)
+
+        print("entró antes del if")
+        print(forma_post)
+        if forma_post.is_valid():
+            print("entró al if")
+            forma_post.save()
+            messages.success(request, 'Se ha agregado el paquete al inventario')
+            paquete = Paquete_Inventario.objects.latest('id')
+            return HttpResponseRedirect(reverse('paquetes:agregar_inventario', kwargs={'nombre':paquete.id}))
+        else:
+            messages.error(request, 'Hubo un error y no se agregó el paquete al inventario.')
+            return HttpResponseRedirect(reverse('paquetes:agregar_inventario'))
+    else:
+        forma=FormPaqueteInventario()
+        messages.error(request, 'Hubo un error con la peticion')
+        return render(request, 'placeholder.html', {'forma':forma})
+
 #agregar recetas a paquete
 def agregar_recetas_a_paquete(request, id_paquete):
     paquete = get_object_or_404(Paquete, id=id_paquete)
