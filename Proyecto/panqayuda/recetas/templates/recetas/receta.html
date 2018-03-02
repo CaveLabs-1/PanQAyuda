@@ -2,23 +2,45 @@
 {% block title %}Recetas{% endblock title %}
 {% block navbar %}{% include "navbar.html" %}{% endblock navbar %}
 {% block header %}
-    <header class="banner-prueba">
-        {# buscar clase banner-prueba en main.css #}
-        <h1 class="center-align">Recetas</h1>
+    <header class="">
+        <h1 class="center-align">{{ receta.nombre }}</h1>
     </header>
 {% endblock header %}
     <div class="container">
         {% block content %}
         <div class="container">
+          <!-- Carga donde carga todo -->
             <div class="card">
                 <div class="card-content">
                 <span class="card-title">
                     <div class="row">
                         <div class="col s6">
-                            <h1><strong>{{ receta.nombre }}</strong></h1>
+                          <a href="/recetas"><i class="material-icons">close</i></a>
                         </div>
                         <div class="col s6 right-align">
-                            <a href="/recetas"><i class="material-icons">close</i></a>
+
+
+                            <a class='dropdown-trigger btn' href='#' data-target='dropdown1'>Opciones<i class="material-icons">expand_more</i></a>
+                            <ul id='dropdown1' class='dropdown-content'>
+                            <li>
+                                <a href="editar_receta/{{ receta.id }}">
+                                    <i class="material-icons">edit</i>
+                                    Editar Receta
+                                </a>
+                            </li>
+                            <li class="divider" tabindex="-1"></li>
+                            <li>
+                              <a href="agregar_materiales/{{ receta.id }}"><i class="material-icons">edit</i>
+                                Editar Materiales
+                              </a>
+                            </li>
+                            <li class="divider" tabindex="-1"></li>
+                            <li>
+                              <a onclick="return confirm('¿Seguro que quieres borrar la receta de {{receta.nombre}}?')" href="borrar_receta/{{ receta.id }}">
+                                  <i class="material-icons red-text">delete</i><div class="red-text">Borrar Receta</div>
+                              </a>
+                            </li>
+                            </ul>
                         </div>
                     </div>
                 </span>
@@ -29,6 +51,9 @@
                         </div>
                         <div class="col s6 center-align">
                             <h5>Duración del producto: {{ receta.duration }}</h5>
+                        </div>
+                        <div class="col s6 center-align">
+
                         </div>
                     </div>
                 </span>
@@ -54,24 +79,19 @@
                                 {% endfor %}
                             </tbody>
                         </table>
-                        <br>
-                        <!-- <div class="row">
-                            <div class="right-align">
-                                <a onclick="return confirm('¿Seguro que quieres borrar la receta de {{receta.nombre}}?')" href="borrar_receta/{{ receta.id }}">
-                                    <i class="medium material-icons">delete</i>
-                                </a>
-                            </div>
-                    </div>
-                    -->
                 </div>
             </div>
             {% endblock content %}
         </div>
     </div>
+
 {% block js %}
     <script type="text/javascript">
         $(document).ready(function(){
             $('.collapsible').collapsible();
         });
+    </script>
+    <script type="text/javascript">
+         $('.dropdown-trigger').dropdown();
     </script>
 {% endblock js %}

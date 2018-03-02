@@ -9,6 +9,7 @@
 {% endblock header %}
 {% block content %}
   <div class="container">
+    <!-- Carga donde carga todo -->
     <div class="card">
       <div class="card-content">
         <div class="">
@@ -19,7 +20,7 @@
                     <th>Nombre</th>
                     <th>Cantidad que produce</th>
                     <th>Duración</th>
-                    <th>Editar</th>
+                    {# <th>Editar Materiales</th> #}
                     <!--<th>Eliminar</th>-->
                   </tr>
                 </thead>
@@ -29,7 +30,7 @@
                       <td><a href="/recetas/receta/{{ receta.id }}">{{ receta.nombre }}</a></td>
                       <td>{{ receta.cantidad }}</td>
                       <td>{{ receta.duration }}</td>
-                      <td><a href="agregar_materiales/{{ receta.id }}"><i class="material-icons">edit</i></a></td>
+                      <!-- <td><a href="agregar_materiales/{{ receta.id }}"><i class="material-icons">edit</i></a></td> #} -->
                       <!--<td><a onclick="return confirm('¿Seguro que quieres borrar la receta de {{receta.nombre}}?')" href="borrar_receta/{{ receta.id }}"><i class="material-icons">delete</i></a></td>-->
                   </tr>
                   {% endfor %}
