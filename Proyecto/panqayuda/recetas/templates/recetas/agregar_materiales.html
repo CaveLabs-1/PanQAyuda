@@ -1,6 +1,12 @@
 {% extends "base.html" %}
 {% block title %}Recetas{% endblock title %}
 {% block navbar %}{% include "navbar.html" %}{% endblock navbar %}
+{% block header %}
+    <header class="">
+        {# buscar clase banner-prueba en main.css #}
+        <h1 class="center-align">{{ receta.nombre }}</h1>
+    </header>
+{% endblock header %}
 <div  class="container">
   {% block content %}
   <div class="valign-wrapper">
@@ -10,10 +16,10 @@
               <span class="card-title">
                   <div class="row">
                       <div class="col s6">
-                          <h2>Ingredientes para <strong>{{ receta.nombre }}</strong></h2>
+
                       </div>
                       <div class="col s6 right-align">
-                          <a href="/recetas"><i class="material-icons">close</i></a>
+                          <a href="javascript:history.back()"><i class="material-icons">close</i></a>
                       </div>
                   </div>
               </span>

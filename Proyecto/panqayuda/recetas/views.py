@@ -43,7 +43,8 @@ def borrar_receta(request, id_receta):
     receta.save()
     # messages.add_message(request, SUCCESS, 'Receta borrada exitosamente.')
     recetas = list(Receta.objects.filter(status=1))
-    return render(request, 'recetas/lista_recetas.html', {'recetas': recetas})
+    return redirect('recetas:lista_de_recetas')
+    # return render(request, 'recetas/lista_recetas.html', {'recetas': recetas})
 
 def editar_receta(request, id_receta):
     receta = get_object_or_404(Receta, pk=id_receta)
