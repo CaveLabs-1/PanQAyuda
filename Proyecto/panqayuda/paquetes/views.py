@@ -17,7 +17,7 @@ def agregar_paquete(request):
     if request.method == 'POST':
 
         forma_post=FormPaquete(request.POST)
-    
+
         print("before if")
         print(forma_post)
         if forma_post.is_valid():
@@ -51,4 +51,7 @@ def paquete(request, id_paquete):
     recetas = recetas = Receta.objects.filter(deleted_at = null, paquete = paquete)
     return render(request, 'paquetes/paquete.html', {'paquete': paquete, 'recetas': recetas})
 
+def lista_inventario_paquetes(request, id_paquetes):
+    inventario = Paquete_Inventario.objects.filter()
+    return render(request, 'this is a plaveholder.html', {'inventario':inventario})
 # Create your views here.
