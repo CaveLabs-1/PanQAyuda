@@ -22,3 +22,11 @@ class Recetas_por_paquete (models.Model):
 
 	def recetas_paquete(paquete):
 		return Recetas_por_paquete.objects.filter(paquete=paquete)
+
+class Paquete_Inventario (models.Model):
+	nombre: models.ForeignKey(Paquete, on_delete=models.CASCADE)
+	cantidad: models.IntegerField()
+	fecha_cad = models.DateTimeField(blank = True, null = True)
+	created_at = models.DateTimeField(default=timezone.now)
+	updated_at = models.DateTimeField(default=timezone.now)
+	deleted_at = models.DateTimeField(blank = True, null = True)
