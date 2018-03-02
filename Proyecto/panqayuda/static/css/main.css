@@ -21,7 +21,11 @@ body{
 }
 
 .paquete-catalogo-form{
-  margin-top: 10em;
+  margin-top: 5em;
+}
+
+.recetas-catalogo-card{
+    padding: 3em;
 }
 
 .btn-agregar-paquete{
