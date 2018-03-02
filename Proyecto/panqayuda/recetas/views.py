@@ -2,7 +2,7 @@ from django.shortcuts import render, redirect, get_object_or_404
 from .models import Receta, RelacionRecetaMaterial
 from materiales.models import Material
 from .forms import RecetaForm, MaterialRecetaForm
-# from django.http import HttpResponse, HttpResponseRedirect
+from django.http import HttpResponse, HttpResponseRedirect
 import datetime
 # from django.contrib import messages
 # from django.views.generic.edit import UpdateView
