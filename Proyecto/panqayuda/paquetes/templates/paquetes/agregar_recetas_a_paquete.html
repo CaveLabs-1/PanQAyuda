@@ -3,31 +3,61 @@
 {% block navbar %}{% include "navbar.html" %}{% endblock navbar %}
 {% block header %}
   <header>
-    <h2 class="center-align">Recetas</h2>
+    <h2 class="center-align">Paquete {{paquete.nombre}}</h2>
   </header>
 {% endblock header %}
 {% block content %}
   <div class="container paquete-catalogo-form">
-    <form class="" action="" method="post">
-      <div class="row">
-        <div class="input-field col m6">
-          <!-- Agregar aqui lista de recetas-->
-          </div>
-        <div class="input-field col m3">
-          <input type="number" step = "1" name="{{forma.cantidad.html_name}}" id={{forma.cantidad.id_for_label}} value="">
-          <label for="{{forma.cantidad.id_for_label}}" data-error='Cantidad invalida'  data-success="Cantidad correcta">Cantidad</label>
-        </div>
+    <div class="card recetas-catalogo-card">
+      <div id="formahtml">
+        {{formahtml}}
+        {{lista_recetas}}
       </div>
-    </form>
-    <hr>
-
-    {% for receta in recetas %}
-      <p>{{receta.nombre}}</p>
-    {% endfor %}
-
-
+    </div>
   </div>
 {% endblock content %}
 
 {% block js %}
+  <script type="text/javascript">
+    $(document).ready(function(){
+        var csrftoken = $.cookie('csrftoken');
+        function csrfSafeMethod(method) {
+        // these HTTP methods do not require CSRF protection
+            return (/^(GET|HEAD|OPTIONS|TRACE)$/.test(method));
+        }
+        $.ajaxSetup({
+            beforeSend: function(xhr, settings) {
+                if (!csrfSafeMethod(settings.type) && !this.crossDomain) {
+                    xhr.setRequestHeader("X-CSRFToken", csrftoken);
+                }
+            }
+        });
+    });
+
+    $('select').formSelect();
+
+    function agregar_receta(){
+
+      var url = '{% url "paquetes:agregar_receta_a_paquete" %}';
+
+      var  receta = $('#id_receta').val();
+
+      var cantidad  = $('#{{forma.cantidad.id_for_label}}').val();
+
+      var paquete = {{paquete.id}};
+
+      $.post(url, {
+        receta: receta,
+        cantidad: cantidad,
+        paquete: paquete
+      }).done(function(data){
+        $('#formahtml').html(data);
+        $('select').formSelect();
+        M.toast({html:'La receta se ha agregado al paquete.'})
+      });
+
+      return false;
+    };
+
+  </script>
 {% endblock js %}
