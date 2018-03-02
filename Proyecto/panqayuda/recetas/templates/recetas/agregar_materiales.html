@@ -11,13 +11,14 @@
   {% block content %}
   <div class="valign-wrapper">
       <div class="container">
+        <!-- Carta donde carga toda la información -->
           <div class="card">
               <div class="card-content">
               <span class="card-title">
                   <div class="row">
                       <div class="col s6">
-
                       </div>
+                      <!-- Botón para regresar -->
                       <div class="col s6 right-align">
                           <a href="javascript:history.back()"><i class="material-icons">close</i></a>
                       </div>
@@ -65,6 +66,7 @@
                           <tbody>
                             {% for material in materiales_actuales %}
                             <tr>
+                              <!-- Datos de el material -->
                               <td>{{ material.material.nombre }}</td>
                               <td>{{ material.cantidad }}</td>
                               <td>{{ material.material.unidad }}</td>

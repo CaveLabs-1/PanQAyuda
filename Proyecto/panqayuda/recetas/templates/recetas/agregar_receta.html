@@ -10,6 +10,7 @@
     {% block content %}
     <div class="valign-wrapper">
         <div class="container">
+          <!-- Carta done carga todo -->
             <div class="card">
                 <div class="card-content">
                 <span class="card-title">
@@ -22,6 +23,7 @@
                         </div>
                     </div>
                 </span>
+                <!-- Forma de la Receta -->
                 <form method="POST" novalidate>
                   {% csrf_token %}
                     {{ form.non_field_errors }}

@@ -11,6 +11,7 @@
 {% block content %}
 <div class="valign-wrapper">
     <div class="container">
+      <!-- Carta donde carga todo -->
         <div class="card">
             <div class="card-content">
             <span class="card-title">
@@ -23,6 +24,7 @@
                     </div>
                 </div>
             </span>
+            <!-- Forma para editar la receta -->
             <form method="POST" novalidate>
               {% csrf_token %}
                 {{ form.non_field_errors }}
