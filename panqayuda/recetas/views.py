@@ -1,5 +1,6 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from .models import Receta, RelacionRecetaMaterial
+from django.contrib import messages
 from materiales.models import Material
 from .forms import RecetaForm, MaterialRecetaForm
 from django.http import HttpResponse, HttpResponseRedirect
@@ -32,8 +33,7 @@ def agregar_receta(request):
         if form.is_valid():
             receta = form.save()
             receta.save()
-            # messages.add_message(request, SUCCESS, 'Receta agregada exitosamente.')
-            # messages.add_message(request, SUCCESS, 'Receta agregada exitosamente.')
+            messages.success(request, 'Se ha agregado la receta al catálogo!')
             return redirect('recetas:agregar_materiales', id_receta=receta.id)
     else:
         form = RecetaForm()
@@ -63,6 +63,7 @@ def borrar_receta(request, id_receta):
     receta.status = 0
     receta.deleted_at = datetime.datetime.now()
     receta.save()
+    messages.success(request, 'Se ha borrado la receta exitosamente!')
     # messages.add_message(request, SUCCESS, 'Receta borrada exitosamente.')
     # recetas = list(Receta.objects.filter(status=1))
     return redirect('recetas:lista_de_recetas')
@@ -82,10 +83,11 @@ def editar_receta(request, id_receta):
         if form.is_valid():
             receta = form.save()
             receta.save
+            messages.success(request, 'Se ha editado la receta exitosamente!')
             materiales = list(RelacionRecetaMaterial.objects.filter(receta=receta, status=1))
             return render(request, 'recetas/receta.html', {'receta': receta, 'materiales': materiales})
     else:
-        form = RecetaForm(initial={"nombre": receta.nombre, "cantidad": receta.cantidad, "duration": receta.duration})
+        form = RecetaForm()
     return render(request, 'recetas/editar_receta.html', {'form': form, 'receta': receta})
 
 
