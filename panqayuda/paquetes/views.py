@@ -1,4 +1,4 @@
-from django.shortcuts import render, get_object_or_404
+from django.shortcuts import render, get_object_or_404, redirect
 from .models import Paquete
 from .models import Recetas_por_paquete
 from recetas.models import Receta
@@ -7,6 +7,7 @@ from django.http import HttpResponseRedirect, HttpResponse, JsonResponse
 from django.contrib import messages
 from django.urls import reverse
 from django.template.loader import render_to_string
+import datetime
 
 #indice
 def lista_paquetes(request):
@@ -29,6 +30,18 @@ def agregar_paquete(request):
         forma=FormPaquete()
         messages.error(request, ' Esta entrando aqui :( )')
         return render(request, 'paquetes/agregar_paquete.html', {'forma':forma})
+
+
+def borrar_paquete(request, id_paquete):
+    paquete = get_object_or_404(Paquete, pk=id_paquete)
+    paquete.estatus = 0
+    paquete.deleted_at = datetime.datetime.now()
+    paquete.save()
+    # recetas = list(Receta.objects.filter(status=1))
+    messages.success(request, 'Se ha borrado el paquete del catálogo!')
+    return redirect('paquetes:lista_paquetes')
+    # return render(request, 'recetas/lista_recetas.html', {'recetas': recetas})
+
 
 def agregar_paquete_inventario(request):
     if request.method == 'POST':

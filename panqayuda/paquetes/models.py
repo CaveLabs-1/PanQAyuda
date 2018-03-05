@@ -15,6 +15,7 @@ class Paquete (models.Model):
 	def _str_(self):
 		return self.nombre
 
+
 class Recetas_por_paquete (models.Model):
 	paquete=models.ForeignKey(Paquete, on_delete=models.CASCADE)
 	receta=models.ForeignKey(Receta, on_delete=models.CASCADE)
@@ -22,6 +23,7 @@ class Recetas_por_paquete (models.Model):
 
 	def recetas_paquete(paquete):
 		return Recetas_por_paquete.objects.filter(paquete=paquete)
+
 
 class Paquete_Inventario (models.Model):
 	nombre= models.ForeignKey(Paquete, on_delete=models.CASCADE)
