@@ -1,0 +1,61 @@
+{% extends "base.html" %}
+{% block title %}Prueba{% endblock title %}
+{% block navbar %}{% include "navbar.html" %}{% endblock navbar %}
+{% block header %}
+  <header>
+    <h2 class="center-align">Agregar Paquete</h2>
+  </header>
+{% endblock header %}
+{% block content %}
+  <div class="container">
+    <div class="card paquete-catalogo-form">
+      <form class="" action="/paquetes/agregar_paquete_inventario/" method="post">
+        <br>
+        <br>
+        <div class="row">
+          <div class="input-field col m6">
+            <select id="id_paquete" class="" name="paquete" required>
+              <option value="0">Selecciona un paquete</option>
+              {% for paquete in paquetes %}
+              <option value="{{paquete.id}}">{{paquete.nombre}}</option>
+              {% endfor %}
+            </select>
+          </div>
+          <div class="input-field col m3">
+            <input type="number" step = "1" name="{{forma.cantidad.html_name}}" id={{forma.cantidad.id_for_label}} value="">
+            <label for="{{forma.cantidad.id_for_label}}" data-error='Cantidad invalida'  data-success="Cantidad correcto">Cantidad</label>
+          </div>
+          <div class="input-field col m3">
+            <input type="text" class="datepicker" name="id_fecha_cad">
+            <label for="id_fecha_cad">Fecha de caducidad</label>
+          </div>
+          {%csrf_token%}
+        </div>
+
+
+
+        <div class="row">
+          <div class="col s12 right-align btn-agregar-paquete">
+            <button type="submit" class="agregar-btn waves-effect waves-light btn">Agregar</button>
+          </div>
+        </div>
+      </form>
+
+    </div>
+  </div>
+{% endblock content %}
+
+{% block js %}
+<script type="text/javascript">
+  $('select').formSelect();
+
+  var elem = document.querySelector('.datepicker');
+  var instance = M.Datepicker.init(elem);
+
+  // Or with jQuery
+
+  $(document).ready(function(){
+    $('.datepicker').datepicker();
+  });
+  </script>
+{% endblock js %}
