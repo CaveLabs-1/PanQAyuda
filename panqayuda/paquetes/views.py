@@ -45,7 +45,6 @@ def borrar_paquete(request, id_paquete):
 
 def agregar_paquete_inventario(request):
     if request.method == 'POST':
-
         forma_post=FormPaqueteInventario(request.POST)
 
         print("entró antes del if")
@@ -98,4 +97,16 @@ def paquete(request, id_paquete):
 def lista_inventario_paquetes(request, id_paquetes):
     inventario = Paquete_Inventario.objects.filter()
     return render(request, 'this is a plaveholder.html', {'inventario':inventario})
-# Create your views here.
+
+#editar paquete
+def editar_paquete(request, id_paquete):
+    paquete = get_object_or_404(Paquete, pk=id_paquete)
+    if request.method == "POST":
+        forma = FormPaquete(request.POST or None, instance=paquete)
+        if forma.is_valid():
+            paquete = forma.save()
+            paquete.save
+            return HttpResponseRedirect(reverse('paquetes:agregar_recetas_a_paquete', kwargs={'id_paquete':paquete.id}))
+    else:
+        forma = FormPaquete(initial={"nombre":paquete.nombre, "precio":paquete.precio})
+        return render(request, 'paquetes/editar_paquete.html', {'forma':forma, 'paquete':paquete})
