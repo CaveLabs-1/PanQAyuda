@@ -2,7 +2,7 @@ from django.shortcuts import render, get_object_or_404
 from .models import Paquete
 from .models import Recetas_por_paquete
 from recetas.models import Receta
-from .forms import FormPaquete, FormRecetasPorPaquete
+from .forms import FormPaquete, FormRecetasPorPaquete, FormPaqueteInventario
 from django.http import HttpResponseRedirect, HttpResponse, JsonResponse
 from django.contrib import messages
 from django.urls import reverse
@@ -48,7 +48,8 @@ def agregar_paquete_inventario(request):
     else:
         forma=FormPaqueteInventario()
         messages.error(request, 'Hubo un error con la peticion')
-        return render(request, 'placeholder.html', {'forma':forma})
+        paquetes = Paquete.objects.filter(deleted_at__isnull=True).order_by("nombre")
+        return render(request, 'paquetes/agregar_inventario.html', {'forma':forma, 'paquetes':paquetes})
 
 #agregar recetas a paquete
 def agregar_recetas_a_paquete(request, id_paquete):
