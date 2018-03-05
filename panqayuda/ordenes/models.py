@@ -1,7 +1,7 @@
 from django.db import models
 from django.utils import timezone
 
-class Orden(models.Model)
+class Orden(models.Model):
     idReceta = models.IntegerField()
     cantidad = models.IntegerField()
     estatus = models.IntegerField()

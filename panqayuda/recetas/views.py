@@ -100,16 +100,15 @@ def editar_receta(request, id_receta):
 def agregar_materiales(request, id_receta):
     receta = get_object_or_404(Receta, pk=id_receta)
     # Los materiales que aún no se han agregado a la receta
-    aux = RelacionRecetaMaterial.objects.filter(receta=4).exclude(status=0)
-    materiales_disponibles = Material.objects.exclude(id__in=aux)
-
     materiales_actuales = RelacionRecetaMaterial.objects.filter(receta=receta).exclude(status=0)
+    materiales_disponibles = Material.objects.exclude(id__in=materiales_actuales.values('material'))
+
     if request.method == "POST":
-        data = {'material': Material.objects.get(nombre=request.POST['material']).id, 'cantidad': request.POST['cantidad']}
+        material = Material.objects.exclude(status=0).get(nombre=request.POST['material'])
+        data = {'material': material.id, 'cantidad': request.POST['cantidad'], 'receta':receta.id}
         form = MaterialRecetaForm(data)
         if form.is_valid():
             material = form.save(commit=False)
-            material.receta = receta
             material.save()
             return HttpResponseRedirect(request.META.get('HTTP_REFERER', '/'))
     else:
