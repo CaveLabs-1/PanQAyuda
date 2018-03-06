@@ -30,6 +30,7 @@ class Paquete_Inventario (models.Model):
 	nombre= models.ForeignKey(Paquete, on_delete=models.CASCADE)
 	cantidad= models.IntegerField(validators=[MinValueValidator(1, "Debes seleccionar un número entero mayor a 0.")])
 	fecha_cad = models.DateTimeField(blank = True, null = True)
+	estatus = models.IntegerField(default=1)
 	created_at = models.DateTimeField(default=timezone.now)
 	updated_at = models.DateTimeField(default=timezone.now)
 	deleted_at = models.DateTimeField(blank = True, null = True)

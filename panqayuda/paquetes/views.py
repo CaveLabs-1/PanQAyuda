@@ -37,10 +37,8 @@ def borrar_paquete(request, id_paquete):
     paquete.estatus = 0
     paquete.deleted_at = datetime.datetime.now()
     paquete.save()
-    # recetas = list(Receta.objects.filter(status=1))
     messages.success(request, 'Se ha borrado el paquete del catálogo!')
     return redirect('paquetes:lista_paquetes')
-    # return render(request, 'recetas/lista_recetas.html', {'recetas': recetas})
 
 
 def agregar_paquete_inventario(request):
@@ -63,6 +61,30 @@ def agregar_paquete_inventario(request):
         messages.error(request, 'Hubo un error con la peticion')
         paquetes = Paquete.objects.filter(deleted_at__isnull=True).order_by("nombre")
         return render(request, 'paquetes/agregar_inventario.html', {'forma':forma, 'paquetes':paquetes})
+
+def borrar_paquete_inventario(request, id_paquete_inventario):
+    paquete_inventario = get_object_or_404(Paquete_Inventario, pk=id_paquete_inventario)
+    paquete_inventario.estatus = 0
+    paquete_inventario.deleted_at = datetime.datetime.now()
+    paquete_inventario.save()
+    messages.success(request, 'Se ha borrado el paquete del inventario')
+    return redirect('paquetes:lista_paquetes')
+
+
+def editar_paquete_inventario(request, id_paquete_inventario):
+    paquete_inventario = get_object_or_404(Receta, pk=id_paquete_inventario)
+    if request.method == "POST":
+        form = RecetaForm(request.POST or None, instance=paquete_inventario)
+        if form.is_valid():
+            paquete_inventario = form.save()
+            paquete_inventario.save
+            messages.success(request, 'Se ha editado la paquete_inventario exitosamente!')
+            return render(request, 'paquete_inventarios/paquete_inventario.html', {'paquete_inventario': paquete_inventario})
+    else:
+        form = RecetaForm()
+    return render(request, 'paquete_inventarios/editar_paquete_inventario.html', {'form': form, 'paquete_inventario': paquete_inventario})
+
+
 
 #agregar recetas a paquete
 def agregar_recetas_a_paquete(request, id_paquete):
