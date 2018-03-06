@@ -35,6 +35,9 @@ def agregar_receta(request):
             receta.save()
             messages.success(request, 'Se ha agregado la receta al catálogo!')
             return redirect('recetas:agregar_materiales', id_receta=receta.id)
+        else:
+            messages.success(request, 'Hubo un error en la forma!')
+            return render(request, 'recetas/agregar_receta.html', {'form': form})
     else:
         form = RecetaForm()
     return render(request, 'recetas/agregar_receta.html', {'form': form})
