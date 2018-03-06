@@ -8,6 +8,8 @@
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
     <!-- Compiled and minified CSS -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0-alpha.4/css/materialize.min.css">
+    <!-- JQuery confirm -->
+    <link rel='stylesheet', href='https://cdnjs.cloudflare.com/ajax/libs/jquery-confirm/3.3.0/jquery-confirm.min.css'>
     <!--Custom styles-->
     <link rel="stylesheet" href="{% static "css/main.css" %}">
     <!--Let browser know website is optimized for mobile-->
@@ -26,6 +28,7 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
     <script type="text/javascript" src="{% static "js/materialize.js"%}"></script>
     <script src=" https://cdn.jsdelivr.net/jquery.cookie/1.4.1/jquery.cookie.min.js "></script>
+    <script src='https://cdnjs.cloudflare.com/ajax/libs/jquery-confirm/3.3.0/jquery-confirm.min.js'></script>
     {# sidenav js init #}
     <script type="text/javascript" src="{% static "js/nav.js"%}"></script>
     {# Custom js #}
@@ -38,6 +41,7 @@
           {% endif %}
       {% endfor %}
     </script>
+
     {% endif %}
   </body>
 </html>

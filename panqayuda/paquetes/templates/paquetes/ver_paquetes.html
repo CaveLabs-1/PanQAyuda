@@ -16,7 +16,8 @@
         <th>Nombre</th>
         <th>Precio</th>
         <th>Fecha de Creación</th>
-        <th> </th>
+        <th>Editar</th>
+        <th>Eliminar</th>
       </thead>
       <tbody>
         {% for item in paquetes %}
@@ -25,32 +26,51 @@
           <td>{{ item.precio }}</td>
           <td>{{ item.created_at }}</td>
           <td>
-            <div class="row">
-              <div class="col s3 offset-s3 center">
-                <a href="editar_paquete/{{item.id}}">
-                  <i class="small material-icons">edit</i>
-                </a>
-              </div>
-              <div class="col s3 center">
-                <a>
-                  <td><a onclick="return confirm('¿Seguro que quieres borrar el paquete {{item.nombre}}?')" href="borrar_paquete/{{ item.id }}"><i class="material-icons">delete</i></a></td>
-                </a>
-              </div>
-            </div>
+            <a href="editar_paquete/{{item.id}}">
+              <i class="material-icons">edit</i>
+            </a>
           </td>
+          <td>
+            <a onclick="deleteRegister(this, event)" href="borrar_paquete/{{item.id}}">
+              <i class="material-icons">delete</i>
+            </a>
+          </div>
         </tr>
         {% endfor %}
       </tbody>
     </table>
-
   </div>
   <!--Aqui termina mi prueba-->
 </div>
-
-  <a href={% url 'paquetes:agregar_paquete' %}><i class="material-icons">add</i></a>
+<div class="row">
+  <div class="right-align">
+    <a href="{% url 'paquetes:agregar_paquete' %}" class="btn-floating btn-large waves-effect waves-light pink"><i class="material-icons">add</i></a>
+  </div>
+</div>
 {% endblock content %}
 
 {% block js %}
 <!-- Escribe aquí funciones JS extras -->
-
+  <script type="text/javascript">
+    function deleteRegister(element, event) {
+      event.preventDefault();
+      $.confirm({
+        title: '¿Deseas Continuar?',
+        content: 'El paquete se eliminará permanentemente.',
+        type: 'red',
+        closeIcon: true,
+        columnClass: 'col l6 offset-l3 s12',
+        typeAnimated: true,
+        buttons: {
+          continuar: {
+            text: 'Eliminar',
+            btnClass: 'btn-red',
+            action: function () {
+              window.location.href = $(element).attr("href");
+            }
+          }
+       }
+     });
+    }
+  </script>
 {% endblock js %}
