@@ -44,3 +44,40 @@ body{
   padding-top: .8em;
   padding-bottom: .8em;
 }
+
+/*Color select*/
+.dropdown-content li > a, .dropdown-content li > span {
+  font-size: 16px;
+  color: #F44336;
+  display: block;
+  line-height: 22px;
+  padding: 14px 16px;
+}
+
+/*Estilos para datepicker*/
+.datepicker-date-display, .datepicker-table td.is-selected{
+  background-color: #F44336;
+}
+
+.datepicker-clear, .datepicker-today, .datepicker-done{
+  color: #F44336;
+}
+
+/*Color de label*/
+input[type=text]:not(.browser-default):focus:not([readonly])+label, input[type=number]:not(.browser-default):focus:not([readonly])+label, input[type=date]:not(.browser-default):focus:not([readonly])+label{
+  color: #F44336
+}
+
+
+/*Color de linea inferior*/
+input[type=text]:not(.browser-default):focus:not([readonly]), input[type=number]:not(.browser-default):focus:not([readonly]), input[type=date]:not(.browser-default):focus:not([readonly]) {
+  border-bottom: 1px solid #F44336;
+  -webkit-box-shadow: 0 1px 0 0 #F44336;
+  box-shadow: 0 1px 0 0 #F44336
+}
+
+/* Modal */
+#agregarOrden{
+  height: 50%;
+  width: 75%;
+}
