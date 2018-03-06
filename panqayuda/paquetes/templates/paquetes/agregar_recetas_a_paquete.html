@@ -55,7 +55,9 @@
       }).done(function(data){
         $('#formahtml').html(data);
         $('select').formSelect();
-        M.toast({html:'La receta se ha agregado al paquete.'})
+        M.toast({html:'La receta se ha agregado al paquete.'});
+      }).fail(function(data) {
+          M.toast({html:data.responseText});
       });
 
       return false;
