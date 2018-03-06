@@ -15,7 +15,7 @@
       <thead>
         <th>Nombre</th>
         <th>Precio</th>
-        <th>Fecha de Creacion</th>
+        <th>Fecha de Creación</th>
         <th> </th>
       </thead>
       <tbody>
@@ -27,13 +27,13 @@
           <td>
             <div class="row">
               <div class="col s3 offset-s3 center">
-                <a>
+                <a href="editar_paquete/{{item.id}}">
                   <i class="small material-icons">edit</i>
                 </a>
               </div>
               <div class="col s3 center">
                 <a>
-                  <i class="small material-icons">delete</i>
+                  <td><a onclick="return confirm('¿Seguro que quieres borrar el paquete {{item.nombre}}?')" href="borrar_paquete/{{ item.id }}"><i class="material-icons">delete</i></a></td>
                 </a>
               </div>
             </div>

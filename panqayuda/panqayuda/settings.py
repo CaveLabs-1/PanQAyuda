@@ -50,6 +50,7 @@ INSTALLED_APPS = [
     'recetas',
     'inventario',
     'ordenes',
+
 ]
 
 MIDDLEWARE = [
