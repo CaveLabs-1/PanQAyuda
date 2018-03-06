@@ -6,22 +6,26 @@ from django.contrib import messages
 from django.urls import reverse
 from django.http import HttpResponseRedirect
 
-
+# Lista de ordenes de trabajo y forma para crear una nueva orden de trabajo.
 def ordenes (request):
+    # En caso de que la petición sea tipo 'POST' crea la forma con los datos obtenidos y la valida.
     if request.method == 'POST':
         forma_post = FormOrden(request.POST)
-        # date = forma_post
-        print (forma_post)
         if forma_post.is_valid():
+            # Si la forma es valida, guarda el registro y devuelve mensaje de éxito.
             forma_post.save()
             messages.success(request, 'Se ha agregado una nueva orden de trabajo.')
             return HttpResponseRedirect(reverse('ordenes:ordenes'))
         else:
+            # Si la forma no es valida, devuelve mensaje de error y recarga la página.
             messages.error(request, 'Hubo un error, intentalo de nuevo')
             return HttpResponseRedirect(reverse('ordenes:ordenes'))
-
+    #En caso de que no haya ninguna petición, crea la forma vacía y carga la lista de ordenes por entregar.
     else:
         forma = FormOrden()
+        # Filtrar ordenes qeu están por entregar.
         ordenes = Orden.ordenes_por_entregar()
+        # Listas de recetas para genrar el select.
         recetas = Receta.objects.filter(deleted_at__isnull=True)
+        # Render de la página con la forma vacía y lista de ordenes por entregar.
         return render(request, 'ordenes/ordenes.html', {'forma': forma, 'ordenes': ordenes, 'recetas':recetas})

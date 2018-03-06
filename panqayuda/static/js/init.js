@@ -15,4 +15,16 @@ $(document).ready(function(){
     padding: 0,
     width: 0
   });
+
+  //Init Datatable
+  $('#table_id').DataTable({
+    // dom: 'Bfrtip',
+    // buttons: ['copy', 'csv', 'excel', 'print'],
+    language:{
+      url: "//cdn.datatables.net/plug-ins/1.10.13/i18n/Spanish.json" //Cambia idioma a español
+    },
+    "scrollY": (window.innerHeight - 300) + "px",
+    paging: true
+  });
+
 });
