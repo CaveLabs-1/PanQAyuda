@@ -3,7 +3,7 @@ from .models import Paquete
 from .models import Recetas_por_paquete
 from recetas.models import Receta
 from .forms import FormPaquete, FormRecetasPorPaquete, FormPaqueteInventario
-from django.http import HttpResponseRedirect, HttpResponse, JsonResponse
+from django.http import HttpResponseRedirect, HttpResponse, JsonResponse, HttpResponseNotFound
 from django.contrib import messages
 from django.urls import reverse
 from django.template.loader import render_to_string
@@ -20,11 +20,11 @@ def agregar_paquete(request):
         forma_post=FormPaquete(request.POST)
         if forma_post.is_valid():
             forma_post.save()
-            messages.success(request, 'Se ha agregado el paquete al catálogo!')
+            messages.success(request, '¡Se ha agregado el paquete al catálogo!')
             paquete = Paquete.objects.latest('id')
             return HttpResponseRedirect(reverse('paquetes:agregar_recetas_a_paquete', kwargs={'id_paquete':paquete.id}))
         else:
-            messages.error(request, 'Hubo un error y no se agregó el paquete. Intentalo de nuevo.')
+            messages.error(request, 'Hubo un error y no se agregó el paquete. Inténtalo de nuevo.')
             return HttpResponseRedirect(reverse('paquetes:agregar_paquete'))
     else:
         forma=FormPaquete()
@@ -76,19 +76,27 @@ def agregar_recetas_a_paquete(request, id_paquete):
 
 def agregar_receta_a_paquete(request):
     if request.method == 'POST':
-        id_receta = int(request.POST.get('receta'))
-        receta = get_object_or_404(Receta, id = id_receta)
-        cantidad = int(request.POST.get('cantidad'))
-        id_paquete = int(request.POST.get('paquete'))
-        paquete = get_object_or_404(Paquete, id = id_paquete)
-        Recetas_por_paquete.objects.create(paquete = paquete,receta = receta, cantidad= cantidad )
-        forma = FormRecetasPorPaquete()
-        recetas_por_paquete = Recetas_por_paquete.objects.filter(paquete = paquete)
-        recetas = Receta.objects.filter(deleted_at__isnull=True)
-        formahtml = render_to_string('paquetes/forma_agregar_recetas_paquete.html', {'forma': forma, 'recetas': recetas, 'paquete': paquete})
-        lista_recetas = render_to_string('paquetes/lista_recetas_por_paquete.html', {'recetas_por_paquete': recetas_por_paquete})
-        data = ''+formahtml + lista_recetas+''
-        return HttpResponse(data)
+        forma = FormRecetasPorPaquete(request.POST)
+        #Crear relación si la forma es válida, regresar error si no.
+        if forma.is_valid():
+            id_receta = int(request.POST.get('receta'))
+            receta = get_object_or_404(Receta, id=id_receta)
+            cantidad = int(request.POST.get('cantidad'))
+            id_paquete = int(request.POST.get('paquete'))
+            paquete = get_object_or_404(Paquete, id=id_paquete)
+            forma = FormRecetasPorPaquete
+            Recetas_por_paquete.objects.create(paquete = paquete,receta = receta, cantidad= cantidad )
+            recetas_por_paquete = Recetas_por_paquete.objects.filter(paquete=paquete)
+            recetas = Receta.objects.filter(deleted_at__isnull=True)
+            formahtml = render_to_string('paquetes/forma_agregar_recetas_paquete.html',
+                                         {'forma': forma, 'recetas': recetas, 'paquete': paquete})
+            lista_recetas = render_to_string('paquetes/lista_recetas_por_paquete.html',
+                                             {'recetas_por_paquete': recetas_por_paquete})
+            data = '' + formahtml + lista_recetas + ''
+            return HttpResponse(data)
+        else:
+            return HttpResponseNotFound('Hubo un problema agregando la receta al paquete. Intenta de nuevo.')
+
 
 def paquete(request, id_paquete):
     paquete = get_object_or_404(Paquete, id=id_paquete)

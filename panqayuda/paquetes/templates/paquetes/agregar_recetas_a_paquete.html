@@ -3,10 +3,11 @@
 {% block navbar %}{% include "navbar.html" %}{% endblock navbar %}
 {% block header %}
   <header>
-    <h2 class="center-align">Paquete {{paquete.nombre}}<a href="/paquetes/lista_paquetes/editar_paquete/{{paquete.id}}">
+    <h2 class="center-align">Paquete {{paquete.nombre}}<a href="{% url 'paquetes:editar_paquete' paquete.id %}">
       <i class="small material-icons">edit</i>
     </a></h2>
   </header>
+
 {% endblock header %}
 {% block content %}
   <div class="container paquete-catalogo-form">
@@ -55,7 +56,9 @@
       }).done(function(data){
         $('#formahtml').html(data);
         $('select').formSelect();
-        M.toast({html:'La receta se ha agregado al paquete.'})
+        M.toast({html:'La receta se ha agregado al paquete.'});
+      }).fail(function(data) {
+          M.toast({html:data.responseText});
       });
 
       return false;
