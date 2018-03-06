@@ -11,7 +11,7 @@ def ordenes (request):
     if request.method == 'POST':
         forma_post = FormOrden(request.POST)
         # date = forma_post
-        print (forma_post.fecha_fin)
+        print (forma_post)
         if forma_post.is_valid():
             forma_post.save()
             messages.success(request, 'Se ha agregado una nueva orden de trabajo.')

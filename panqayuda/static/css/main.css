@@ -81,3 +81,10 @@ input[type=text]:not(.browser-default):focus:not([readonly]), input[type=number]
   height: 50%;
   width: 75%;
 }
+
+/*Acomodar botonAyuda*/
+
+.btnAyuda{
+  margin-top: 25px;
+  display: flex;
+}
