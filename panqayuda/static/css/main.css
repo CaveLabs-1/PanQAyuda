@@ -1,90 +1,62 @@
+@charset "UTF-8";
 header, main, footer {
-  padding-left: 300px;
-}
+  padding-left: 300px; }
 
-@media only screen and (max-width : 992px) {
-  header, main, footer {
-    padding-left: 0;
-  }
-}
+body {
+  background-color: #EBEBEB; }
 
-body{
-  background-color: #EBEBEB;
-}
+.paquete-catalogo-form {
+  margin-top: 5em; }
 
-.navbar-logo{
-  width: 100%;
-}
+.recetas-catalogo-card {
+  padding: 3em; }
 
-.navbar-color{
-  background-color: white;
-}
+/* Modal */
+#agregarOrden {
+  height: 50%;
+  width: 75%; }
 
-.paquete-catalogo-form{
-  margin-top: 5em;
-}
+/* Posición fija boton rojo add*/
+.fixed {
+  position: fixed;
+  bottom: 20px;
+  right: 20px; }
 
-.recetas-catalogo-card{
-    padding: 3em;
-}
-
-.btn-agregar-paquete{
-  margin-bottom: 2em;
-}
-
-.banner-prueba{
-  color: #333333;
-  background:
-        linear-gradient(
-          rgba(255, 255, 255, 0.50),
-          rgba(255, 255, 255, 0.50)
-        ),
-        url(../img/prueba/banner-prueba.jpeg);
-  margin-top: -2em;
-  padding-top: .8em;
-  padding-bottom: .8em;
-}
-
-/*Color select*/
+/*Color select */
 .dropdown-content li > a, .dropdown-content li > span {
   font-size: 16px;
   color: #F44336;
   display: block;
   line-height: 22px;
-  padding: 14px 16px;
-}
+  padding: 14px 16px; }
 
-/*Estilos para datepicker*/
-.datepicker-date-display, .datepicker-table td.is-selected{
-  background-color: #F44336;
-}
+/*Estilos para datepicker */
+.datepicker-date-display, .datepicker-table td.is-selected {
+  background-color: #F44336; }
 
-.datepicker-clear, .datepicker-today, .datepicker-done{
-  color: #F44336;
-}
+.datepicker-clear, .datepicker-today, .datepicker-done {
+  color: #F44336; }
 
-/*Color de label*/
-input[type=text]:not(.browser-default):focus:not([readonly])+label, input[type=number]:not(.browser-default):focus:not([readonly])+label, input[type=date]:not(.browser-default):focus:not([readonly])+label{
-  color: #F44336
-}
+/*Color de label */
+input[type=text]:not(.browser-default):focus:not([readonly]) + label, input[type=number]:not(.browser-default):focus:not([readonly]) + label, input[type=date]:not(.browser-default):focus:not([readonly]) + label {
+  color: #F44336; }
 
-
-/*Color de linea inferior*/
 input[type=text]:not(.browser-default):focus:not([readonly]), input[type=number]:not(.browser-default):focus:not([readonly]), input[type=date]:not(.browser-default):focus:not([readonly]) {
   border-bottom: 1px solid #F44336;
   -webkit-box-shadow: 0 1px 0 0 #F44336;
-  box-shadow: 0 1px 0 0 #F44336
-}
+  box-shadow: 0 1px 0 0 #F44336; }
 
-/* Modal */
-#agregarOrden{
-  height: 50%;
-  width: 75%;
-}
-
-/*Acomodar botonAyuda*/
-
-.btnAyuda{
+/*Color de linea inferior */
+/*Acomodar botonAyuda */
+.btnAyuda {
   margin-top: 25px;
-  display: flex;
-}
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex; }
+
+.btn-agregar-paquete {
+  margin-bottom: 2em; }
+
+@media only screen and (max-width: 992px) {
+  header, main, footer {
+    padding-left: 0; } }
