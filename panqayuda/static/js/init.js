@@ -18,13 +18,19 @@ $(document).ready(function(){
 
   //Init Datatable
   $('#table_id').DataTable({
-    // dom: 'Bfrtip',
+    dom: 'Bfrtip',
     // buttons: ['copy', 'csv', 'excel', 'print'],
     language:{
       url: "//cdn.datatables.net/plug-ins/1.10.13/i18n/Spanish.json" //Cambia idioma a español
     },
-    "scrollY": (window.innerHeight - 300) + "px",
-    paging: true
+    // "scrollY": (window.innerHeight - 500) + "px",
+    paging: true,
+    columnDefs: [
+           {
+               targets: [ 0, 1, 2 ],
+               className: 'mdl-data-table__cell--non-numeric'
+           }
+       ],
   });
 
 });
