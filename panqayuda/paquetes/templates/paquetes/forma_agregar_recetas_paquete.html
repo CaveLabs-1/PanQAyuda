@@ -10,8 +10,8 @@
       </select>
     </div>
     <div class="input-field col  m4 offset-m2">
-      <input id="{{forma.cantidad.id_for_label}}" type="number" step="1" name="{{forma.cantidad.html_name}}" value="">
-      <label for="{{forma.cantidad.id_for_label}}">Cantidad</label>
+      <input class="validate" min="1" id="{{forma.cantidad.id_for_label}}" type="number" step="1" name="{{forma.cantidad.html_name}}" value="">
+      <label data-error="Debe ser un número mayor o igual a 1" for="{{forma.cantidad.id_for_label}}">Cantidad</label>
     </div>
   </div>
   <div class="row">

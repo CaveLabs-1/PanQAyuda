@@ -60,3 +60,26 @@ input[type=text]:not(.browser-default):focus:not([readonly]), input[type=number]
 @media only screen and (max-width: 992px) {
   header, main, footer {
     padding-left: 0; } }
+
+.navbar-logo {
+  width: 100%; }
+
+.navbar-color {
+  background-color: white; }
+
+.banner-prueba {
+  color: #333333;
+  background: -webkit-gradient(linear, left top, left bottom, from(rgba(255, 255, 255, 0.5)), to(rgba(255, 255, 255, 0.5))), url(../img/prueba/banner-prueba.jpeg);
+  background: -webkit-linear-gradient(rgba(255, 255, 255, 0.5), rgba(255, 255, 255, 0.5)), url(../img/prueba/banner-prueba.jpeg);
+  background: -o-linear-gradient(rgba(255, 255, 255, 0.5), rgba(255, 255, 255, 0.5)), url(../img/prueba/banner-prueba.jpeg);
+  background: linear-gradient(rgba(255, 255, 255, 0.5), rgba(255, 255, 255, 0.5)), url(../img/prueba/banner-prueba.jpeg);
+  margin-top: -2em;
+  padding-top: .8em;
+  padding-bottom: .8em;
+}
+/* posición fija boton rojo add*/
+div.fixed {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+}
