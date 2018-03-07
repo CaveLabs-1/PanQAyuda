@@ -44,3 +44,9 @@ body{
   padding-top: .8em;
   padding-bottom: .8em;
 }
+/* posición fija boton rojo add*/
+div.fixed {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+}

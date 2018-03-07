@@ -46,8 +46,10 @@
   </div>
   <!--Aqui termina mi prueba-->
 </div>
-
-  <a href={% url 'paquetes:agregar_paquete' %}><i class="material-icons">add</i></a>
+<!-- Botón de agregar -->
+<div class="fixed" >
+  <a href={% url 'paquetes:agregar_paquete' %} class="btn-floating red"><i class="material-icons">add</i></a>
+</div>
 {% endblock content %}
 
 {% block js %}
