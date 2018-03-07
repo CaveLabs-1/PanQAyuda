@@ -38,31 +38,32 @@
     });
 
     $('select').formSelect();
+    $(document.body).on('click', '#agrega_select', function(e){
+        if(document.getElementById('agrega_receta').checkValidity()) {
+            e.preventDefault();
+            var url = '{% url "paquetes:agregar_receta_a_paquete" %}';
 
-    function agregar_receta(){
+            var  receta = $('#id_receta').val();
 
-      var url = '{% url "paquetes:agregar_receta_a_paquete" %}';
+            var cantidad  = $('#{{forma.cantidad.id_for_label}}').val();
 
-      var  receta = $('#id_receta').val();
+            var paquete = {{paquete.id}};
 
-      var cantidad  = $('#{{forma.cantidad.id_for_label}}').val();
+            $.post(url, {
+              receta: receta,
+              cantidad: cantidad,
+              paquete: paquete
+            }).done(function(data){
+              $('#formahtml').html(data);
+              $('select').formSelect();
+              M.toast({html:'La receta se ha agregado al paquete.'});
+            }).fail(function(data) {
+                M.toast({html:data.responseText});
+            });
 
-      var paquete = {{paquete.id}};
-
-      $.post(url, {
-        receta: receta,
-        cantidad: cantidad,
-        paquete: paquete
-      }).done(function(data){
-        $('#formahtml').html(data);
-        $('select').formSelect();
-        M.toast({html:'La receta se ha agregado al paquete.'});
-      }).fail(function(data) {
-          M.toast({html:data.responseText});
-      });
-
-      return false;
-    };
+            return false;
+       }
+    });
 
   </script>
 {% endblock js %}

@@ -10,13 +10,14 @@
       </select>
     </div>
     <div class="input-field col  m4 offset-m2">
-      <input class="validate" min="1" id="{{forma.cantidad.id_for_label}}" type="number" step="1" name="{{forma.cantidad.html_name}}" value="">
+      <input min="1" class="validate" min="1" id="{{forma.cantidad.id_for_label}}" type="number" step="1" name="{{forma.cantidad.html_name}}" value="" required>
       <label data-error="Debe ser un número mayor o igual a 1" for="{{forma.cantidad.id_for_label}}">Cantidad</label>
+      <span class="helper-text" data-error="La cantidad de la receta debe ser mayor o igual a 1."></span>
     </div>
   </div>
   <div class="row">
-    <div class="col s12 right-align btn-agregar-paquete">
-      <a id="agrega_select" class="btn waves-effect waves-lightwaves-effect waves-light blue lighten-1" onclick="agregar_receta();"><i class="material-icons">add</i></a>
+    <div id="agrega_select" class="col s12 right-align btn-agregar-paquete">
+      <button type="submit"  class="btn waves-effect waves-lightwaves-effect waves-light blue lighten-1"><i class="material-icons">add</i></button>
     </div>
   </div>
 </form>
