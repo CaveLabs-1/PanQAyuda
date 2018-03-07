@@ -42,10 +42,9 @@
   </div>
   <!--Aqui termina mi prueba-->
 </div>
-<div class="row">
-  <div class="right-align">
-    <a href="{% url 'paquetes:agregar_paquete' %}" class="btn-floating btn-large waves-effect waves-light pink"><i class="material-icons">add</i></a>
-  </div>
+<!-- Botón de agregar -->
+<div class="fixed" >
+  <a href={% url 'paquetes:agregar_paquete' %} class="btn-floating red"><i class="material-icons">add</i></a>
 </div>
 {% endblock content %}
 

@@ -75,4 +75,11 @@ input[type=text]:not(.browser-default):focus:not([readonly]), input[type=number]
   background: linear-gradient(rgba(255, 255, 255, 0.5), rgba(255, 255, 255, 0.5)), url(../img/prueba/banner-prueba.jpeg);
   margin-top: -2em;
   padding-top: .8em;
-  padding-bottom: .8em; }
+  padding-bottom: .8em;
+}
+/* posición fija boton rojo add*/
+div.fixed {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+}
