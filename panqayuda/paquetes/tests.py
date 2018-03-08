@@ -5,6 +5,7 @@ import datetime
 from django.urls import reverse
 
 #Test creado por Manuel y David
+# jaja Bromi
 class TestEditarPaqueteCatalogo(TestCase):
 
     def setUp(self):
