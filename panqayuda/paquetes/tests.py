@@ -4,7 +4,7 @@ from recetas.models import Receta
 import datetime
 from django.urls import reverse
 
-#Test creado por Manuel
+#Test creado por Manuel y David
 class TestEditarPaqueteCatalogo(TestCase):
 
     def setUp(self):
