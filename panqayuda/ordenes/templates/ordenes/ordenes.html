@@ -1,0 +1,116 @@
+{% extends "base.html" %}
+{% block title %}Agregar Órden{% endblock title %}
+{% block navbar %}{% include "navbar.html" %}{% endblock navbar %}
+{% block header %}
+  <header class="banner-prueba">
+    <h1 class="center-align">Agregar Órden de Trabajo</h1>
+  </header>
+{% endblock header %}
+{% block content %}
+  {# ----------  Inicia modal  --------------  #}
+  <div id="agregarOrden" class="modal">
+    <div class="modal-content">
+      <div class="row valign-wrapper">
+        <div class="col s5">
+          <h4>Agregar Órden</h4>
+        </div>
+        <div class="col s1 offset-s6">
+          <a class="black-text modal-close">
+            <i class="medium material-icons">close</i>
+          </a>
+        </div>
+      </div>
+      <form class="" method="post" action="/ordenes/">
+        {% csrf_token %}
+        <div class="row container">
+          <div class="input-field col s7 ">
+            <select required id="id_receta" name="receta">
+              <option value="" disabled selected>Escoger Receta</option>
+              {% for receta in recetas %}
+              <option value="{{receta.id}}">{{receta.nombre}}</option>
+              {% endfor %}
+            </select>
+          </div>
+          <div class="input-field col s5">
+            <input class="datepicker" id="{{forma.fecha_fin.id_for_label}}" type="text" class="required" name="{{forma.fecha_fin.html_name}}" required>
+            <label for="{{forma.fecha_fin.id_for_label}}">Fecha de Entrega</label>
+          </div>
+          <!-- <div class="input-field col s6 ">
+            <input id="cantidad" type="number" class="validate" name="cantidad" required>
+            <label for="cantidad">Cantidad</label>
+          </div> -->
+          <div class="input-field col s5">
+            <input id="{{forma.multiplicador.id_for_label}}" type="number" class="validate" name="{{forma.multiplicador.html_name}}" required>
+            <label for="{{forma.multiplicador.id_for_label}}">Multiplicador</label>
+          </div>
+          <div class="col s1">
+            <a class="tooltipped btnAyuda" data-position="top" data-delay="50" data-tooltip="Aquí va el texto que les explica como usar esta wea :3">
+              <i class="material-icons">help</i>
+            </a>
+          </div>
+          <div class="col s12 right-align">
+            <br>
+            <button type="submit" class="btn red waves-effect waves-light">Agregar</button>
+          </div>
+        </div>
+        <div class="row">
+        </div>
+      </form>
+    </div>
+  </div>
+  {# ----------  Termina modal  --------------  #}
+
+  <div class="row">
+    <div class="col s10 offset-s1">
+      <table id="table_id" class="datatable">
+        <thead>
+          <th>Receta</th>
+          <th>Cantidad</th>
+          <th>Fecha de Entrega</th>
+          <th>Estatus</th>
+          <th> </th>
+        </thead>
+        <tbody>
+          {% for orden in ordenes %}
+            <tr>
+              <td>{{orden.receta.nombre}}</td>
+              <td>{% widthratio orden.receta.cantidad 1 orden.multiplicador %}</td>
+              <td>{{orden.fecha_fin}}</td>
+              <td>{{orden.estatus}}</td>
+              <td>
+                <div class="row">
+                  <div class="col s3 offset-s3 center">
+                    <a>
+                      <i class="small material-icons">edit</i>
+                    </a>
+                  </div>
+                  <div class="col s3 center">
+                    <a>
+                      <i class="small material-icons">delete</i>
+                    </a>
+                  </div>
+                </div>
+              </td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+  <div class="fixed-action-btn ">
+    <a class="add-btn btn-floating btn-large waves-effect waves-light red btn modal-trigger" href="#agregarOrden"><i class="material-icons">add</i></a>
+  </div>
+
+
+{% endblock content %}
+
+{% block js %}
+<script type="text/javascript">
+  $(document).ready(function(){
+    $('.datepicker').datepicker({
+      format: 'yyyy-mm-dd',
+      minDate: new Date(),
+    });
+  });
+</script>
+{% endblock js %}

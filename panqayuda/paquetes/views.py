@@ -17,19 +17,17 @@ def lista_paquetes(request):
 #agregar paquete
 def agregar_paquete(request):
     if request.method == 'POST':
-        forma_post=FormPaquete(request.POST)
-        if forma_post.is_valid():
-            forma_post.save()
+        forma=FormPaquete(request.POST)
+        if forma.is_valid():
+            forma.save()
             messages.success(request, '¡Se ha agregado el paquete al catálogo!')
             paquete = Paquete.objects.latest('id')
             return HttpResponseRedirect(reverse('paquetes:agregar_recetas_a_paquete', kwargs={'id_paquete':paquete.id}))
         else:
             messages.error(request, 'Hubo un error y no se agregó el paquete. Inténtalo de nuevo.')
-            return HttpResponseRedirect(reverse('paquetes:agregar_paquete'))
     else:
         forma=FormPaquete()
-        messages.error(request, ' Esta entrando aqui :( )')
-        return render(request, 'paquetes/agregar_paquete.html', {'forma':forma})
+    return render(request, 'paquetes/agregar_paquete.html', {'forma':forma})
 
 
 def borrar_paquete(request, id_paquete):
@@ -121,7 +119,7 @@ def agregar_receta_a_paquete(request):
             cantidad = int(request.POST.get('cantidad'))
             id_paquete = int(request.POST.get('paquete'))
             paquete = get_object_or_404(Paquete, id=id_paquete)
-            forma = FormRecetasPorPaquete
+            forma = FormRecetasPorPaquete()
             RecetasPorPaquete.objects.create(paquete = paquete,receta = receta, cantidad= cantidad )
             recetas_por_paquete = RecetasPorPaquete.objects.filter(paquete=paquete).filter(deleted_at__isnull=True)
             recetas = Receta.objects.filter(deleted_at__isnull=True).exclude(id__in=recetas_por_paquete.values('receta'))
@@ -132,11 +130,12 @@ def agregar_receta_a_paquete(request):
             data = '' + formahtml + lista_recetas + ''
             return HttpResponse(data)
         else:
-            # mensaje_error = ""
-            # for field,errors in forma.errors.items():
-            #     for error in errors:
-            #         mensaje_error+=error
-            return HttpResponseNotFound('Hubo un problema agregando la receta al paquete: ')
+            mensaje_error = ""
+            for field,errors in forma.errors.items():
+                 print(errors)
+                 for error in errors:
+                     mensaje_error+=error + "\n"
+            return HttpResponseNotFound('Hubo un problema agregando la receta al paquete: '+ mensaje_error)
 
 
 def paquete(request, id_paquete):
