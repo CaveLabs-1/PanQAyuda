@@ -47,9 +47,7 @@ INSTALLED_APPS = [
     'paquetes',
     'materiales',
     'recetas',
-    'inventario',
     'ordenes',
-
 ]
 
 MIDDLEWARE = [
