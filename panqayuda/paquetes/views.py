@@ -1,5 +1,5 @@
 from django.shortcuts import render, get_object_or_404, redirect
-from .models import Paquete
+from .models import Paquete, PaqueteInventario
 from .models import RecetasPorPaquete
 from recetas.models import Receta
 from .forms import FormPaquete, FormRecetasPorPaquete, FormPaqueteInventario
@@ -36,7 +36,12 @@ def borrar_paquete(request, id_paquete):
     paquete.deleted_at = datetime.datetime.now()
     paquete.save()
     messages.success(request, 'Se ha borrado el paquete del catálogo!')
-    return redirect('paquetes:lista_paquetes')
+    return redirect('paquetes:lista_paquete_inventario')
+
+
+def lista_paquete_inventario(request):
+    paquetes=PaqueteInventario.objects.filter(deleted_at__isnull=True)
+    return render(request, 'paquetes/lista_paquetes_inventario.html', {'paquetes':paquetes})
 
 
 def agregar_paquete_inventario(request):
@@ -65,7 +70,7 @@ def agregar_paquete_inventario(request):
                 forma_post.save()
             messages.success(request, 'Se ha agregado el paquete al inventario')
             paquete = PaqueteInventario.objects.latest('id')
-            return HttpResponseRedirect(reverse('paquetes:agregar_inventario'))
+            return HttpResponseRedirect(reverse('paquetes:lista_paquete_inventario'))
         else:
             messages.error(request, 'Hubo un error y no se agregó el paquete al inventario.')
             return HttpResponseRedirect(reverse('paquetes:agregar_inventario'))
@@ -73,7 +78,7 @@ def agregar_paquete_inventario(request):
         forma=FormPaqueteInventario()
         messages.error(request, 'Hubo un error con la peticion')
         paquetes = Paquete.objects.filter(deleted_at__isnull=True).order_by("nombre")
-        return render(request, 'paquete_inventarios/paquete_inventario.html')
+        return render(request, 'paquetes/agregar_inventario.html', {'paquetes': paquetes})
 
 def borrar_paquete_inventario(request, id_paquete_inventario):
     paquete_inventario = get_object_or_404(PaqueteInventario, pk=id_paquete_inventario)
@@ -144,10 +149,6 @@ def paquete(request, id_paquete):
     paquete = get_object_or_404(Paquete, id=id_paquete)
     recetas = recetas = Receta.objects.filter(deleted_at = null, paquete = paquete)
     return render(request, 'paquetes/paquete.html', {'paquete': paquete, 'recetas': recetas})
-
-def lista_inventario_paquetes(request, id_paquetes):
-    inventario = PaqueteInventario.objects.filter()
-    return render(request, 'this is a plaveholder.html', {'inventario':inventario})
 
 #editar paquete
 def editar_paquete(request, id_paquete):
