@@ -13,7 +13,7 @@ body {
 
 /* Modal */
 #agregarOrden {
-  height: 50%;
+  height: 65%;
   width: 75%; }
 
 /* Posición fija boton rojo add*/
@@ -25,26 +25,26 @@ body {
 /*Color select */
 .dropdown-content li > a, .dropdown-content li > span {
   font-size: 16px;
-  color: #F44336;
+  color: #e91e63;
   display: block;
   line-height: 22px;
   padding: 14px 16px; }
 
 /*Estilos para datepicker */
 .datepicker-date-display, .datepicker-table td.is-selected {
-  background-color: #F44336; }
+  background-color: #e91e63; }
 
 .datepicker-clear, .datepicker-today, .datepicker-done {
-  color: #F44336; }
+  color: #e91e63; }
 
 /*Color de label */
 input[type=text]:not(.browser-default):focus:not([readonly]) + label, input[type=number]:not(.browser-default):focus:not([readonly]) + label, input[type=date]:not(.browser-default):focus:not([readonly]) + label {
-  color: #F44336; }
+  color: #e91e63; }
 
 input[type=text]:not(.browser-default):focus:not([readonly]), input[type=number]:not(.browser-default):focus:not([readonly]), input[type=date]:not(.browser-default):focus:not([readonly]) {
-  border-bottom: 1px solid #F44336;
-  -webkit-box-shadow: 0 1px 0 0 #F44336;
-  box-shadow: 0 1px 0 0 #F44336; }
+  border-bottom: 1px solid #e91e63;
+  -webkit-box-shadow: 0 1px 0 0 #e91e63;
+  box-shadow: 0 1px 0 0 #e91e63; }
 
 /*Color de linea inferior */
 /*Acomodar botonAyuda */
