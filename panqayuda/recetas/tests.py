@@ -195,3 +195,34 @@ class TestAgregarReceta(TestCase):
 
         resp = self.client.get(reverse('recetas:agregar_materiales', kwargs={'id_materiales':1}))
         self.assertEqual(resp.status_code, 404)
+
+
+# ------------------------------ US 29 Borrar Receta ------------------------------ #
+
+
+class TestBorrarReceta(TestCase):
+
+    def crear_receta(self):
+        return Receta.objects.create(nombre="Prueba de Bolillo", cantidad=12, duration=datetime.timedelta(days=1))
+
+    def test_ac_29_1(self):
+        self.assertEqual(Receta.objects.count(), 0)
+        r = self.crear_receta()
+        self.assertEqual(Receta.objects.count(), 1)
+        self.client.get(reverse('recetas:borrar_receta', kwargs={'id_receta':r.id}))
+        self.assertEqual(Receta.objects.count(), 1)
+
+
+    def test_ac_29_2(self):
+        r = self.crear_receta()
+        resp = self.client.get(reverse('recetas:lista_de_recetas'))
+        self.assertEqual(len(resp.context['recetas']),1)
+        self.client.get(reverse('recetas:borrar_receta', kwargs={'id_receta':r.id}))
+        resp = self.client.get(reverse('recetas:lista_de_recetas'))
+        self.assertEqual(len(resp.context['recetas']),0)
+
+
+    def test_ac_29_3(self):
+        r = self.crear_receta()
+        self.client.get(reverse('recetas:borrar_receta', kwargs={'id_receta':r.id}))
+        self.assertEqual(Receta.objects.filter(deleted_at__isnull=True).count(), 0)
