@@ -12,10 +12,8 @@ class FormPaquete(forms.ModelForm):
             return nombre
         else:
             if self.instance:
-                print("2")
                 for paquete in paquete_existente.all():
                     if paquete.id==self.instance.id:
-                        print("3")
                         return nombre
             raise ValidationError('Ya hay un paquete con este nombre')
     class Meta:
@@ -28,6 +26,16 @@ class FormRecetasPorPaquete(forms.ModelForm):
     class Meta:
         model = RecetasPorPaquete
         fields = ('receta', 'cantidad', 'paquete')
+
+        error_messages = {
+            'cantidad': {
+                'required': "Debes seleccionar una cantidad mayor a 0.",
+            },
+            'receta': {
+                'required': "Debes seleccionar una receta",
+                'invalid_choice': "Debes seleccionar una receta",
+            }
+        }
 
 class FormPaqueteInventario(forms.ModelForm):
     class Meta:

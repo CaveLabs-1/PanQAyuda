@@ -57,9 +57,23 @@ input[type=text]:not(.browser-default):focus:not([readonly]), input[type=number]
 .btn-agregar-paquete {
   margin-bottom: 2em; }
 
-@media only screen and (max-width: 992px) {
-  header, main, footer {
-    padding-left: 0; } }
+.dataTables_wrapper .dataTables_filter input {
+  margin-top: 2em;
+  color: black;
+  border-radius: 11px;
+  padding-left: 1em;
+  padding-right: 1em;
+  width: 10em;
+  -webkit-box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.16), 0 2px 10px 0 rgba(0, 0, 0, 0.12);
+  box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.16), 0 2px 10px 0 rgba(0, 0, 0, 0.12); }
+
+input[type=search] {
+  border-bottom: none; }
+
+.dataTables_filter input:focus {
+  -webkit-box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.16), 0 2px 10px 0 rgba(0, 0, 0, 0.12) !important;
+  box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.16), 0 2px 10px 0 rgba(0, 0, 0, 0.12) !important;
+  border-bottom-color: white !important; }
 
 .navbar-logo {
   width: 100%; }
@@ -75,11 +89,8 @@ input[type=text]:not(.browser-default):focus:not([readonly]), input[type=number]
   background: linear-gradient(rgba(255, 255, 255, 0.5), rgba(255, 255, 255, 0.5)), url(../img/prueba/banner-prueba.jpeg);
   margin-top: -2em;
   padding-top: .8em;
-  padding-bottom: .8em;
-}
-/* posición fija boton rojo add*/
-div.fixed {
-    position: fixed;
-    bottom: 20px;
-    right: 20px;
-}
+  padding-bottom: .8em; }
+
+@media only screen and (max-width: 992px) {
+  header, main, footer {
+    padding-left: 0; } }
