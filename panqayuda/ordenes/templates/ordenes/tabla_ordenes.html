@@ -1,0 +1,38 @@
+<table id="table" class="datatable">
+<thead>
+<th>Receta</th>
+<th>Cantidad</th>
+<th>Fecha de Entrega</th>
+<th>Estatus</th>
+<th> </th>
+</thead>
+<tbody>
+{% for orden in ordenes %}
+<tr id={{orden.id}}>
+  <td>{{orden.receta.nombre}}</td>
+  <td>{% widthratio orden.receta.cantidad 1 orden.multiplicador %}</td>
+  <td>{{orden.fecha_fin}}</td>
+  <td id="celda_estatus">
+    {% if orden.estatus == '1' %}
+  <div class=row>
+    <div class="col m7">
+      <select id="estatus_{{orden.id}}" onchange="changeStatus({{orden.id}})">
+        <option value="1" selected>En proceso </option>
+        <option value="2">Terminada </option>
+      </select>
+    </div>
+    <div class="col m5"></div>
+  </div>
+  {% else %}
+    {{orden.estatus}}
+  {% endif %}
+  </td>
+  <td>
+    <a>
+      <i class="small material-icons">delete</i>
+    </a>
+  </td>
+</tr>
+{% endfor %}
+</tbody>
+</table>

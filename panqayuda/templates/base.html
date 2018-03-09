@@ -42,7 +42,7 @@
     {% if messages %}
     <script type="text/javascript">
       {% for message in messages %}
-          {% if message.level != 40 %}
+          <!--{% if message.level != 40 %}-->
             M.toast({html: '{{ message }}'})
           {% endif %}
       {% endfor %}
