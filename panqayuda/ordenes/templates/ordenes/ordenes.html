@@ -62,7 +62,7 @@
 
   <div class="row">
     <div class="col s10 offset-s1">
-      <table id="table_id" class="">
+      <table id="table_id" class="datatable">
         <thead>
           <th>Receta</th>
           <th>Cantidad</th>
@@ -103,3 +103,14 @@
 
 
 {% endblock content %}
+
+{% block js %}
+<script type="text/javascript">
+  $(document).ready(function(){
+    $('.datepicker').datepicker({
+      format: 'yyyy-mm-dd',
+      minDate: new Date(),
+    });
+  });
+</script>
+{% endblock js %}
