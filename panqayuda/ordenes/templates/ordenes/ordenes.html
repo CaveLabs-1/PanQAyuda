@@ -1,9 +1,9 @@
 {% extends "base.html" %}
-{% block title %}Agregar Órden{% endblock title %}
+{% block title %}Órdenes de Trabajo{% endblock title %}
 {% block navbar %}{% include "navbar.html" %}{% endblock navbar %}
 {% block header %}
   <header class="banner-prueba">
-    <h1 class="center-align">Agregar Órden de Trabajo</h1>
+    <h1 class="center-align">Órdenes de Trabajo</h1>
   </header>
 {% endblock header %}
 {% block content %}
@@ -62,39 +62,7 @@
 
   <div class="row">
     <div class="col s10 offset-s1">
-      <table id="table_id" class="datatable">
-        <thead>
-          <th>Receta</th>
-          <th>Cantidad</th>
-          <th>Fecha de Entrega</th>
-          <th>Estatus</th>
-          <th> </th>
-        </thead>
-        <tbody>
-          {% for orden in ordenes %}
-            <tr>
-              <td>{{orden.receta.nombre}}</td>
-              <td>{% widthratio orden.receta.cantidad 1 orden.multiplicador %}</td>
-              <td>{{orden.fecha_fin}}</td>
-              <td>{{orden.estatus}}</td>
-              <td>
-                <div class="row">
-                  <div class="col s3 offset-s3 center">
-                    <a>
-                      <i class="small material-icons">edit</i>
-                    </a>
-                  </div>
-                  <div class="col s3 center">
-                    <a>
-                      <i class="small material-icons">delete</i>
-                    </a>
-                  </div>
-                </div>
-              </td>
-            </tr>
-          {% endfor %}
-        </tbody>
-      </table>
+      {{tabla}}
     </div>
   </div>
   <div class="fixed-action-btn ">
@@ -107,10 +75,47 @@
 {% block js %}
 <script type="text/javascript">
   $(document).ready(function(){
+    var csrftoken = $.cookie('csrftoken');
+    function csrfSafeMethod(method) {
+    // these HTTP methods do not require CSRF protection
+        return (/^(GET|HEAD|OPTIONS|TRACE)$/.test(method));
+    }
+    $.ajaxSetup({
+        beforeSend: function(xhr, settings) {
+            if (!csrfSafeMethod(settings.type) && !this.crossDomain) {
+                xhr.setRequestHeader("X-CSRFToken", csrftoken);
+            }
+        }
+    });
+
     $('.datepicker').datepicker({
       format: 'yyyy-mm-dd',
       minDate: new Date(),
     });
+
+
   });
+
+  function changeStatus(id){
+     var estatus = document.getElementById('estatus_'+id).value;
+
+     if(estatus==2){
+       console.log("has terminado la órden"+id);
+        var url = '{% url "ordenes:terminar_orden" %}';
+
+        $.post(url, {
+          id: id,
+          estatus: estatus,
+        }).done(function(data){
+          $('#table').html(data);
+          $('select').formSelect();
+          M.toast({html:'La orden fue marcada como terminada.'});
+        }).fail(function(data) {
+            M.toast({html:data.responseText});
+        });
+
+     }
+  }
 </script>
+
 {% endblock js %}

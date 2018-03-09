@@ -24,7 +24,7 @@ def agregar_paquete(request):
             paquete = Paquete.objects.latest('id')
             return HttpResponseRedirect(reverse('paquetes:agregar_recetas_a_paquete', kwargs={'id_paquete':paquete.id}))
         else:
-            messages.error(request, 'Hubo un error y no se agregó el paquete. Inténtalo de nuevo.')
+            messages.info(request, 'Hubo un error y no se agregó el paquete. Inténtalo de nuevo.')
     else:
         forma=FormPaquete()
     return render(request, 'paquetes/agregar_paquete.html', {'forma':forma})
@@ -156,7 +156,7 @@ def editar_paquete(request, id_paquete):
             paquete = forma.save()
             return HttpResponseRedirect(reverse('paquetes:agregar_recetas_a_paquete', kwargs={'id_paquete':paquete.id}))
         else:
-            messages.error(request, 'Hubo un error con la peticion')
+            messages.info(request, 'Hubo un error con la peticion')
             return HttpResponseRedirect(reverse('paquetes:editar_paquete', kwargs={'id_paquete':paquete.id}))
     else:
         forma = FormPaquete(initial={"nombre":paquete.nombre, "precio":paquete.precio})
