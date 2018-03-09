@@ -3,7 +3,7 @@ from .models import Paquete
 from .models import RecetasPorPaquete
 from recetas.models import Receta
 from .forms import FormPaquete, FormRecetasPorPaquete, FormPaqueteInventario
-from django.http import HttpResponseRedirect, HttpResponse, JsonResponse, HttpResponseNotFound
+from django.http import HttpResponseRedirect, HttpResponse, JsonResponse, HttpResponseNotFound, Http404
 from django.contrib import messages
 from django.urls import reverse
 from django.template.loader import render_to_string
@@ -102,6 +102,9 @@ def editar_paquete_inventario(request, id_paquete_inventario):
 #agregar recetas a paquete
 def agregar_recetas_a_paquete(request, id_paquete):
     paquete = get_object_or_404(Paquete, id=id_paquete)
+    #Checar que sea un paquete activo
+    if paquete.estatus == 0 or paquete.deleted_at != None:
+        raise Http404
     forma = FormRecetasPorPaquete()
     recetas_por_paquete = RecetasPorPaquete.objects.filter(paquete=paquete).filter(deleted_at__isnull=True)
     recetas = Receta.objects.filter(deleted_at__isnull=True).exclude(id__in=recetas_por_paquete.values('receta'))
@@ -132,7 +135,6 @@ def agregar_receta_a_paquete(request):
         else:
             mensaje_error = ""
             for field,errors in forma.errors.items():
-                 print(errors)
                  for error in errors:
                      mensaje_error+=error + "\n"
             return HttpResponseNotFound('Hubo un problema agregando la receta al paquete: '+ mensaje_error)
