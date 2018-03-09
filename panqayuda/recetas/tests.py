@@ -221,7 +221,7 @@ class TestEditarReceta(TestCase):
     def test_ver_receta_editada_en_lista(self):
         # Crear objetos de prueba
         r = self.crear_receta_prueba()
-        
+
         #Base de datos vacía
         self.assertEqual(Receta.objects.count(), 0)
 
