@@ -86,7 +86,7 @@ def borrar_paquete_inventario(request, id_paquete_inventario):
     paquete_inventario.deleted_at = datetime.datetime.now()
     paquete_inventario.save()
     messages.success(request, 'Se ha borrado el paquete del inventario')
-    return redirect('paquetes:lista_paquetes')
+    return redirect('paquetes:lista_paquete_inventario')
 
 
 def editar_paquete_inventario(request, id_paquete_inventario):

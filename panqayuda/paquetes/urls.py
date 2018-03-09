@@ -7,6 +7,7 @@ app_name = 'paquetes'
 
 urlpatterns = [
     path('', views.lista_paquete_inventario, name='lista_paquete_inventario'),
+    path('borrar_paquete_inventario/<int:id_paquete_inventario>', views.borrar_paquete_inventario, name='borrar_paquete_inventario'),
     path('lista_paquetes/', views.lista_paquetes, name='lista_paquetes'),
     path('agregar_paquete/', views.agregar_paquete, name='agregar_paquete'),
     path('agregar_recetas_a_paquete/<int:id_paquete>/', views.agregar_recetas_a_paquete, name='agregar_recetas_a_paquete'),
