@@ -1,0 +1,92 @@
+{% extends "base.html" %}
+{% block title %}Paquetes{% endblock title %}
+{% block navbar %}{% include "navbar.html" %}{% endblock navbar %}
+{% block header %}
+  <header class="banner-prueba">
+    {# buscar clase banner-prueba en main.css #}
+    <h1 class="center-align">Inventario</h1>
+    <div="row">
+        <div class="center-align">
+          <div class="center-align">
+              <a href="/paquetes">Catálogo Inventario</a>
+
+              &nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp
+              &nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp
+
+              <a href="/paquetes/lista_paquetes">Catálogo Paquetes</a>
+        </div>
+    </div>
+  </header>
+{% endblock header %}
+{% block content %}
+  <div class="container">
+    <!-- Carga donde carga todo -->
+    <div class="card">
+      <div class="card-content">
+        <div class="">
+          <div class="col s6">
+            <table id="table_id">
+                <thead>
+                  <tr>
+                    <th>Nombre</th>
+                    <th>Cantidad que produce</th>
+                    <th>Fecha Cad</th>
+                    <th>Estatus</th>
+                    <th>Eliminar</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {% for paquete in paquetes %}
+                  <tr>
+                      <td><a href="/paquetes/paquete/{{ paquete.id }}">{{ paquete.nombre }}</a></td>
+                      <td>{{ paquete.cantidad }}</td>
+                      <td>{{ paquete.duration }}</td>
+                      <td>{{ paquete.Estatus }}</td>
+                      <td><a onclick="deleteRegister(this, event)" class="red-text" href="borrar_paquete_inventario/{{ paquete.id }}">
+                        <i class="material-icons">delete</i>
+                      </a></td>
+                  </tr>
+                  {% endfor %}
+                </tbody>
+            </table>
+            <br>
+            <div class="row">
+              <div class="right-align">
+                <a href="agregar_inventario" class="btn-floating btn-large waves-effect waves-light pink"><i class="material-icons">add</i></a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+{% endblock content %}
+{% block js %}
+  <script type="text/javascript">
+    $(document).ready(function(){
+      $('.collapsible').collapsible();
+    });
+  </script>
+  <script type="text/javascript">
+    function deleteRegister(element, event) {
+      event.preventDefault();
+      $.confirm({
+        title: '¿Deseas Continuar?',
+        content: 'El paquete se eliminará permanentemente.',
+        type: 'red',
+        closeIcon: true,
+        columnClass: 'col l6 offset-l3 s12',
+        typeAnimated: true,
+        buttons: {
+          continuar: {
+            text: 'Eliminar',
+            btnClass: 'btn-red',
+            action: function () {
+              window.location.href = $(element).attr("href");
+            }
+          }
+       }
+     });
+    }
+  </script>
+{% endblock js %}
