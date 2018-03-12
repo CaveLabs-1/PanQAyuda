@@ -76,6 +76,7 @@
 <script type="text/javascript">
 
   $(document).ready(function(){
+    // csrftoken para puder mandar requests por ajax
     var csrftoken = $.cookie('csrftoken');
     function csrfSafeMethod(method) {
     // these HTTP methods do not require CSRF protection
