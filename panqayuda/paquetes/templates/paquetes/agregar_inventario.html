@@ -9,12 +9,12 @@
 {% block content %}
   <div class="container">
     <div class="card paquete-catalogo-form">
-      <form class="" action="/paquetes/agregar_paquete_inventario/" method="post">
+      <form class="" action="/paquetes/agregar_paquete_inventario/" method="POST">
         <br>
         <br>
         <div class="row">
           <div class="input-field col m6">
-            <select id="id_paquete" class="" name="paquete" required>
+            <select id="id_paquete" class="" name="nombre" required>
               <option value="0">Selecciona un paquete</option>
               {% for paquete in paquetes %}
               <option value="{{paquete.id}}">{{paquete.nombre}}</option>
