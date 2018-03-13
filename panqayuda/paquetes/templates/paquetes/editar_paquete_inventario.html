@@ -1,0 +1,49 @@
+{% extends "base.html" %}
+{% block title %}Editar Paquete{% endblock title %}
+{% block navbar %}{% include "navbar.html" %}{% endblock navbar %}
+{% block header %}
+    <header class="banner-prueba">
+        {# buscar clase banner-prueba en main.css #}
+        <h1 class="center-align">Editar Paquetes en Inventario</h1>
+    </header>
+{% endblock header %}
+    {% block content %}
+    <div class="valign-wrapper">
+        <div class="container">
+          <!-- Carta done carga todo -->
+            <div class="card">
+                <div class="card-content">
+                <span class="card-title">
+                    <div class="row">
+                        <div class="col s12 center">
+                            <h3><strong>{{paquete.nombre}}</strong></h3>
+                        </div>
+                    </div>
+                </span>
+                <!-- Forma de la Receta -->
+                <form class="row post-form" method="POST" id='theForm' onsubmit="return processForm()">
+                  <div class="row">
+                    <div class="input-field col m6">
+                      <input type="number" step = "0.50" name="{{form.cantidad.html_name}}" id={{form.cantidad.id_for_label}} value="{{paquete_inventario.cantidad}}">
+                      <label for="{{form.cantidad.id_for_label}}" data-error='Cantidad Inválida'  data-success="Cantidad Correcta">Cantidad</label>
+                    </div>
+                    {%csrf_token%}
+                  </div>
+                  <div class="row">
+                    <div class="col s6">
+                      <a class="btn waves-effect waves-light pink" href="/paquetes/">Regresar
+                        <i class="material-icons left">chevron_left</i>
+                      </a>
+                    </div>
+                    <div class="col s6 right-align btn-agregar-paquete">
+                      <button type="submit" class="agregar-btn waves-effect waves-light btn pink">Aceptar</button>
+                    </div>
+                  </div>
+                </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endblock content %}
+{% block js %}
+{% endblock js %}

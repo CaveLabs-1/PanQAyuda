@@ -20,7 +20,10 @@ class FormPaquete(forms.ModelForm):
         model = Paquete
         fields = ('nombre', 'precio')
 
-    
+class FormEditarPaquete (forms.ModelForm):
+    class Meta:
+        model = PaqueteInventario
+        fields = ('cantidad',)
 
 class FormRecetasPorPaquete(forms.ModelForm):
     class Meta:
