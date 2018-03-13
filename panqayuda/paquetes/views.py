@@ -2,7 +2,7 @@ from django.shortcuts import render, get_object_or_404, redirect
 from .models import Paquete, PaqueteInventario
 from .models import RecetasPorPaquete
 from recetas.models import Receta
-from .forms import FormPaquete, FormRecetasPorPaquete, FormPaqueteInventario
+from .forms import FormPaquete, FormRecetasPorPaquete, FormPaqueteInventario, FormEditarPaquete
 from django.http import HttpResponseRedirect, HttpResponse, JsonResponse, HttpResponseNotFound, Http404
 from django.contrib import messages
 from django.urls import reverse
@@ -46,8 +46,7 @@ def lista_paquete_inventario(request):
 
 def agregar_paquete_inventario(request):
     if request.method == 'POST':
-        forma_post=FormPaqueteInventario(request.POST)
-        print(forma_post)
+        forma_post=FormPaqueteInventario(request.POST or None)
         if forma_post.is_valid():
             print("entró al if")
             id_paquete = request.POST.get('paquete')
@@ -60,7 +59,7 @@ def agregar_paquete_inventario(request):
                 cantidad_real = cantidad_post * receta.cantidad
                 if cantidad_real > cantidad_inv:
                     message.error(request, 'No hay inventario suficiente para agregar este paquete')
-                    return HttpResponseRedirect(reverse('paquetes:agregar_inventario'))
+                    return HttpResponseRedirect(reverse('paquetes:agregar_paquete_inventario'))
             #Restar inventario
             for receta in recetas:
                 cantidad_a_cambiar = cantidad_inv - cantidad_real
@@ -73,7 +72,7 @@ def agregar_paquete_inventario(request):
             return HttpResponseRedirect(reverse('paquetes:lista_paquete_inventario'))
         else:
             messages.error(request, 'Hubo un error y no se agregó el paquete al inventario.')
-            return HttpResponseRedirect(reverse('paquetes:agregar_inventario'))
+            return HttpResponseRedirect(reverse('paquetes:agregar_paquete_inventario'))
     else:
         forma=FormPaqueteInventario()
         messages.error(request, 'Hubo un error con la peticion')
@@ -88,19 +87,23 @@ def borrar_paquete_inventario(request, id_paquete_inventario):
     messages.success(request, 'Se ha borrado el paquete del inventario')
     return redirect('paquetes:lista_paquete_inventario')
 
-
-def editar_paquete_inventario(request, id_paquete_inventario):
-    paquete_inventario = get_object_or_404(Receta, pk=id_paquete_inventario)
+#US22
+def editar_paquete_inventario(request, id_paquete):
+    paquete_inventario = get_object_or_404(PaqueteInventario, pk=id_paquete)
+    print('no llega ni a post')
     if request.method == "POST":
-        form = RecetaForm(request.POST or None, instance=paquete_inventario)
+        print('ya llego a post')
+        form = FormEditarPaquete(request.POST or None, instance=paquete_inventario)
         if form.is_valid():
+            print('la forma es valida')
             paquete_inventario = form.save()
-            paquete_inventario.save
-            messages.success(request, 'Se ha editado la paquete_inventario exitosamente!')
-            return render(request, 'paquete_inventarios/paquete_inventario.html', {'paquete_inventario': paquete_inventario})
+            paquete_inventario.save()
+            messages.success(request, '¡Se ha editado la paquete_inventario exitosamente!')
+            return redirect('paquetes:lista_paquete_inventario')
+        print(form.errors)
     else:
-        form = RecetaForm()
-    return render(request, 'paquete_inventarios/editar_paquete_inventario.html', {'form': form, 'paquete_inventario': paquete_inventario})
+        form = FormEditarPaquete()
+    return render(request, 'paquetes/editar_paquete_inventario.html', {'form': form, 'paquete_inventario': paquete_inventario})
 
 
 
