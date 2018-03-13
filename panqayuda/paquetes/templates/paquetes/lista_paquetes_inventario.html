@@ -4,18 +4,7 @@
 {% block header %}
   <header class="banner-prueba">
     {# buscar clase banner-prueba en main.css #}
-    <h1 class="center-align">Inventario</h1>
-    <!-- <div="row">
-        <div class="center-align">
-          <div class="center-align">
-              <a href="/paquetes">Catálogo Invgentario</a>
-
-              &nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp
-              &nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp
-
-              <a href="/paquetes/lista_paquetes">Catálogo Paquetes</a>
-        </div>
-    </div> -->
+    <h1 class="center-align">Inventario Paquetes</h1>
   </header>
 {% endblock header %}
 {% block content %}
@@ -26,53 +15,65 @@
       <li class="tab col s6"><a class="pink-text" href="/paquetes/lista_paquetes">Catálogo Paquetes</a></li>
     </ul>
   </div>
-  <div id="test1" class="col s12">
-
-          </div>
-          <div id="test2" class="col s12">
-
-  </div>
+  <div id="test1" class="col s12"></div>
+  <div id="test2" class="col s12"></div>
 </div>
-<div class="container">
-  <!-- Carga donde carga todo -->
-  <div class="col s12">
+  <div class="container">
+    <!-- Carga donde carga todo -->
     <table id="table_id">
         <thead>
           <tr>
             <th>Nombre</th>
-            <th>Cantidad que produce</th>
-            <th>Fecha Cad</th>
-            <th>Estatus</th>
-            <th>Eliminar</th>
+            <th>Total</th>
+            <th>Ver detalle</th>
           </tr>
         </thead>
         <tbody>
-          {% for paquete in paquetes %}
-          <tr>
-              <td><a href="/paquetes/paquete/{{ paquete.id }}">{{ paquete.nombre }}</a></td>
-              <td>{{ paquete.cantidad }}</td>
-              <td>{{ paquete.duration }}</td>
-              <td>{{ paquete.Estatus }}</td>
-              <td><a onclick="deleteRegister(this, event)" class="pink-text" href="borrar_paquete_inventario/{{ paquete.id }}">
-                <i class="material-icons">delete</i>
-              </a></td>
-          </tr>
+          {% for catalogo_paquete in catalogo_paquetes %}
+            {% if catalogo_paquete.total%}
+            <tr>
+                <td>{{ catalogo_paquete.nombre }}</td>
+                <td>{{ catalogo_paquete.total }}</td>
+                <td><a onclick="detallePaquetes({{catalogo_paquete.id}})" href="#modal_detalle" class="modal-trigger"><i class="material-icons">view_list</i> </a></td>
+            </tr>
+            {% endif %}
           {% endfor %}
         </tbody>
     </table>
     <br>
-    <div class="row">
-      <div class="right-align">
+    <div class="fixed">
         <a href="agregar_inventario" class="btn-floating btn-large waves-effect waves-light pink"><i class="material-icons">add</i></a>
-      </div>
     </div>
   </div>
-</div>
+  <div id="modal_detalle" class="modal">
+    <div class="modal-content">
+      <div id="modal_paquete" class=""></div>
+    </div>
+    <div class="modal-footer">
+      <a href="#!" class="modal-action modal-close waves-effect waves-green btn-flat">Listo</a>
+    </div>
+  </div>
 {% endblock content %}
 {% block js %}
   <script type="text/javascript">
     $(document).ready(function(){
       $('.collapsible').collapsible();
+    });
+  </script>
+  <script type="text/javascript">
+    $(document).ready(function(){
+        var csrftoken = $.cookie('csrftoken');
+        function csrfSafeMethod(method) {
+        // these HTTP methods do not require CSRF protection
+            return (/^(GET|HEAD|OPTIONS|TRACE)$/.test(method));
+        }
+        $.ajaxSetup({
+            beforeSend: function(xhr, settings) {
+                if (!csrfSafeMethod(settings.type) && !this.crossDomain) {
+                    xhr.setRequestHeader("X-CSRFToken", csrftoken);
+                }
+            }
+        });
     });
 
     function deleteRegister(element, event) {
@@ -94,6 +95,16 @@
           }
        }
      });
+    }
+
+    function detallePaquetes(id_paquete){
+      console.log(id_paquete);
+      var url = '{% url "paquetes:paquetes_por_catalogo" %}';
+      $.post(url, {
+        id_paquete: id_paquete,
+      }).done(function(data){
+        $("#modal_paquete").html(data);
+      });
     }
   </script>
 {% endblock js %}
