@@ -341,6 +341,42 @@ class TestAgregarPaqueteCatalogo(TestCase):
         resp = self.client.get(reverse('paquetes:agregar_recetas_a_paquete', kwargs={'id_paquete':paquete.id}))
         self.assertEqual(len(resp.context['recetas']),0)
 
+
+#US23
+class TestEliminarPaquete(TestCase):
+    #Inicializar base de datos
+    def setUp(self):
+        p = Paquete.objects.create(nombre="Paquete de prueba", precio=100)
+        Receta.objects.create(nombre="Galleta", cantidad=100, duration=datetime.timedelta(days=1))
+        r = Receta.objects.create(nombre="Brownie", cantidad=100, duration=datetime.timedelta(days=50))
+        PaqueteInventario.objects.create(nombre=p,cantidad=50, fecha_cad=datetime.datetime.today())
+        PaqueteInventario.objects.create(nombre=p,cantidad=40, fecha_cad=datetime.datetime.today())
+        RecetasPorPaquete.objects.create(paquete=p, receta=r, cantidad=10)
+
+    #Se actualiza cantidad disponible de paquetes
+    def test_ac_23_1(self):
+        paquete = Paquete.objects.last()
+        #borrar paquete
+        self.client.get(reverse('paquetes:borrar_paquete_inventario', kwargs={'id_paquete':paquete.id}))
+
+        #Verificar cantidad
+        #resp = self.client.get(<lista de paquetes>)
+        #self.assertEqual(numeropaquetes1, 50)
+
+    #Se actualiza la cantidad de recetas disponibles
+    def test_ac_23_2(self):
+        #Verificar cantidad de recetas antes de borrar
+        self.assertEqual(Receta.objects.last().cantidad,100)
+
+        # borrar paquete
+        paquete = Paquete.objects.last()
+        resp = self.client.get(reverse('paquetes:borrar_paquete_inventario', kwargs={'id_paquete': paquete.id}))
+
+        #Verificar la cantida de recetas después de borrar
+        self.assertEqual(Receta.objects.last().cantidad,110)
+
+    #Solo un administrador logeado puede eliminar un paquete
+
 #US22
 class TestEditarPaqueteInventario(TestCase):
     def setUp(self):
