@@ -9,10 +9,6 @@
         <div class="center-align">
           <div class="center-align">
               <a href="/paquetes">Catálogo Inventario</a>
-
-              &nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp
-              &nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp
-
               <a href="/paquetes/lista_paquetes">Catálogo Paquetes</a>
         </div>
     </div>
@@ -21,47 +17,40 @@
 {% block content %}
   <div class="container">
     <!-- Carga donde carga todo -->
+    <table id="table_id">
+        <thead>
+          <tr>
+            <th>Nombre</th>
+            <th>Total</th>
+            <th>Ver detalle</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for catalogo_paquete in catalogo_paquetes %}
+            {% if catalogo_paquete.total%}
+            <tr>
+                <td>{{ catalogo_paquete.nombre }}</td>
+                <td>{{ catalogo_paquete.total }}</td>
+                <td><a onclick="detallePaquetes({{catalogo_paquete.id}})" href="#modal_detalle" class="modal-trigger"><i class="material-icons">view_list</i> </a></td>
+            </tr>
+            {% endif %}
+          {% endfor %}
+        </tbody>
+    </table>
+    <br>
+    <div class="fixed">
+        <a href="agregar_inventario" class="btn-floating btn-large waves-effect waves-light pink"><i class="material-icons">add</i></a>
+    </div>
+  </div>
+  <div id="modal_detalle" class="modal">
+    <div class="modal-content">
+      <div id="modal_paquete" class="">
 
-    <div class="card">
-      <div class="card-content">
-        <div class="">
-          <div class="col s6">
-            <table id="table_id">
-                <thead>
-                  <tr>
-                    <th>Nombre</th>
-                    <th>Total</th>
-                    <th>Acciones</th>
-                  </tr>
-                </thead>
-                <tbody>
-
-
-                  {% for paquete in paquetes %}
-                  <tr>
-                      <td><a href="/paquetes/paquete/{{ paquete.id }}">{{ paquete.nombre }}</a></td>
-                      <td>{{ paquete.cantidad }}</td>
-                      <td>
-                        <a onclick="#" class="red-text" href="#">
-                          <i class="material-icons">edit</i>
-                        </a>
-                      <a onclick="deleteRegister(this, event)" class="red-text" href="borrar_paquete_inventario/{{ paquete.id }}">
-                        <i class="material-icons">delete</i>
-                      </a>
-
-                    </td>
-                  </tr>
-                  {% endfor %}
-                </tbody>
-            </table>
-            <br>
-            <div class="row">
-              <div class="right-align">
-                <a href="agregar_inventario" class="btn-floating btn-large waves-effect waves-light pink"><i class="material-icons">add</i></a>
-              </div>
-
-            </div>
-          </div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <a href="#!" class="modal-action modal-close waves-effect waves-green btn-flat">Listo</a>
+    </div>
   </div>
 {% endblock content %}
 {% block js %}
@@ -71,6 +60,20 @@
     });
   </script>
   <script type="text/javascript">
+    $(document).ready(function(){
+        var csrftoken = $.cookie('csrftoken');
+        function csrfSafeMethod(method) {
+        // these HTTP methods do not require CSRF protection
+            return (/^(GET|HEAD|OPTIONS|TRACE)$/.test(method));
+        }
+        $.ajaxSetup({
+            beforeSend: function(xhr, settings) {
+                if (!csrfSafeMethod(settings.type) && !this.crossDomain) {
+                    xhr.setRequestHeader("X-CSRFToken", csrftoken);
+                }
+            }
+        });
+    });
     function deleteRegister(element, event) {
       event.preventDefault();
       $.confirm({
@@ -90,6 +93,16 @@
           }
        }
      });
+    }
+
+    function detallePaquetes(id_paquete){
+      console.log(id_paquete);
+      var url = '{% url "paquetes:paquetes_por_catalogo" %}';
+      $.post(url, {
+        id_paquete: id_paquete,
+      }).done(function(data){
+        $("#modal_paquete").html(data);
+      });
     }
   </script>
 {% endblock js %}
