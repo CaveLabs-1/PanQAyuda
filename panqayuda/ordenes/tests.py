@@ -56,3 +56,22 @@ class TestAgregarOrden(TestCase):
 
         # Verificar que no se agregó a la base de datos.
         self.assertEqual(Orden.objects.count(), 0)
+
+
+class TestCancelarOrden(TestCase):
+
+    def crear_receta(self):
+        return Receta.objects.create(nombre="Receta de prueba", cantidad=20, duration=datetime.timedelta(days=1))
+
+
+    def crear_orden(self):
+        return Orden.objects.create(multiplicador=1, estatus=1, receta=self.crear_receta())
+
+
+    def test_estatus_0(self):
+        r = self.crear_orden()
+        self.assertEqual(Orden.objects.count(), 1)
+        data = {'id':r.id, 'estatus':0}
+        self.client.post(reverse('ordenes:cancelar_orden'), data)
+        resp = self.client.get(reverse('ordenes:cancelar_orden'))
+        self.assertEqual(len(resp.context['ordenes']), 0)
