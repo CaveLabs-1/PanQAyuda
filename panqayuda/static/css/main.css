@@ -57,6 +57,10 @@ input[type=text]:not(.browser-default):focus:not([readonly]), input[type=number]
 .btn-agregar-paquete {
   margin-bottom: 2em; }
 
+.tabs li.tab a.active {
+  background-color: #e91e63;
+  opacity: 0.85; }
+
 .dataTables_wrapper .dataTables_filter input {
   margin-top: 2em;
   color: black;
