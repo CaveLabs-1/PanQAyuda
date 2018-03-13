@@ -99,7 +99,7 @@
 
   function changeStatus(id){
     var estatus = document.getElementById('estatus_'+id).value;
-    data_table.clear();
+
     data_table.destroy();
     if(estatus==2){
       console.log("has terminado la órden"+id);
@@ -110,7 +110,6 @@
         estatus: estatus,
       }).done(function(data){
         $('#table_id').html(data);
-        initDataTable();
         $('select').formSelect();
         M.toast({html:'La orden fue marcada como terminada.'});
 
@@ -119,7 +118,6 @@
       });
 
     }
-    
     if(estatus == 0){
        console.log("Has cancelado la órden" + id);
         var url = '{% url "ordenes:cancelar_orden" %}';
@@ -136,6 +134,7 @@
         });
 
      }
+     initDataTable();
   }
 </script>
 

@@ -19,55 +19,55 @@
   </header>
 {% endblock header %}
 {% block content %}
-      <div class="row">
-          <div class="col s12">
-            <ul class="tabs">
-              <li class="tab col s6"><a class="active" href="/paquetes">Catálogo Inventario</a></li>
-              <li class="tab col s6"><a href="/paquetes/lista_paquetes">Catálogo Paquetes</a></li>
-            </ul>
-          </div>
-          <div id="test1" class="col s12">
+<div class="row">
+  <div class="col s12">
+    <ul class="tabs">
+      <li class="tab col s6"><a class="active white-text" href="/paquetes">Catálogo Inventario</a></li>
+      <li class="tab col s6"><a class="pink-text" href="/paquetes/lista_paquetes">Catálogo Paquetes</a></li>
+    </ul>
+  </div>
+  <div id="test1" class="col s12">
 
           </div>
           <div id="test2" class="col s12">
 
-          </div>
-          </div>
-          <div class="container">
-          <!-- Carga donde carga todo -->
-          <div class="col s12">
-            <table id="table_id">
-                <thead>
-                  <tr>
-                    <th>Nombre</th>
-                    <th>Cantidad que produce</th>
-                    <th>Fecha Cad</th>
-                    <th>Estatus</th>
-                    <th>Eliminar</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {% for paquete in paquetes %}
-                  <tr>
-                      <td><a href="/paquetes/paquete/{{ paquete.id }}">{{ paquete.nombre }}</a></td>
-                      <td>{{ paquete.cantidad }}</td>
-                      <td>{{ paquete.duration }}</td>
-                      <td>{{ paquete.Estatus }}</td>
-                      <td><a onclick="deleteRegister(this, event)" class="red-text" href="borrar_paquete_inventario/{{ paquete.id }}">
-                        <i class="material-icons">delete</i>
-                      </a></td>
-                  </tr>
-                  {% endfor %}
-                </tbody>
-            </table>
-            <br>
-            <div class="row">
-              <div class="right-align">
-                <a href="agregar_inventario" class="btn-floating btn-large waves-effect waves-light pink"><i class="material-icons">add</i></a>
-              </div>
-            </div>
-          </div>
-        </div>
+  </div>
+</div>
+<div class="container">
+  <!-- Carga donde carga todo -->
+  <div class="col s12">
+    <table id="table_id">
+        <thead>
+          <tr>
+            <th>Nombre</th>
+            <th>Cantidad que produce</th>
+            <th>Fecha Cad</th>
+            <th>Estatus</th>
+            <th>Eliminar</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for paquete in paquetes %}
+          <tr>
+              <td><a href="/paquetes/paquete/{{ paquete.id }}">{{ paquete.nombre }}</a></td>
+              <td>{{ paquete.cantidad }}</td>
+              <td>{{ paquete.duration }}</td>
+              <td>{{ paquete.Estatus }}</td>
+              <td><a onclick="deleteRegister(this, event)" class="pink-text" href="borrar_paquete_inventario/{{ paquete.id }}">
+                <i class="material-icons">delete</i>
+              </a></td>
+          </tr>
+          {% endfor %}
+        </tbody>
+    </table>
+    <br>
+    <div class="row">
+      <div class="right-align">
+        <a href="agregar_inventario" class="btn-floating btn-large waves-effect waves-light pink"><i class="material-icons">add</i></a>
+      </div>
+    </div>
+  </div>
+</div>
 {% endblock content %}
 {% block js %}
   <script type="text/javascript">
