@@ -40,7 +40,7 @@ def borrar_paquete(request, id_paquete):
 
 
 def lista_paquete_inventario(request):
-    paquetes=PaqueteInventario.objects.filter(deleted_at__isnull=True)
+    paquetes=PaqueteInventario.objects.filter(deleted_at__isnull=True).filter(estatus=1)
     return render(request, 'paquetes/lista_paquetes_inventario.html', {'paquetes':paquetes})
 
 

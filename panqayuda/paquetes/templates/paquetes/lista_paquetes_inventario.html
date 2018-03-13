@@ -4,7 +4,7 @@
 {% block header %}
   <header class="banner-prueba">
     {# buscar clase banner-prueba en main.css #}
-    <h1 class="center-align">Inventario</h1>
+    <h1 class="center-align">Inventario Paquetes</h1>
     <div="row">
         <div class="center-align">
           <div class="center-align">
@@ -25,14 +25,12 @@
       <div class="card-content">
         <div class="">
           <div class="col s6">
-            <table id="table_id">
+            <table id="">
                 <thead>
                   <tr>
                     <th>Nombre</th>
-                    <th>Cantidad que produce</th>
-                    <th>Fecha Cad</th>
-                    <th>Estatus</th>
-                    <th>Eliminar</th>
+                    <th>Total</th>
+                    <th>Acciones</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -40,16 +38,59 @@
                   <tr>
                       <td><a href="/paquetes/paquete/{{ paquete.id }}">{{ paquete.nombre }}</a></td>
                       <td>{{ paquete.cantidad }}</td>
-                      <td>{{ paquete.duration }}</td>
-                      <td>{{ paquete.Estatus }}</td>
-                      <td><a onclick="deleteRegister(this, event)" class="red-text" href="borrar_paquete_inventario/{{ paquete.id }}">
+                      <td>
+                        <a onclick="#" class="red-text" href="#">
+                          <i class="material-icons">edit</i>
+                        </a>
+                      <a onclick="deleteRegister(this, event)" class="red-text" href="borrar_paquete_inventario/{{ paquete.id }}">
                         <i class="material-icons">delete</i>
-                      </a></td>
+                      </a>
+
+                    </td>
                   </tr>
                   {% endfor %}
                 </tbody>
             </table>
             <br>
+
+          <table id="table_id">
+  <thead>
+    <tr>
+      <th data-field="id">Name</th>
+      <th data-field="name">Item Name</th>
+      <th data-field="price">Item Price</th>
+    </tr>
+  </thead>
+
+  <tbody>
+    <tr>
+        <td class="collapsible" data-collapsible="accordion">
+          <li>
+            <div class="collapsible-header"><i class="material-icons">place</i>Alvin</div>
+            <div class="collapsible-body">
+              <p>
+                hello
+              </p>
+            </div>
+          </li>
+        </td>
+
+        <td>Eclair</td>
+        <td>$0.87</td>
+    </tr>
+    <tr>
+      <td>Alan</td>
+      <td>Jellybean</td>
+      <td>$3.76</td>
+    </tr>
+    <tr>
+      <td>Jonathan</td>
+      <td>Lollipop</td>
+      <td>$7.00</td>
+    </tr>
+  </tbody>
+</table>
+
             <div class="row">
               <div class="right-align">
                 <a href="agregar_inventario" class="btn-floating btn-large waves-effect waves-light pink"><i class="material-icons">add</i></a>
