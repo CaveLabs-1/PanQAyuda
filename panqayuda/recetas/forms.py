@@ -17,6 +17,10 @@ class RecetaForm(ModelForm):
         if receta_query.count() == 0:
             return nombre
         else:
+            if self.instance:
+                for receta in receta_query.all():
+                    if receta.id == self.instance.id:
+                        return nombre
             raise ValidationError("Esta receta ya existe")
 
 

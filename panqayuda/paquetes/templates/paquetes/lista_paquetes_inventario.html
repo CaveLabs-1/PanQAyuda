@@ -5,16 +5,19 @@
   <header class="banner-prueba">
     {# buscar clase banner-prueba en main.css #}
     <h1 class="center-align">Inventario Paquetes</h1>
-    <div="row">
-        <div class="center-align">
-          <div class="center-align">
-              <a href="/paquetes">Catálogo Inventario</a>
-              <a href="/paquetes/lista_paquetes">Catálogo Paquetes</a>
-        </div>
-    </div>
   </header>
 {% endblock header %}
 {% block content %}
+<div class="row">
+  <div class="col s12">
+    <ul class="tabs">
+      <li class="tab col s6"><a class="active white-text" href="/paquetes">Catálogo Inventario</a></li>
+      <li class="tab col s6"><a class="pink-text" href="/paquetes/lista_paquetes">Catálogo Paquetes</a></li>
+    </ul>
+  </div>
+  <div id="test1" class="col s12"></div>
+  <div id="test2" class="col s12"></div>
+</div>
   <div class="container">
     <!-- Carga donde carga todo -->
     <table id="table_id">
@@ -44,9 +47,7 @@
   </div>
   <div id="modal_detalle" class="modal">
     <div class="modal-content">
-      <div id="modal_paquete" class="">
-
-      </div>
+      <div id="modal_paquete" class=""></div>
     </div>
     <div class="modal-footer">
       <a href="#!" class="modal-action modal-close waves-effect waves-green btn-flat">Listo</a>
@@ -74,6 +75,7 @@
             }
         });
     });
+
     function deleteRegister(element, event) {
       event.preventDefault();
       $.confirm({

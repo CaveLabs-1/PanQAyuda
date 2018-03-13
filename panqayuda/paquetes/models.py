@@ -12,8 +12,7 @@ class Paquete (models.Model):
 	created_at = models.DateTimeField(default=timezone.now)
 	updated_at = models.DateTimeField(default=timezone.now)
 	deleted_at = models.DateTimeField(blank=True, null=True)
-
-	def _str_(self):
+	def __str__(self):
 		return self.nombre
 
 
@@ -28,7 +27,8 @@ class RecetasPorPaquete (models.Model):
 
 	def recetas_paquete(paquete):
 		return RecetasPorPaquete.objects.filter(paquete=paquete)
-
+	def __str__(self):
+		return self.paquete.nombre
 
 class PaqueteInventario (models.Model):
 	nombre= models.ForeignKey(Paquete, on_delete=models.CASCADE)
@@ -38,3 +38,6 @@ class PaqueteInventario (models.Model):
 	created_at = models.DateTimeField(default=timezone.now)
 	updated_at = models.DateTimeField(default=timezone.now)
 	deleted_at = models.DateTimeField(blank = True, null = True)
+
+	def __str__(self):
+		return self.nombre.nombre
