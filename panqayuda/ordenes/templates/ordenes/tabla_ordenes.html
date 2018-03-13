@@ -1,4 +1,4 @@
-<table id="table" class="datatable">
+<table id="table_id" class="datatable">
 <thead>
 <th>Receta</th>
 <th>Cantidad</th>
@@ -19,6 +19,7 @@
       <select id="estatus_{{orden.id}}" onchange="changeStatus({{orden.id}})">
         <option value="1" selected>En proceso </option>
         <option value="2">Terminada </option>
+        <option value="0">Cancelada </option>
       </select>
     </div>
     <div class="col m5"></div>

@@ -35,7 +35,7 @@ def borrar_paquete(request, id_paquete):
     paquete.estatus = 0
     paquete.deleted_at = datetime.datetime.now()
     paquete.save()
-    messages.success(request, 'Se ha borrado el paquete del catálogo!')
+    messages.success(request, '¡Se ha borrado el paquete del catálogo!')
     return redirect('paquetes:lista_paquete_inventario')
 
 
@@ -101,7 +101,7 @@ def borrar_paquete_inventario(request, id_paquete_inventario):
 def editar_paquete_inventario(request, id_paquete_inventario):
     paquete_inventario = get_object_or_404(PaqueteInventario, pk=id_paquete_inventario)
     if request.method == "POST":
-        form = PaqueteInventario(request.POST or None, instance=paquete_inventario)
+        form = FormPaqueteInventario(request.POST or None, instance=paquete_inventario)
         if form.is_valid():
             paquete_inventario = form.save()
             paquete_inventario.save

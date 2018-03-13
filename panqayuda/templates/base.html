@@ -14,7 +14,7 @@
     <!-- JQuery confirm -->
     <link rel='stylesheet', href='https://cdnjs.cloudflare.com/ajax/libs/jquery-confirm/3.3.0/jquery-confirm.min.css'>
     <!--Custom styles-->
-    <link rel="stylesheet" href="{% static "css/main.css" %}">
+    <link rel="stylesheet" type="text/css" href='{% static "css/main.css" %}'>
     <!--Let browser know website is optimized for mobile-->
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
     {% block head %}{% endblock head %}
@@ -36,7 +36,7 @@
     <script type="text/javascript" src="https://cdn.datatables.net/1.10.16/js/dataTables.material.min.js"></script>
     <script src='https://cdnjs.cloudflare.com/ajax/libs/jquery-confirm/3.3.0/jquery-confirm.min.js'></script>
     {# sidenav js init #}
-    <script type="text/javascript" src="{% static "js/init.js"%}"></script>
+    <script type="text/javascript" src="{% static "js/init.js" %}"></script>
     {# Custom js #}
     {% block js %}{% endblock js %}
     {% if messages %}

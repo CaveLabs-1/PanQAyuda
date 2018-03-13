@@ -104,7 +104,7 @@ def agregar_materiales(request, id_receta):
     receta = get_object_or_404(Receta, pk=id_receta)
     # Los materiales que aún no se han agregado a la receta
     materiales_actuales = RelacionRecetaMaterial.objects.filter(receta=receta).exclude(status=0)
-    materiales_disponibles = Material.objects.exclude(id__in=materiales_actuales.values('material'))
+    materiales_disponibles = Material.objects.exclude(id__in=materiales_actuales.values('material')).exclude(status=0)
 
     if request.method == "POST":
         material = Material.objects.exclude(status=0).get(nombre=request.POST['material'])
