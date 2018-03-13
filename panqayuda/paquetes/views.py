@@ -35,7 +35,7 @@ def borrar_paquete(request, id_paquete):
     paquete.estatus = 0
     paquete.deleted_at = datetime.datetime.now()
     paquete.save()
-    messages.success(request, 'Se ha borrado el paquete del catálogo!')
+    messages.success(request, '¡Se ha borrado el paquete del catálogo!')
     return redirect('paquetes:lista_paquete_inventario')
 
 
