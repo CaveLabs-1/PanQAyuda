@@ -99,16 +99,16 @@ def borrar_paquete_inventario(request, id_paquete_inventario):
 
 
 def editar_paquete_inventario(request, id_paquete_inventario):
-    paquete_inventario = get_object_or_404(Receta, pk=id_paquete_inventario)
+    paquete_inventario = get_object_or_404(PaqueteInventario, pk=id_paquete_inventario)
     if request.method == "POST":
-        form = RecetaForm(request.POST or None, instance=paquete_inventario)
+        form = PaqueteInventario(request.POST or None, instance=paquete_inventario)
         if form.is_valid():
             paquete_inventario = form.save()
             paquete_inventario.save
-            messages.success(request, 'Se ha editado la paquete_inventario exitosamente!')
+            messages.success(request, 'Se ha editado el paquete del inventario exitosamente!')
             return render(request, 'paquete_inventarios/paquete_inventario.html', {'paquete_inventario': paquete_inventario})
     else:
-        form = RecetaForm()
+        form = PaqueteInventario()
     return render(request, 'paquete_inventarios/editar_paquete_inventario.html', {'form': form, 'paquete_inventario': paquete_inventario})
 
 
