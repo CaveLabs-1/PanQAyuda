@@ -5,17 +5,17 @@
   <header class="banner-prueba">
     {# buscar clase banner-prueba en main.css #}
     <h1 class="center-align">Inventario</h1>
-    <div="row">
+    <!-- <div="row">
         <div class="center-align">
           <div class="center-align">
-              <a href="/paquetes">Catálogo Inventario</a>
+              <a href="/paquetes">Catálogo Invgentario</a>
 
               &nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp
               &nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp
 
               <a href="/paquetes/lista_paquetes">Catálogo Paquetes</a>
         </div>
-    </div>
+    </div> -->
   </header>
 {% endblock header %}
 {% block content %}
@@ -62,14 +62,14 @@
       </div>
     </div>
   </div>
+</div>
 {% endblock content %}
 {% block js %}
   <script type="text/javascript">
     $(document).ready(function(){
       $('.collapsible').collapsible();
     });
-  </script>
-  <script type="text/javascript">
+
     function deleteRegister(element, event) {
       event.preventDefault();
       $.confirm({

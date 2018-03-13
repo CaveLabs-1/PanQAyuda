@@ -35,8 +35,8 @@ def borrar_paquete(request, id_paquete):
     paquete.estatus = 0
     paquete.deleted_at = datetime.datetime.now()
     paquete.save()
-    messages.success(request, 'Se ha borrado el paquete del catálogo!')
-    return redirect('paquetes:lista_paquete_inventario')
+    messages.success(request, '¡Se ha borrado el paquete del catálogo!')
+    return redirect('paquetes:lista_paquetes')
 
 
 def lista_paquete_inventario(request):
@@ -71,13 +71,15 @@ def agregar_paquete_inventario(request):
             paquete = PaqueteInventario.objects.latest('id')
             return HttpResponseRedirect(reverse('paquetes:lista_paquete_inventario'))
         else:
+            #print("la forma no es valida")
             messages.error(request, 'Hubo un error y no se agregó el paquete al inventario.')
             return HttpResponseRedirect(reverse('paquetes:agregar_paquete_inventario'))
     else:
+        #print("no es post")
         forma=FormPaqueteInventario()
         messages.error(request, 'Hubo un error con la peticion')
         paquetes = Paquete.objects.filter(deleted_at__isnull=True).order_by("nombre")
-        return render(request, 'paquetes/agregar_inventario.html', {'paquetes': paquetes})
+        return render(request, 'paquetes/agregar_inventario.html', {'paquetes': paquetes, 'forma':forma})
 
 def borrar_paquete_inventario(request, id_paquete_inventario):
     paquete_inventario = get_object_or_404(PaqueteInventario, pk=id_paquete_inventario)
@@ -86,6 +88,7 @@ def borrar_paquete_inventario(request, id_paquete_inventario):
     paquete_inventario.save()
     messages.success(request, 'Se ha borrado el paquete del inventario')
     return redirect('paquetes:lista_paquete_inventario')
+
 
 #US22
 def editar_paquete_inventario(request, id_paquete):

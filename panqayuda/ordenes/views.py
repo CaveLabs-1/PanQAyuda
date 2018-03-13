@@ -45,3 +45,15 @@ def terminar_orden (request):
     ordenes = Orden.ordenes_por_entregar()
     data = render_to_string('ordenes/tabla_ordenes.html', {'ordenes': ordenes})
     return HttpResponse(data)
+
+
+def cancelar_orden (request):
+    if request.method == 'POST':
+         orden= get_object_or_404(Orden, pk=request.POST['id'])
+         print(request.POST['id'])
+         orden.estatus=request.POST['estatus']
+         orden.save()
+
+    ordenes = Orden.ordenes_por_entregar()
+    data = render_to_string('ordenes/tabla_ordenes.html', {'ordenes': ordenes})
+    return HttpResponse(data)

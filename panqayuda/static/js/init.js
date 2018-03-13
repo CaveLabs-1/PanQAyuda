@@ -1,3 +1,4 @@
+var data_table;
 
 $(document).ready(function(){
   $('.modal').modal();
@@ -17,9 +18,12 @@ $(document).ready(function(){
     padding: 0,
     width: 0
   });
+  initDataTable();
+});
 
+function initDataTable(){
   //Init Datatable
-  $('#table_id').DataTable({
+  data_table = $('#table_id').DataTable({
     dom: 'Bfrtip',
     // buttons: ['copy', 'csv', 'excel', 'print'],
     language:{
@@ -34,5 +38,4 @@ $(document).ready(function(){
            }
        ],
   });
-
-});
+}

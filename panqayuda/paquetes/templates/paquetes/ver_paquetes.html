@@ -5,18 +5,25 @@
   <header class="banner-prueba">
     {# buscar clase banner-prueba en main.css #}
     <h1 class="center-align">Catálogo de Paquetes</h1>
-    <div="row">
+    <!-- <div="row">
         <div class="center-align">
             <a href="/paquetes">Catálogo Inventario</a>
             &nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp
             &nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp
             <a href"/paquetes/lista_paquetes/">Catálogo Paquetes</a>
       </div>
-    </div>
+    </div> -->
   </header>
 {% endblock header %}
 {% block content %}
-
+<div class="row">
+  <div class="col s12">
+    <ul class="tabs">
+      <li class="tab col s6"><a class="active" href="/paquetes">Catálogo Inventario</a></li>
+      <li class="tab col s6"><a href="/paquetes/lista_paquetes">Catálogo Paquetes</a></li>
+    </ul>
+  </div>
+</div>
 <div class="row">
   <div class="col s10 offset-s1">
     <table id="table_id">

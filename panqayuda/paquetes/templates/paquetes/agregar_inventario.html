@@ -14,7 +14,7 @@
         <br>
         <div class="row">
           <div class="input-field col m6">
-            <select id="id_paquete" class="" name="paquete" required>
+            <select id="id_paquete" class="" name="nombre" required>
               <option value="0">Selecciona un paquete</option>
               {% for paquete in paquetes %}
               <option value="{{paquete.id}}">{{paquete.nombre}}</option>
@@ -26,8 +26,8 @@
             <label for="{{forma.cantidad.id_for_label}}" data-error='Cantidad invalida'  data-success="Cantidad correcto">Cantidad</label>
           </div>
           <div class="input-field col m3">
-            <input type="text" class="datepicker" name="id_fecha_cad">
-            <label for="id_fecha_cad">Fecha de caducidad</label>
+            <input type="text" class="datepicker" name="fecha_cad">
+            <label for="fecha_cad">Fecha de caducidad</label>
           </div>
           {%csrf_token%}
         </div>
@@ -55,7 +55,10 @@
   // Or with jQuery
 
   $(document).ready(function(){
-    $('.datepicker').datepicker();
+    $('.datepicker').datepicker({
+      format: 'yyyy-mm-dd',
+      minDate: new Date(),
+    });
   });
   </script>
 {% endblock js %}
