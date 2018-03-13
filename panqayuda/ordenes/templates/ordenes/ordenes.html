@@ -74,7 +74,9 @@
 
 {% block js %}
 <script type="text/javascript">
+
   $(document).ready(function(){
+    // csrftoken para puder mandar requests por ajax
     var csrftoken = $.cookie('csrftoken');
     function csrfSafeMethod(method) {
     // these HTTP methods do not require CSRF protection
@@ -93,29 +95,32 @@
       minDate: new Date(),
     });
 
-
   });
 
   function changeStatus(id){
-     var estatus = document.getElementById('estatus_'+id).value;
+    var estatus = document.getElementById('estatus_'+id).value;
+    data_table.clear();
+    data_table.destroy();
+    if(estatus==2){
+      console.log("has terminado la órden"+id);
+      var url = '{% url "ordenes:terminar_orden" %}';
 
-     if(estatus == 2){
-       console.log("has terminado la órden" + id);
-        var url = '{% url "ordenes:terminar_orden" %}';
+      $.post(url, {
+        id: id,
+        estatus: estatus,
+      }).done(function(data){
+        $('#table_id').html(data);
+        initDataTable();
+        $('select').formSelect();
+        M.toast({html:'La orden fue marcada como terminada.'});
 
-        $.post(url, {
-          id: id,
-          estatus: estatus,
-        }).done(function(data){
-          $('#table').html(data);
-          $('select').formSelect();
-          M.toast({html:'La orden fue marcada como terminada.'});
-        }).fail(function(data) {
-            M.toast({html:data.responseText});
-        });
+      }).fail(function(data) {
+          M.toast({html:data.responseText});
+      });
 
-     }
-     if(estatus == 0){
+    }
+    
+    if(estatus == 0){
        console.log("Has cancelado la órden" + id);
         var url = '{% url "ordenes:cancelar_orden" %}';
 
