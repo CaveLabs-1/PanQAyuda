@@ -36,7 +36,7 @@ def borrar_paquete(request, id_paquete):
     paquete.deleted_at = datetime.datetime.now()
     paquete.save()
     messages.success(request, '¡Se ha borrado el paquete del catálogo!')
-    return redirect('paquetes:lista_paquete_inventario')
+    return redirect('paquetes:lista_paquetes')
 
 
 def lista_paquete_inventario(request):
@@ -52,7 +52,7 @@ def agregar_paquete_inventario(request):
         if forma_post.is_valid():
             #print("entró al if de la forma validada")
             id_paquete = request.POST.get('nombre')
-            paquete = Paquete.objects.get(pk=id_paquete)
+            paquete = Paquete.objects.get(pk=id_paquete).filter(estatus=1)
             # recetas = RecetasPorPaquete.recetas_paquete(paquete)
             recetas = RecetasPorPaquete.objects.filter(paquete=paquete).filter(deleted_at__isnull=True)
             #print (recetas)
