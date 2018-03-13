@@ -1,13 +1,16 @@
 from django.shortcuts import render, get_object_or_404, redirect
-from .models import Paquete, PaqueteInventario
-from .models import RecetasPorPaquete
+from paquetes.models import Paquete, PaqueteInventario
+from paquetes.models import RecetasPorPaquete
 from recetas.models import Receta
-from .forms import FormPaquete, FormRecetasPorPaquete, FormPaqueteInventario
+from paquetes.forms import FormPaquete, FormRecetasPorPaquete, FormPaqueteInventario
 from django.http import HttpResponseRedirect, HttpResponse, JsonResponse, HttpResponseNotFound, Http404
 from django.contrib import messages
 from django.urls import reverse
 from django.template.loader import render_to_string
+from django.db.models import Sum
+from django.db.models.functions import Concat
 import datetime
+import json
 
 #indice
 def lista_paquetes(request):
@@ -41,7 +44,19 @@ def borrar_paquete(request, id_paquete):
 
 def lista_paquete_inventario(request):
     paquetes=PaqueteInventario.objects.filter(deleted_at__isnull=True).filter(estatus=1)
-    return render(request, 'paquetes/lista_paquetes_inventario.html', {'paquetes':paquetes})
+    catalogo_paquetes=Paquete.objects.filter(deleted_at__isnull=True).filter(estatus=1)
+
+    for catalogo_paquete in catalogo_paquetes:
+         #catalogo_paquete.concat(PaqueteInventario.objects.filter(nombre_id=catalogo_paquete.id).filter(deleted_at__isnull=True).aggregate(Sum('cantidad')))
+         aux= PaqueteInventario.objects.filter(nombre_id=catalogo_paquete.id).filter(deleted_at__isnull=True).aggregate(Sum('cantidad'))
+         #data = json.loads(aux)
+         catalogo_paquete.total=aux['cantidad__sum']
+        # for paquete_inventario in paquetes_intentario:
+        #     paquete_inventario.cantidad
+        #     suma = suma + paquete_inventario.cantidad
+        #total=PaqueteInventario.objects.filter(nombre_id=catalogo_paquete.id).filter(deleted_at__isnull=True).filter(estatus=1).aggregate(sum('cantidad'))
+        #catalogo_paquete.total=total
+    return render(request, 'paquetes/lista_paquetes_inventario.html', {'paquetes':paquetes, 'catalogo_paquetes':catalogo_paquetes})
 
 
 def agregar_paquete_inventario(request):
