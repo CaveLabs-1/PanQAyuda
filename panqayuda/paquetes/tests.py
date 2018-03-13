@@ -361,9 +361,9 @@ class TestEliminarPaquete(TestCase):
         self.client.get(reverse('paquetes:borrar_paquete_inventario', kwargs={'id_paquete':paquete.id}))
 
         #Verificar cantidad
-        #resp = self.client.get(<lista de paquetes>)
-        #self.assertEqual(numeropaquetes1, 50)
-
+        resp = self.client.get(reverse('paquetes:lista_paquete_inventario'))
+        self.assertEqual(resp.context['catalogo_paquetes'][0], 50)
+    """
     #Se actualiza la cantidad de recetas disponibles
     def test_ac_23_2(self):
         #Verificar cantidad de recetas antes de borrar
@@ -375,6 +375,7 @@ class TestEliminarPaquete(TestCase):
 
         #Verificar la cantida de recetas después de borrar
         self.assertEqual(Receta.objects.last().cantidad,110)
+        """
 
     #Solo un administrador logeado puede eliminar un paquete
 
