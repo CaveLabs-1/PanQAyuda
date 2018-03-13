@@ -32,7 +32,7 @@ SECRET_KEY = '1*yt_mox3++ki9r^6gcy9glammohks$3kt6=aypexc(5d9k41v'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['138.68.224.112', 'localhost', 'panqayuda.com.mx']
+ALLOWED_HOSTS = ['138.68.224.112', 'localhost', 'tests.panqayuda.com.mx', 'panqayuda.com.mx']
 
 # Application definition
 
