@@ -4,7 +4,6 @@
 <th>Cantidad</th>
 <th>Fecha de Entrega</th>
 <th>Estatus</th>
-<th> </th>
 </thead>
 <tbody>
 {% for orden in ordenes %}
@@ -27,11 +26,6 @@
   {% else %}
     {{orden.estatus}}
   {% endif %}
-  </td>
-  <td>
-    <a>
-      <i class="small material-icons">delete</i>
-    </a>
   </td>
 </tr>
 {% endfor %}
