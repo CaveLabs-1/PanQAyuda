@@ -65,25 +65,31 @@ def agregar_paquete_inventario(request):
     if request.method == 'POST':
         forma_post=FormPaqueteInventario(request.POST or None)
         if forma_post.is_valid():
-            print("entró al if")
-            id_paquete = request.POST.get('paquete')
-            paquete = Paquete.objects.filter(id=id_paquete)
-            recetas = paquete.recetas.all()
-            #Checar si hay inventario
-            for receta in recetas:
-                cantidad_post = forma_post.instance.cantidad
-                cantidad_inv = receta.receta.cantidad
-                cantidad_real = cantidad_post * receta.cantidad
-                if cantidad_real > cantidad_inv:
-                    message.error(request, 'No hay inventario suficiente para agregar este paquete')
-                    return HttpResponseRedirect(reverse('paquetes:agregar_paquete_inventario'))
-            #Restar inventario
-            for receta in recetas:
-                cantidad_a_cambiar = cantidad_inv - cantidad_real
-                cantidad_inv = cantidad_a_cambiar
-                receta.receta.cantidad = cantidad_a_cambiar
-                receta.receta.save()
-                forma_post.save()
+            #print("entró al if de la forma validada")
+            id_paquete = request.POST.get('nombre')
+            paquete = Paquete.objects.get(pk=id_paquete)
+            # recetas = RecetasPorPaquete.recetas_paquete(paquete)
+            recetas = RecetasPorPaquete.objects.filter(paquete=paquete).filter(deleted_at__isnull=True)
+            #print (recetas)
+
+            # Cuando exista inventario de materia prima esto va a servir
+            # for receta in recetas:
+            #     print("entró en primer for")
+            #     cantidad_post = forma_post.instance.cantidad
+            #     cantidad_inv = receta.receta.cantidad
+            #     cantidad_real = cantidad_post * receta.cantidad
+            #     if cantidad_real > cantidad_inv:
+            #         messages.error(request, 'No hay inventario suficiente para agregar este paquete')
+            #         return HttpResponseRedirect(reverse('paquetes:agregar_inventario'))
+            # #Restar inventario
+            #
+            # for receta in recetas:
+            #     print("entró en segundo for")
+            #     cantidad_a_cambiar = cantidad_inv - cantidad_real
+            #     cantidad_inv = cantidad_a_cambiar
+            #     receta.receta.cantidad = cantidad_a_cambiar
+            #     receta.receta.save()
+            forma_post.save() 
             messages.success(request, 'Se ha agregado el paquete al inventario')
             paquete = PaqueteInventario.objects.latest('id')
             return HttpResponseRedirect(reverse('paquetes:lista_paquete_inventario'))
