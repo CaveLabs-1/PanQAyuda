@@ -1,0 +1,49 @@
+{% extends "base.html" %}
+{% block title %}Recetas{% endblock title %}
+{% block navbar %}{% include "navbar.html" %}{% endblock navbar %}
+{% block header %}
+  <header class="banner-prueba">
+    {# buscar clase banner-prueba en main.css #}
+    <h1 class="center-align">Recetas</h1>
+  </header>
+{% endblock header %}
+{% block content %}
+  <div class="container">
+    <!-- Carga donde carga todo -->
+      <table id="table_id">
+          <thead>
+            <tr>
+              <th>Nombre</th>
+              <th>Cantidad que produce</th>
+              <th>Duración</th>
+              {# <th>Editar Materiales</th> #}
+              <!--<th>Eliminar</th>-->
+            </tr>
+          </thead>
+          <tbody>
+            {% for receta in recetas %}
+            <tr>
+                <td><a href="/recetas/receta/{{ receta.id }}">{{ receta.nombre }}</a></td>
+                <td>{{ receta.cantidad }}</td>
+                <td>{{ receta.duration }}</td>
+                <!-- <td><a href="agregar_materiales/{{ receta.id }}"><i class="material-icons">edit</i></a></td> #} -->
+                <!--<td><a onclick="return confirm('¿Seguro que quieres borrar la receta de {{receta.nombre}}?')" href="borrar_receta/{{ receta.id }}"><i class="material-icons">delete</i></a></td>-->
+            </tr>
+            {% endfor %}
+          </tbody>
+      </table>
+      <br>
+      <div class="row">
+        <div class="right-align">
+          <a href="agregar_receta" class="btn-floating btn-large waves-effect waves-light pink"><i class="material-icons">add</i></a>
+        </div>
+      </div>
+  </div>
+{% endblock content %}
+{% block js %}
+  <script type="text/javascript">
+    $(document).ready(function(){
+      $('.collapsible').collapsible();
+    });
+  </script>
+{% endblock js %}

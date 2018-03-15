@@ -1,0 +1,53 @@
+{% extends "base.html" %}
+{% block title %}Recetas{% endblock title %}
+{% block navbar %}{% include "navbar.html" %}{% endblock navbar %}
+{% block header %}
+    <header class="banner-prueba">
+        {# buscar clase banner-prueba en main.css #}
+        <h1 class="center-align">Editar Paquete</h1>
+    </header>
+{% endblock header %}
+    {% block content %}
+    <div class="valign-wrapper">
+        <div class="container">
+          <!-- Carta done carga todo -->
+            <div class="card">
+                <div class="card-content">
+                <span class="card-title">
+                    <div class="row">
+                        <div class="col s12 center">
+                            <h3><strong>{{paquete.nombre}}</strong></h3>
+                        </div>
+                    </div>
+                </span>
+                <!-- Forma del Paquete -->
+                <form class="row post-form" method="POST" id='theForm' onsubmit="return processForm()">
+                  <div class="row">
+                    <div class="input-field col m6">
+                      <input class = "validate"  type="text" name="{{forma.nombre.html_name}}" id="{{forma.nombre.id_for_label}}" value="{{paquete.nombre}}">
+                      <label for="{{forma.nombre.id_for_label}}" data-error='Numero invalido'  data-success="Nombre correcto">Nombre</label>
+                    </div>
+                    <div class="input-field col m6">
+                      <input type="number" step = "0.50" name="{{forma.precio.html_name}}" id={{forma.precio.id_for_label}} value="{{paquete.precio}}">
+                      <label for="{{forma.precio.id_for_label}}" data-error='Precio invalido'  data-success="Precio correcto">Precio</label>
+                    </div>
+                    {%csrf_token%}
+                  </div>
+                  <div class="row">
+                    <div class="col s6">
+                      <a class="btn waves-effect waves-light pink" href="/paquetes/lista_paquetes">Regresar
+                        <i class="material-icons left">chevron_left</i>
+                      </a>
+                    </div>
+                    <div class="col s6 right-align btn-agregar-paquete">
+                      <button type="submit" class="agregar-btn waves-effect waves-light btn pink">Editar</button>
+                    </div>
+                  </div>
+                </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endblock content %}
+{% block js %}
+{% endblock js %}

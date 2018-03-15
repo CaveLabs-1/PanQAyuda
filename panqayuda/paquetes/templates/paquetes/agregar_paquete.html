@@ -1,0 +1,68 @@
+{% extends "base.html" %}
+{% block title %}Prueba{% endblock title %}
+{% block navbar %}{% include "navbar.html" %}{% endblock navbar %}
+{% block header %}
+  <header>
+    <h2 class="center-align">Agregar Paquete al Catálogo</h2>
+  </header>
+{% endblock header %}
+{% block content %}
+  <div class="container">
+    <div class="card paquete-catalogo-form">
+
+      <form class="" action="{% url 'paquetes:agregar_paquete' %}" id="form" method="post">
+        <br>
+        <br>
+        <div class="row">
+          <div class="input-field col m6">
+            <input class="validate"  placeholder="Paquete de alfajores chico" type="text" name="{{forma.nombre.html_name}}" id="{{forma.nombre.id_for_label}}" value="" required="" aria-required="true" >
+            <label for="{{forma.nombre.id_for_label}}" data-error='Nombre inválido'  data-success="Nombre correcto">Nombre</label>
+            <span class="helper-text" data-error="Este campo es requerido"></span>
+          </div>
+          <div class="input-field col m6">
+            <input class="validate" placeholder="150.00" type="number" step = "0.50" name="{{forma.precio.html_name}}" id={{forma.precio.id_for_label}} value="" min="0"  required="" aria-required="true" >
+            <label for="{{forma.precio.id_for_label}}" data-error='Precio inválido'  data-success="Precio correcto">Precio</label>
+            <span class="helper-text" data-error="El precio es requerido y debe ser mayor a 0."></span>
+          </div>
+          {%csrf_token%}
+        </div>
+        <div class="row">
+          <div class="col s6">
+            <a class="btn waves-effect waves-light pink" href="/paquetes/lista_paquetes">Regresar
+              <i class="material-icons left">chevron_left</i>
+            </a>
+          </div>
+          <div class="col s6 right-align btn-agregar-paquete">
+            <button type="submit" class="agregar-btn waves-effect waves-light btn pink">Agregar</button>
+          </div>
+        </div>
+      </form>
+
+    </div>
+  </div>
+{% endblock content %}
+
+{% block js %}
+<script>
+  // Extension pour comptabilité avec materialize.css
+$.validator.setDefaults({
+    errorClass: 'invalid',
+    validClass: "valid",
+    errorPlacement: function (error, element) {
+        $(element)
+            .closest("form")
+            .find("label[for='" + element.attr("id") + "']")
+            .attr('data-error', error.text());
+    },
+    submitHandler: function (form) {
+        console.log('form ok');
+    }
+});
+
+$("#form").validate({
+    rules: {
+
+    }
+});
+</script>
+{% endblock js %}

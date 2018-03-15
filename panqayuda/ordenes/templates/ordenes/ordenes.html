@@ -1,0 +1,141 @@
+{% extends "base.html" %}
+{% block title %}Órdenes de Trabajo{% endblock title %}
+{% block navbar %}{% include "navbar.html" %}{% endblock navbar %}
+{% block header %}
+  <header class="banner-prueba">
+    <h1 class="center-align">Órdenes de Trabajo</h1>
+  </header>
+{% endblock header %}
+{% block content %}
+  {# ----------  Inicia modal  --------------  #}
+  <div id="agregarOrden" class="modal">
+    <div class="modal-content">
+      <div class="row valign-wrapper">
+        <div class="col s5">
+          <h4>Agregar Órden</h4>
+        </div>
+        <div class="col s1 offset-s6">
+          <a class="black-text modal-close">
+            <i class="medium material-icons">close</i>
+          </a>
+        </div>
+      </div>
+      <form class="" method="post" action="/ordenes/">
+        {% csrf_token %}
+        <div class="row container">
+          <div class="input-field col s7 ">
+            <select required id="id_receta" name="receta">
+              <option value="" disabled selected>Escoger Receta</option>
+              {% for receta in recetas %}
+              <option value="{{receta.id}}">{{receta.nombre}}</option>
+              {% endfor %}
+            </select>
+          </div>
+          <div class="input-field col s5">
+            <input class="datepicker" id="{{forma.fecha_fin.id_for_label}}" type="text" class="required" name="{{forma.fecha_fin.html_name}}" required>
+            <label for="{{forma.fecha_fin.id_for_label}}">Fecha de Entrega</label>
+          </div>
+          <!-- <div class="input-field col s6 ">
+            <input id="cantidad" type="number" class="validate" name="cantidad" required>
+            <label for="cantidad">Cantidad</label>
+          </div> -->
+          <div class="input-field col s5">
+            <input id="{{forma.multiplicador.id_for_label}}" type="number" class="validate" name="{{forma.multiplicador.html_name}}" required>
+            <label for="{{forma.multiplicador.id_for_label}}">Multiplicador</label>
+          </div>
+          <div class="col s1">
+            <a class="tooltipped btnAyuda" data-position="top" data-delay="50" data-tooltip="El multiplicador decidira la cantidad de veces que se producirá la receta seleccionada con la cantidad fija de esta.">
+              <i class="material-icons">help</i>
+            </a>
+          </div>
+          <div class="col s12 right-align">
+            <br>
+            <button type="submit" class="btn pink waves-effect waves-light">Agregar</button>
+          </div>
+        </div>
+        <div class="row">
+        </div>
+      </form>
+    </div>
+  </div>
+  {# ----------  Termina modal  --------------  #}
+
+  <div class="row">
+    <div class="col s10 offset-s1">
+      {{tabla}}
+    </div>
+  </div>
+  <div class="fixed-action-btn ">
+    <a class="add-btn btn-floating btn-large waves-effect waves-light pink btn modal-trigger" href="#agregarOrden"><i class="material-icons">add</i></a>
+  </div>
+
+
+{% endblock content %}
+
+{% block js %}
+<script type="text/javascript">
+
+  $(document).ready(function(){
+    // csrftoken para puder mandar requests por ajax
+    var csrftoken = $.cookie('csrftoken');
+    function csrfSafeMethod(method) {
+    // these HTTP methods do not require CSRF protection
+        return (/^(GET|HEAD|OPTIONS|TRACE)$/.test(method));
+    }
+    $.ajaxSetup({
+        beforeSend: function(xhr, settings) {
+            if (!csrfSafeMethod(settings.type) && !this.crossDomain) {
+                xhr.setRequestHeader("X-CSRFToken", csrftoken);
+            }
+        }
+    });
+
+    $('.datepicker').datepicker({
+      format: 'yyyy-mm-dd',
+      minDate: new Date(),
+    });
+
+  });
+
+  function changeStatus(id){
+    var estatus = document.getElementById('estatus_'+id).value;
+
+    data_table.destroy();
+    if(estatus==2){
+      console.log("has terminado la órden"+id);
+      var url = '{% url "ordenes:terminar_orden" %}';
+
+      $.post(url, {
+        id: id,
+        estatus: estatus,
+      }).done(function(data){
+        $('#table_id').html(data);
+        $('select').formSelect();
+        M.toast({html:'La orden fue marcada como terminada.'});
+
+      }).fail(function(data) {
+          M.toast({html:data.responseText});
+      });
+
+    }
+    if(estatus == 0){
+       console.log("Has cancelado la órden" + id);
+        var url = '{% url "ordenes:cancelar_orden" %}';
+
+        $.post(url, {
+          id: id,
+          estatus: estatus,
+        }).done(function(data){
+          $('#table').html(data);
+          $('select').formSelect();
+          M.toast({html:'La orden fue marcada como cancelada.'});
+        }).fail(function(data) {
+            M.toast({html:data.responseText});
+        });
+
+     }
+     initDataTable();
+  }
+</script>
+
+{% endblock js %}

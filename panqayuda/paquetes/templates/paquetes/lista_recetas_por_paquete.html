@@ -1,0 +1,19 @@
+  <h4 class="center-align">Recetas</h4>
+  <div id="lista_recetas">
+    <table class="striped">
+      <thead>
+        <tr>
+          <th>Nombre</th>
+          <th>Cantidad</th>
+        </tr>
+        <tbody>
+          {% for receta in recetas_por_paquete %}
+            <tr>
+              <td>{{receta.receta.nombre}}</td>
+              <td>{{receta.cantidad}}</td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </thead>
+    </table>
+  </div>

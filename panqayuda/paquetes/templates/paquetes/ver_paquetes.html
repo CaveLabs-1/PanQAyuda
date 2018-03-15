@@ -1,0 +1,90 @@
+{% extends "base.html" %}
+{% block title %}Ver Paquete{% endblock title %}
+{% block navbar %}{% include "navbar.html" %}{% endblock navbar %}
+{% block header %}
+  <header class="banner-prueba">
+    {# buscar clase banner-prueba en main.css #}
+    <h1 class="center-align">Catálogo de Paquetes</h1>
+    <!-- <div="row">
+        <div class="center-align">
+            <a href="/paquetes">Catálogo Inventario</a>
+            &nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp
+            &nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp
+            <a href"/paquetes/lista_paquetes/">Catálogo Paquetes</a>
+      </div>
+    </div> -->
+  </header>
+{% endblock header %}
+{% block content %}
+<div class="row">
+  <div class="col s12">
+    <ul class="tabs">
+      <li class="tab col s6"><a class="pink-text" href="/paquetes">Catálogo Inventario</a></li>
+      <li class="tab col s6"><a class="white-text active" href="/paquetes/lista_paquetes">Catálogo Paquetes</a></li>
+    </ul>
+  </div>
+</div>
+<div class="row">
+  <div class="col s10 offset-s1">
+    <table id="table_id">
+      <thead>
+        <th>Nombre</th>
+        <th>Precio</th>
+        <th>Fecha de Creación</th>
+        <th>Editar</th>
+        <th>Eliminar</th>
+      </thead>
+      <tbody>
+        {% for item in paquetes %}
+        <tr>
+          <td>{{ item.nombre }}</td>
+          <td>{{ item.precio }}</td>
+          <td>{{ item.created_at }}</td>
+          <td>
+            <a href="editar_paquete/{{item.id}}">
+              <i class="material-icons">edit</i>
+            </a>
+          </td>
+          <td>
+            <a onclick="deleteRegister(this, event)" href="borrar_paquete/{{item.id}}">
+              <i class="material-icons">delete</i>
+            </a>
+          </div>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+  <!--Aqui termina mi prueba-->
+</div>
+<!-- Botón de agregar -->
+<div class="fixed" >
+  <a href={% url 'paquetes:agregar_paquete' %} class="btn-floating pink"><i class="material-icons">add</i></a>
+</div>
+{% endblock content %}
+
+{% block js %}
+<!-- Escribe aquí funciones JS extras -->
+  <script type="text/javascript">
+    function deleteRegister(element, event) {
+      event.preventDefault();
+      $.confirm({
+        title: '¿Deseas Continuar?',
+        content: 'El paquete se eliminará permanentemente.',
+        type: 'red',
+        closeIcon: true,
+        columnClass: 'col l6 offset-l3 s12',
+        typeAnimated: true,
+        buttons: {
+          continuar: {
+            text: 'Eliminar',
+            btnClass: 'btn-red',
+            action: function () {
+              window.location.href = $(element).attr("href");
+            }
+          }
+       }
+     });
+    }
+  </script>
+{% endblock js %}
