@@ -7,10 +7,44 @@
   </header>
 {% endblock header %}
 {% block content %}
-  <div class="container">
-    {% for item in Proveedor %}
-    <p>{{item.nombre}}</p>
+<div class="row">
+  <div class="col s10 offset-s1">
+    <table id="table_id">
+      <thead>
+        <th>Nombre</th>
+        <th>Telefono</th>
+        <th>Direccion</th>
+        <th>RFC</th>
+        <th>Razon Social</th>
+        <th>Email</th>
+        <th></th>
+      </thead>
+      <tbody>
+        {% for item in proveedores %}
+        <tr>
+          <td>{{ item.nombre }}</td>
+          <td>{{ item.telefono }}</td>
+          <td>{{ item.direccion }}</td>
+          <td>{{ item.rfc }}</td>
+          <td>{{ item.razon_social }}</td>
+          <td>{{ item.email }}</td>
+          <td>
+            <!--Aqui es el editar-->
+            <a href="">
+              <i class="material-icons">edit</i>
+            </a>
+          </td>
+          <td>
+            <!--Aqui agrega lo de borrar-->
+            <a onclick="" href="">
+              <i class="material-icons">delete</i>
+            </a>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
   </div>
+</div>
 {% endblock content %}
 
 {% block js %}
