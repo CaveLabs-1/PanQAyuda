@@ -4,7 +4,7 @@ from django.core.validators import EmailValidator
 # Create your models here.
 class Proveedor(models.Model):
     nombre = models.CharField(max_length=100, null=True, blank=False)
-    telefono = models.CharField(null=True, blank=False)s
+    telefono = models.CharField(null=True, blank=False)
     direccion = models.CharField(null=True, blank=False)
     rfc = models.CharField(null=True, blank=False)
     razon_social = models.CharField(max_length=100, null=True, blank=False)
