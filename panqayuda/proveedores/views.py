@@ -8,7 +8,7 @@ import datetime
 
 def lista_proveedores(request):
     lista_proveedores = Proveedor.objects.all().filter(status=1).filter(deleted_at__isnull=True)
-    return render('lista_proveedores.html', {'proveedores':lista_proveedores})
+    return render(request, 'proveedores/lista_proveedores.html', {'proveedores':lista_proveedores})
 
 
 def agregar_proveedor(request):
@@ -26,3 +26,4 @@ def agregar_proveedor(request):
     else:
         form = FormaProveedor()
     return render(request, 'proveedores/agregar_proveedor.html', {'form': form})
+
