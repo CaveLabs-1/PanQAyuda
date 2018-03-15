@@ -28,4 +28,5 @@ urlpatterns = [
     path('paquetes/', include('paquetes.urls', namespace='paquetes')),
     path('ordenes/', include('ordenes.urls', namespace='ordenes')),
     path('clientes/', include('clientes.urls', namespace='clientes')),
+    path('proveedores/', include('proveedores.urls', namespace='proveedores')),
 ]
