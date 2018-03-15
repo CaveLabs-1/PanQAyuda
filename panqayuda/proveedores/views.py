@@ -18,7 +18,7 @@ def agregar_proveedor(request):
             proveedor = form.save()
             proveedor.save()
             messages.success(request, 'Se ha agregado la proveedor al catálogo!')
-            return redirect('proveedores:lis', id_proveedor=proveedor.id)
+            return redirect('proveedores:lista_proveedores', id_proveedor=proveedor.id)
         else:
 
             messages.success(request, 'Hubo un error en la forma!')
