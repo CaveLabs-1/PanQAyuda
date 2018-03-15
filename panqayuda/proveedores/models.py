@@ -1,12 +1,13 @@
 from django.db import models
 from django.core.validators import EmailValidator
+from django.utils import timezone
 
 # Create your models here.
 class Proveedor(models.Model):
     nombre = models.CharField(max_length=100, null=True, blank=False)
-    telefono = models.CharField(null=True, blank=False)
-    direccion = models.CharField(null=True, blank=False)
-    rfc = models.CharField(null=True, blank=False)
+    telefono = models.CharField(max_length=100, null=True, blank=False)
+    direccion = models.CharField(max_length=100, null=True, blank=False)
+    rfc = models.CharField(max_length=100, null=True, blank=False)
     razon_social = models.CharField(max_length=100, null=True, blank=False)
     email = models.CharField(max_length=100, null=True, blank=False,
                              validators=[EmailValidator(message='Correo inválido',
