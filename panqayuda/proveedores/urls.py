@@ -7,4 +7,5 @@ app_name = 'proveedores'
 
 urlpatterns = [
     path('', views.lista_proveedores, name='lista_proveedores'),
+    path('agregar_proveedor', views.agregar_proveedor, name='agregar_proveedor'),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
