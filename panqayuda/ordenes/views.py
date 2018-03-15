@@ -19,7 +19,7 @@ def ordenes (request):
             return HttpResponseRedirect(reverse('ordenes:ordenes'))
         else:
             # Si la forma no es valida, devuelve mensaje de error y recarga la página.
-            messages.error(request, 'Hubo un error, intentalo de nuevo')
+            messages.error(request, 'Hubo un error, intentalo de nuevo.')
             return HttpResponseRedirect(reverse('ordenes:ordenes'))
     #En caso de que no haya ninguna petición, crea la forma vacía y carga la lista de ordenes por entregar.
     else:
