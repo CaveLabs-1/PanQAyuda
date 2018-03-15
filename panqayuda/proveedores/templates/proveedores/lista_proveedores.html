@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+{% block title %}Lista Proveedores{% endblock title %}
+{% block navbar %}{% invlude "navbar.html" %}{% enblock navbar %}
+{% block header %}
+  <header classs="banner-prueba">
+    <h1 class="center-align">Lista de Proveedores</h1>
+  </header>
+{% endblock header %}
+{% block content %}
+  <div class="container">
+    {% for item in Proveedor %}
+    <p>{{item.nombre}}</p>
+  </div>
+{% endblock content %}
+
+{% block js %}
+{% endblock js %}
