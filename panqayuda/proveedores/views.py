@@ -18,12 +18,14 @@ def agregar_proveedor(request):
             proveedor = form.save()
             proveedor.save()
             messages.success(request, 'Se ha agregado la proveedor al catálogo!')
-            return redirect('proveedores:lista_proveedores', id_proveedor=proveedor.id)
+            return redirect('proveedores:detallar_proveedor', id_proveedor=proveedor.id)
         else:
-
             messages.success(request, 'Hubo un error en la forma!')
             return render(request, 'proveedores/agregar_proveedor.html', {'form': form})
     else:
         form = FormaProveedor()
     return render(request, 'proveedores/agregar_proveedor.html', {'form': form})
 
+def detallar_proveedor(request, id_proveedor):
+        proveedor = get_object_or_404(Proveedor, pk=id_proveedor)
+        return render(request, 'proveedores/proveedor.html', {'proveedor': proveedor})
