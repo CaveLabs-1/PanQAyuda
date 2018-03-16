@@ -77,32 +77,57 @@ class TestAgregarProveedor(TestCase):
     def test_ac10_retorno_error_campo_nombre_vacio(self):
         self.assertEqual(Proveedor.objects.count(), 0)
         data = {'telefono':4151043944, 'direccion':"calle 100 corazones", 'rfc':45321343, 'razon_social':"Somos unos cracks", 'email':"ejemplo@hotmail.com" }
-        resp = self.client.post(reverse('proveedor:agregar_proveedor'), data)
-        self.assertEqual(Paquete.objects.count(), 0)
+        resp = self.client.post(reverse('proveedores:agregar_proveedor'), data)
+        self.assertEqual(Proveedor.objects.count(), 0)
         self.assertFormError(resp, 'form', 'nombre', "Debes introducir un nombre.")
 
     #retorno de error al dejar campo telefono vacio
     def test_ac11_retorno_error_campo_telefono_vacio(self):
         self.assertEqual(Proveedor.objects.count(), 0)
         data = {'nombre':"Bancomer", 'direccion':"calle 100 corazones", 'rfc':45321343, 'razon_social':"Somos unos cracks", 'email':"ejemplo@hotmail.com" }
-        resp = self.client.post(reverse('proveedor:agregar_proveedor'), data)
-        self.assertEqual(Paquete.objects.count(), 0)
-        self.assertFormError(resp, 'form', 'nombre', "Debes introducir un telefono.")
+        resp = self.client.post(reverse('proveedores:agregar_proveedor'), data)
+        self.assertEqual(Proveedor.objects.count(), 0)
+        self.assertFormError(resp, 'form', 'telefono', "Debes introducir un telefono.")
 
     #retorno de error al dejar campo direccion vacio
     def test_ac12_retorno_error_campo_direccion_vacio(self):
         self.assertEqual(Proveedor.objects.count(), 0)
         data = {'nombre':"Bancomer", 'telefono':4151043944, 'rfc':45321343, 'razon_social':"Somos unos cracks", 'email':"ejemplo@hotmail.com" }
-        resp = self.client.post(reverse('proveedor:agregar_proveedor'), data)
-        self.assertEqual(Paquete.objects.count(), 0)
-        self.assertFormError(resp, 'form', 'nombre', "Debes poner una direccion.")
+        resp = self.client.post(reverse('proveedores:agregar_proveedor'), data)
+        self.assertEqual(Proveedor.objects.count(), 0)
+        self.assertFormError(resp, 'form', 'direccion', "Debes poner una direccion.")
 
     #retorno error al dejar rfc vacio
     def test_ac13_retorno_error_campo_rfc_vacio(self):
         self.assertEqual(Proveedor.objects.count(), 0)
         data = {'nombre':"Bancomer", 'telefono':4151043944, 'direccion':"calle 100 corazones", 'razon_social':"Somos unos cracks", 'email':"ejemplo@hotmail.com" }
-        resp = self.client.post(reverse('proveedor:agregar_proveedor'), data)
-        self.assertEqual(Paquete.objects.count(), 0)
-        self.assertFormError(resp, 'form', 'nombre', "Debes introducir un nombre.")
+        resp = self.client.post(reverse('proveedores:agregar_proveedor'), data)
+        self.assertEqual(Proveedor.objects.count(), 0)
+        self.assertFormError(resp, 'form', 'rfc', "Debes poner un RFC.")
 
+    #retorno de error al dejar razon social vacio
+    def test_ac14_retorno_error_campo_razon_social_vacio(self):
+        self.assertEqual(Proveedor.objects.count(), 0)
+        data = {'nombre':"Bancomer", 'telefono':4151043944, 'direccion':"calle 100 corazones", 'rfc':45321343, 'email':"ejemplo@hotmail.com" }
+        resp = self.client.post(reverse('proveedores:agregar_proveedor'), data)
+        self.assertEqual(Proveedor.objects.count(), 0)
+        self.assertFormError(resp, 'form', 'razon_social', "Debes introducir razon social.")
+
+    #retorno de error al dejar email vacio
+    def test_ac15_retorno_error_campo_email_vacio(self):
+        self.assertEqual(Proveedor.objects.count(), 0)
+        data = {'nombre':"Bancomer", 'telefono':4151043944, 'direccion':"calle 100 corazones", 'rfc':45321343, 'razon_social':"Somos unos cracks" }
+        resp = self.client.post(reverse('proveedores:agregar_proveedor'), data)
+        self.assertEqual(Proveedor.objects.count(), 0)
+        self.assertFormError(resp, 'form', 'email', "Debes poner un email.")
+
+class TestListaProveedores(TestCase):
+
+    def setUp(self):
+        proveedor = Proveedor.objects.create(nombre="Bancomer", telefono=4151043944, direccion="calle 100 corazones", rfc=45321343, razon_social="Somos unos cracks", email="ejemplo@hotmail.com")
+    #se cheva si la ruta para la vista existe
+    def test_existe_la_vista(self):
+        self.assertEqual(Proveedor.objects.count(), 1)
+        resp = self.client.get(reverse('proveedores:lista_proveedores'))
+        self.assertEqual(resp.status_code, 200)
 # Create your tests here.
