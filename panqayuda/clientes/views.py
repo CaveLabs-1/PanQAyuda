@@ -1,6 +1,7 @@
-from django.shortcuts import render, get_object_or_404
+from django.shortcuts import render, get_object_or_404, redirect
 from .models import Cliente
 from .forms import FormCliente
+from django.contrib import messages
 
 def clientes(request):
     if request.method == 'POST':
@@ -26,7 +27,7 @@ def editar_cliente(request, id_cliente):
             cliente = form.save()
             cliente.save
             messages.success(request, 'Se ha editado el cliente exitosamente!')
-            return render(request, 'clientes/cliente.html', {'cliente': cliente})
+            return redirect('clientes:clientes')
     else:
         form = FormCliente()
     return render(request, 'clientes/editar_cliente.html', {'form': form, 'cliente': cliente})
