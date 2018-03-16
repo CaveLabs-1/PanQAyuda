@@ -9,6 +9,27 @@ class FormaProveedor(ModelForm):
         model = Proveedor
         fields = ('nombre', 'telefono', 'direccion', 'rfc', 'razon_social', 'email')
 
+        error_messages = {
+            'nombre': {
+                'required': "Debes introducir un nombre.",
+            },
+            'telefono':{
+                'required': "Debes introducir un telefono."
+            },
+            'direccion':{
+                'required': "Debes poner una direccion."
+            },
+            'rfc':{
+                'required': "Debes s."
+            },
+            'razon_social':{
+                'required': "Debes seleccionar un material."
+            },
+            'email':{
+                'required': "Debes seleccionar un material."
+            },
+        }
+
     def clean_nombre(self):
         nombre=self.cleaned_data['nombre']
 

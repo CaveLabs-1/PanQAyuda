@@ -8,6 +8,10 @@ class Cliente(models.Model):
     telefono = models.CharField(validators=[telefono_regex], max_length=17, blank=True)
     email = models.EmailField(max_length=70,blank=True)
     rfc = models.CharField(max_length=13, blank = True)
+    created_at = models.DateTimeField(default=timezone.now)
+    updated_at = models.DateTimeField(default=timezone.now)
+    deleted_at = models.DateTimeField(blank = True, null = True)
+    status = models.IntegerField(default=1)
 
     def __str__(self):
         return self.nombre
