@@ -28,4 +28,7 @@ urlpatterns = [
     path('paquetes/', include('paquetes.urls', namespace='paquetes')),
     path('ordenes/', include('ordenes.urls', namespace='ordenes')),
     path('', include('django.contrib.auth.urls'), {'template_name': 'login/login.html'},name='login'),
+    path('clientes/', include('clientes.urls', namespace='clientes')),
+    path('proveedores/', include('proveedores.urls', namespace='proveedores')),
+    path('materiales/', include('materiales.urls', namespace='materiales'))
 ]

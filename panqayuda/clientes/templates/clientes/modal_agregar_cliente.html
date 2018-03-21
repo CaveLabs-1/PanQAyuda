@@ -1,0 +1,49 @@
+<!-- Modal Agregar cliente -->
+  <div id="agregar_cliente" class="modal">
+    <div class="modal-content">
+      <h3>Agregar un cliente</h3>
+        <form action="{% url 'clientes:clientes' %}" method="POST">
+            {% csrf_token %}
+            <!--Nombre-->
+            <div class="row">
+                <div class="input-field col s12">
+                    <input class="validate"  type="text" name="{{forma.nombre.html_name}}" id="{{forma.nombre.id_for_label}}" value="" required>
+                    <label for="{{forma.nombre.id_for_label}}">Nombre</label>
+                    <span class="helper-text" data-error="Nombre inválido"></span>
+                    <span class="red-text"> {%if form.nombre.errors %} {{forma.nombre.errors}} {% endif %}</span>
+                </div>
+            </div>
+            <div class="row">
+                <!-- Teléfono -->
+                <div class="input-field col s12 m6 l6">
+                    <input pattern="^\+?1?\d{9,15}" class="validate"  type="text" name="{{forma.telefono.html_name}}" maxlength="15" id="{{forma.telefono.id_for_label}}" value="">
+                    <label for="{{forma.telefono.id_for_label}}" data-error='Teléfono inválido'  data-success="">Teléfono</label>
+                    <span class="helper-text" data-error="Teléfono inválido"></span>
+                    <span class="red-text">{%if form.telefono.errors %} {{forma.telefono.errors}} {% endif %}</span>
+                </div>
+                <!-- Email -->
+                <div class="input-field col s12 m6 l6">
+                    <input class="validate"  type="email" name="{{forma.email.html_name}}" id="{{forma.email.id_for_label}}" value="">
+                    <label for="{{forma.email.id_for_label}}" data-error=''  data-success="">Email</label>
+                    <span class="helper-text" data-error="Email inválido"></span>
+                    <span class="red-text"> {%if forma.email.errors %} {{forma.email.errors}} {% endif %}</span>
+                </div>
+            </div>
+            <!-- RFC -->
+            <div class="row">
+                <div class="input-field col s12">
+                    <input pattern="[a-zA-Z0-9]{13,13}"class="validate"  maxlength="13" type="text" name="{{forma.rfc.html_name}}" maxlength="10" id="{{forma.rfc.id_for_label}}" value="">
+                    <label for="{{forma.rfc.id_for_label}}" data-error='Teléfono inválido'  data-success="">RFC</label>
+                    <span class="helper-text" data-error="RFC inválido"></span>
+                    <span class="red-text">{%if forma.rfc.errors %} {{forma.rfc.errors}} {% endif %}</span>
+                </div>
+            </div>
+
+            <div class="row">
+                  <button class="col l3 offset-l9 m3 offset-m9 s12 btn waves-effect waves-light pink right-align" type="submit" name="action">Agregar
+                    <i class="material-icons right">send</i>
+                  </button>
+            </div>
+        </form>
+    </div>
+  </div>

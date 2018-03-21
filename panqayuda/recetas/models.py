@@ -22,3 +22,14 @@ class RelacionRecetaMaterial(models.Model):
     status = models.IntegerField(default=1)
     def __str__(self):
         return self.receta.nombre
+
+class RecetaInventario(models.Model):
+    nombre = models.ForeignKey('Receta', on_delete = models.CASCADE)
+    cantidad = models.IntegerField(null=True, blank=False, validators=[MinValueValidator(1, "Debes seleccionar un número entero mator a 0.")])
+    fecha_cad = models.DateTimeField(blank = True, null = True)
+    estatus = models.IntegerField(default=1)
+    created_at = models.DateTimeField(default=timezone.now)
+    updated_at = models.DateTimeField(default=timezone.now)
+    deleted_at = models.DateTimeField(blank = True, null = True)
+    def __str__(self):
+        return self.nombre.nombre

@@ -14,3 +14,12 @@ class Material(models.Model):
     def __str__(self):
         return self.nombre
 
+#Modelo
+class Unidad(models.Model):
+    nombre = models.CharField(max_length=50, null=True, blank=False)
+    created_at = models.DateTimeField(default=timezone.now)
+    updated_at = models.DateTimeField(default=timezone.now)
+    deleted_at = models.DateTimeField(blank=True, null=True)
+
+    def __str__(self):
+        return self.nombre
