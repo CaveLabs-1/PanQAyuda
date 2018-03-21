@@ -20,13 +20,13 @@ class FormaProveedor(ModelForm):
                 'required': "Debes poner una direccion."
             },
             'rfc':{
-                'required': "Debes s."
+                'required': "Debes poner un RFC."
             },
             'razon_social':{
-                'required': "Debes seleccionar un material."
+                'required': "Debes introducir razon social."
             },
             'email':{
-                'required': "Debes seleccionar un material."
+                'required': "Debes poner un email."
             },
         }
 

@@ -8,6 +8,10 @@ from django.shortcuts import render
 #Test creado por Manuel
 class TestEditarPaqueteCatalogo(TestCase):
 
+    #Revisar que la sesión exista
+    def test_valid_session(self):
+        session = self.client.session
+
     def setUp(self):
         return Receta.objects.create(nombre="Paquete de prueba", cantidad=20, duration=datetime.timedelta(days=1))
 
