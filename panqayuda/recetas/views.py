@@ -4,6 +4,7 @@ from django.contrib import messages
 from materiales.models import Material
 from .forms import RecetaForm, MaterialRecetaForm
 from django.http import HttpResponse, HttpResponseRedirect
+from panqayuda.decorators import group_required
 import datetime
 # from django.contrib import messages
 # from django.views.generic.edit import UpdateView
@@ -14,7 +15,7 @@ import datetime
     Regresa objetos de recetas.
 """
 
-
+@group_required('admin')
 def lista_recetas(request):
     template_name = 'lista_recetas.html'
     recetas = list(Receta.objects.filter(status=1))
@@ -26,7 +27,7 @@ def lista_recetas(request):
     un POST te regresa la forms para hacerlo
 """
 
-
+@group_required('admin')
 def agregar_receta(request):
     if request.method == "POST":
         form = RecetaForm(request.POST)
@@ -47,6 +48,7 @@ def agregar_receta(request):
     Muestra toda la información de la receta incluyendo los materiales que tiene asignados
 """
 
+@group_required('admin')
 def detallar_receta(request, id_receta):
     receta_madre = get_object_or_404(Receta, pk=id_receta)
     materiales = list(RelacionRecetaMaterial.objects.filter(receta=receta_madre, status=1))
@@ -60,7 +62,7 @@ def detallar_receta(request, id_receta):
     0 significa que la receta fue borrada
 """
 
-
+@group_required('admin')
 def borrar_receta(request, id_receta):
     receta = get_object_or_404(Receta, pk=id_receta)
     receta.status = 0
@@ -78,7 +80,7 @@ def borrar_receta(request, id_receta):
     a cambiar, en caso de get regresa la forma con los datos a cambiar
 """
 
-
+@group_required('admin')
 def editar_receta(request, id_receta):
     receta = get_object_or_404(Receta, pk=id_receta)
     if request.method == "POST":
@@ -99,7 +101,7 @@ def editar_receta(request, id_receta):
     de material que va a ser agregado a la receta
 """
 
-
+@group_required('admin')
 def agregar_materiales(request, id_receta):
     receta = get_object_or_404(Receta, pk=id_receta)
     # Los materiales que aún no se han agregado a la receta
@@ -126,7 +128,7 @@ def agregar_materiales(request, id_receta):
     0 significa que fue borrado
 """
 
-
+@group_required('admin')
 def borrar_material(request, id_material):
     material = get_object_or_404(RelacionRecetaMaterial, pk=id_material)
     # id_receta = material.receta.id

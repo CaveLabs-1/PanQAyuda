@@ -22,6 +22,30 @@ body {
   bottom: 20px;
   right: 20px; }
 
+body, main#login, .login {
+  padding-left: 0;
+  height: 100%;
+  margin-bottom: 0; }
+
+#background {
+  height: 100%;
+  background: url(../img/prueba/galletas.jpg) no-repeat;
+  background-size: cover;
+  background-position: center; }
+
+.logoLogin {
+  height: 250px; }
+
+.login-icons {
+  padding: 0px 10px 0px 0px; }
+
+#login {
+  height: 100%;
+  background-color: white; }
+
+.btnLogin {
+  width: 100%; }
+
 /*Color select */
 .dropdown-content li > a, .dropdown-content li > span {
   font-size: 16px;
@@ -41,7 +65,7 @@ body {
 input[type=text]:not(.browser-default):focus:not([readonly]) + label, input[type=number]:not(.browser-default):focus:not([readonly]) + label, input[type=date]:not(.browser-default):focus:not([readonly]) + label {
   color: #e91e63; }
 
-input[type=text]:not(.browser-default):focus:not([readonly]), input[type=number]:not(.browser-default):focus:not([readonly]), input[type=date]:not(.browser-default):focus:not([readonly]) {
+input[type=text]:not(.browser-default):focus:not([readonly]), input[type=number]:not(.browser-default):focus:not([readonly]), input[type=date]:not(.browser-default):focus:not([readonly]), input[type=email]:not(.browser-default):focus:not([readonly]), input[type=password]:not(.browser-default):focus:not([readonly]) {
   border-bottom: 1px solid #e91e63;
   -webkit-box-shadow: 0 1px 0 0 #e91e63;
   box-shadow: 0 1px 0 0 #e91e63; }
