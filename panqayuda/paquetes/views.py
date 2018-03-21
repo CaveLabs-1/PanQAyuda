@@ -13,11 +13,13 @@ import datetime
 import json
 
 #indice
+@group_required('admin')
 def lista_paquetes(request):
     lista_de_paquetes=Paquete.objects.filter(estatus=1).filter(deleted_at__isnull=True)
     return render(request, 'paquetes/ver_paquetes.html', {'paquetes':lista_de_paquetes})
 
 #agregar paquete
+@group_required('admin')
 def agregar_paquete(request):
     if request.method == 'POST':
         forma=FormPaquete(request.POST)
@@ -32,7 +34,7 @@ def agregar_paquete(request):
         forma=FormPaquete()
     return render(request, 'paquetes/agregar_paquete.html', {'forma':forma})
 
-
+@group_required('admin')
 def borrar_paquete(request, id_paquete):
     paquete = get_object_or_404(Paquete, pk=id_paquete)
     paquete.estatus = 0
@@ -41,7 +43,7 @@ def borrar_paquete(request, id_paquete):
     messages.success(request, '¡Se ha borrado el paquete del catálogo!')
     return redirect('paquetes:lista_paquetes')
 
-
+@group_required('admin')
 def lista_paquete_inventario(request):
     paquetes=PaqueteInventario.objects.filter(deleted_at__isnull=True).filter(estatus=1)
     catalogo_paquetes=Paquete.objects.filter(deleted_at__isnull=True).filter(estatus=1)
@@ -52,6 +54,7 @@ def lista_paquete_inventario(request):
 
     return render(request, 'paquetes/lista_paquetes_inventario.html', {'paquetes':paquetes, 'catalogo_paquetes':catalogo_paquetes})
 
+@group_required('admin')
 def paquetes_por_catalogo(request):
     if request.method == 'POST':
         id_paquete = request.POST.get('id_paquete')
@@ -61,6 +64,7 @@ def paquetes_por_catalogo(request):
         return HttpResponse(response)
     return HttpResponse('Algo ha salido mal.')
 
+@group_required('admin')
 def agregar_paquete_inventario(request):
     if request.method == 'POST':
         forma_post=FormPaqueteInventario(request.POST or None)
@@ -98,6 +102,7 @@ def agregar_paquete_inventario(request):
         paquetes = Paquete.objects.filter(deleted_at__isnull=True).order_by("nombre")
         return render(request, 'paquetes/agregar_inventario.html', {'paquetes': paquetes, 'forma':forma})
 
+@group_required('admin')
 def borrar_paquete_inventario(request, id_paquete_inventario):
     paquete_inventario = get_object_or_404(PaqueteInventario, pk=id_paquete_inventario)
     paquete_inventario.estatus = 0
@@ -108,6 +113,7 @@ def borrar_paquete_inventario(request, id_paquete_inventario):
 
 
 #US22
+@group_required('admin')
 def editar_paquete_inventario(request, id_paquete):
     paquete_inventario = get_object_or_404(PaqueteInventario, pk=id_paquete)
     print('no llega ni a post')
@@ -128,6 +134,7 @@ def editar_paquete_inventario(request, id_paquete):
 
 
 #agregar recetas a paquete
+@group_required('admin')
 def agregar_recetas_a_paquete(request, id_paquete):
     paquete = get_object_or_404(Paquete, id=id_paquete)
     #Checar que sea un paquete activo
@@ -140,6 +147,7 @@ def agregar_recetas_a_paquete(request, id_paquete):
     lista_recetas = render_to_string('paquetes/lista_recetas_por_paquete.html', {'recetas_por_paquete': recetas_por_paquete})
     return render(request, 'paquetes/agregar_recetas_a_paquete.html', {'formahtml': formahtml, 'lista_recetas':lista_recetas, 'recetas': recetas, 'paquete': paquete, 'forma': forma})
 
+@group_required('admin')
 def agregar_receta_a_paquete(request):
     if request.method == 'POST':
         forma = FormRecetasPorPaquete(request.POST)
@@ -167,13 +175,14 @@ def agregar_receta_a_paquete(request):
                      mensaje_error+=error + "\n"
             return HttpResponseNotFound('Hubo un problema agregando la receta al paquete: '+ mensaje_error)
 
-
+@group_required('admin')
 def paquete(request, id_paquete):
     paquete = get_object_or_404(Paquete, id=id_paquete)
     recetas = recetas = Receta.objects.filter(deleted_at = null, paquete = paquete)
     return render(request, 'paquetes/paquete.html', {'paquete': paquete, 'recetas': recetas})
 
 #editar paquete
+@group_required('admin')
 def editar_paquete(request, id_paquete):
     paquete = get_object_or_404(Paquete, pk=id_paquete)
     if request.method == "POST":
