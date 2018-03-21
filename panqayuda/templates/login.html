@@ -1,0 +1,36 @@
+{% extends "loginBase.html" %}
+{% load staticfiles %}
+{% block title %}Órdenes de Trabajo{% endblock title %}
+{% block content %}
+<div class="row login">
+  <div class="col l5 s12 hide-on-med-and-down" id="background">
+  </div>
+  <div class="col l7 s12" id="login">
+    <div class="center">
+      <img class="logoLogin" src="{% static "img/navbar/panqayudalogo.png" %}">
+    </div>
+    <form method="post" action="/validar_login">
+      <div class="row">
+        <div class="input-field col s8 offset-s2 valign-wrapper">
+          <i class="material-icons login-icons">mail</i>
+          <input class="validate" placeholder="Email" type="email" name="username" required/>
+        </div>
+      </div>
+      <div class="row">
+        <div class="input-field col s8 offset-s2 valign-wrapper">
+          <i class="material-icons login-icons">lock</i>
+          <input class="validate" placeholder="Password" type="password" name="password" required/>
+        </div>
+      </div>
+      <div class="row col s8 offset-s2">
+        <button class="button btn waves-effect waves-light pink btnLogin" type="submit">LOGIN</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+{% endblock content %}
+
+{% block js %}
+
+{% endblock js %}
