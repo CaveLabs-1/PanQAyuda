@@ -1,16 +1,17 @@
-from django.shortcuts import render, get_object_or_404, redirect
+from django.shortcuts import render, get_object_or_404, redirect, reverse
 from .models import Cliente
 from .forms import FormCliente
 from django.contrib import messages
+from django.http import HttpResponseRedirect
 
 def clientes(request):
     if request.method == 'POST':
         forma_post = FormCliente(request.POST)
         if forma_post.is_valid():
             forma_post.save()
-            message.success(request, 'Se ha agregado un nuevo cliente.')
+            messages.success(request, 'Se ha agregado un nuevo cliente.')
         else:
-            message.error(request, 'Hubo un error, intentalo de nuevo.')
+            messages.error(request, 'Hubo un error, inténtalo de nuevo.')
 
         return HttpResponseRedirect(reverse('clientes:clientes'))
     else:

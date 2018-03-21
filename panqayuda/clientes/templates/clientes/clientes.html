@@ -33,11 +33,17 @@
     </div>
   </div>
   <div class="fixed-action-btn ">
-    <a class="add-btn btn-floating btn-large waves-effect waves-light pink btn modal-trigger" href="#agregarCliente"><i class="material-icons">add</i></a>
+    <a class="add-btn btn-floating btn-large waves-effect waves-light pink btn modal-trigger" href="#agregar_cliente"><i class="material-icons">add</i></a>
   </div>
 
+{% include 'clientes/modal_agregar_cliente.html' %}
 
 {% endblock content %}
 
 {% block js %}
+    <script type="text/js">
+        $(document).ready(function(){
+            $('.modal').modal();
+        });
+    </script>
 {% endblock js %}
