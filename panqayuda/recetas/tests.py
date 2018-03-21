@@ -7,6 +7,11 @@ from django.urls import reverse
 #US27-Agregar Receta
 class TestAgregarReceta(TestCase):
 
+    #Revisar que la sesión exista
+    def test_valid_session(self):
+        session = self.client.session
+
+
     def crear_receta_prueba(self):
         return Receta.objects.create(nombre="Receta de prueba", cantidad=20, duration=datetime.timedelta(days=1))
 
