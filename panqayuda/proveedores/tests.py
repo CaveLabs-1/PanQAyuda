@@ -122,12 +122,17 @@ class TestAgregarProveedor(TestCase):
         self.assertFormError(resp, 'form', 'email', "Debes poner un email.")
 
 class TestListaProveedores(TestCase):
-
-    def setUp(self):
-        proveedor = Proveedor.objects.create(nombre="Bancomer", telefono=4151043944, direccion="calle 100 corazones", rfc=45321343, razon_social="Somos unos cracks", email="ejemplo@hotmail.com")
     #se cheva si la ruta para la vista existe
     def test_existe_la_vista(self):
+        Proveedor.objects.create(nombre="Bancomer", telefono=4151043944, direccion="calle 100 corazones", rfc=45321343, razon_social="Somos unos cracks", email="ejemplo@hotmail.com")
         self.assertEqual(Proveedor.objects.count(), 1)
         resp = self.client.get(reverse('proveedores:lista_proveedores'))
         self.assertEqual(resp.status_code, 200)
+
+    #Si no existe un proveedor regresa un 404
+    def test_sin_proveedor_404(self):
+        self.assertEqual(Proveedor.objects.count(), 0)
+        resp = self.client.get(reverse('proveedores:lista_proveedores'))
+        self.assertEqual(resp.context['proveedores'].count(), 0)
+
 # Create your tests here.
