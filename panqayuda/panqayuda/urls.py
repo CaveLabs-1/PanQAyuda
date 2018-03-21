@@ -27,5 +27,5 @@ urlpatterns = [
     path('recetas/', include('recetas.urls', namespace='recetas')),
     path('paquetes/', include('paquetes.urls', namespace='paquetes')),
     path('ordenes/', include('ordenes.urls', namespace='ordenes')),
-    path(r'^$', auth_views.login, {'template_name': 'login/login.html'},name='login'),
+    path('', include('django.contrib.auth.urls'), {'template_name': 'login/login.html'},name='login'),
 ]

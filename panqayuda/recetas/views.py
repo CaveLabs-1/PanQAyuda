@@ -4,6 +4,7 @@ from django.contrib import messages
 from materiales.models import Material
 from .forms import RecetaForm, MaterialRecetaForm
 from django.http import HttpResponse, HttpResponseRedirect
+from panqayuda.decorators import group_required
 import datetime
 # from django.contrib import messages
 # from django.views.generic.edit import UpdateView

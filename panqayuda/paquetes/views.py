@@ -9,6 +9,7 @@ from django.urls import reverse
 from django.template.loader import render_to_string
 from django.db.models import Sum
 from django.db.models.functions import Concat
+from panqayuda.decorators import group_required
 import datetime
 import json
 
