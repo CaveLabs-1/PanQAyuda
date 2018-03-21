@@ -5,6 +5,11 @@ from proveedores.models import Proveedor
 #Test agregar proveedor
 class TestAgregarProveedor(TestCase):
 
+    #Revisar que la sesión exista
+    def test_valid_session(self):
+        session = self.client.session
+
+
     #Checa si existe la vista (template) para agregar el proveedor
     def test_existe_vista(self):
         resp = self.client.get(reverse('proveedores:agregar_proveedor'))
