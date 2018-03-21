@@ -1,0 +1,48 @@
+<!-- Modal Agregar materia prima a catálogo -->
+  <div id="agregar_materia_prima" class="modal">
+    <div class="modal-content">
+      <h3>Agregar una materia prima al catálogo </h3>
+        <form action="<!-- url mateira prima -->" method="POST">
+            {% csrf_token %}
+            <!--Nombre-->
+            <div class="row">
+                <div class="input-field col s12">
+                    <input class="validate"  type="text" name="nombre" id="" value="" required>
+                    <label for="nombre">Nombre</label>
+                    <span class="helper-text" data-error="Nombre inválido"></span>
+                    <span class="red-text"></span>
+                </div>
+            </div>
+            <div class="row">
+                <!-- Unidad -->
+                <div class="input-field col s12 m4 l4">
+                    <select name="unidad">
+                        <option> KG </option>
+                        <option> ml </option>
+                        <option> bulto </option>
+                    </select>
+                    <label for="unidad">Unidad</label>
+                </div>
+                <!-- Código -->
+                <div class="input-field col s12 m4 l4">
+                    <input class="validate"  type="text" name="" id="" value="">
+                    <label for="" data-error=''  data-success="">Código</label>
+                    <span class="helper-text" data-error=""></span>
+                    <span class="red-text"></span>
+                </div>
+                <!-- Relación porciones por unidad -->
+                <div class="input-field col s12 m4 l4">
+                    <input class="validate" min="0" type="number" name="" id="">
+                    <label for="" data-error="" data-success=""> Porciones por unidad </label>
+                    <span class="helper.text" data-error="Debes introducir un número positivo"></span>
+                    <span class="red-text"> </span>
+                </div>
+            </div>
+            <div class="row">
+                  <button class="col l3 offset-l9 m3 offset-m9 s12 btn waves-effect waves-light pink right-align" type="submit" name="action">Agregar
+                    <i class="material-icons right">send</i>
+                  </button>
+            </div>
+        </form>
+    </div>
+  </div>
