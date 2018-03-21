@@ -18,6 +18,7 @@
       <th>Teléfono</th>
       <th>Email</th>
       <th>RFC</th>
+      <th>Editar</th>
       </thead>
       <tbody>
        {% for cliente in clientes %}
@@ -26,6 +27,7 @@
         <td>{{cliente.telefono}}</td>
         <td>{{cliente.email}}</td>
         <td>{{cliente.rfc}}</td>
+        <td><a href="editar_cliente/{{ cliente.id }}"><i class="material-icons">edit</i></a></td>
       </tr>
       {% endfor %}
       </tbody>
