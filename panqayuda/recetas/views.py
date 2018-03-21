@@ -1,5 +1,5 @@
 from django.shortcuts import render, redirect, get_object_or_404
-from .models import Receta, RelacionRecetaMaterial
+from .models import Receta, RelacionRecetaMaterial, RecetaInventario
 from django.contrib import messages
 from materiales.models import Material
 from .forms import RecetaForm, MaterialRecetaForm
@@ -134,3 +134,15 @@ def borrar_material(request, id_material):
     material.save()
     # messages.add_message(request, SUCCESS, 'Receta borrada exitosamente.')
     return HttpResponseRedirect(request.META.get('HTTP_REFERER', '/'))
+
+
+
+"""
+    Función que enlista todas el inventario de recetas existentes.
+    Regresa objetos de receta_inventario.
+"""
+
+
+def lista_recetas_inventario(request):
+    recetas_inventario = list(RecetaInventario.objects.filter(estatus=1))
+    return render(request, 'recetas/lista_recetas_inventario.html', {'recetas_inventario': recetas_inventario})
