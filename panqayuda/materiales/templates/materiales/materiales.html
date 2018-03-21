@@ -1,0 +1,49 @@
+{% extends "base.html" %}
+{% block title %}Materiales{% endblock title %}
+{% block navbar %}{% include "navbar.html" %}{% endblock navbar %}
+{% block header %}
+  <header class="banner-prueba">
+    <h1 class="center-align">Materiales</h1>
+  </header>
+{% endblock header %}
+{% block content %}
+  {# ----------  Inicia modal  --------------  #}
+  {# ----------  Termina modal  --------------  #}
+
+  <div class="row">
+    <div class="col s10 offset-s1">
+      <table id="table_id" class="datatable">
+        <thead>
+          <th>Nombres</th>
+          <th>Unidad</th>
+          <th>Codigo</th>
+          <th>Editar</th>
+        </thead>
+        <tbody>
+         {% for material in materiales %}
+          <tr>
+            <td>{{material.nombre}}</td>
+            <td>{{material.unidad}}</td>
+            <td>{{material.codigo}}</td>
+            <td><a href="editar_material/{{ material.id }}"><i class="material-icons">edit</i></a></td>
+          </tr>
+         {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+  <div class="fixed-action-btn ">
+    <a class="add-btn btn-floating btn-large waves-effect waves-light pink btn modal-trigger" href="#agregar_materia_prima"><i class="material-icons">add</i></a>
+  </div>
+
+{% include 'materiales/modal_agregar_materia_prima.html' %}
+
+{% endblock content %}
+
+{% block js %}
+    <script type="text/js">
+        $(document).ready(function(){
+            $('.modal').modal();
+        });
+    </script>
+{% endblock js %}
