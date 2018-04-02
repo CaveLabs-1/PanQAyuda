@@ -1,11 +1,15 @@
 from django.shortcuts import render, redirect, get_object_or_404
-from .models import Receta, RelacionRecetaMaterial
+from .models import Receta, RelacionRecetaMaterial, RecetaInventario
 from django.contrib import messages
 from materiales.models import Material
 from .forms import RecetaForm, MaterialRecetaForm
 from django.http import HttpResponse, HttpResponseRedirect
 from panqayuda.decorators import group_required
 import datetime
+from django.db.models import Sum
+from django.template.loader import render_to_string
+
+
 # from django.contrib import messages
 # from django.views.generic.edit import UpdateView
 # from django.views import generic
@@ -136,3 +140,38 @@ def borrar_material(request, id_material):
     material.save()
     # messages.add_message(request, SUCCESS, 'Receta borrada exitosamente.')
     return HttpResponseRedirect(request.META.get('HTTP_REFERER', '/'))
+
+
+
+"""
+    Función que enlista todas el inventario de recetas existentes.
+    Regresa objetos de receta_inventario.
+"""
+
+
+def lista_recetas_inventario(request):
+    #recetas_inventario = list(RecetaInventario.objects.filter(deleted_at__isnull=True).filter(estatus=1))
+    catalogo_recetas=Receta.objects.filter(deleted_at__isnull=True).filter(status=1)
+
+    for receta_inventario in catalogo_recetas:
+         aux= RecetaInventario.objects.filter(nombre_id=receta_inventario.id).filter(deleted_at__isnull=True).aggregate(Sum('cantidad'))
+         receta_inventario.total=aux['cantidad__sum']
+
+
+    return render(request, 'recetas/lista_recetas_inventario.html', {'catalogo_recetas': catalogo_recetas})
+
+
+"""
+    Función que enlista todas el inventario de recetas existentes.
+    Regresa objetos de receta_inventario.
+"""
+
+@group_required('admin')
+def detalle_recetas_inventario(request):
+    if request.method == 'POST':
+        id_receta = request.POST.get('id_receta')
+        receta = Receta.objects.get(pk=id_receta)
+        detalle_recetas_en_inventario = RecetaInventario.objects.filter(nombre_id=id_receta, deleted_at__isnull=True)
+        response = render_to_string('recetas/lista_detalle_recetas_inventario.html', {'detalle_recetas_en_inventario': detalle_recetas_en_inventario, 'receta': receta})
+        return HttpResponse(response)
+    return HttpResponse('Algo ha salido mal.')

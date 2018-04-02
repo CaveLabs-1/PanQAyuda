@@ -1,11 +1,11 @@
 from django.test import TestCase
 from paquetes.models import Paquete, RecetasPorPaquete, PaqueteInventario
 from django.urls import reverse
-from recetas.models import Receta
+from recetas.models import Receta, RecetaInventario
 import datetime
 from django.shortcuts import render
 
-#Test creado por Manuel
+# #Test creado por Manuel
 class TestEditarPaqueteCatalogo(TestCase):
 
     #Revisar que la sesión exista
@@ -85,9 +85,20 @@ class TestEditarPaqueteCatalogo(TestCase):
 class TestAgregarPaqueteInventario(TestCase):
 
     def setUp(self):
-        receta = Receta.objects.create(nombre="Paquete de prueba", cantidad=20, duration=datetime.timedelta(days=1))
+        receta = Receta.objects.create(nombre="Receta de prueba 1", duration=datetime.timedelta(days=1))
+        receta_2 = Receta.objects.create(nombre="Receta de prueba 2", duration=datetime.timedelta(days=1))
+        #Receta 1 en inventario que caduca en 5 día
+        RecetaInventario.objects.create(nombre=receta, cantidad=3, fecha_cad=datetime.datetime.now()+datetime.timedelta(days=5))
+        # Receta 1 en inventario que caduca en 1 día
+        RecetaInventario.objects.create(nombre=receta, cantidad=3,fecha_cad=datetime.datetime.now() + datetime.timedelta(days=5))
+        # Receta 1 en inventario que ya caducó
+        RecetaInventario.objects.create(nombre=receta, cantidad=3, fecha_cad=datetime.datetime.now() - datetime.timedelta(days=5))
+        #Receta 2 en inventario
+        RecetaInventario.objects.create(nombre=receta_2, cantidad=15, fecha_cad=datetime.datetime.now() + datetime.timedelta(days=10))
+
         paquete = Paquete.objects.create(id=1, nombre="Paquete de prueba", precio=10, estatus=1)
-        RecetasPorPaquete.objects.create(paquete=paquete, receta=receta, cantidad=2)
+        RecetasPorPaquete.objects.create(paquete=paquete, receta=receta, cantidad=5)
+        RecetasPorPaquete.objects.create(paquete=paquete, receta=receta_2, cantidad=10)
 
     def crear_Paquete(self):
         return Paquete.objects.create(id=1, nombre="Paquete de prueba", precio=10, estatus=1)
@@ -153,10 +164,35 @@ class TestAgregarPaqueteInventario(TestCase):
 
     def test_ac_21_9_Se_agrega_exitosamente_el_paquete(self):
         self.assertEqual(PaqueteInventario.objects.count(), 0)
-        data = {'nombre':"1", 'cantidad':"10", 'fecha_cad':"2019-12-10"}
+        paquete= Paquete.objects.first()
+        #Obtener receta de la cual se compone el paquete
+        receta = Receta.objects.first()
+        receta_2=Receta.objects.last()
 
-        self.client.post(reverse('paquetes:agregar_inventario'), data)
+        #Verificar que existen 6 piezas disponibles en inventario de la receta 1 (la caduacada no la toma en cuenta)
+        self.assertEqual(receta.obtener_cantidad_inventario(),6)
+
+        # Verificar que existen 15 piezas disponibles en inventario de la receta 1 (la caduacada no la toma en cuenta)
+        self.assertEqual(receta_2.obtener_cantidad_inventario(), 15)
+
+        data = {'nombre':paquete.id, 'cantidad':"1", 'fecha_cad':"2019-12-10"}
+        resp = self.client.post(reverse('paquetes:agregar_inventario'), data)
+
+        # Verificar que se creó el paquete
         self.assertEqual(PaqueteInventario.objects.count(), 1)
+
+        #Verificar que se actualiza la cantidad de piezas en inventario de las recetas
+        self.assertEqual(receta.obtener_cantidad_inventario(), 1)
+        self.assertEqual(receta_2.obtener_cantidad_inventario(), 5)
+
+    def test_ac_21_10_No_se_agregan_paquetes_sin_inventario(self):
+        self.assertEqual(PaqueteInventario.objects.count(), 0)
+
+        data = {'nombre': "1", 'cantidad': "15", 'fecha_cad': "2019-12-10"}
+        self.client.post(reverse('paquetes:agregar_inventario'), data)
+
+        #Verificar que no se creó el paquete
+        self.assertEqual(PaqueteInventario.objects.count(), 0)
 
 class TestBorrarPaqueteCatalogo(TestCase):
 

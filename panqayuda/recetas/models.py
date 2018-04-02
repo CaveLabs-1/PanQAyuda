@@ -1,6 +1,8 @@
 from django.db import models
 from django.utils import timezone
 from django.core.validators import MinValueValidator
+import datetime
+from django.db.models import Sum, F
 
 class Receta(models.Model):
     nombre = models.CharField(max_length=100, null=True, blank=False)
@@ -11,8 +13,16 @@ class Receta(models.Model):
     updated_at = models.DateTimeField(default=timezone.now)
     deleted_at = models.DateTimeField(blank = True, null = True)
     status = models.IntegerField(default=1)
+
     def __str__(self):
         return self.nombre
+
+    def obtener_cantidad_inventario(self):
+        return RecetaInventario.objects.filter(nombre=self).filter(deleted_at__isnull=True). \
+                   filter(fecha_cad__gte=datetime.datetime.now()).filter(cantidad__gt=0). \
+                   annotate(disponible=Sum(F('cantidad') - F('ocupados'))). \
+                   aggregate(cantidad_disponible=Sum('disponible'))['cantidad_disponible'] or -1
+
 
 class RelacionRecetaMaterial(models.Model):
     receta = models.ForeignKey('Receta', on_delete = models.CASCADE)
@@ -26,10 +36,23 @@ class RelacionRecetaMaterial(models.Model):
 class RecetaInventario(models.Model):
     nombre = models.ForeignKey('Receta', on_delete = models.CASCADE)
     cantidad = models.IntegerField(null=True, blank=False, validators=[MinValueValidator(1, "Debes seleccionar un número entero mator a 0.")])
+    ocupados = models.IntegerField(default=0, blank=True, null=False)
     fecha_cad = models.DateTimeField(blank = True, null = True)
     estatus = models.IntegerField(default=1)
     created_at = models.DateTimeField(default=timezone.now)
     updated_at = models.DateTimeField(default=timezone.now)
     deleted_at = models.DateTimeField(blank = True, null = True)
+
     def __str__(self):
         return self.nombre.nombre
+
+    def obtener_cantidad_inventario(receta):
+            return RecetaInventario.objects.filter(nombre=receta).filter(deleted_at__isnull=True).\
+            filter(fecha_cad__gte=datetime.datetime.now()).filter(cantidad__gt=0).\
+            annotate(disponible=Sum(F('cantidad')-F('ocupados'))).\
+            aggregate(cantidad_disponible=Sum('disponible'))['cantidad_disponible'] or -1
+
+    def obtener_disponibles(receta):
+        return RecetaInventario.objects.filter(nombre=receta).filter(deleted_at__isnull=True).\
+        filter(fecha_cad__gte=datetime.datetime.now()).annotate(disponible=Sum(F('cantidad')-F('ocupados'))).\
+        filter(disponible__gt=0).order_by('fecha_cad')
