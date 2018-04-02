@@ -17,6 +17,13 @@ class Receta(models.Model):
     def __str__(self):
         return self.nombre
 
+    def obtener_cantidad_inventario(self):
+        return RecetaInventario.objects.filter(nombre=self).filter(deleted_at__isnull=True). \
+                   filter(fecha_cad__gte=datetime.datetime.now()).filter(cantidad__gt=0). \
+                   annotate(disponible=Sum(F('cantidad') - F('ocupados'))). \
+                   aggregate(cantidad_disponible=Sum('disponible'))['cantidad_disponible'] or -1
+
+
 class RelacionRecetaMaterial(models.Model):
     receta = models.ForeignKey('Receta', on_delete = models.CASCADE)
     material = models.ForeignKey('materiales.Material',  on_delete = models.CASCADE)
