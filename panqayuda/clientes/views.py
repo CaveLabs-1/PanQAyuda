@@ -3,7 +3,10 @@ from .models import Cliente
 from .forms import FormCliente
 from django.contrib import messages
 from django.http import HttpResponseRedirect
+from panqayuda.decorators import group_required
 
+
+@group_required('admin')
 def clientes(request):
     if request.method == 'POST':
         forma_post = FormCliente(request.POST)
@@ -19,7 +22,7 @@ def clientes(request):
         clientes =  Cliente.objects.filter(deleted_at__isnull=True)
         return render (request, 'clientes/clientes.html', {'forma': forma, 'clientes': clientes})
 
-
+@group_required('admin')
 def editar_cliente(request, id_cliente):
     cliente = get_object_or_404(Cliente, pk=id_cliente)
     if request.method == "POST":
