@@ -6,20 +6,29 @@ from django.http import HttpResponseRedirect
 from panqayuda.decorators import group_required
 
 
+
 @group_required('admin')
+# View para mostrar la lista de clientes, con forma disponible para crear un nuevo cliente.
 def clientes(request):
+    # En caso de que exista una petición de tipo POST significa que se ha intentado dar de alta un nuevo cliente.
     if request.method == 'POST':
         forma_post = FormCliente(request.POST)
+        # Si la forma es válida, se guarda el nuevo cliente y devuelve mensaje de éxito.
         if forma_post.is_valid():
             forma_post.save()
             messages.success(request, 'Se ha agregado un nuevo cliente.')
         else:
+            # De lo contrario devuelve mensaje de error.
             messages.error(request, 'Hubo un error, inténtalo de nuevo.')
-
+        # Sin importar el caso se llama a si misma para pintar la lista de clientes con una nueva forma para dar de alta otro cliente.
         return HttpResponseRedirect(reverse('clientes:clientes'))
+    # En caso de que no haya ninguna petición
     else:
+        # Se crea una nueva forma para dar de alta un cliente.
         forma = FormCliente()
+        # Se obtiene la lista de clientes.
         clientes =  Cliente.objects.filter(deleted_at__isnull=True)
+        # Se muestra la lista de clientes con una forma disponible para dar de alta uno nuevo.
         return render (request, 'clientes/clientes.html', {'forma': forma, 'clientes': clientes})
 
 @group_required('admin')

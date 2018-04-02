@@ -21,15 +21,15 @@
                 </div>
                 <!-- Código -->
                 <div class="input-field col s12 m4 l4">
-                    <input class="validate"  type="text" name="{{forma.codigo.html_name}}" id="{{forma.codigo.id_for_label}}" value="">
-                    <label for="" data-error=''  data-success="">Código</label>
+                    <input class="validate"  type="text" name="{{forma.codigo.html_name}}" id="{{forma.codigo.id_for_label}}" value="" required>
+                    <label for="{{forma.codigo.id_for_label}}" data-error=''  data-success="">Código</label>
                     <span class="helper-text" data-error=""></span>
                     <span class="red-text">{%if forma.codigo.errors %}{{forma.codigo.errors}}{% endif %}</span>
                 </div>
                 <!-- Relación porciones por unidad -->
                 <div class="input-field col s12 m4 l4">
-                    <input class="validate" min="0" type="number" name="" id="">
-                    <label for="" data-error="" data-success=""> Porciones por unidad </label>
+                    <input class="validate" min="0" type="number" name="" id="porciones" required>
+                    <label for="porciones" data-error="" data-success=""> Porciones por unidad </label>
                     <span class="helper.text" data-error="Debes introducir un número positivo"></span>
                     <span class="red-text"> </span>
                 </div>
