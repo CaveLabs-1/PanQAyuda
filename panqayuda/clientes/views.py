@@ -3,7 +3,11 @@ from .models import Cliente
 from .forms import FormCliente
 from django.contrib import messages
 from django.http import HttpResponseRedirect
+from panqayuda.decorators import group_required
 
+
+
+@group_required('admin')
 # View para mostrar la lista de clientes, con forma disponible para crear un nuevo cliente.
 def clientes(request):
     # En caso de que exista una petición de tipo POST significa que se ha intentado dar de alta un nuevo cliente.
@@ -27,7 +31,7 @@ def clientes(request):
         # Se muestra la lista de clientes con una forma disponible para dar de alta uno nuevo.
         return render (request, 'clientes/clientes.html', {'forma': forma, 'clientes': clientes})
 
-
+@group_required('admin')
 def editar_cliente(request, id_cliente):
     cliente = get_object_or_404(Cliente, pk=id_cliente)
     if request.method == "POST":

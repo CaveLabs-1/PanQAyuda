@@ -4,13 +4,15 @@ from django.contrib import messages
 from materiales.models import Material
 from .forms import FormaProveedor
 from django.http import HttpResponse, HttpResponseRedirect
+from panqayuda.decorators import group_required
 import datetime
 
+@group_required('admin')
 def lista_proveedores(request):
     lista_proveedores = Proveedor.objects.all().filter(status=1).filter(deleted_at__isnull=True)
     return render(request, 'proveedores/lista_proveedores.html', {'proveedores':lista_proveedores})
 
-
+@group_required('admin')
 def agregar_proveedor(request):
     if request.method == "POST":
         form = FormaProveedor(request.POST)
@@ -26,6 +28,7 @@ def agregar_proveedor(request):
         form = FormaProveedor()
     return render(request, 'proveedores/agregar_proveedor.html', {'form': form})
 
+@group_required('admin')
 def detallar_proveedor(request, id_proveedor):
         proveedor = get_object_or_404(Proveedor, pk=id_proveedor)
         return render(request, 'proveedores/proveedor.html', {'proveedor': proveedor})
