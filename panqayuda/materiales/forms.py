@@ -7,7 +7,7 @@ from django.core.exceptions import ValidationError
 class MaterialForm(ModelForm):
     class Meta:
         model = Material
-        fields = ('nombre', 'unidad', 'codigo')
+        fields = ('nombre', 'codigo')
 
     def clean_nombre(self):
         nombre=self.cleaned_data['nombre']
