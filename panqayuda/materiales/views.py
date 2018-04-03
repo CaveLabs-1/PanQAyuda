@@ -1,8 +1,9 @@
-from django.shortcuts import render,reverse
+from django.shortcuts import render,reverse, get_object_or_404, redirect
+from django.template.loader import render_to_string
 from .forms import MaterialForm
 from .models import Material, MaterialInventario
 from django.contrib import messages
-from django.http import HttpResponseRedirect
+from django.http import HttpResponseRedirect, HttpResponse
 from django.db.models import Sum
 
 
@@ -38,7 +39,7 @@ def materiales_por_catalogo(request):
     if request.method == 'POST':
         id_material = request.POST.get('id_material')
         material = Material.objects.get(pk=id_material)
-        detalle_materiales_en_inventario = MaterialInventario.objects.filter(material_id=id_material, deleted_at__isnull=True)
+        detalle_materiales_en_inventario = MaterialInventario.objects.filter(material_id=id_material).filter(deleted_at__isnull=True)
         response = render_to_string('materiales/lista_detalle_materiales_inventario.html', {'detalle_materiales_en_inventario': detalle_materiales_en_inventario, 'material': material})
         return HttpResponse(response)
     return HttpResponse('Algo ha salido mal.')
