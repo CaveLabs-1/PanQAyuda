@@ -134,17 +134,36 @@ def borrar_paquete_inventario(request, id_paquete_inventario):
 @group_required('admin')
 def editar_paquete_inventario(request, id_paquete):
     paquete_inventario = get_object_or_404(PaqueteInventario, pk=id_paquete)
-    print('no llega ni a post')
     if request.method == "POST":
-        print('ya llego a post')
         form = FormEditarPaquete(request.POST or None, instance=paquete_inventario)
         if form.is_valid():
-            print('la forma es valida')
+            cantidad_anterior = paquete_inventario.cantidad
+            cantidad_nueva = form.instance.cantidad
+            if cantidad_nueva < cantidad_anterior:
+                #Agregar piezas disponibles a las recetas en inventario
+                #Obtener recetas del paquete
+                recetas_paquete = RecetasPorPaquete.objects.filter(paquete=paquete_inventario).filter(deleted_at__isnull=True)
+                for receta in recetas_paquete:
+                    #Obtener recetas_inventario para abastecer
+                    recetas_inventario = RecetaInventario.objects.filter(deleted_at__isnull=True).filter(nombre=receta.receta).order_by('-fecha_cad')
+                    #Calcular cantidad a sumar
+                    cantidad_a_sumar = (cantidad_anterior - cantidad_nueva)*receta.cantidad
+                    for receta_inventario in recetas_inventario:
+                        #Verificar que a esta receta_inventario se le pueden quitar de los ocupados
+                        if receta_inventario.ocupados > 0:
+                            if cantidad_a_sumar <= receta_inventario.ocupados:
+                                receta_inventario.ocupados=0
+                                receta_inventario.save()
+                                break
+                            else:
+                                cantidad_a_sumar-=receta_inventario.ocupados
+                                receta_inventario.ocupados=0
+                                receta_inventario.save()
+
             paquete_inventario = form.save()
             paquete_inventario.save()
             messages.success(request, '¡Se ha editado la paquete_inventario exitosamente!')
             return redirect('paquetes:lista_paquete_inventario')
-        print(form.errors)
     else:
         form = FormEditarPaquete()
     return render(request, 'paquetes/editar_paquete_inventario.html', {'form': form, 'paquete_inventario': paquete_inventario})
