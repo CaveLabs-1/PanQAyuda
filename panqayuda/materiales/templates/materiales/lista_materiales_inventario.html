@@ -27,12 +27,12 @@
           </tr>
         </thead>
         <tbody>
-          {% for catalogo_material in catalogo_materiales %}
-            {% if catalogo_material.total%}
+          {% for material in catalogo_materiales %}
+            {% if material.total%}
             <tr>
-                <td>{{ catalogo_materiales.nombre }}</td>
-                <td>{{ catalogo_materiales.total }}</td>
-                <td><a onclick="detalleMateriales({{catalogo_material.id}})" href="#modal_detalle" class="modal-trigger"><i class="material-icons">view_list</i> </a></td>
+                <td>{{ material.nombre }}</td>
+                <td>{{ material.total }}</td>
+                <td><a onclick="detalleMateriales({{material.id}})" href="#modal_detalle" class="modal-trigger"><i class="material-icons">view_list</i> </a></td>
             </tr>
             {% endif %}
           {% endfor %}
