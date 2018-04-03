@@ -154,4 +154,4 @@ class DisableMigrations(object):
     def __getitem__(self, item):
         return None
 
-MIGRATION_MODULES = DisableMigrations()
+#MIGRATION_MODULES = DisableMigrations()
