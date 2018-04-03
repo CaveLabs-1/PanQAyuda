@@ -84,11 +84,10 @@ def agregar_paquete_inventario(request):
                 #Total de piezas necesitadas para esta receta
                 cantidad_real = cantidad_post * receta.cantidad
                 #Cantidad disponible en inventario
-                cantidad_inv = RecetaInventario.obtener_cantidad_inventario(receta.receta)
+                cantidad_inv = receta.receta.obtener_cantidad_inventario()
+                #RecetaInventario.obtener_cantidad_inventario(receta.receta)
 
                 if cantidad_real > cantidad_inv:
-                    print(cantidad_real)
-                    print(cantidad_inv)
                     messages.error(request, 'No hay inventario suficiente para agregar este paquete')
                     return HttpResponseRedirect(reverse('paquetes:agregar_inventario'))
 
@@ -114,11 +113,10 @@ def agregar_paquete_inventario(request):
             return HttpResponseRedirect(reverse('paquetes:lista_paquete_inventario'))
         else:
             messages.error(request, 'Hubo un error y no se agregó el paquete al inventario.')
-            return HttpResponseRedirect(reverse('paquetes:agregar_paquete_inventario'))
+            return HttpResponseRedirect(reverse('paquetes:agregar_inventario'))
     else:
         #print("no es post")
         forma=FormPaqueteInventario()
-        messages.error(request, 'Hubo un error con la peticion')
         paquetes = Paquete.objects.filter(deleted_at__isnull=True).order_by("nombre")
         return render(request, 'paquetes/agregar_inventario.html', {'paquetes': paquetes, 'forma':forma})
 
