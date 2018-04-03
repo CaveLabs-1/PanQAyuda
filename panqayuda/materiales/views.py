@@ -1,10 +1,12 @@
-from django.shortcuts import render,reverse, get_object_or_404, redirect
+from django.shortcuts import render, reverse, redirect, get_object_or_404
 from django.template.loader import render_to_string
-from .forms import MaterialForm
+from .forms import MaterialForm, UnidadForm
 from .models import Material, MaterialInventario
 from django.contrib import messages
 from django.http import HttpResponseRedirect, HttpResponse
 from django.db.models import Sum
+from panqayuda.decorators import group_required
+import datetime
 
 
 # Create your views here.
@@ -24,6 +26,34 @@ def materiales(request):
         materiales =  Material.objects.filter(deleted_at__isnull=True)
         return render (request, 'materiales/materiales.html', {'forma': forma, 'materiales': materiales})
 
+
+
+"""
+    View que está haciendo Rudy
+"""
+@group_required('admin')
+def lista_unidades(request):
+    return render(request, 'materiales/lista_unidades.html')
+
+"""
+    Función que agrega una nueva unidad a la base de datos según la forma, si no tiene
+    un POST te regresa la forma para hacerlo
+"""
+@group_required('admin')
+def agregar_unidades(request):
+    if request.method == "POST":
+        form = UnidadForm(request.POST)
+        if form.is_valid():
+             unidad = form.save()
+             unidad.save()
+             messages.success(request, '¡Se ha agregado la unidad al catálogo!')
+             return redirect('/materiales/lista_unidades')
+        else:
+             messages.success(request, '¡Ya hay una unidad con este nombre!')
+             return redirect('/materiales/lista_unidades')
+    else:
+        messages.success(request, '¡Hubo un error con el POST!')
+        return redirect('/materiales/lista_unidades')
 
 def lista_materiales_inventario(request):
     materiales=MaterialInventario.objects.filter(deleted_at__isnull=True).filter(estatus=1)
