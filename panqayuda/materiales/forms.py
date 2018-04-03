@@ -1,6 +1,6 @@
 from django.forms import ModelForm
 from django import forms
-from .models import Material
+from .models import Material, Unidad
 from django.core.exceptions import ValidationError
 
 
@@ -22,3 +22,19 @@ class MaterialForm(ModelForm):
                     if material.id == self.instance.id:
                         return nombre
             raise ValidationError("Este material ya existe")
+
+class UnidadForm(ModelForm):
+    def clean_nombre(self):
+        nombre=self.cleaned_data['nombre']
+        unidad_existente=Unidad.objects.filter(deleted_at__isnull= True).filter(nombre__iexact=nombre)
+        if unidad_existente.count() == 0:
+            return nombre
+        else: # si ya existe uno con ese nombre
+            if self.instance:
+                for unidad in unidad_existente.all():
+                    if unidad.id==self.instance.id:
+                        return nombre
+            raise ValidationError('Ya hay una unidad con este nombre')
+    class Meta:
+        model = Unidad
+        fields = ('nombre',)
