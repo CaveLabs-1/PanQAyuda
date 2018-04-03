@@ -1,8 +1,7 @@
 from django.test import TestCase
-
 from clientes.models import Cliente
-import datetime
 from django.shortcuts import render
+import datetime
 
 
 class TestEditarCliente(TestCase):
