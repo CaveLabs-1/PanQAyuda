@@ -1,0 +1,108 @@
+{% extends "base.html" %}
+{% block title %}Materiales{% endblock title %}
+{% block navbar %}{% include "navbar.html" %}{% endblock navbar %}
+{% block header %}
+  <header class="banner-prueba">
+    {# buscar clase banner-prueba en main.css #}
+    <h1 class="center-align">Inventario Materiales</h1>
+  </header>
+{% endblock header %}
+{% block content %}
+<div class="row">
+  <div class="col s12">
+    <ul class="tabs">
+      <li class="tab col s6"><a class="active white-text" href="/materiales">Catálogo Inventario</a></li>
+      <li class="tab col s6"><a class="pink-text" href="/materiales/lista_materiales">Catálogo Materiales</a></li>
+    </ul>
+  </div>
+</div>
+  <div class="container">
+    <!-- Contenedor donde carga todo -->
+    <table id="table_id">
+        <thead>
+          <tr>
+            <th>Nombre</th>
+            <th>Total</th>
+            <th>Ver detalle</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for catalogo_material in catalogo_materiales %}
+            {% if catalogo_material.total%}
+            <tr>
+                <td>{{ catalogo_materiales.nombre }}</td>
+                <td>{{ catalogo_materiales.total }}</td>
+                <td><a onclick="detalleMateriales({{catalogo_material.id}})" href="#modal_detalle" class="modal-trigger"><i class="material-icons">view_list</i> </a></td>
+            </tr>
+            {% endif %}
+          {% endfor %}
+        </tbody>
+    </table>
+    <br>
+    <div class="fixed">
+        <a href="" class="btn-floating btn-large waves-effect waves-light pink"><i class="material-icons">add</i></a>
+    </div>
+  </div>
+  <div id="modal_detalle" class="modal">
+    <div class="modal-content">
+      <div id="modal_material" class=""></div>
+    </div>
+    <div class="modal-footer">
+      <a href="#!" class="modal-action modal-close waves-effect waves-green btn-flat">Listo</a>
+    </div>
+  </div>
+{% endblock content %}
+{% block js %}
+  <script type="text/javascript">
+    $(document).ready(function(){
+      $('.collapsible').collapsible();
+    });
+  </script>
+  <script type="text/javascript">
+    $(document).ready(function(){
+        var csrftoken = $.cookie('csrftoken');
+        function csrfSafeMethod(method) {
+        // these HTTP methods do not require CSRF protection
+            return (/^(GET|HEAD|OPTIONS|TRACE)$/.test(method));
+        }
+        $.ajaxSetup({
+            beforeSend: function(xhr, settings) {
+                if (!csrfSafeMethod(settings.type) && !this.crossDomain) {
+                    xhr.setRequestHeader("X-CSRFToken", csrftoken);
+                }
+            }
+        });
+    });
+
+    function deleteRegister(element, event) {
+      event.preventDefault();
+      $.confirm({
+        title: '¿Deseas Continuar?',
+        content: 'El material se eliminará permanentemente.',
+        type: 'red',
+        closeIcon: true,
+        columnClass: 'col l6 offset-l3 s12',
+        typeAnimated: true,
+        buttons: {
+          continuar: {
+            text: 'Eliminar',
+            btnClass: 'btn-red',
+            action: function () {
+              window.location.href = $(element).attr("href");
+            }
+          }
+       }
+     });
+    }
+
+    function detalleMateriales(id_material){
+      console.log(id_material);
+      var url = '{% url "materiales:materiales_por_catalogo" %}';
+      $.post(url, {
+        id_material: id_material,
+      }).done(function(data){
+        $("#modal_material").html(data);
+      });
+    }
+  </script>
+{% endblock js %}
