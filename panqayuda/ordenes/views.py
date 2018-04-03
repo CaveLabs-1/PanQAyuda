@@ -7,10 +7,8 @@ from django.urls import reverse
 from django.template.loader import render_to_string
 from django.http import HttpResponseRedirect, HttpResponse
 from panqayuda.decorators import group_required
-from django.contrib.auth.decorators import login_required
 
 # Lista de ordenes de trabajo y forma para crear una nueva orden de trabajo.
-@login_required
 @group_required('admin')
 def ordenes (request):
     # En caso de que la petición sea tipo 'POST' crea la forma con los datos obtenidos y la valida.
