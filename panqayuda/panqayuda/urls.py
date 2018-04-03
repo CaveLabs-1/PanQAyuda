@@ -23,7 +23,6 @@ from django.conf.urls.static import static
 # from django.contrib.auth.decorators import login_required
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('prueba/', include('prueba.urls', namespace='prueba')),
     path('recetas/', include('recetas.urls', namespace='recetas')),
     path('paquetes/', include('paquetes.urls', namespace='paquetes')),
     path('ordenes/', include('ordenes.urls', namespace='ordenes')),
