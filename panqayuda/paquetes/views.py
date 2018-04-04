@@ -74,40 +74,12 @@ def agregar_paquete_inventario(request):
             id_paquete = request.POST.get('nombre')
             paquete = Paquete.objects.get(pk=id_paquete)
 
-            #Obtener recetas del paquete
-            recetas = RecetasPorPaquete.objects.filter(paquete=paquete).filter(deleted_at__isnull=True)
+            cantidad_post = forma_post.instance.cantidad
+            #Verificar que hay suficiente cantidad en inventario para agregar el paquete
+            if agregar_paquetes_inventario_recetas(paquete,cantidad_post) == False:
+                messages.error(request, 'No hay inventario suficiente para agregar este paquete')
+                return HttpResponseRedirect(reverse('paquetes:agregar_inventario'))
 
-            # Verificar que exista cantidad suficiente para crear el paquete de cada receta
-            for receta in recetas:
-                #Número de paquetes a crear
-                cantidad_post = forma_post.instance.cantidad
-                #Total de piezas necesitadas para esta receta
-                cantidad_real = cantidad_post * receta.cantidad
-                #Cantidad disponible en inventario
-                cantidad_inv = receta.receta.obtener_cantidad_inventario()
-                #RecetaInventario.obtener_cantidad_inventario(receta.receta)
-
-                if cantidad_real > cantidad_inv:
-                    messages.error(request, 'No hay inventario suficiente para agregar este paquete')
-                    return HttpResponseRedirect(reverse('paquetes:agregar_inventario'))
-
-            # #Restar inventario
-            for receta in recetas:
-                cantidad_post = forma_post.instance.cantidad
-                #Obtener recetas del inventario disponibles para restar ordenadas por fecha de caducidad
-                recetas_inventario = RecetaInventario.obtener_disponibles(receta.receta)
-                cantidad_necesitada = cantidad_post * receta.cantidad
-                for receta_inventario in recetas_inventario:
-                #La necesitada es mayor que la cantidad que este 'lote' tiene
-                    if cantidad_necesitada > receta_inventario.disponible:
-                        cantidad_necesitada-=receta_inventario.disponible
-                        receta_inventario.ocupados = receta_inventario.cantidad
-                        receta_inventario.save()
-                    #Este 'lote' satisface la cantidad necesitada para el paquete
-                    else:
-                        receta_inventario.ocupados+=cantidad_necesitada
-                        receta_inventario.save()
-                        break
             forma_post.save()
             messages.success(request, 'Se ha agregado el paquete al inventario')
             return HttpResponseRedirect(reverse('paquetes:lista_paquete_inventario'))
@@ -115,7 +87,6 @@ def agregar_paquete_inventario(request):
             messages.error(request, 'Hubo un error y no se agregó el paquete al inventario.')
             return HttpResponseRedirect(reverse('paquetes:agregar_inventario'))
     else:
-        #print("no es post")
         forma=FormPaqueteInventario()
         paquetes = Paquete.objects.filter(deleted_at__isnull=True).order_by("nombre")
         return render(request, 'paquetes/agregar_inventario.html', {'paquetes': paquetes, 'forma':forma})
@@ -151,17 +122,26 @@ def borrar_paquete_inventario(request, id_paquete_inventario):
 @group_required('admin')
 def editar_paquete_inventario(request, id_paquete):
     paquete_inventario = get_object_or_404(PaqueteInventario, pk=id_paquete)
-    print('no llega ni a post')
     if request.method == "POST":
-        print('ya llego a post')
         form = FormEditarPaquete(request.POST or None, instance=paquete_inventario)
         if form.is_valid():
-            print('la forma es valida')
+            cantidad_anterior = paquete_inventario.cantidad
+            cantidad_nueva = form.instance.cantidad
+            if cantidad_nueva < cantidad_anterior:
+                #Agregar piezas disponibles a las recetas en inventario
+                cantidad = cantidad_anterior - cantidad_nueva
+                eliminar_paquetes_inventario_recetas(paquete_inventario, cantidad)
+            else:
+                cantidad = cantidad_nueva - cantidad_anterior
+                #Verificiar que hay cantidad suficiente en inventario para agregar los paquetes
+                if agregar_paquetes_inventario_recetas(paquete_inventario,cantidad) == False:
+                    messages.error(request, 'No hay inventario suficiente para agregar este paquete')
+                    return HttpResponseRedirect(reverse('paquetes:agregar_inventario'))
+
             paquete_inventario = form.save()
             paquete_inventario.save()
             messages.success(request, '¡Se ha editado la paquete_inventario exitosamente!')
             return redirect('paquetes:lista_paquete_inventario')
-        print(form.errors)
     else:
         form = FormEditarPaquete()
     return render(request, 'paquetes/editar_paquete_inventario.html', {'form': form, 'paquete_inventario': paquete_inventario})
@@ -231,3 +211,55 @@ def editar_paquete(request, id_paquete):
     else:
         forma = FormPaquete(initial={"nombre":paquete.nombre, "precio":paquete.precio})
         return render(request, 'paquetes/editar_paquete.html', {'forma':forma, 'paquete':paquete})
+
+def agregar_paquetes_inventario_recetas(paquete,cantidad):
+    # Obtener recetas del paquete
+    recetas = RecetasPorPaquete.objects.filter(paquete=paquete).filter(deleted_at__isnull=True)
+
+    # Verificar que exista cantidad suficiente para crear el paquete de cada receta
+    for receta in recetas:
+        # Total de piezas necesitadas para esta receta
+        cantidad_real = cantidad * receta.cantidad
+        # Cantidad disponible en inventario
+        cantidad_inv = receta.receta.obtener_cantidad_inventario()
+        # RecetaInventario.obtener_cantidad_inventario(receta.receta)
+
+        if cantidad_real > cantidad_inv:
+            return False
+
+    # #Restar inventario
+    for receta in recetas:
+        # Obtener recetas del inventario disponibles para restar ordenadas por fecha de caducidad
+        recetas_inventario = RecetaInventario.obtener_disponibles(receta.receta)
+        cantidad_necesitada = cantidad * receta.cantidad
+        for receta_inventario in recetas_inventario:
+            # La necesitada es mayor que la cantidad que este 'lote' tiene
+            if cantidad_necesitada > receta_inventario.disponible:
+                cantidad_necesitada -= receta_inventario.disponible
+                receta_inventario.ocupados = receta_inventario.cantidad
+                receta_inventario.save()
+            # Este 'lote' satisface la cantidad necesitada para el paquete
+            else:
+                receta_inventario.ocupados += cantidad_necesitada
+                receta_inventario.save()
+                break
+
+def eliminar_paquetes_inventario_recetas(paquete,cantidad):
+    recetas_paquete = RecetasPorPaquete.objects.filter(paquete=paquete).filter(deleted_at__isnull=True)
+    for receta in recetas_paquete:
+        # Obtener recetas_inventario para abastecer
+        recetas_inventario = RecetaInventario.objects.filter(deleted_at__isnull=True).filter(
+            nombre=receta.receta).order_by('-fecha_cad')
+        # Calcular cantidad a sumar
+        cantidad_a_sumar = cantidad * receta.cantidad
+        for receta_inventario in recetas_inventario:
+            # Verificar que a esta receta_inventario se le pueden quitar de los ocupados
+            if receta_inventario.ocupados > 0:
+                if cantidad_a_sumar <= receta_inventario.ocupados:
+                    receta_inventario.ocupados = 0
+                    receta_inventario.save()
+                    break
+                else:
+                    cantidad_a_sumar -= receta_inventario.ocupados
+                    receta_inventario.ocupados = 0
+                    receta_inventario.save()

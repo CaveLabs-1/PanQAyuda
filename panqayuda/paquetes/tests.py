@@ -5,7 +5,7 @@ from recetas.models import Receta, RecetaInventario
 import datetime
 from django.shortcuts import render
 
-# #Test creado por Manuel
+# # #Test creado por Manuel
 class TestEditarPaqueteCatalogo(TestCase):
 
     #Revisar que la sesión exista
@@ -227,8 +227,6 @@ class TestBorrarPaqueteCatalogo(TestCase):
         resp = self.client.get(reverse('paquetes:lista_paquetes'))
         self.assertEqual(len(resp.context['paquetes']),0)
 
-
-
 #US24
 class TestAgregarPaqueteCatalogo(TestCase):
     #Crear objetos de prueba
@@ -422,76 +420,134 @@ class TestEliminarPaquete(TestCase):
 #US22
 class TestEditarPaqueteInventario(TestCase):
     def setUp(self):
-        receta = Receta.objects.create(nombre="Receta de prueba", cantidad=20, duration=datetime.timedelta(days=1))
-        paquete = Paquete.objects.create(nombre="Paqueté de prueba", precio=10, estatus=1)
-        RecetasPorPaquete.objects.create(paquete=paquete, receta=receta, cantidad=2)
-        PaqueteInventario.objects.create(nombre=paquete, cantidad=12, fecha_cad="2019-12-12")
+        receta = Receta.objects.create(nombre="Receta de prueba 1", duration=datetime.timedelta(days=1))
+        receta_2 = Receta.objects.create(nombre="Receta de prueba 2", duration=datetime.timedelta(days=1))
+        # Receta 1 en inventario que caduca en 5 día
+        RecetaInventario.objects.create(nombre=receta, cantidad=10,
+                                        fecha_cad=datetime.datetime.now() + datetime.timedelta(days=5))
+        # Receta 1 en inventario que caduca en 1 día
+        RecetaInventario.objects.create(nombre=receta, cantidad=10,
+                                        fecha_cad=datetime.datetime.now() + datetime.timedelta(days=5))
+        # Receta 1 en inventario que ya caducó
+        RecetaInventario.objects.create(nombre=receta, cantidad=5,
+                                        fecha_cad=datetime.datetime.now() - datetime.timedelta(days=5))
+        # Receta 2 en inventario
+        RecetaInventario.objects.create(nombre=receta_2, cantidad=40,
+                                        fecha_cad=datetime.datetime.now() + datetime.timedelta(days=10))
+
+        paquete = Paquete.objects.create(id=1, nombre="Paquete de prueba", precio=10, estatus=1)
+        RecetasPorPaquete.objects.create(paquete=paquete, receta=receta, cantidad=5)
+        RecetasPorPaquete.objects.create(paquete=paquete, receta=receta_2, cantidad=10)
+
+
+        #Agregar un paquete de inventario
+        data = {'nombre': paquete.id, 'cantidad': "2", 'fecha_cad': "2019-12-10"}
+        resp = self.client.post(reverse('paquetes:agregar_inventario'), data)
+
+        #Agregar una nueva receta en inventario, la cual tiene 0 ocupados.
+        RecetaInventario.objects.create(nombre=receta_2, cantidad=10,
+                                        fecha_cad=datetime.datetime.now() + datetime.timedelta(days=20))
+
+
 
     def test_ac_22_1_existencia_vista(self):
-        respuesta = self.client.get('paquetes/editar_paquete_inventario/1')
+        respuesta = self.client.get(reverse('paquetes:editar_paquete_inventario', kwargs={'id_paquete': PaqueteInventario.objects.first().id}))
         self.assertEqual(respuesta.status_code, 200)
 
     def test_ac_22_2_El_objeto_se_actualiza_exitosamente(self):
-        #self.assertEqual(PaqueteInventario.objects.count(), 0)
-        data = {'nombre':"1", 'cantidad':"12", 'fecha_cad':"2019-12-12"}
-        self.client.post(reverse('paquetes:editar_paquete_inventario', kwargs={'id_paquete_inventario':1}), data)
 
         update = PaqueteInventario.objects.get(id=1)
         self.assertEqual(update.nombre, "Paquete editado")
 
+        #La cantidad a editar es menor de la que había
+        data = {'nombre': "1", 'cantidad': "1", 'fecha_cad': "2019-12-12"}
+        self.client.post(reverse('paquetes:editar_paquete_inventario', kwargs={'id_paquete': 1}), data)
+        # Las recetas de inventario que tienen no tienen ninguna  pieza ocupada no se alteran
+        receta_sin_piezas_ocupadas = RecetaInventario.objects.last()
+        self.assertEqual(receta_sin_piezas_ocupadas.ocupadas,0)
+        # Las cantidad de recetas en inventario se actualiza
+        receta_1 = Receta.objects.first()
+        self.assertEqual(receta_1.obtener_cantidad_inventario(), 15)
+
+        receta_2 = Receta.objects.last()
+        self.assertEqual(receta_2.obtener_cantidad_inventario(), 40)
+
+        #Verificar que se cambió el número de paquetes inventario
+        self.assertEqual(PaqueteInventario.objects.first().cantidad, 1)
+
+
+        #La cantidad a editar es mayor a la que había y no existe suficiente en inventario
+        data = {'nombre': "1", 'cantidad': "50", 'fecha_cad': "2019-12-12"}
+        self.client.post((reverse('paquetes:editar_paquete_inventario', kwargs={'id_paquete': PaqueteInventario.objects.first().id})), data)
+
+        #no se modificó nada
+        self.assertEqual(receta_1.obtener_cantidad_inventario(), 15)
+        self.assertEqual(receta_2.obtener_cantidad_inventario(), 40)
+        self.assertEqual(PaqueteInventario.objects.first().cantidad, 1)
+
+        #La cantidad a editar es mayor a la que había y sí existe suficiente en inventario
+        data = {'nombre': "1", 'cantidad': "2", 'fecha_cad': "2019-12-12"}
+        self.client.post(reverse('paquetes:editar_paquete_inventario', kwargs={'id_paquete': PaqueteInventario.objects.first().id}), data)
+        #Se restan las recetas de inventario
+        self.assertEqual(receta_1.obtener_cantidad_inventario(), 20)
+        self.assertEqual(receta_2.obtener_cantidad_inventario(), 30)
+        #La receta que se agregó al último ya tiene piezas ocupadas
+        self.assertEqual(RecetaInventario.objects.last().ocupadas, 10)
+
+
     def test_ac_22_3_No_se_guarda_el_campo_de_nombre_vacio(self):
         data = {'cantidad':"12", 'fecha_cad':"2019-12-12"}
-        self.client.post(reverse('paquetes:editar_paquete_inventario', kwargs={'id_paquete_inventario':1}), data)
+        self.client.post(reverse('paquetes:editar_paquete_inventario', kwargs={'id_paquete': PaqueteInventario.objects.first().id}), data)
 
         update = PaqueteInventario.objects.get(id=1)
         self.assertNotEqual(update.nombre, "")
 
     def test_ac_22_4_Existe_mensaje_de_error_al_dejar_nombre_vacio(self):
         data = {'cantidad':"10", 'fecha_cad':"2019-12-12"}
-        resp = self.client.post(reverse('paquetes:editar_paquete_inventario', kwargs={'id_paquete_inventario':1}), data)
+        resp = self.client.post(reverse('paquetes:editar_paquete_inventario', kwargs={'id_paquete': PaqueteInventario.objects.first().id}), data)
         self.assertFormError(resp, 'form', 'nombre', "Este campo no puede ser vacio")
 
     def test_ac_22_5_Campo_de_cantidad_no_puede_ser_vacio(self):
         data = {'nombre':"1", 'fecha_cad':"2019-12-12"}
-        resp = self.client.post(reverse('paquetes:editar_paquete_inventario', kwargs={'id_paquete_inventario':1}), data)
+        resp = self.client.post(reverse('paquetes:editar_paquete_inventario', kwargs={'id_paquete': PaqueteInventario.objects.first().id}), data)
         update = PaqueteInventario.objects.get(id=1)
         self.assertNotEqual(update.cantidad, "")
 
     def test_ac_22_6_test_ac_22_4_Existe_mensaje_de_error_al_dejar_la_cantidad_vacia(self):
         data = {'nombre':"1", 'fecha_cad':"2019-12-12"}
-        resp =  self.client.post(reverse('paquetes:editar_paquete_inventario', kwargs={'id_paquete_inventario':1}), data)
+        resp =  self.client.post(reverse('paquetes:editar_paquete_inventario', kwargs={'id_paquete': PaqueteInventario.objects.first().id}), data)
         self.assertFormError(resp, 'form', 'nombre', "Este campo no puede ser vacio")
 
     def test_ac_22_7_Cantidad_no_puede_ser_negativo(self):
         data = {'nombre':"1", 'cantidad':"-12", 'fecha_cad':"2019-12-12"}
-        resp = self.client.post(reverse('paquetes:editar_paquete_inventario', kwargs={'id_paquete_inventario':1}), data)
+        resp = self.client.post(reverse('paquetes:editar_paquete_inventario', kwargs={'id_paquete': PaqueteInventario.objects.first().id}), data)
         update = PaqueteInventario.objects.get(id=1)
         self.assertNotEqual(update.cantidad, "-12")
 
     def test_ac_22_8_Mensaje_de_error_al_introducir_numero_negativo(self):
         data = {'nombre':"1", 'cantidad':"-12", 'fecha_cad':"2019-12-12"}
-        resp = self.client.post(reverse('paquetes:editar_paquete_inventario', kwargs={'id_paquete_inventario':1}), data)
+        resp = self.client.post(reverse('paquetes:editar_paquete_inventario', kwargs={'id_paquete': PaqueteInventario.objects.first().id}), data)
         self.assertFormError(resp, 'form', 'cantidad', "Este campo no puede ser negativo")
 
     def test_ac_22_9_No_puedes_poner_fecha_del_pasado(self):
         data = {'nombre':"1", 'cantidad':"12", 'fecha_cad':"1999-12-12"}
-        resp = self.client.post(reverse('paquetes:editar_paquete_inventario', kwargs={'id_paquete_inventario':1}), data)
+        resp = self.client.post(reverse('paquetes:editar_paquete_inventario', kwargs={'id_paquete': PaqueteInventario.objects.first().id}), data)
         update = PaqueteInventario.objects.get(id=1)
         self.assertNotEqual(update.fecha_cad, "1999-12-12")
 
     def test_ac_22_10_No_permite_cosas_sin_formato_de_fecha_en_fecha(self):
         data = {'nombre':"1", 'cantidad':"-12", 'fecha_cad':"esto es un string"}
-        resp = self.client.post(reverse('paquetes:editar_paquete_inventario', kwargs={'id_paquete_inventario':1}), data)
+        resp = self.client.post(reverse('paquetes:editar_paquete_inventario', kwargs={'id_paquete': PaqueteInventario.objects.first().id}), data)
         update = PaqueteInventario.objects.get(id=1)
         self.assertNotEqual(update.fecha_cad, "esto es un string")
 
     def test_ac_22_11_Mensaje_de_error_al_dejar_campo_fecha_vacio(self):
         data = {'nombre':"1", 'cantidad':"12"}
-        resp = self.client.post(reverse('paquetes:editar_paquete_inventario', kwargs={'id_paquete_inventario':1}), data)
+        resp = self.client.post(reverse('paquetes:editar_paquete_inventario', kwargs={'id_paquete': PaqueteInventario.objects.first().id}), data)
         self.assertFormError(resp, 'form', 'fecha_cad', "Este campo no puede ser vacio")
 
     def test_ac_22_12_Campo_cantidad_sin_strings(self):
         data = {'nombre':"1", 'cantidad':"repollo", 'fecha_cad':"2019-12-12"}
-        resp = self.client.post(reverse('paquetes:editar_paquete_inventario', kwargs={'id_paquete_inventario':1}), data)
+        resp = self.client.post(reverse('paquetes:editar_paquete_inventario', kwargs={'id_paquete': PaqueteInventario.objects.first().id}), data)
         update = PaqueteInventario.objects.get(id=1)
         self.assertNotEqual(update.cantidad, "repollo")
