@@ -94,5 +94,35 @@ class TestAgregarMateriaCatalogo(TestCase):
         self.client.post(reverse('materiales:materiales'), data)
         self.assertEqual(Material.objects.count(), 0)
 
+#Casos de uso US54
+class TestListaUnidades(TestCase):
+
+    def test_ac1_existe_la_vista_lista(self):
+        resp = self.client.get(reverse('materiales:lista_unidades'))
+        self.assertEqual(resp.status_code, 200)
+
+    def test_ac2_se_muestra_la_lista_con_unidades_agregadas(sself):
+        self.assertEqual(Unidad.objects.count(), 0)
+        Unidad.objects.create(nombre="ac2")
+        self.assertEqual(Unidad.objects.count(), 1)
+        resp = self.client.get(reverse('materiales:lista_unidades'))
+        self.assertEqual(len(resp.context['unidades']), 1)
+
+    def test_ac3_existe_vista_agregar(self):
+        data = {'nombre':"ac3"}
+        resp = self.client.post(reverse('materiales:lista_unidades'), data)
+        self.assertEqual(resp.status_code, 200)
+
+    def test_ac4_se_agrega_la_unidad(self):
+        self.assertEqual(Unidad.objects.count(), 0)
+        data = {'nombre':"ac4"}
+        self.client.post(reverse('materiales:lista_unidades'), data)
+        self.assertEqual(Unidad.objects.count(), 1)
+
+    def test_ac4_se_agrega_la_unidad(self):
+        self.assertEqual(Unidad.objects.count(), 0)
+        data = {'nombre':""}
+        self.client.post(reverse('materiales:lista_unidades'), data)
+        self.assertEqual(Unidad.objects.count(), 0)
 
 # Create your tests here.
