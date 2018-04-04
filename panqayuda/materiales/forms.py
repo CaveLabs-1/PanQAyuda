@@ -25,7 +25,7 @@ class MaterialForm(ModelForm):
 
 class UnidadForm(ModelForm):
     class Meta:
-        model = Unidad
+        model = Unidad 
         fields = ('nombre', )
 
     def clean_nombre(self):
