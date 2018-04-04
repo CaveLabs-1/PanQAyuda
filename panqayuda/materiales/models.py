@@ -39,4 +39,4 @@ class MaterialInventario(models.Model):
     deleted_at = models.DateTimeField(blank=True, null=True)
 
     def __str__(self):
-        return self.nombre
+        return self.material.nombre

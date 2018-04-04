@@ -9,5 +9,5 @@ class Compra(models.Model):
     updated_at = models.DateTimeField(default=timezone.now)
     deleted_at = models.DateTimeField(blank=True, null=True)
     def __str__(self):
-        return self.fecha_compra
+        return self.proveedor.nombre
 # Create your models here.

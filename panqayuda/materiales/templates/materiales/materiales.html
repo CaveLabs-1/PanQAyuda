@@ -20,7 +20,7 @@
       <table id="table_id" class="datatable">
         <thead>
           <th>Nombres</th>
-          <th>Unidad</th>
+          <!-- <th>Unidad</th> -->
           <th>Codigo</th>
           <th>Editar</th>
         </thead>
@@ -28,7 +28,7 @@
          {% for material in materiales %}
           <tr>
             <td>{{material.nombre}}</td>
-            <td>{{material.unidad}}</td>
+            <!-- <td>{{material.unidad}}</td> -->
             <td>{{material.codigo}}</td>
             <td><a href="editar_material/{{ material.id }}"><i class="material-icons">edit</i></a></td>
           </tr>
