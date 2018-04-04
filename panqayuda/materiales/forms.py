@@ -24,6 +24,10 @@ class MaterialForm(ModelForm):
             raise ValidationError("Este material ya existe")
 
 class UnidadForm(ModelForm):
+    class Meta:
+        model = Unidad 
+        fields = ('nombre', )
+
     def clean_nombre(self):
         nombre=self.cleaned_data['nombre']
         unidad_existente=Unidad.objects.filter(deleted_at__isnull= True).filter(nombre__iexact=nombre)
@@ -35,6 +39,3 @@ class UnidadForm(ModelForm):
                     if unidad.id==self.instance.id:
                         return nombre
             raise ValidationError('Ya hay una unidad con este nombre')
-    class Meta:
-        model = Unidad
-        fields = ('nombre',)
