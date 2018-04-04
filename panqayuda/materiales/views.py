@@ -43,15 +43,6 @@ def lista_unidades(request):
         unidades =  Unidad.objects.filter(deleted_at__isnull=True)
         return render (request, 'materiales/lista_unidades.html', {'forma': forma, 'unidades': unidades})
 
-
-
-"""
-    View que está haciendo Rudy
-"""
-# @group_required('admin')
-# def lista_unidades(request):
-#     return render(request, 'materiales/lista_unidades.html')
-
 """
     Función que agrega una nueva unidad a la base de datos según la forma, si no tiene
     un POST te regresa la forma para hacerlo
