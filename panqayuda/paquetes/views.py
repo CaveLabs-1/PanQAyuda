@@ -65,7 +65,6 @@ def paquetes_por_catalogo(request):
         return HttpResponse(response)
     return HttpResponse('Algo ha salido mal.')
 
-@group_required('admin')
 def agregar_paquete_inventario(request):
     if request.method == 'POST':
         forma_post=FormPaqueteInventario(request.POST or None)
@@ -102,7 +101,6 @@ def borrar_paquete_inventario(request, id_paquete_inventario):
 
 
 #US22
-@group_required('admin')
 def editar_paquete_inventario(request, id_paquete):
     paquete_inventario = get_object_or_404(PaqueteInventario, pk=id_paquete)
     if request.method == "POST":
