@@ -11,7 +11,7 @@ import datetime
 def lista_proveedores(request):
     lista_proveedores = Proveedor.objects.all().filter(status=1).filter(deleted_at__isnull=True)
     return render(request, 'proveedores/lista_proveedores.html', {'proveedores':lista_proveedores})
-
+ 
 @group_required('admin')
 def agregar_proveedor(request):
     if request.method == "POST":
