@@ -1,7 +1,7 @@
 from django.shortcuts import render, reverse, redirect, get_object_or_404
 from django.template.loader import render_to_string
 from .forms import MaterialForm, UnidadForm
-from .models import Material, MaterialInventario
+from .models import Material, MaterialInventario, Unidad
 from django.contrib import messages
 from django.http import HttpResponseRedirect, HttpResponse
 from django.db.models import Sum
@@ -27,30 +27,21 @@ def materiales(request):
         materiales =  Material.objects.filter(deleted_at__isnull=True)
         return render (request, 'materiales/materiales.html', {'forma': forma, 'materiales': materiales})
 
-# @group_required('admin')
-# def unidades(request):
-#     if request.method == 'POST':
-#         forma_post = FormUnidad(request.POST)
-#         if forma_post.is_valid():
-#             forma_post.save()
-#             messages.success(request, 'Se ha agregado una nueva unidad.')
-#         else:
-#             messages.error(request, 'Hubo un error, inténtalo de nuevo.')
-#
-#         return HttpResponseRedirect(reverse('materiales:unidades'))
-#     else:
-#         forma = FormUnidad()
-#         unidades =  Unidad.objects.filter(deleted_at__isnull=True)
-#         return render (request, 'materiales/unidades.html', {'forma': forma, 'unidades': unidades})
-
-
-
-"""
-    View que está haciendo Rudy
-"""
 @group_required('admin')
 def lista_unidades(request):
-    return render(request, 'materiales/lista_unidades.html')
+    if request.method == 'POST':
+        forma_post = UnidadForm(request.POST)
+        if forma_post.is_valid():
+            forma_post.save()
+            messages.success(request, 'Se ha agregado una nueva unidad.')
+        else:
+            messages.error(request, 'Hubo un error, inténtalo de nuevo.')
+
+        return HttpResponseRedirect(reverse('materiales:lista_unidades'))
+    else:
+        forma = UnidadForm()
+        unidades =  Unidad.objects.filter(deleted_at__isnull=True)
+        return render (request, 'materiales/lista_unidades.html', {'forma': forma, 'unidades': unidades})
 
 """
     Función que agrega una nueva unidad a la base de datos según la forma, si no tiene

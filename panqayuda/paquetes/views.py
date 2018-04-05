@@ -95,22 +95,7 @@ def agregar_paquete_inventario(request):
 def borrar_paquete_inventario(request, id_paquete_inventario):
     paquete_inventario = get_object_or_404(PaqueteInventario, pk=id_paquete_inventario)
     cantidad = paquete_inventario.cantidad
-    recetas_paquete = RecetasPorPaquete.objects.filter(paquete=paquete_inventario).filter(deleted_at__isnull=True)
-    for recetas in recetas_paquete:
-        recetas_inventario = RecetaInventario.objects.filter(deleted_at__isnull=True).filter(nombre=receta.receta).order_by('-fecha_cad')
-        #Calcular cantidad a sumar
-        cantidad_a_sumar = (cantidad_anterior - cantidad_nueva)*receta.cantidad
-        for receta_inventario in recetas_inventario:
-            #Verificar que a esta receta_inventario se le pueden quitar de los ocupados
-            if receta_inventario.ocupados > 0:
-                if cantidad_a_sumar <= receta_inventario.ocupados:
-                    receta_inventario.ocupados=0
-                    receta_inventario.save()
-                    break
-                else:
-                    cantidad_a_sumar-=receta_inventario.ocupados
-                    receta_inventario.ocupados=0
-                    receta_inventario.save()
+    eliminar_paquetes_inventario_recetas(paquete_inventario.nombre, cantidad)
     paquete_inventario.estatus = 0
     paquete_inventario.deleted_at = datetime.datetime.now()
     paquete_inventario.save()

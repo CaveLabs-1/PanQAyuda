@@ -1,0 +1,49 @@
+{% extends "base.html" %}
+{% block title %}Ventas{% endblock title %}
+{% block navbar %}{% include "navbar.html" %}{% endblock navbar %}
+{% block header %}
+  <header class="banner-prueba">
+    <h1 class="center-align">Ventas</h1>
+  </header>
+{% endblock header %}
+{% block content %}
+  <div class="row">
+    <div class="col s10 offset-s1">
+      <table id="table_id" class="datatable">
+        <thead>
+          <th>ID</th>
+          <th>Cliente</th>
+          <th>Monto</th>
+          <th>Detalle</th>
+          <th>Editar</th>
+        </thead>
+        <tbody>
+         {% for venta in ventas %}
+          <tr>
+            <td>{{venta.id}}</td>
+            <td>{{venta.cliente}}</td>
+            <td>{{venta.monto}}</td>
+            <td><a><i class="material-icons">view_list</i> </a></td>
+            <td><a href="editar_venta/{{ venta.id }}"><i class="material-icons">edit</i></a></td>
+          </tr>
+         {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+  <div class="fixed-action-btn ">
+    <a class="add-btn btn-floating btn-large waves-effect waves-light pink btn modal-trigger" href="#agregar_venta"><i class="material-icons">add</i></a>
+  </div>
+
+{% include 'ventas/modal_agregar_venta.html' %}
+
+{% endblock content %}
+
+{% block js %}
+    <script type="text/js">
+        $(document).ready(function(){
+            $('.modal').modal();
+            $('select').formSelect();
+        });
+    </script>
+{% endblock js %}

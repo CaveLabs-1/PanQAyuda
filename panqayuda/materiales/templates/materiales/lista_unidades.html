@@ -4,15 +4,31 @@
 {% block header %}
   <header class="banner-prueba">
     {# buscar clase banner-prueba en main.css #}
-    <h1 class="center-align">Lista temporal</h1>
+    <h1 class="center-align">Lista De Unidades</h1>
   </header>
 {% endblock header %}
 {% block content %}
 
-  <div class="container">
-    <br><br>
+<div class="row">
+  <div class="col s10 offset-s1">
+    <table id="table_id" class="datatable">
+      <thead>
+        <th>Nombre</th>
+        <th>Editar</th>
+      </thead>
+      <tbody>
+       {% for unidad in unidades %}
+        <tr>
+          <td>{{unidad.nombre}}</td>
+          <td><a href=""><i class="material-icons">edit</i></a></td>
+        </tr>
+       {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
 
-    <br>
+  <div class="container">
     <div class="fixed">
         <a href="#modal_detalle" class="btn-floating btn-large waves-effect waves-light pink modal-trigger"  ><i class="material-icons">add</i></a>
     </div>
