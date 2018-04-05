@@ -91,7 +91,6 @@ def agregar_paquete_inventario(request):
         paquetes = Paquete.objects.filter(deleted_at__isnull=True).order_by("nombre")
         return render(request, 'paquetes/agregar_inventario.html', {'paquetes': paquetes, 'forma':forma})
 
-@group_required('admin')
 def borrar_paquete_inventario(request, id_paquete_inventario):
     paquete_inventario = get_object_or_404(PaqueteInventario, pk=id_paquete_inventario)
     cantidad = paquete_inventario.cantidad
