@@ -102,15 +102,14 @@ def borrar_paquete_inventario(request, id_paquete_inventario):
     messages.success(request, 'Se ha borrado el paquete del inventario')
     return redirect('paquetes:lista_paquete_inventario')
 
-
-#US22
 @group_required('admin')
+#US22
 def editar_paquete_inventario(request, id_paquete):
     paquete_inventario = get_object_or_404(PaqueteInventario, pk=id_paquete)
     if request.method == "POST":
+        cantidad_anterior=paquete_inventario.cantidad
         form = FormEditarPaquete(request.POST or None, instance=paquete_inventario)
         if form.is_valid():
-            cantidad_anterior = paquete_inventario.cantidad
             cantidad_nueva = form.instance.cantidad
             if cantidad_nueva < cantidad_anterior:
                 #Agregar piezas disponibles a las recetas en inventario
@@ -200,7 +199,6 @@ def editar_paquete(request, id_paquete):
 def agregar_paquetes_inventario_recetas(paquete,cantidad):
     # Obtener recetas del paquete
     recetas = RecetasPorPaquete.objects.filter(paquete=paquete).filter(deleted_at__isnull=True)
-
     # Verificar que exista cantidad suficiente para crear el paquete de cada receta
     for receta in recetas:
         # Total de piezas necesitadas para esta receta
@@ -211,7 +209,6 @@ def agregar_paquetes_inventario_recetas(paquete,cantidad):
 
         if cantidad_real > cantidad_inv:
             return False
-
     # #Restar inventario
     for receta in recetas:
         # Obtener recetas del inventario disponibles para restar ordenadas por fecha de caducidad
@@ -241,7 +238,7 @@ def eliminar_paquetes_inventario_recetas(paquete,cantidad):
             # Verificar que a esta receta_inventario se le pueden quitar de los ocupados
             if receta_inventario.ocupados > 0:
                 if cantidad_a_sumar <= receta_inventario.ocupados:
-                    receta_inventario.ocupados = 0
+                    receta_inventario.ocupados-=cantidad_a_sumar
                     receta_inventario.save()
                     break
                 else:

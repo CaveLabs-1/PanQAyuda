@@ -25,6 +25,12 @@ class FormEditarPaquete (forms.ModelForm):
         model = PaqueteInventario
         fields = ('cantidad',)
 
+        error_messages = {
+            'cantidad': {
+                'required': "Debes seleccionar una cantidad mayor a 0.",
+            },
+        }
+
 class FormRecetasPorPaquete(forms.ModelForm):
     class Meta:
         model = RecetasPorPaquete
@@ -44,3 +50,15 @@ class FormPaqueteInventario(forms.ModelForm):
     class Meta:
         model = PaqueteInventario
         fields = ('nombre', 'cantidad', 'fecha_cad')
+
+        error_messages = {
+            'nombre': {
+                'required': "Debes seleccionar un paquete.",
+            },
+            'cantidad': {
+                'required': "Debes seleccionar una cantidad mayor a 0.",
+            },
+            'fecha_cad': {
+                'required': "Debes seleccionar una fecha",
+            }
+        }
