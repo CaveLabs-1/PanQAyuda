@@ -11,7 +11,7 @@ import datetime
 
 # Create your views here.
 
-@group_required('admin')
+#@group_required('admin')
 def materiales(request):
     if request.method == 'POST':
         forma_post = MaterialForm(request.POST)
@@ -27,7 +27,7 @@ def materiales(request):
         materiales =  Material.objects.filter(deleted_at__isnull=True)
         return render (request, 'materiales/materiales.html', {'forma': forma, 'materiales': materiales})
 
-@group_required('admin')
+#@group_required('admin')
 def lista_unidades(request):
     if request.method == 'POST':
         forma_post = UnidadForm(request.POST)
@@ -47,7 +47,7 @@ def lista_unidades(request):
     Función que agrega una nueva unidad a la base de datos según la forma, si no tiene
     un POST te regresa la forma para hacerlo
 """
-@group_required('admin')
+#@group_required('admin')
 def agregar_unidades(request):
     if request.method == "POST":
         form = UnidadForm(request.POST)

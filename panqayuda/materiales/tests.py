@@ -4,7 +4,9 @@ from materiales.models import Material
 from materiales.models import Unidad
 from materiales.models import MaterialInventario
 from compras.models import Compra
+from proveedores.models import Proveedor
 from django.utils import timezone
+import datetime
 from django.contrib.auth.models import User
 
 #test agregar materia prima US 11
@@ -101,7 +103,7 @@ class TestListaUnidades(TestCase):
         resp = self.client.get(reverse('materiales:lista_unidades'))
         self.assertEqual(resp.status_code, 200)
 
-    def test_ac2_se_muestra_la_lista_con_unidades_agregadas(sself):
+    def test_ac2_se_muestra_la_lista_con_unidades_agregadas(self):
         self.assertEqual(Unidad.objects.count(), 0)
         Unidad.objects.create(nombre="ac2")
         self.assertEqual(Unidad.objects.count(), 1)
@@ -113,16 +115,54 @@ class TestListaUnidades(TestCase):
         resp = self.client.post(reverse('materiales:lista_unidades'), data)
         self.assertEqual(resp.status_code, 200)
 
-    def test_ac4_se_agrega_la_unidad(self):
+    def test_ac4_no_se_agrega_la_unidad(self):
         self.assertEqual(Unidad.objects.count(), 0)
         data = {'nombre':"ac4"}
         self.client.post(reverse('materiales:lista_unidades'), data)
         self.assertEqual(Unidad.objects.count(), 1)
 
-    def test_ac4_se_agrega_la_unidad(self):
+    def test_ac5_no_se_agrega_el_nombre(self):
         self.assertEqual(Unidad.objects.count(), 0)
         data = {'nombre':""}
         self.client.post(reverse('materiales:lista_unidades'), data)
         self.assertEqual(Unidad.objects.count(), 0)
+
+#Caso de uso US14
+class TestListaMateriaPrima(TestCase):
+
+    def setUp(self):
+        unidad = Unidad.objects.create(
+            nombre="kilogramo")
+        material = Material.objects.create(
+            nombre="buebito",
+            codigo=122345)
+        proveedor = Proveedor.objects.create(
+            nombre="Manuel Flores",
+            telefono=4151046632,
+            direccion="Aqui mero patatero",
+            rfc="testerino",
+            razon_social="es un tipazo",
+            email="mane@hotmail.com")
+        compra = Compra.objects.create(
+            proveedor=proveedor,
+            fecha_compra="2048-03-03 12:31:06-05")
+        inventario = MaterialInventario.objects.create(
+            material=material,
+            compra=compra,
+            unidad_entrada=unidad,
+            cantidad=1,
+            cantidad_salida=12,
+            costo=120,
+            fecha_cad="2049-03-03 12:31:06-05")
+
+    def test_ac1_existe_la_vista(self):
+        resp = self.client.get(reverse('materiales:materiales'))
+        self.assertEqual(resp.status_code, 200)
+
+    def test_ac2_muestra_lista_de_materiales(self):
+        self.assertEqual(MaterialInventario.objects.count(), 1)
+        resp = self.client.get(reverse('materiales:materiales'))
+        self.assertEqual(resp.status_code, 200)
+        self.assertEqual(resp.context['materiales'].count(), 1)
 
 # Create your tests here.
