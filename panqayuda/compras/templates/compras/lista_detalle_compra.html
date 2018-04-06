@@ -13,7 +13,7 @@
   <tbody>
     {% for compramaterial in materiales_de_compra %}
         <tr>
-          <td>{{compramaterial.material.nombre}}</td>
+          <td>{{compramaterial.material.material.nombre}}</td>
           <td>{{compramaterial.material.fecha_cad}}</td>
           <td>{{compramaterial.cantidad}} {{compramaterial.material.unidad_entrada}}</td>
           <td>{{compramaterial.material.costo}}</td>
