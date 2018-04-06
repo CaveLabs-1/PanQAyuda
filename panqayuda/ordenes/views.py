@@ -35,7 +35,7 @@ def ordenes (request):
                     break
             if suficiente:
                 for material_receta in materiales_receta:
-                    materiales_inventario = MaterialInventario.objects.filter(material = material).filter(
+                    materiales_inventario = MaterialInventario.object.filter(material = material).filter(
                         deleted_at__isnull=True).order_by('-fecha_cad')
                     # Calcula la cantidad que se debe restar de dicho material en el inventario.
                     cantidad_a_restar = material_receta.cantidad * multiplicador
@@ -73,7 +73,6 @@ def ordenes (request):
         recetas = Receta.objects.filter(deleted_at__isnull=True)
         # Render de la página con la forma vacía y lista de ordenes por entregar.
         tabla = render_to_string('ordenes/tabla_ordenes.html', {'ordenes': ordenes})
-
         return render(request, 'ordenes/ordenes.html', {'forma': forma, 'ordenes': ordenes, 'recetas':recetas, 'tabla':tabla})
 
 
