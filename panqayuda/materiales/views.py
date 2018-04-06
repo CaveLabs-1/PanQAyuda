@@ -11,7 +11,7 @@ import datetime
 
 # Create your views here.
 
-#@group_required('admin')
+@group_required('admin')
 def materiales(request):
     if request.method == 'POST':
         forma_post = MaterialForm(request.POST)
@@ -27,7 +27,7 @@ def materiales(request):
         materiales =  Material.objects.filter(deleted_at__isnull=True)
         return render (request, 'materiales/materiales.html', {'forma': forma, 'materiales': materiales})
 
-#@group_required('admin')
+@group_required('admin')
 def lista_unidades(request):
     if request.method == 'POST':
         forma_post = UnidadForm(request.POST)
@@ -47,7 +47,7 @@ def lista_unidades(request):
     Función que agrega una nueva unidad a la base de datos según la forma, si no tiene
     un POST te regresa la forma para hacerlo
 """
-#@group_required('admin')
+@group_required('admin')
 def agregar_unidades(request):
     if request.method == "POST":
         form = UnidadForm(request.POST)
@@ -78,7 +78,7 @@ def materiales_por_catalogo(request):
         id_material = request.POST.get('id_material')
         material = Material.objects.get(pk=id_material)
         detalle_materiales_en_inventario = MaterialInventario.objects.filter(material_id=id_material).filter(deleted_at__isnull=True)
-        print(detalle_materiales_en_inventario)
+        #print(detalle_materiales_en_inventario)
         response = render_to_string('materiales/lista_detalle_materiales_inventario.html', {'detalle_materiales_en_inventario': detalle_materiales_en_inventario, 'material': material})
         return HttpResponse(response)
     return HttpResponse('Algo ha salido mal.')
