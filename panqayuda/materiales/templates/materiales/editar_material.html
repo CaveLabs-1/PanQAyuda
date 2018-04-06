@@ -1,0 +1,60 @@
+{% extends "base.html" %}
+{% block title %}{{material.nombre}}{% endblock title %}
+{% block navbar %}{% include "navbar.html" %}{% endblock navbar %}
+{% block header %}
+    <header class="">
+        {# buscar clase banner-prueba en main.css #}
+        <h1 class="center-align">{{ material.nombre }}</h1>
+    </header>
+{% endblock header %}
+
+{% block content %}
+<div class="valign-wrapper">
+    <div class="container">
+      <!-- Carta donde carga todo -->
+        <div class="card">
+            <div class="card-content">
+            <span class="card-title">
+                <div class="row">
+
+                </div>
+            </span>
+            <!-- Forma para editar la material -->
+            <form class="" action="{% url 'materiales:editar_material' material.id %}" method="POST">
+              <br>
+              <br>
+              {% csrf_token %}
+              <div class="row">
+                <div class="input-field col m4">
+                  <input class = "validate"  type="text" name="{{form.nombre.html_name}}" id="{{form.nombre.id_for_label}}" value="{{material.nombre}}" required>
+                  <label for="{{form.nombre.id_for_label}}" data-error='Nombre inválido'  data-success="Nombre correcto">Nombre</label>
+                </div>
+                <div class="input-field col m4">
+                  <input class="validate "type="text" step = "0.50" name="{{form.codigo.html_name}}" id={{form.codigo.id_for_label}} value="{{material.codigo}}" min="0" required>
+                  <label for="{{form.codigo.id_for_label}}" data-error='Código inválido'  data-success="Código correcto">Código</label>
+                </div>
+              </div>
+              <div class="row">
+                <div class="col s6">
+                  <a class="btn waves-effect waves-light pink" href="{% url 'materiales:materiales' %}">Regresar
+                    <i class="material-icons left">chevron_left</i>
+                  </a>
+                </div>
+                <div class="col s6 right-align">
+                    <button type="submit" class="save btn right-align pink">Editar <i class="material-icons right">send</i></button>
+                </div>
+              </div>
+            </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock content %}
+
+{% block js %}
+    <script type="text/javascript">
+        $(document).ready(function(){
+            $('.collapsible').collapsible();
+        });
+    </script>
+{% endblock js %}

@@ -82,3 +82,16 @@ def materiales_por_catalogo(request):
         response = render_to_string('materiales/lista_detalle_materiales_inventario.html', {'detalle_materiales_en_inventario': detalle_materiales_en_inventario, 'material': material})
         return HttpResponse(response)
     return HttpResponse('Algo ha salido mal.')
+
+def editar_material(request, id_material):
+    material = get_object_or_404(Material, pk=id_material)
+    if request.method == "POST":
+        form = MaterialForm(request.POST or None, instance=material)
+        if form.is_valid():
+            material = form.save()
+            material.save
+            messages.success(request, 'Se ha editado la material exitosamente!')
+            return redirect('materiales:materiales')
+    else:
+        form = MaterialForm()
+    return render(request, 'materiales/editar_material.html', {'form': form, 'material': material})
