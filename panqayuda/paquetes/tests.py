@@ -82,8 +82,8 @@ class TestEditarPaqueteCatalogo(TestCase):
         nombre1 = paquete1.nombre
         nombre2 = paquete.nombre
         self.assertFalse(nombre1 == nombre2)
-
-
+#
+#
 class TestAgregarPaqueteInventario(TestCase):
 
     def setUp(self):
@@ -195,7 +195,7 @@ class TestAgregarPaqueteInventario(TestCase):
 
         #Verificar que no se creó el paquete
         self.assertEqual(PaqueteInventario.objects.count(), 0)
-
+#
 class TestBorrarPaqueteCatalogo(TestCase):
 
     def crear_paquete(self):
@@ -387,35 +387,59 @@ class TestAgregarPaqueteCatalogo(TestCase):
 class TestEliminarPaquete(TestCase):
     #Inicializar base de datos
     def setUp(self):
-        p = Paquete.objects.create(nombre="Paquete de prueba", precio=100)
-        Receta.objects.create(nombre="Galleta", cantidad=100, duration=datetime.timedelta(days=1))
-        r = Receta.objects.create(nombre="Brownie", cantidad=100, duration=datetime.timedelta(days=50))
-        PaqueteInventario.objects.create(nombre=p,cantidad=50, fecha_cad=datetime.datetime.today())
-        PaqueteInventario.objects.create(nombre=p,cantidad=40, fecha_cad=datetime.datetime.today())
-        RecetasPorPaquete.objects.create(paquete=p, receta=r, cantidad=10)
+        receta = Receta.objects.create(nombre="Receta de prueba 1", duration=datetime.timedelta(days=1))
+        receta_2 = Receta.objects.create(nombre="Receta de prueba 2", duration=datetime.timedelta(days=1))
+        # Receta 1 en inventario que caduca en 5 día
+        RecetaInventario.objects.create(nombre=receta, cantidad=3,
+                                        fecha_cad=datetime.datetime.now() + datetime.timedelta(days=5))
+        # Receta 1 en inventario que caduca en 1 día
+        RecetaInventario.objects.create(nombre=receta, cantidad=3,
+                                        fecha_cad=datetime.datetime.now() + datetime.timedelta(days=5))
+        # Receta 1 en inventario que ya caducó
+        RecetaInventario.objects.create(nombre=receta, cantidad=3,
+                                        fecha_cad=datetime.datetime.now() - datetime.timedelta(days=5))
+        # Receta 2 en inventario
+        RecetaInventario.objects.create(nombre=receta_2, cantidad=15,
+                                        fecha_cad=datetime.datetime.now() + datetime.timedelta(days=10))
+
+        paquete = Paquete.objects.create(id=1, nombre="Paquete de prueba", precio=10, estatus=1)
+        RecetasPorPaquete.objects.create(paquete=paquete, receta=receta, cantidad=5)
+        RecetasPorPaquete.objects.create(paquete=paquete, receta=receta_2, cantidad=10)
+
+        # Agregar paquete inventario
+        data = {'nombre': Paquete.objects.first().id, 'cantidad': "1", 'fecha_cad': "2019-12-10"}
+        self.client.post(reverse('paquetes:agregar_inventario'), data)
+
 
     #Se actualiza cantidad disponible de paquetes
     def test_ac_23_1(self):
-        paquete = Paquete.objects.last()
+        resp = self.client.get(reverse('paquetes:lista_paquete_inventario'))
+        self.assertEqual(resp.context['catalogo_paquetes'][0].total, 1)
+
+        paquete_inventario = PaqueteInventario.objects.first()
         #borrar paquete
-        self.client.get(reverse('paquetes:borrar_paquete_inventario', kwargs={'id_paquete':paquete.id}))
+        self.client.get(reverse('paquetes:borrar_paquete_inventario', kwargs={'id_paquete_inventario':paquete_inventario.id}))
 
         #Verificar cantidad
         resp = self.client.get(reverse('paquetes:lista_paquete_inventario'))
-        self.assertEqual(resp.context['catalogo_paquetes'][0], 50)
-    """
+        self.assertEqual(PaqueteInventario.objects.last().estatus, 0)
+
     #Se actualiza la cantidad de recetas disponibles
     def test_ac_23_2(self):
         #Verificar cantidad de recetas antes de borrar
-        self.assertEqual(Receta.objects.last().cantidad,100)
+        self.assertEqual(Receta.objects.first().obtener_cantidad_inventario(),1)
+        self.assertEqual(Receta.objects.last().obtener_cantidad_inventario(),5)
 
         # borrar paquete
-        paquete = Paquete.objects.last()
-        resp = self.client.get(reverse('paquetes:borrar_paquete_inventario', kwargs={'id_paquete': paquete.id}))
+        paquete = PaqueteInventario.objects.last()
+        resp = self.client.get(reverse('paquetes:borrar_paquete_inventario', kwargs={'id_paquete_inventario': paquete.id}))
 
         #Verificar la cantida de recetas después de borrar
-        self.assertEqual(Receta.objects.last().cantidad,110)
-        """
+        self.assertEqual(Receta.objects.first().obtener_cantidad_inventario(),6)
+        self.assertEqual(Receta.objects.last().obtener_cantidad_inventario(),15)
+
+        #Verificar que se borró el paquete
+        self.assertEqual(PaqueteInventario.objects.last().estatus,0)
 
     #Solo un administrador logeado puede eliminar un paquete
 
