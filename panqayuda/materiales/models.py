@@ -27,7 +27,6 @@ class Unidad(models.Model):
 
 class MaterialInventario(models.Model):
     material = models.ForeignKey(Material, on_delete=models.CASCADE)
-    compra = models.ForeignKey(Compra, on_delete=models.CASCADE)
     unidad_entrada = models.ForeignKey(Unidad, on_delete=models.CASCADE)
     cantidad = models.IntegerField(blank=True, null="True")
     cantidad_salida = models.IntegerField(blank=True, null="True")
