@@ -1,5 +1,5 @@
 from django.shortcuts import render, get_object_or_404
-from recetas.models import Receta
+from recetas.models import Receta, RelacionRecetaMaterial
 from .models import Orden
 from .forms import FormOrden
 from django.contrib import messages
@@ -7,6 +7,8 @@ from django.urls import reverse
 from django.template.loader import render_to_string
 from django.http import HttpResponseRedirect, HttpResponse
 from panqayuda.decorators import group_required
+from recetas.models import Receta
+from materiales.models import Material
 
 # Lista de ordenes de trabajo y forma para crear una nueva orden de trabajo.
 @group_required('admin')
@@ -14,8 +16,47 @@ def ordenes (request):
     # En caso de que la petición sea tipo 'POST' crea la forma con los datos obtenidos y la valida.
     if request.method == 'POST':
         forma_post = FormOrden(request.POST)
+        # Si la forma es valida, guarda el registro y devuelve mensaje de éxito.
         if forma_post.is_valid():
-            # Si la forma es valida, guarda el registro y devuelve mensaje de éxito.
+            # Obtiene los datos de la forma.
+            data = forma_post.cleaned_data
+            # Guarda el registro de la receta seleccionada en una variable.
+            receta = data['receta']
+            # Guarda el multiplicador en una variable
+            multiplicador = data['multiplicador']
+            # Filtra la lista de materiales a solo los materiales usados en dicha receta.
+            materiales_receta = RelacionRecetaMaterial.objects.filter(receta = receta)
+            # Quita el material usado del inventario.
+            suficiente = True
+            for material_receta in materiales_receta:
+                material = Material.object.get(pk = material_receta.material.id)
+                if material.obtener_cantidad_inventario() < material_receta.cantidad:
+                    suficiente = False
+                    break
+            if suficiente:
+                for material_receta in materiales_receta:
+                    materiales_inventario = MaterialInventario.objects.filter(material = material).filter(
+                        deleted_at__isnull=True).order_by('-fecha_cad')
+                    # Calcula la cantidad que se debe restar de dicho material en el inventario.
+                    cantidad_a_restar = material_receta.cantidad * multiplicador
+                    # Modifica el inventario por recetas, tomando en cuenta la fecha de caducidself.
+                    for material_inventario in materiales_inventario:
+                        # Si la cantidad disponible de dicho registro es mayor a la cantidad que se necesita restar,
+                        # se resta directamente y se termina el proceso.
+                        if  material_inventario.cantidad_disponible > cantidad_a_restar:
+                            material_inventario.cantidad_disponible -= cantidad
+                            material_inventario.save()
+                            break
+                        else:
+                            # En caso de que no exista suficiente material en dicho registro, ocupa todo lo que exite
+                            # y pasa al siguiente registro.
+                            cantidad_a_restar -= material_inventario.cantidad_disponible
+                            material_inventario.cantidad_disponible = 0
+                            material_inventario.save()
+            else:
+                messages.error(request, 'Hubo un error, no hay suficiente material en el inventario.')
+                return HttpResponseRedirect(reverse('ordenes:ordenes'))
+            # Guarda el registro de la orden de trabajo
             forma_post.save()
             messages.success(request, 'Se ha agregado una nueva orden de trabajo.')
             return HttpResponseRedirect(reverse('ordenes:ordenes'))
