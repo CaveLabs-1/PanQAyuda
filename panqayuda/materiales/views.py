@@ -78,7 +78,7 @@ def materiales_por_catalogo(request):
         id_material = request.POST.get('id_material')
         material = Material.objects.get(pk=id_material)
         detalle_materiales_en_inventario = MaterialInventario.objects.filter(material_id=id_material).filter(deleted_at__isnull=True)
-        print(detalle_materiales_en_inventario)
+        #print(detalle_materiales_en_inventario)
         response = render_to_string('materiales/lista_detalle_materiales_inventario.html', {'detalle_materiales_en_inventario': detalle_materiales_en_inventario, 'material': material})
         return HttpResponse(response)
     return HttpResponse('Algo ha salido mal.')
