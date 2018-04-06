@@ -8,6 +8,34 @@
 {% endblock header %}
 {% block content %}
 
+<div class="row">
+  <div class="col s10 offset-s1">
+    <table id="table_id" class="datatable">
+      <thead>
+        <th>ID</th>
+        <th>Cliente</th>
+        <th>Monto</th>
+        <th>Detalle</th>
+        <th>Editar</th>
+      </thead>
+      <tbody>
+       {% for compra in compras %}
+        <tr>
+          <td>{{compra.id}}</td>
+          <td>{{compra.cliente}}</td>
+          <td>{{compra.monto}}</td>
+          <td><a onclick="detalleCompra({{compra.id}})" href="#modal_detalle" class="modal-trigger"><i class="material-icons">view_list</i> </a></td>
+          <td><a href="editar_compra/{{ compra.id }}"><i class="material-icons">edit</i></a></td>
+        </tr>
+       {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+<div class="fixed-action-btn ">
+  <a class="add-btn btn-floating btn-large waves-effect waves-light pink btn modal-trigger" href="#agregar_compra"><i class="material-icons">add</i></a>
+</div>
+
 {% include 'compras/modal_agregar_compra.html' %}
 
 <div id="modal_detalle" class="modal">
