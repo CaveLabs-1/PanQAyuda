@@ -23,7 +23,7 @@
             <td>{{venta.id}}</td>
             <td>{{venta.cliente}}</td>
             <td>{{venta.monto}}</td>
-            <td><a><i class="material-icons">view_list</i> </a></td>
+            <td><a onclick="detalleVenta({{venta.id}})" href="#modal_detalle" class="modal-trigger"><i class="material-icons">view_list</i> </a></td>
             <td><a href="editar_venta/{{ venta.id }}"><i class="material-icons">edit</i></a></td>
           </tr>
          {% endfor %}
@@ -37,6 +37,15 @@
 
 {% include 'ventas/modal_agregar_venta.html' %}
 
+<div id="modal_detalle" class="modal">
+  <div class="modal-content">
+    <div id="modal_venta" class=""></div>
+  </div>
+  <div class="modal-footer">
+    <a href="#!" class="modal-action modal-close waves-effect waves-green btn-flat">Listo</a>
+  </div>
+</div>
+
 {% endblock content %}
 
 {% block js %}
@@ -45,5 +54,52 @@
             $('.modal').modal();
             $('select').formSelect();
         });
+    </script>
+    <script type="text/javascript">
+      $(document).ready(function(){
+          var csrftoken = $.cookie('csrftoken');
+          function csrfSafeMethod(method) {
+          // these HTTP methods do not require CSRF protection
+              return (/^(GET|HEAD|OPTIONS|TRACE)$/.test(method));
+          }
+          $.ajaxSetup({
+              beforeSend: function(xhr, settings) {
+                  if (!csrfSafeMethod(settings.type) && !this.crossDomain) {
+                      xhr.setRequestHeader("X-CSRFToken", csrftoken);
+                  }
+              }
+          });
+      });
+
+      function deleteRegister(element, event) {
+        event.preventDefault();
+        $.confirm({
+          title: '¿Deseas Continuar?',
+          content: 'La venta se eliminará permanentemente.',
+          type: 'red',
+          closeIcon: true,
+          columnClass: 'col l6 offset-l3 s12',
+          typeAnimated: true,
+          buttons: {
+            continuar: {
+              text: 'Eliminar',
+              btnClass: 'btn-red',
+              action: function () {
+                window.location.href = $(element).attr("href");
+              }
+            }
+         }
+       });
+      }
+
+      function detalleVenta(id_venta){
+        console.log(id_venta);
+        var url = '{% url "ventas:lista_detalle_venta" %}';
+        $.post(url, {
+          id_venta: id_venta,
+        }).done(function(data){
+          $("#modal_venta").html(data);
+        });
+      }
     </script>
 {% endblock js %}
