@@ -10,6 +10,7 @@ urlpatterns = [
     path('', views.lista_materiales_inventario, name='lista_materiales_inventario'),
     path('lista_materiales', views.materiales, name='materiales'),
     path('lista_unidades', views.lista_unidades, name='lista_unidades'),
+    path('lista_materiales/modificar_unidad/<int:id_unidad>', views.modificar_unidad, name='modificar_unidad'),
     path('agregar_unidades', views.agregar_unidades, name='agregar_unidades'),
     path('materiales_por_catalogo/', views.materiales_por_catalogo, name='materiales_por_catalogo'),
     path('lista_materiales/editar_material/<int:id_material>', views.editar_material, name='editar_material'),
