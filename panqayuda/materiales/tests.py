@@ -7,13 +7,16 @@ from compras.models import Compra
 from proveedores.models import Proveedor
 from django.utils import timezone
 import datetime
-from django.contrib.auth.models import User
+from django.contrib.auth.models import User, Group
 
 #test agregar materia prima US 11
 class TestListaMaterialCatalogo(TestCase):
 
     def setUp(self):
-        user = User.objects.create_user(username='temporary', email='temporary@gmail.com', password='temporary')
+        Group.objects.create(name="admin")
+        user = User.objects.create_user(username='temporary', email='temporary@gmail.com', password='temporary', is_superuser='True')
+        user.save()
+        self.client.login(username='temporary', password='temporary')
 
     #existe la vista
     def test_valid_session(self):
@@ -52,8 +55,10 @@ class TestListaMaterialCatalogo(TestCase):
 class TestAgregarMateriaCatalogo(TestCase):
 
     def setUp(self):
-        usuario = User.objects.create_user('temporary', 'temporary@gmail.com', 'temporary')
-        usuario.save()
+        Group.objects.create(name="admin")
+        user = User.objects.create_user(username='temporary', email='temporary@gmail.com', password='temporary', is_superuser='True')
+        user.save()
+        self.client.login(username='temporary', password='temporary')
 
     def test_ac1_existe_vista_agregar(self):
         #self.client.login(username='temporary', password='temporary')
@@ -98,6 +103,12 @@ class TestAgregarMateriaCatalogo(TestCase):
 
 #Casos de uso US54
 class TestListaUnidades(TestCase):
+
+    def setUp(self):
+        Group.objects.create(name="admin")
+        user = User.objects.create_user(username='temporary', email='temporary@gmail.com', password='temporary', is_superuser='True')
+        user.save()
+        self.client.login(username='temporary', password='temporary')
 
     def test_ac1_existe_la_vista_lista(self):
         resp = self.client.get(reverse('materiales:lista_unidades'))
@@ -147,6 +158,10 @@ class TestListaMateriaPrima(TestCase):
         inventario2.save()
 
     def setUp(self):
+        Group.objects.create(name="admin")
+        user = User.objects.create_user(username='temporary', email='temporary@gmail.com', password='temporary', is_superuser='True')
+        user.save()
+        self.client.login(username='temporary', password='temporary')
         unidad = Unidad.objects.create(
             nombre="kilogramo")
         unidad.save()
@@ -205,6 +220,10 @@ class TestListaMateriaPrima(TestCase):
 class TestEditarMateriaCatalogo(TestCase):
 
     def setUp(self):
+        Group.objects.create(name="admin")
+        user = User.objects.create_user(username='temporary', email='temporary@gmail.com', password='temporary', is_superuser='True')
+        user.save()
+        self.client.login(username='temporary', password='temporary')
         Material.objects.create(nombre="Test", codigo=1000001)
 
     def test_ac1_existe_la_vista(self):
