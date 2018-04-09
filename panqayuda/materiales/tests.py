@@ -201,5 +201,40 @@ class TestListaMateriaPrima(TestCase):
         self.assertEqual(resp.status_code, 200)
         #self.assertEqual(resp.context['materiales'].count(), 1)
 
+#tests dle caso de uso 12
+class TestEditarMateriaCatalogo(TestCase):
+
+    def setUp(self):
+        Material.objects.create(nombre="Test", codigo=1000001)
+
+    def test_ac1_existe_la_vista(self):
+        objeto = Material.objects.first()
+        id = objeto.id
+        self.client.post(reverse('materiales:editar_material', kwargs={'id_material':id}))
+
+    def test_ac2_la_vista_corresponde_al_item(self):
+        objeto = Material.objects.first()
+        id = objeto.id
+        resp = self.client.get(reverse('materiales:editar_material', kwargs={'id_material':id}))
+        self.assertEqual(resp.status_code, 200)
+        self.assertEqual(resp.context['material'].nombre, "Test")
+
+    def test_ac3_No_cambia_el_nombre_a_uno_existente(self):
+        objeto = Material.objects.first()
+        id = objeto.id
+        Material.objects.create(nombre="Test2", codigo=122212)
+        self.assertEqual(Material.objects.count(), 2)
+        data = {'nombre':"Test2", 'codigo':1221212}
+        resp = self.client.post(reverse('materiales:editar_material', kwargs={'id_material':id}), data)
+        self.assertEqual(Material.objects.first().nombre, "Test")
+
+    def test_ac4_No_se_guarda_sin_nombre(self):
+        objeto = Material.objects.first()
+        id = objeto.id
+        Material.objects.create(nombre="Test2", codigo=122212)
+        self.assertEqual(Material.objects.count(), 2)
+        data = {'nombre':"", 'codigo':1221212}
+        resp = self.client.post(reverse('materiales:editar_material', kwargs={'id_material':id}), data)
+        self.assertEqual(Material.objects.first().nombre, "Test")
 
 # Create your tests here.
