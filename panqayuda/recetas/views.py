@@ -150,6 +150,7 @@ def borrar_material(request, id_material):
     Regresa objetos de receta_inventario.
 """
 
+@group_required('admin')
 def lista_recetas_inventario(request):
     #recetas_inventario = list(RecetaInventario.objects.filter(deleted_at__isnull=True).filter(estatus=1))
     catalogo_recetas=Receta.objects.filter(deleted_at__isnull=True).filter(status=1)
@@ -162,6 +163,7 @@ def lista_recetas_inventario(request):
     Regresa objetos de receta_inventario.
 """
 
+@group_required('admin')
 def detalle_recetas_inventario(request):
     if request.method == 'POST':
         id_receta = request.POST.get('id_receta')
