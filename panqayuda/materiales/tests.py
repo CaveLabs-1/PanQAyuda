@@ -149,8 +149,7 @@ class TestModificarUnidades(TestCase):
         #Checar si la base de datos esta vacia de unidades
         self.assertEqual(Unidad.objects.count(), 0)
         #Se agrega la info basica para una unidad
-        data1 = {'nombre':"Kilogramos"}
-        self.client.post(reverse('materiales:agregar_unidades'), data1)
+        self.crear_unidad()
         #Se guarda una nueva unidad
         #en data2 se guarda el edit de la unidad
         data2 = {'nombre':"Gramos"}
@@ -160,20 +159,20 @@ class TestModificarUnidades(TestCase):
 
     def test_errorNombreVacia(self):
         self.crear_unidad()
-        data = {}
+        data = {'nombre':''}
         resp = self.client.post(reverse('materiales:modificar_unidad', kwargs={'id_unidad':1}), data)
 
         self.assertEqual(Unidad.objects.count(), 1)
-        self.assertFormError(resp, 'form', 'nombre', "Este campo no puede ser vacio")
+        self.assertFormError(resp, 'form', 'nombre', "Este campo no puede ser vacío")
 
-    def test_ac_25_NoPermitePonerUnNombreDeUnPaqueteYaExistente(self):
+    def test_prohibeCrearUnidadExistente(self):
         unidad1 = self.crear_unidad()
         unidad2 = self.crear_unidad2()
 
         data = {'nombre':"Unidad 1"}
         self.client.post(reverse('materiales:modificar_unidad', kwargs={'id_unidad':2}), data)
         resp = self.client.get(reverse('materiales:modificar_unidad', kwargs={'id_unidad':2}))
-        paquete = resp.context['paquete']
+        unidad = resp.context['unidad']
 
         nombre1 = unidad1.nombre
         nombre2 = unidad.nombre

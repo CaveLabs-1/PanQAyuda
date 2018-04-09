@@ -72,6 +72,9 @@ def modificar_unidad(request, id_unidad):
             unidad.save
             messages.success(request, 'Se ha editado la unidad exitosamente!')
             return redirect('materiales:lista_unidades')
+        else:
+            messages.success(request, 'Ocurrio un error, intenta de nuevo')
+            return render(request, 'materiales/modificar_unidad.html', {'form': form, 'unidad': unidad})
     else:
         form = UnidadForm()
     return render(request, 'materiales/modificar_unidad.html', {'form': form, 'unidad': unidad})

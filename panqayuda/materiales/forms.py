@@ -25,8 +25,13 @@ class MaterialForm(ModelForm):
 
 class UnidadForm(ModelForm):
     class Meta:
-        model = Unidad 
+        model = Unidad
         fields = ('nombre', )
+        error_messages = {
+            'nombre': {
+                'required': "Este campo no puede ser vacío",
+            },
+        }
 
     def clean_nombre(self):
         nombre=self.cleaned_data['nombre']
