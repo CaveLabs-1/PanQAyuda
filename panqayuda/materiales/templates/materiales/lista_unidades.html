@@ -15,12 +15,14 @@
       <thead>
         <th>Nombre</th>
         <th>Editar</th>
+        <th>Eliminar</th>
       </thead>
       <tbody>
        {% for unidad in unidades %}
         <tr>
           <td>{{unidad.nombre}}</td>
           <td><a href=""><i class="material-icons">edit</i></a></td>
+          <td><a href="{% url 'materiales:eliminar_unidad' unidad.id %}" class="modal-trigger" onclick="return confirm('Vas a eliminar una Unidad del catálogo. ¿Continuar?')" ><i class="material-icons">delete</i></a></td>
         </tr>
        {% endfor %}
       </tbody>
