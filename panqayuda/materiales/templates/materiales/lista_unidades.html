@@ -21,7 +21,7 @@
        {% for unidad in unidades %}
         <tr>
           <td>{{unidad.nombre}}</td>
-          <td><a href=""><i class="material-icons">edit</i></a></td>
+          <td><a href="{% url 'materiales:modificar_unidad' unidad.id %}" class="modal-trigger"><i class="material-icons">edit</i></a></td>
           <td><a href="{% url 'materiales:eliminar_unidad' unidad.id %}" class="modal-trigger" onclick="return confirm('Vas a eliminar una Unidad del catálogo. ¿Continuar?')" ><i class="material-icons">delete</i></a></td>
         </tr>
        {% endfor %}
@@ -44,7 +44,7 @@
         <br>
         {% csrf_token %}
         <div class="row">
-          <div class="col s6">
+          <div class="input-field col s12">
             <input class = "validate"  type="text" name="nombre" id="nombre" value="" required>
             <label for="nombre" data-error='Nombre no válido'  data-success="Nombre correcto">Nombre</label>
           </div>
