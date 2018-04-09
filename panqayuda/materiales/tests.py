@@ -127,6 +127,59 @@ class TestListaUnidades(TestCase):
         self.client.post(reverse('materiales:lista_unidades'), data)
         self.assertEqual(Unidad.objects.count(), 0)
 
+#Caso de uso US55
+class TestModificarUnidades(TestCase):
+
+    #Revisar que la sesión exista
+    def test_valid_session(self):
+        session = self.client.session
+
+    def crear_unidad(self):
+        return Unidad.objects.create(id=1, nombre="Unidad")
+
+    def crear_unidad2(self):
+        return Unidad.objects.create(id=2, nombre="Unidad auxiliar")
+
+    def test_vista_modificar_unidad(self):
+        self.crear_unidad()
+        resp = self.client.get(reverse('materiales:modificar_unidad', kwargs={'id_unidad':1}))
+        self.assertEqual(resp.status_code, 200)
+
+    def test_modificarUnidad(self):
+        #Checar si la base de datos esta vacia de unidades
+        self.assertEqual(Unidad.objects.count(), 0)
+        #Se agrega la info basica para una unidad
+        data1 = {'nombre':"Kilogramos"}
+        self.client.post(reverse('materiales:agregar_unidades'), data1)
+        #Se guarda una nueva unidad
+        #en data2 se guarda el edit de la unidad
+        data2 = {'nombre':"Gramos"}
+        #se manda a la ruta
+        self.client.post(reverse('materiales:modificar_unidad', kwargs={'id_unidad':1}), data2)
+        self.assertEqual(Unidad.objects.count(), 1)
+
+    def test_errorNombreVacia(self):
+        self.crear_unidad()
+        data = {}
+        resp = self.client.post(reverse('materiales:modificar_unidad', kwargs={'id_unidad':1}), data)
+
+        self.assertEqual(Unidad.objects.count(), 1)
+        self.assertFormError(resp, 'form', 'nombre', "Este campo no puede ser vacio")
+
+    def test_ac_25_NoPermitePonerUnNombreDeUnPaqueteYaExistente(self):
+        unidad1 = self.crear_unidad()
+        unidad2 = self.crear_unidad2()
+
+        data = {'nombre':"Unidad 1"}
+        self.client.post(reverse('materiales:modificar_unidad', kwargs={'id_unidad':2}), data)
+        resp = self.client.get(reverse('materiales:modificar_unidad', kwargs={'id_unidad':2}))
+        paquete = resp.context['paquete']
+
+        nombre1 = unidad1.nombre
+        nombre2 = unidad.nombre
+        self.assertFalse(nombre1 == nombre2)
+#
+
 #Caso de uso US14
 class TestListaMateriaPrima(TestCase):
 
