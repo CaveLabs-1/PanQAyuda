@@ -1,4 +1,4 @@
-<h4>Detalle de {{receta.nombre}}</h4>
+<h4>Inventario detallado {{receta.nombre}}</h4>
 <table>
   <thead>
     <tr>
@@ -11,7 +11,7 @@
   <tbody>
     {% for i in detalle_recetas_en_inventario %}
 
-        <tr>
+        <tr class="{% if i.es_caducado %} pink-text {% endif %}">
           <td>{{i.nombre}}</td>
             <td>{{i.cantidad}}</td>
             <td>{{i.fecha_cad}}</td>

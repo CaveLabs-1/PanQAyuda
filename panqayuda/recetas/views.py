@@ -13,6 +13,8 @@ from django.template.loader import render_to_string
 # from django.contrib import messages
 # from django.views.generic.edit import UpdateView
 # from django.views import generic
+from django.db.models import Sum, F
+
 
 """
     Función que enlista todas las recetas guardadas dentro de la base de datos.
@@ -148,15 +150,9 @@ def borrar_material(request, id_material):
     Regresa objetos de receta_inventario.
 """
 
-
 def lista_recetas_inventario(request):
     #recetas_inventario = list(RecetaInventario.objects.filter(deleted_at__isnull=True).filter(estatus=1))
     catalogo_recetas=Receta.objects.filter(deleted_at__isnull=True).filter(status=1)
-
-    for receta_inventario in catalogo_recetas:
-         aux= RecetaInventario.objects.filter(nombre_id=receta_inventario.id).filter(deleted_at__isnull=True).aggregate(Sum('cantidad'))
-         receta_inventario.total=aux['cantidad__sum']
-
 
     return render(request, 'recetas/lista_recetas_inventario.html', {'catalogo_recetas': catalogo_recetas})
 
@@ -166,12 +162,11 @@ def lista_recetas_inventario(request):
     Regresa objetos de receta_inventario.
 """
 
-@group_required('admin')
 def detalle_recetas_inventario(request):
     if request.method == 'POST':
         id_receta = request.POST.get('id_receta')
         receta = Receta.objects.get(pk=id_receta)
-        detalle_recetas_en_inventario = RecetaInventario.objects.filter(nombre_id=id_receta, deleted_at__isnull=True)
+        detalle_recetas_en_inventario = receta.obtener_recetas_inventario()
         response = render_to_string('recetas/lista_detalle_recetas_inventario.html', {'detalle_recetas_en_inventario': detalle_recetas_en_inventario, 'receta': receta})
         return HttpResponse(response)
     return HttpResponse('Algo ha salido mal.')
