@@ -15,19 +15,17 @@
         <thead>
           <tr>
             <th>Nombre</th>
-            <th>Total</th>
+            <th>Cantidad en inventario</th>
             <th>Ver detalle</th>
           </tr>
         </thead>
         <tbody>
           {% for receta_inventario in catalogo_recetas %}
-            {% if receta_inventario.total%}
             <tr>
                 <td>{{receta_inventario.nombre}}</td>
-                <td>{{ receta_inventario.total }}</td>
+                <td>{{ receta_inventario.obtener_cantidad_inventario_con_caducados }} {% if receta_inventario.tiene_caducados%} -  <span class="pink-text"> Existen caducados </span> {% endif %}</td>
                 <td><a onclick="detalleRecetas({{receta_inventario.id}})" href="#modal_detalle" class="modal-trigger"><i class="material-icons">view_list</i> </a></td>
             </tr>
-            {% endif %}
           {% endfor %}
         </tbody>
     </table>
