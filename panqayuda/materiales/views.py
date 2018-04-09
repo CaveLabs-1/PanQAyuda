@@ -43,6 +43,22 @@ def lista_unidades(request):
         unidades =  Unidad.objects.filter(deleted_at__isnull=True)
         return render (request, 'materiales/lista_unidades.html', {'forma': forma, 'unidades': unidades})
 
+
+
+
+@group_required('admin')
+def eliminar_unidad(request, id_unidad):
+    unidad = get_object_or_404(Unidad, pk=id_unidad)
+    unidad.estatus = 0
+    unidad.deleted_at = datetime.datetime.now()
+    unidad.save()
+    messages.success(request, '¡Se ha borrado exitosamente la unidad del catálogo!')
+    return redirect('materiales:lista_unidades')
+
+
+
+
+
 """
     Función que agrega una nueva unidad a la base de datos según la forma, si no tiene
     un POST te regresa la forma para hacerlo
