@@ -86,7 +86,7 @@ def modificar_unidad(request, id_unidad):
         if form.is_valid():
             unidad = form.save()
             unidad.save
-            messages.success(request, 'Se ha editado la unidad exitosamente!')
+            messages.success(request, '¡Se ha editado la unidad exitosamente!')
             return redirect('materiales:lista_unidades')
         else:
             messages.success(request, 'Ocurrio un error, intenta de nuevo')
