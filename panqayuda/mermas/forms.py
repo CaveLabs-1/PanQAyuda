@@ -28,3 +28,16 @@ class MermaMaterialForm(ModelForm):
         widget = {
             'fecha': forms.DateTimeField(),
         }
+        
+class MermaRecetaForm(ModelForm):
+    class Meta:
+        model = MermaReceta
+        fields = (
+            'nombre',
+            'cantidad',
+            'fecha',
+            'descripcion'
+        )
+        widget = {
+            'fecha': forms.DateTimeField(),
+        }
