@@ -1,8 +1,12 @@
 from django.shortcuts import render
 from paquetes.models import PaqueteInventario
+from django.contrib import messages
+from django.urls import reverse
 from .forms import MermaPaqueteForm
 from .models import MermaReceta, MermaPaquete, MermaMaterial
+from django.http import HttpResponseRedirect, HttpResponse, JsonResponse, HttpResponseNotFound, Http404
 from panqayuda.decorators import group_required
+
 import datetime
 
 @group_required('admin')
@@ -15,6 +19,7 @@ def lista_mermas(request):
 def agregar_merma_paquetes(request):
     newMermaPaqueteForm = MermaPaqueteForm()
     if request.method == 'POST':
+        print(request.POST.get('nombre'))
         newMermaPaqueteForm = MermaPaqueteForm(request.POST)
         if newMermaPaqueteForm.is_valid():
             Merma = newMermaPaqueteForm.save(commit=False)
@@ -25,7 +30,7 @@ def agregar_merma_paquetes(request):
                 context = {
                     'MermaPack': newMermaPaqueteForm,
                 }
-                return render(request, 'mermas/MagregarPack.html', context)
+                return render(request, 'mermas/lista_mermas.html', context)
             elif pack.cantidad == Merma.cantidad :
                 Merma.save()
                 pack.delete()
@@ -37,10 +42,15 @@ def agregar_merma_paquetes(request):
                 message.success(request, 'Se ha agregado la merma exitosamente')
                 return render(reverse('mermas:lista_mermas'))
         else :
-            messages.success(request, 'Hubo un error en la forma')
-            context = {
-                'MermaPack': newMermaPaqueteForm,
-            }
-            return render(request, 'mermas/MagregarPack.html', context)
+            mensaje_error = ""
+            for field,errors in newMermaPaqueteForm.errors.items():
+                 for error in errors:
+                     mensaje_error+=error + "\n"
+            return HttpResponseNotFound('Hubo un problema agregando la receta al paquete: '+ mensaje_error)
+            # messages.success(request, 'Hubo un error en la forma')
+            # context = {
+            #     'MermaPack': newMermaPaqueteForm,
+            # }
+            # return render(request, 'mermas/lista_mermas.html', context)
     else :
-        return render(rreverse('mermas:lista_mermas'))
+        return render(reverse('mermas:lista_mermas'))

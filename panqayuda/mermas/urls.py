@@ -7,5 +7,6 @@ app_name = 'mermas'
 
 urlpatterns = [
     path('', views.lista_mermas, name='lista_mermas'),
+    path('agregar_merma_paquetes', views.agregar_merma_paquetes, name='agregar_merma_paquetes'),
 
 ]+ static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
