@@ -1,0 +1,86 @@
+{% extends "base.html" %}
+{% block title %}Agregar Compra{% endblock title %}
+{% block navbar %}{% include "navbar.html" %}{% endblock navbar %}
+{% block header %}
+  <header>
+    <h2 class="center-align">Agregar Materia Prima Compra</h2>
+  </header>
+{% endblock header %}
+
+{% block content %}
+  <div class="container paquete-catalogo-form">
+    <div class="card recetas-catalogo-card">
+      <div id="formahtml">
+        <!--forma incluida forma_agregar_compra.html-->
+        {{formahtml}}
+        <!--Lista incluida lista_materia_prima_por_compra.html-->
+        {{lista_materia_prima_por_compra}}
+      </div>
+    </div>
+  </div>
+{% endblock content %}
+
+{% block js %}
+  <script type="text/javascript">
+
+    $(document).ready(function(){
+        var csrftoken = $.cookie('csrftoken');
+        function csrfSafeMethod(method) {
+        // these HTTP methods do not require CSRF protection
+            return (/^(GET|HEAD|OPTIONS|TRACE)$/.test(method));
+        }
+        $.ajaxSetup({
+            beforeSend: function(xhr, settings) {
+                if (!csrfSafeMethod(settings.type) && !this.crossDomain) {
+                    xhr.setRequestHeader("X-CSRFToken", csrftoken);
+                }
+            }
+        });
+    });
+
+    $('select').formSelect();
+
+    $(document.body).on('click', '#agrega_select', function(e){
+
+         if(document.getElementById('agrega_compra').checkValidity()) {
+             e.preventDefault();
+             var url = '{% url "compras:agregar_materia_prima_a_compra" %}';
+
+             var id_material = $('#id_material').val();
+             var fecha_cad = $('#id_fecha_cad').val();
+             var cantidad  = $('#id_cantidad').val();
+             var unidad_entrada  = $('#id_unidad_entrada').val();
+             var porciones = $('#id_porciones').val();
+             var costo  = $('#id_costo').val();
+             var id_compra = $('#id_compra').val();
+
+
+            $.post(url, {
+              material: id_material,
+              compra: id_compra,
+              unidad_entrada: unidad_entrada,
+              cantidad: cantidad,
+              porciones: porciones,
+              costo: costo,
+              fecha_cad:fecha_cad
+            }).done(function(data){
+              //actualizar forma y lista
+              $('#formahtml').html(data);
+              //inicializar datepicker materialize
+              $('#id_fecha_cad').datepicker({
+                  format: 'yyyy-mm-dd',
+                  minDate: new Date(),
+                });
+              $('select').formSelect();
+              M.toast({html:'La receta se ha agregado al paquete.'});
+           }).fail(function(data) {
+             //mensaje de error
+                M.toast({html:data.responseText});
+            });
+
+            return false;
+        }
+    });
+
+  </script>
+{% endblock js %}
