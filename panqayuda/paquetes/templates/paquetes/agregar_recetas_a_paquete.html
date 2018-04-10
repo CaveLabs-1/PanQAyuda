@@ -1,9 +1,9 @@
 {% extends "base.html" %}
-{% block title %}Prueba{% endblock title %}
+{% block title %}Producto Terminado{% endblock title %}
 {% block navbar %}{% include "navbar.html" %}{% endblock navbar %}
 {% block header %}
   <header>
-    <h2 class="center-align">Paquete {{paquete.nombre}}<a href="{% url 'paquetes:editar_paquete' paquete.id %}">
+    <h2 class="center-align">Producto Terminado {{paquete.nombre}}<a href="{% url 'paquetes:editar_paquete' paquete.id %}">
       <i class="small material-icons">edit</i>
     </a></h2>
   </header>
