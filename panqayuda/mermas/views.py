@@ -6,11 +6,19 @@ from panqayuda.decorators import group_required
 import datetime
 
 @group_required('admin')
-def lista_mermas(request):
+def lista_mermas_receta(request):
     mermas = list(MermaReceta.objects.all())
-    mermas += list(MermaPaquete.objects.all())
-    mermas += list(MermaMaterial.objects.all())
-    return render(request, 'mermas/lista_mermas.html', {'mermas': mermas})
+    return render(request, 'mermas/lista_mermas_receta.html', {'mermas': mermas})
+
+@group_required('admin')
+def lista_mermas_paquete(request):
+    mermas = list(MermaPaquete.objects.all())
+    return render(request, 'mermas/lista_mermas_paquete.html', {'mermas': mermas})
+
+@group_required('admin')
+def lista_mermas_material(request):
+    mermas = list(MermaMaterial.objects.all())
+    return render(request, 'mermas/lista_mermas_material.html', {'mermas': mermas})
 
 def agregar_merma_paquetes(request):
     newMermaPaqueteForm = MermaPaqueteForm()
