@@ -6,7 +6,7 @@ from django.conf.urls.static import static
 app_name = 'mermas'
 
 urlpatterns = [
-    path('', views.lista_mermas, name='lista_mermas'),
-    path('agregar_merma_paquetes', views.agregar_merma_paquetes, name='agregar_merma_paquetes'),
+    path('lista_mermas/', views.agregar_merma_paquetes, name='mermas_paquetes'),
 
-]+ static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+
+] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
