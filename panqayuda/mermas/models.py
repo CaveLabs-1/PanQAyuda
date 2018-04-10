@@ -29,7 +29,7 @@ class MermaPaquete(models.Model):
     def __str__(self):
         return self.fecha + self.nombre
 
-class MermaMateria(models.Model):
+class MermaMaterial(models.Model):
     nombre = models.ForeignKey(MaterialInventario, on_delete=models.CASCADE)
     cantidad = models.IntegerField(default=0, blank=False)
     fecha = models.DateTimeField(blank=True, null=False)
