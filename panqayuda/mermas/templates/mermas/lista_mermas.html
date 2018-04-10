@@ -1,0 +1,48 @@
+{% extends "base.html" %}
+{% block title %}Mermas{% endblock title %}
+{% block navbar %}{% include "navbar.html" %}{% endblock navbar %}
+{% block header %}
+  <header class="banner-prueba">
+    {# buscar clase banner-prueba en main.css #}
+    <h1 class="center-align">Mermas</h1>
+  </header>
+{% endblock header %}
+{% block content %}
+  <div class="container">
+    <!-- Carga donde carga todo -->
+      <table id="table_id">
+          <thead>
+            <tr>
+              <th>Nombre</th>
+              <th>Cantidad</th>
+              <th>Fecha</th>
+              <!--<th>Eliminar</th>-->
+            </tr>
+          </thead>
+          <tbody>
+            {% for merma in mermas %}
+            <tr>
+                <td>{{ merma.nombre }}</td>
+                <td>{{ merma.cantidad }}</td>
+                <td>{{ merma.fecha }}</td>
+                <!-- <td><a href="agregar_materiales/{{ merma.id }}"><i class="material-icons">edit</i></a></td> #} -->
+                <!--<td><a onclick="return confirm('¿Seguro que quieres borrar la merma de {{merma.nombre}}?')" href="borrar_merma/{{ merma.id }}"><i class="material-icons">delete</i></a></td>-->
+            </tr>
+            {% endfor %}
+          </tbody>
+      </table>
+      <br>
+      <div class="row">
+        <div class="right-align">
+          <a href="agregar_merma" class="btn-floating btn-large waves-effect waves-light pink"><i class="material-icons">add</i></a>
+        </div>
+      </div>
+  </div>
+{% endblock content %}
+{% block js %}
+  <script type="text/javascript">
+    $(document).ready(function(){
+      $('.collapsible').collapsible();
+    });
+  </script>
+{% endblock js %}

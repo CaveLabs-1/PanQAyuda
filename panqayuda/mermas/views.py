@@ -1,7 +1,16 @@
 from django.shortcuts import render
 from paquetes.models import PaqueteInventario
 from .forms import MermaPaqueteForm
+from .models import MermaReceta, MermaPaquete, MermaMaterial
+from panqayuda.decorators import group_required
 import datetime
+
+@group_required('admin')
+def lista_mermas(request):
+    mermas = list(MermaReceta.objects.all())
+    mermas += list(MermaPaquete.objects.all())
+    mermas += list(MermaMaterial.objects.all())
+    return render(request, 'mermas/lista_mermas.html', {'mermas': mermas})
 
 def agregar_merma_paquetes(request):
     newMermaPaqueteForm = MermaPaqueteForm()
@@ -17,7 +26,7 @@ def agregar_merma_paquetes(request):
                     'MermaPack': newMermaPaqueteForm,
                 }
                 return render(request, 'mermas/MagregarPack.html', context)
-            else if pack.cantidad == Merma.cantidad :
+            elif pack.cantidad == Merma.cantidad :
                 Merma.save()
                 pack.delete()
                 message.success(request, 'Se ha agregado la merma exitosamente')
@@ -35,6 +44,3 @@ def agregar_merma_paquetes(request):
             return render(request, 'mermas/MagregarPack.html', context)
     else :
         return render(rreverse('mermas:lista_mermas'))
-
-
-# Create your views here.
