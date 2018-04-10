@@ -21,4 +21,4 @@ class RelacionCompraMaterial(models.Model):
                                    validators=[MinValueValidator(0.000001, "Debes seleccionar una cantidad mayor a 0.")])
     status = models.IntegerField(default=1)
     def __str__(self):
-        return self.receta.nombre
+        return self.material.nombre
