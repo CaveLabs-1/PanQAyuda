@@ -1,6 +1,8 @@
 var data_table;
 
 $(document).ready(function(){
+  $('.collapsible').collapsible();
+  
   $('.modal').modal();
   $('.tooltipped').tooltip();
   $('select').formSelect();
@@ -9,7 +11,6 @@ $(document).ready(function(){
     format: 'yyyy-mm-dd',
   });
   $('.fixed-action-btn').floatingActionButton();
-
   //'Require' para select en HTML5
   $("select[required]").css({
     display: "inline",
