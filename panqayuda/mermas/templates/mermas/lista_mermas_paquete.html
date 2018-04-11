@@ -1,13 +1,77 @@
 {% extends "base.html" %}
-{% block title %}Mermas{% endblock title %}
+{% block title %}Mermas Paquetes{% endblock title %}
 {% block navbar %}{% include "navbar.html" %}{% endblock navbar %}
 {% block header %}
   <header class="banner-prueba">
     {# buscar clase banner-prueba en main.css #}
-    <h1 class="center-align">Ajuste de inventario Paquetes</h1>
+    <h1 class="center-align">Mermas Paquetes</h1>
   </header>
 {% endblock header %}
 {% block content %}
+{# ----------  Inicia modal  --------------  #}
+<div id="agregarMermaPaquete" class="modal">
+  <div class="modal-content">
+    <div class="row valign-wrapper">
+      <div class="col s7">
+        <h4>Agregar Merma Paquetes</h4>
+      </div>
+      <div class="col s1 offset-s4">
+        <a class="black-text modal-close">
+          <i class="medium material-icons">close</i>
+        </a>
+      </div>
+    </div>
+    <form class="row" method="post" action="{% url 'mermas:agregar_merma_paquetes' %}">
+      {% csrf_token %}
+      <!-- <div class="input-field col s6">
+        <label for="{{forma.nombre.id_for_label}}">Nombre</label>
+        <input id="{{forma.nombre.id_for_label}}" name="{{forma.nombre.html_name}}" type="text" required>
+      </div> -->
+      <div class="input-field col s6">
+        <!-- <select required id="{{forma.nombre.id_for_label}}" name="{{forma.nombre.html_name}}">
+          <option value="" disabled selected>Escoger Paquete</option>
+          {% for paquete in paquetes %}
+          <option value="{{paquete.id}}">{{paquete.nombre}}</option>
+          {% endfor %}
+        </select> -->
+        {{forma.nombre}}
+      </div>
+      <div class="input-field col s6">
+        <label for="{{forma.cantidad.id_for_label}}">Cantidad</label>
+        <input id="{{forma.cantidad.id_for_label}}" name="{{forma.cantidad.html_name}}" type="number" required>
+      </div>
+      <div class="row">
+        <div class="input-field col s12">
+          <input class="datepicker" id="{{forma.fecha.id_for_label}}" type="text" class="required" name="{{forma.fecha.html_name}}" required>
+          <label for="{{forma.fecha_fin.id_for_label}}">Fecha</label>
+        </div>
+      </div>
+      <div class="row">
+        <div class="input-field col s12">
+          <label for="{{forma.descripcion.id_for_label}}">Descripcion</label>
+          <input id="{{forma.descripcion.id_for_label}}" class="required" name="{{forma.descripcion.html_name}}" type="text" required>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col s12 right-align">
+          <br>
+          <button type="submit" class="btn pink waves-effect waves-light">Agregar</button>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>
+{# ----------  Termina modal  --------------  #}
+
+<div class="row">
+  <div class="col s12">
+    <ul class="tabs">
+      <li class="tab col s4"><a class="pink-text" href="/mermas/lista_mermas_receta/">Receta</a></li>
+      <li class="tab col s4"><a class="white-text active" href="/mermas/lista_mermas/">Paquete</a></li>
+      <li class="tab col s4"><a class="pink-text" href="/mermas/lista_mermas_material/">Material</a></li>
+    </ul>
+  </div>
+</div>
   <div class="container">
     <!-- Carga donde carga todo -->
       <table id="table_id">
@@ -27,6 +91,8 @@
                 <td>{{ merma.cantidad }}</td>
                 <td>{{ merma.descripcion }}</td>
                 <td>{{ merma.fecha }}</td>
+                <!-- <td><a href="agregar_materiales/{{ merma.id }}"><i class="material-icons">edit</i></a></td> #} -->
+                <!--<td><a onclick="return confirm('¿Seguro que quieres borrar la merma de {{merma.nombre}}?')" href="borrar_merma/{{ merma.id }}"><i class="material-icons">delete</i></a></td>-->
             </tr>
             {% endfor %}
           </tbody>
@@ -34,7 +100,7 @@
       <br>
       <div class="row">
         <div class="right-align">
-          <a href="agregar_merma" class="btn-floating btn-large waves-effect waves-light pink"><i class="material-icons">add</i></a>
+          <a href="#agregarMermaPaquete" class="btn-floating btn-large waves-effect waves-light pink modal-trigger"><i class="material-icons">add</i></a>
         </div>
       </div>
   </div>
