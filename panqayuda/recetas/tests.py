@@ -4,11 +4,18 @@ from recetas.models import Receta, RelacionRecetaMaterial, RecetaInventario
 import datetime
 from django.utils import timezone
 from django.urls import reverse
+from django.contrib.auth.models import User, Group
 
 #US27-Agregar Receta
 class TestAgregarReceta(TestCase):
 
     #Revisar que la sesión exista
+    def setUp(self):
+        Group.objects.create(name="admin")
+        user = User.objects.create_user(username='temporary', email='temporary@gmail.com', password='temporary', is_superuser='True')
+        user.save()
+        self.client.login(username='temporary', password='temporary')
+
     def test_valid_session(self):
         session = self.client.session
 
