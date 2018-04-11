@@ -5,11 +5,16 @@ from materiales.models import Material, Unidad, MaterialInventario
 from django.urls import reverse
 from django.utils import timezone
 import datetime
-
+from django.contrib.auth.models import User, Group
 
 #US15 - Agregar orden de trabajo
 class TestAgregarOrden(TestCase):
 
+    def setUp(self):
+        Group.objects.create(name="admin")
+        user = User.objects.create_user(username='temporary', email='temporary@gmail.com', password='temporary', is_superuser='True')
+        user.save()
+        self.client.login(username='temporary', password='temporary')
     #Revisar que la sesión exista
     # def test_valid_session(self):
     #     session = self.client.session
@@ -179,6 +184,11 @@ class TestMarcarOrdenComoTerminada(TestCase):
 
         return chicas_sp
 
+    def setUp(self):
+        Group.objects.create(name="admin")
+        user = User.objects.create_user(username='temporary', email='temporary@gmail.com', password='temporary', is_superuser='True')
+        user.save()
+        self.client.login(username='temporary', password='temporary')
     # Crear orden de trabajo para realizar pruebas.
     def crear_orden_de_trabajo(self):
 
@@ -209,7 +219,7 @@ class TestMarcarOrdenComoTerminada(TestCase):
         data = {'id': 6, 'estatus': 2}
         self.client.post(reverse('ordenes:terminar_orden'), data)
         # Comprobar que el registro se modificó correctamente
-        self.assertEqual(Orden.objects.get(pk=6).estatus, '2')
+        self.assertEqual(Orden.objects.get(pk=2).estatus, 2)
 
     def test_quitar_de_lista_las_ordenes_terminadas(self):
         # Crear 4 ordenes de trabajo con status por trabajar.
@@ -241,11 +251,22 @@ class TestCancelarOrden(TestCase):
         lesters = Unidad.objects.create(nombre = 'lesters')
         wruandes = Unidad.objects.create(nombre = 'wruandes')
 
+
+    def setUp(self):
+        Group.objects.create(name="admin")
+        user = User.objects.create_user(username='temporary', email='temporary@gmail.com', password='temporary', is_superuser='True')
+        user.save()
+        self.client.login(username='temporary', password='temporary')
+
+    def crear_receta(self):
+        return Receta.objects.create(nombre="Receta de prueba", cantidad=20, duration=datetime.timedelta(days=1))
+
         # Crear registro de catalogo materiales para pruebas
         azucar = Material.objects.create(nombre = 'Azúcar', codigo = '234')
         flores = Material.objects.create(nombre = 'Flores', codigo = '420')
         muchos_colores = Material.objects.create(nombre = 'Muchos Colores', codigo = '4453')
         sustancia_x = Material.objects.create(nombre = 'Sustancia X', codigo = '355')
+
 
         # Generar registros en el inventario para pruebas
         fecha = timezone.now() + timezone.timedelta(days=3650)
