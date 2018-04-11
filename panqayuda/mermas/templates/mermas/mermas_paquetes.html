@@ -1,10 +1,10 @@
 {% extends "base.html" %}
-{% block title %}Ver Producto Terminado{% endblock title %}
+{% block title %}Ver Paquete{% endblock title %}
 {% block navbar %}{% include "navbar.html" %}{% endblock navbar %}
 {% block header %}
   <header class="banner-prueba">
     {# buscar clase banner-prueba en main.css #}
-    <h1 class="center-align">Catálogo de Producto Terminado</h1>
+    <h1 class="center-align">Catálogo de Paquetes</h1>
     <!-- <div="row">
         <div class="center-align">
             <a href="/paquetes">Catálogo Inventario</a>
@@ -20,7 +20,7 @@
   <div class="col s12">
     <ul class="tabs">
       <li class="tab col s6"><a class="pink-text" href="/paquetes">Catálogo Inventario</a></li>
-      <li class="tab col s6"><a class="white-text active" href="/paquetes/lista_paquetes">Catálogo Producto Terminado</a></li>
+      <li class="tab col s6"><a class="white-text active" href="/paquetes/lista_paquetes">Catálogo Paquetes</a></li>
     </ul>
   </div>
 </div>
@@ -35,18 +35,21 @@
         <th>Eliminar</th>
       </thead>
       <tbody>
-        {% for item in paquetes %}
+        <!-- {% for item in paquetes %} -->
         <tr>
-          <td>{{ item.nombre }}</td>
+          <td>Nepe</td>
+          <td>Nepe</td>
+          <td>Nepe</td>
+          <!-- <td>{{ item.nombre }}</td>
           <td>{{ item.precio }}</td>
-          <td>{{ item.created_at }}</td>
+          <td>{{ item.created_at }}</td> -->
           <td>
-            <a href="editar_paquete/{{item.id}}">
+            <a href="editar_paquete">
               <i class="material-icons">edit</i>
             </a>
           </td>
           <td>
-            <a onclick="deleteRegister(this, event)" href="borrar_paquete/{{item.id}}">
+            <a onclick="deleteRegister(this, event)" href="borrar_paquete/">
               <i class="material-icons">delete</i>
             </a>
           </div>
@@ -59,7 +62,7 @@
 </div>
 <!-- Botón de agregar -->
 <div class="fixed" >
-  <a href={% url 'paquetes:agregar_paquete' %} class="btn-floating pink"><i class="material-icons">add</i></a>
+  <a href="" class="btn-floating pink"><i class="material-icons">add</i></a>
 </div>
 {% endblock content %}
 

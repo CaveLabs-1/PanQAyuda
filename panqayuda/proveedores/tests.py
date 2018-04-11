@@ -1,9 +1,16 @@
 from django.test import TestCase
 from django.urls import reverse
 from proveedores.models import Proveedor
-
+from django.contrib.auth.models import User, Group
+from django.shortcuts import render
 #Test agregar proveedor
 class TestAgregarProveedor(TestCase):
+
+    def setUp(self):
+        Group.objects.create(name="admin")
+        user = User.objects.create_user(username='temporary', email='temporary@gmail.com', password='temporary', is_superuser='True')
+        user.save()
+        self.client.login(username='temporary', password='temporary')
 
     #Revisar que la sesión exista
     def test_valid_session(self):
@@ -128,6 +135,12 @@ class TestAgregarProveedor(TestCase):
 
 class TestListaProveedores(TestCase):
     #se cheva si la ruta para la vista existe
+    def setUp(self):
+        Group.objects.create(name="admin")
+        user = User.objects.create_user(username='temporary', email='temporary@gmail.com', password='temporary', is_superuser='True')
+        user.save()
+        self.client.login(username='temporary', password='temporary')
+
     def test_existe_la_vista(self):
         Proveedor.objects.create(nombre="Bancomer", telefono=4151043944, direccion="calle 100 corazones", rfc=45321343, razon_social="Somos unos cracks", email="ejemplo@hotmail.com")
         self.assertEqual(Proveedor.objects.count(), 1)

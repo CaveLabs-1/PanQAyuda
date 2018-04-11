@@ -4,7 +4,7 @@ from django.urls import reverse
 from recetas.models import Receta, RecetaInventario
 import datetime
 from django.contrib import messages
-
+from django.contrib.auth.models import User, Group
 from django.shortcuts import render
 
 # #Test creado por Manuel
@@ -15,6 +15,10 @@ class TestEditarPaqueteCatalogo(TestCase):
         session = self.client.session
 
     def setUp(self):
+        Group.objects.create(name="admin")
+        user = User.objects.create_user(username='temporary', email='temporary@gmail.com', password='temporary', is_superuser='True')
+        user.save()
+        self.client.login(username='temporary', password='temporary')
         return Receta.objects.create(nombre="Paquete de prueba", cantidad=20, duration=datetime.timedelta(days=1))
 
     def crear_Paquete(self):
@@ -48,17 +52,16 @@ class TestEditarPaqueteCatalogo(TestCase):
         self.crear_Paquete()
         data = {'precio':'10'}
         resp = self.client.post(reverse('paquetes:editar_paquete', kwargs={'id_paquete':1}), data)
-
-        self.assertEqual(Paquete.objects.count(), 1)
         self.assertFormError(resp, 'form', 'nombre', "Este campo no puede ser vacio")
+        self.assertEqual(Paquete.objects.count(), 1)
 
     def test_ac_25_RegresaMensajeDeErrorAlDejarCampoDePrecioVacio(self):
         self.crear_Paquete()
         data = {'nombre':'Test Precio'}
         resp = self.client.post(reverse('paquetes:editar_paquete', kwargs={'id_paquete':1}), data)
-
-        self.assertEqual(Paquete.objects.count(), 1)
         self.assertFormError(resp, 'form', 'precio', "Este campo no puede ser vacio")
+        self.assertEqual(Paquete.objects.count(), 1)
+
 
     def test_ac_25_NoPermiteGuardarUnaOrdenConPrecioNoNumerico(self):
         data = {'nombre':"testerino", 'precio':"precio :v"}
@@ -87,6 +90,10 @@ class TestEditarPaqueteCatalogo(TestCase):
 class TestAgregarPaqueteInventario(TestCase):
 
     def setUp(self):
+        Group.objects.create(name="admin")
+        user = User.objects.create_user(username='temporary', email='temporary@gmail.com', password='temporary', is_superuser='True')
+        user.save()
+        self.client.login(username='temporary', password='temporary')
         receta = Receta.objects.create(nombre="Receta de prueba 1", duration=datetime.timedelta(days=1))
         receta_2 = Receta.objects.create(nombre="Receta de prueba 2", duration=datetime.timedelta(days=1))
         #Receta 1 en inventario que caduca en 5 día
@@ -198,6 +205,12 @@ class TestAgregarPaqueteInventario(TestCase):
 #
 class TestBorrarPaqueteCatalogo(TestCase):
 
+    def setUp(self):
+        Group.objects.create(name="admin")
+        user = User.objects.create_user(username='temporary', email='temporary@gmail.com', password='temporary', is_superuser='True')
+        user.save()
+        self.client.login(username='temporary', password='temporary')
+
     def crear_paquete(self):
         return Paquete.objects.create(nombre="Paquete de Prueba", precio=12.0)
 
@@ -234,6 +247,10 @@ class TestAgregarPaqueteCatalogo(TestCase):
     #Crear objetos de prueba
     def setUp(self):
         #Crear receta de prueba
+        Group.objects.create(name="admin")
+        user = User.objects.create_user(username='temporary', email='temporary@gmail.com', password='temporary', is_superuser='True')
+        user.save()
+        self.client.login(username='temporary', password='temporary')
         Receta.objects.create(nombre="Receta de prueba", cantidad=100, duration=datetime.timedelta(days=1))
 
     def crear_Paquete(self):
@@ -387,6 +404,10 @@ class TestAgregarPaqueteCatalogo(TestCase):
 class TestEliminarPaquete(TestCase):
     #Inicializar base de datos
     def setUp(self):
+        Group.objects.create(name="admin")
+        user = User.objects.create_user(username='temporary', email='temporary@gmail.com', password='temporary', is_superuser='True')
+        user.save()
+        self.client.login(username='temporary', password='temporary')
         receta = Receta.objects.create(nombre="Receta de prueba 1", duration=datetime.timedelta(days=1))
         receta_2 = Receta.objects.create(nombre="Receta de prueba 2", duration=datetime.timedelta(days=1))
         # Receta 1 en inventario que caduca en 5 día
@@ -446,6 +467,10 @@ class TestEliminarPaquete(TestCase):
 # #US22
 class TestEditarPaqueteInventario(TestCase):
     def setUp(self):
+        Group.objects.create(name="admin")
+        user = User.objects.create_user(username='temporary', email='temporary@gmail.com', password='temporary', is_superuser='True')
+        user.save()
+        self.client.login(username='temporary', password='temporary')
         receta = Receta.objects.create(nombre="Receta de prueba 1", duration=datetime.timedelta(days=1))
         receta_2 = Receta.objects.create(nombre="Receta de prueba 2", duration=datetime.timedelta(days=1))
         # Receta 1 en inventario que caduca en 5 día
@@ -536,5 +561,5 @@ class TestEditarPaqueteInventario(TestCase):
     def test_ac_22_12_Campo_cantidad_sin_strings(self):
         data = {'nombre':"1", 'cantidad':"repollo", 'fecha_cad':"2019-12-12"}
         resp = self.client.post(reverse('paquetes:editar_paquete_inventario', kwargs={'id_paquete': PaqueteInventario.objects.first().id}), data)
-        update = PaqueteInventario.objects.get(id=1)
+        update = PaqueteInventario.objects.first()
         self.assertNotEqual(update.cantidad, "repollo")
