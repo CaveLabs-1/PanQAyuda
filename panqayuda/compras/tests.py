@@ -27,9 +27,10 @@ class TestListaCompras(TestCase):
         unidad = Unidad.objects.create(nombre="Unidad")
         materialinv = MaterialInventario.objects.create(
             material=material,
+            compra=compra,
             unidad_entrada=unidad,
             cantidad=12,
-            cantidad_salida=12,
+            cantidad_disponible=12,
             costo=100,
             fecha_cad="2059-03-03 12:31:06-05"
         )
