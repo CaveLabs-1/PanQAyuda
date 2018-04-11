@@ -1,7 +1,6 @@
 from django.test import TestCase
 from django.urls import reverse
 from compras.models import Compra
-from compras.models import RelacionCompraMaterial
 import datetime
 from django.contrib.auth.models import User, Group
 from django.utils import timezone
@@ -34,11 +33,7 @@ class TestListaCompras(TestCase):
             costo=100,
             fecha_cad="2059-03-03 12:31:06-05"
         )
-        RelacionCompraMaterial.objects.create(
-            compra=compra,
-            material=materialinv,
-            cantidad=1
-        )
+
 
     def test_ac1_Existe_la_vista_de_listado(self):
         resp = self.client.get(reverse('compras:compras'))

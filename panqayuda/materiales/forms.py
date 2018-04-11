@@ -48,4 +48,4 @@ class UnidadForm(ModelForm):
 class MaterialInventarioForm(ModelForm):
     class Meta:
         model = MaterialInventario
-        fields = ('material', 'compra', 'unidad_entrada', 'cantidad', 'porciones', 'costo', 'fecha_cad' )
+        fields = ('material', 'compra', 'unidad_entrada', 'cantidad', 'porciones', 'costo', 'fecha_cad')
