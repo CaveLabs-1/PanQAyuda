@@ -23,9 +23,18 @@
     </div>
     <form class="row" method="post" action="">
       {% csrf_token %}
-      <div class="input-field col s6">
+      <!-- <div class="input-field col s6">
         <label for="{{forma.nombre.id_for_label}}">Nombre</label>
         <input id="{{forma.nombre.id_for_label}}" name="{{forma.nombre.html_name}}" type="text" required>
+      </div> -->
+      <div class="input-field col s6">
+        <!-- <select required id="{{forma.nombre.id_for_label}}" name="{{forma.nombre.html_name}}">
+          <option value="" disabled selected>Escoger Paquete</option>
+          {% for paquete in paquetes %}
+          <option value="{{paquete.id}}">{{paquete.nombre}}</option>
+          {% endfor %}
+        </select> -->
+        {{forma.nombre}}
       </div>
       <div class="input-field col s6">
         <label for="{{forma.cantidad.id_for_label}}">Cantidad</label>
