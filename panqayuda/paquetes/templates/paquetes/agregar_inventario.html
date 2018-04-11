@@ -1,9 +1,9 @@
 {% extends "base.html" %}
-{% block title %}Agregar Paquete{% endblock title %}
+{% block title %}Agregar Producto Terminado{% endblock title %}
 {% block navbar %}{% include "navbar.html" %}{% endblock navbar %}
 {% block header %}
   <header>
-    <h2 class="center-align">Agregar Paquete</h2>
+    <h2 class="center-align">Agregar Producto Terminado</h2>
   </header>
 {% endblock header %}
 {% block content %}
@@ -15,7 +15,7 @@
         <div class="row">
           <div class="input-field col m6">
             <select id="id_paquete" class="" name="nombre" required>
-              <option value="0">Selecciona un paquete</option>
+              <option value="0">Selecciona un Producto Terminado</option>
               {% for paquete in paquetes %}
               <option value="{{paquete.id}}">{{paquete.nombre}}</option>
               {% endfor %}

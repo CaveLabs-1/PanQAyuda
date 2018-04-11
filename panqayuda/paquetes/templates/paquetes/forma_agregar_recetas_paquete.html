@@ -3,7 +3,7 @@
   <div class="row">
     <div class="input-field col m6">
       <select id="id_receta" class="" name="receta" required>
-        <option value="0">Selecciona una receta</option>
+        <option value="0">Selecciona una Receta</option>
         {% for receta in recetas %}
         <option value="{{receta.id}}">{{receta.nombre}}</option>
         {% endfor %}

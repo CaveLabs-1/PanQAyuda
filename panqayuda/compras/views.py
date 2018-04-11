@@ -5,17 +5,37 @@ from django.template.loader import render_to_string
 from compras.forms import CompraForm
 from materiales.forms import  MaterialInventarioForm
 from django.contrib import messages
-from compras.models import Compra
+from compras.models import Compra, RelacionCompraMaterial
 from materiales.models import Material, Unidad, MaterialInventario
 from django.http import HttpResponseRedirect, HttpResponseNotFound, HttpResponse
 from django.db.models import Sum
+import datetime
 
-"""
-    Función que enlista todas las compras guardadas dentro de la base de datos.
-"""
-@group_required('admin')
-def lista_compras(request):
-    return render (request, 'compras/lista_compras.html');
+
+def compras(request):
+    if request.method == 'POST':
+        forma_post = CompraForm(request.POST)
+        if forma_post.is_valid():
+            forma_post.save()
+            messages.success(request, 'Se ha agregado una nueva compra.')
+        else:
+            messages.error(request, 'Hubo un error, inténtalo de nuevo.')
+
+        return HttpResponseRedirect(reverse('compras:compras'))
+    else:
+        forma = CompraForm()
+        compras =  Compra.objects.filter(deleted_at__isnull=True)
+        return render (request, 'compras/compras.html', {'forma': forma, 'compras': compras})
+
+
+def lista_detalle_compra(request):
+    if request.method == 'POST':
+        id_compra = request.POST.get('id_compra')
+        compra = Compra.objects.get(pk=id_compra)
+        materiales_de_compra = RelacionCompraMaterial.objects.filter(compra=compra)
+        response = render_to_string('compras/lista_detalle_compra.html', {'materiales_de_compra': materiales_de_compra, 'compra': compra})
+        return HttpResponse(response)
+    return HttpResponse('Algo ha salido mal.')
 
 """
     Función que agrega una compra a la base de datos.
