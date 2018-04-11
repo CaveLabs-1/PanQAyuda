@@ -17,7 +17,7 @@ class Material(models.Model):#¿Tiene unidad?
 
 #Modelo
 class Unidad(models.Model):
-    nombre = models.CharField(max_length=50, null=True, blank=False)    
+    nombre = models.CharField(max_length=50, null=True, blank=False)
     created_at = models.DateTimeField(default=timezone.now)
     updated_at = models.DateTimeField(default=timezone.now)
     deleted_at = models.DateTimeField(blank=True, null=True)
@@ -27,9 +27,11 @@ class Unidad(models.Model):
 
 class MaterialInventario(models.Model):
     material = models.ForeignKey(Material, on_delete=models.CASCADE)
+    compra = models.ForeignKey(Compra, on_delete=models.CASCADE)
     unidad_entrada = models.ForeignKey(Unidad, on_delete=models.CASCADE)
-    cantidad = models.IntegerField(blank=True, null="True")
-    cantidad_salida = models.IntegerField(blank=True, null="True")
+    cantidad = models.IntegerField(blank=True, null="True") #se compraron 15 kilos
+    porciones = models.IntegerField(blank=True, null="True") #equivale a 20 panqueayudaunidades cambiar porciones
+    cantidad_disponible = models.IntegerField(blank=True, null="True") #empieza igual que cantidad
     costo = models.FloatField(blank=True, null="True")
     fecha_cad = models.DateTimeField(blank=True, null="True")
     estatus = models.IntegerField(default=1)
