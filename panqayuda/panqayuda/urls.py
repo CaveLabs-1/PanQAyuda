@@ -30,6 +30,8 @@ urlpatterns = [
     path('clientes/', include('clientes.urls', namespace='clientes')),
     path('proveedores/', include('proveedores.urls', namespace='proveedores')),
     path('materiales/', include('materiales.urls', namespace='materiales')),
+    path('compras/', include('compras.urls', namespace='compras')),
     path('ventas/', include('ventas.urls', namespace='ventas')),
+    path('mermas/', include('mermas.urls', namespace='mermas')),
 
 ]

@@ -1,6 +1,7 @@
 from django.db import models
 from django.utils import timezone
 from proveedores.models import Proveedor
+from django.core.validators import MinValueValidator
 
 class Compra(models.Model):
     proveedor = models.ForeignKey(Proveedor, on_delete=models.CASCADE)

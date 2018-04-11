@@ -1,0 +1,105 @@
+{% extends "base.html" %}
+{% block title %}Compras{% endblock title %}
+{% block navbar %}{% include "navbar.html" %}{% endblock navbar %}
+{% block header %}
+  <header class="banner-prueba">
+    <h1 class="center-align">Compras</h1>
+  </header>
+{% endblock header %}
+{% block content %}
+
+<div class="row">
+  <div class="col s10 offset-s1">
+    <table id="table_id" class="datatable">
+      <thead>
+        <th>ID</th>
+        <th>Proveedor</th>
+        <th>Fecha de Compra</th>
+        <th>Detalle</th>
+        <th>Editar</th>
+      </thead>
+      <tbody>
+       {% for compra in compras %}
+        <tr>
+          <td>{{compra.id}}</td>
+          <td>{{compra.proveedor}}</td>
+          <td>{{compra.fecha_compra}}</td>
+          <td><a onclick="detalleCompra({{compra.id}})" href="#modal_detalle" class="modal-trigger"><i class="material-icons">view_list</i> </a></td>
+          <td><a href="editar_compra/{{ compra.id }}"><i class="material-icons">edit</i></a></td>
+        </tr>
+       {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+<div class="fixed-action-btn ">
+  <a class="add-btn btn-floating btn-large waves-effect waves-light pink btn modal-trigger" href="agregar_compra"><i class="material-icons">add</i></a>
+</div>
+
+
+<div id="modal_detalle" class="modal">
+  <div class="modal-content">
+    <div id="modal_compra" class=""></div>
+  </div>
+  <div class="modal-footer">
+    <a href="#!" class="modal-action modal-close waves-effect waves-green btn-flat">Listo</a>
+  </div>
+</div>
+
+{% endblock content %}
+
+{% block js %}
+    <script type="text/js">
+        $(document).ready(function(){
+            $('.modal').modal();
+            $('select').formSelect();
+        });
+    </script>
+    <script type="text/javascript">
+      $(document).ready(function(){
+          var csrftoken = $.cookie('csrftoken');
+          function csrfSafeMethod(method) {
+          // these HTTP methods do not require CSRF protection
+              return (/^(GET|HEAD|OPTIONS|TRACE)$/.test(method));
+          }
+          $.ajaxSetup({
+              beforeSend: function(xhr, settings) {
+                  if (!csrfSafeMethod(settings.type) && !this.crossDomain) {
+                      xhr.setRequestHeader("X-CSRFToken", csrftoken);
+                  }
+              }
+          });
+      });
+
+      function deleteRegister(element, event) {
+        event.preventDefault();
+        $.confirm({
+          title: '¿Deseas Continuar?',
+          content: 'La compra se eliminará permanentemente.',
+          type: 'red',
+          closeIcon: true,
+          columnClass: 'col l6 offset-l3 s12',
+          typeAnimated: true,
+          buttons: {
+            continuar: {
+              text: 'Eliminar',
+              btnClass: 'btn-red',
+              action: function () {
+                window.location.href = $(element).attr("href");
+              }
+            }
+         }
+       });
+      }
+
+      function detalleCompra(id_compra){
+        console.log(id_compra);
+        var url = '{% url "compras:lista_detalle_compra" %}';
+        $.post(url, {
+          id_compra: id_compra,
+        }).done(function(data){
+          $("#modal_compra").html(data);
+        });
+      }
+    </script>
+{% endblock js %}

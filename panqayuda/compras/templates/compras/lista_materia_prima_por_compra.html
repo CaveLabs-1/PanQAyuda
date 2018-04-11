@@ -1,0 +1,29 @@
+<!--Esta lista se incluye en agregar_materias_primas_a_compra-->
+
+<h4 class="center-align">Materias Primas Compradas</h4>
+<div id="lista_recetas">
+  <table class="striped">
+    <thead>
+      <tr>
+        <th>Nombre</th>
+        <th>Cantidad</th>
+        <th>Unidad</th>
+        <th>Costo</th>
+      </tr>
+      <tbody>
+        {% for materias_prima in materias_primas_de_compra %}
+          <tr>
+            <td>{{materias_prima.material.nombre}}</td>
+            <td>{{materias_prima.cantidad}}</td>
+            <td>{{materias_prima.unidad_entrada.nombre}}</td>
+            <td>{{materias_prima.costo}}</td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </thead>
+  </table>
+</div>
+<br>
+{% if total > 0 %}
+<h5> Total de compra: ${{total}}</h5>
+{% endif %}

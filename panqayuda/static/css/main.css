@@ -16,6 +16,18 @@ body {
   height: 65%;
   width: 75%; }
 
+#agregarMermaReceta {
+  height: 65%;
+  width: 75%; }
+
+#agregarMermaPaquete {
+  height: 65%;
+  width: 75%; }
+
+#agregarMermaMaterial {
+  height: 65%;
+  width: 75%; }
+
 /* Posición fija boton rojo add*/
 .fixed {
   position: fixed;
@@ -62,15 +74,23 @@ body, main#login, .login {
   color: #e91e63; }
 
 /*Color de label */
-input[type=text]:not(.browser-default):focus:not([readonly]) + label, input[type=number]:not(.browser-default):focus:not([readonly]) + label, input[type=date]:not(.browser-default):focus:not([readonly]) + label {
+textarea.materialize-textarea:focus:not([readonly]) + label {
   color: #e91e63; }
 
-input[type=text]:not(.browser-default):focus:not([readonly]), input[type=number]:not(.browser-default):focus:not([readonly]), input[type=date]:not(.browser-default):focus:not([readonly]), input[type=email]:not(.browser-default):focus:not([readonly]), input[type=password]:not(.browser-default):focus:not([readonly]) {
+input[type=text]:not(.browser-default):focus:not([readonly]) + label, input[type=number]:not(.browser-default):focus:not([readonly]) + label, input[type=date]:not(.browser-default):focus:not([readonly]) + label, input textarea.materialize-textarea:focus:not([readonly]) + label {
+  color: #e91e63; }
+
+input[type=text]:not(.browser-default):focus:not([readonly]), input[type=number]:not(.browser-default):focus:not([readonly]), input[type=date]:not(.browser-default):focus:not([readonly]), input[type=email]:not(.browser-default):focus:not([readonly]), input[type=password]:not(.browser-default):focus:not([readonly]), input textarea.materialize-textarea:focus:not([readonly]) {
   border-bottom: 1px solid #e91e63;
   -webkit-box-shadow: 0 1px 0 0 #e91e63;
   box-shadow: 0 1px 0 0 #e91e63; }
 
 /*Color de linea inferior */
+textarea.materialize-textarea:focus:not([readonly]) {
+  border-bottom: 1px solid #e91e63;
+  -webkit-box-shadow: 0 1px 0 0 #e91e63;
+  box-shadow: 0 1px 0 0 #e91e63; }
+
 /*Acomodar botonAyuda */
 .btnAyuda {
   margin-top: 25px;
