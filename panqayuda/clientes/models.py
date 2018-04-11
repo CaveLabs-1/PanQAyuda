@@ -3,6 +3,9 @@ from django.utils import timezone
 from django.core.validators import RegexValidator
 
 class Cliente(models.Model):
+    class Meta:
+        ordering = ['nombre']
+
     nombre = models.CharField(max_length=100, null = False)
     telefono_regex = RegexValidator(regex=r'^\+?1?\d{9,15}$', message="El formato del número no es válido.")
     telefono = models.CharField(validators=[telefono_regex], max_length=17, blank=True)

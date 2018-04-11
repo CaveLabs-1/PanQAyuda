@@ -2,7 +2,7 @@
   <div id="agregar_cliente" class="modal">
     <div class="modal-content">
       <h3>Agregar un cliente</h3>
-        <form action="{% url 'clientes:clientes' %}" method="POST">
+        <form id="forma_cliente" action="{% url 'clientes:clientes' %}" method="POST">
             {% csrf_token %}
             <!--Nombre-->
             <div class="row">
@@ -40,7 +40,7 @@
             </div>
 
             <div class="row">
-                  <button class="col l3 offset-l9 m3 offset-m9 s12 btn waves-effect waves-light pink right-align" type="submit" name="action">Agregar
+                  <button id="enviar_forma_clienteº" class="col l3 offset-l9 m3 offset-m9 s12 btn waves-effect waves-light pink right-align" type="submit" name="action">Agregar
                     <i class="material-icons right">send</i>
                   </button>
             </div>
