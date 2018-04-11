@@ -9,8 +9,6 @@ $(document).ready(function(){
     format: 'yyyy-mm-dd',
   });
   $('.fixed-action-btn').floatingActionButton();
-  $('#textarea1').val('');
-  M.textareaAutoResize($('#textarea1'));
   //'Require' para select en HTML5
   $("select[required]").css({
     display: "inline",

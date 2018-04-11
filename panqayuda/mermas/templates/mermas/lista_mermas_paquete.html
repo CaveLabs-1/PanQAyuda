@@ -23,13 +23,22 @@
     </div>
     <form class="row" method="post" action="{% url 'mermas:agregar_merma_paquetes' %}">
       {% csrf_token %}
-      <div class="input-field col s6">
+      <!-- <div class="input-field col s6">
         <label for="{{forma.nombre.id_for_label}}">Nombre</label>
-        <input id="{{forma.nombre.id_for_label}}" name="{{forma.nombre.html_name}}" type="text">
+        <input id="{{forma.nombre.id_for_label}}" name="{{forma.nombre.html_name}}" type="text" required>
+      </div> -->
+      <div class="input-field col s6">
+        <!-- <select required id="{{forma.nombre.id_for_label}}" name="{{forma.nombre.html_name}}">
+          <option value="" disabled selected>Escoger Paquete</option>
+          {% for paquete in paquetes %}
+          <option value="{{paquete.id}}">{{paquete.nombre}}</option>
+          {% endfor %}
+        </select> -->
+        {{forma.nombre}}
       </div>
       <div class="input-field col s6">
         <label for="{{forma.cantidad.id_for_label}}">Cantidad</label>
-        <input id="{{forma.cantidad.id_for_label}}" name="{{forma.cantidad.html_name}}" type="number">
+        <input id="{{forma.cantidad.id_for_label}}" name="{{forma.cantidad.html_name}}" type="number" required>
       </div>
       <div class="row">
         <div class="input-field col s12">
@@ -39,8 +48,8 @@
       </div>
       <div class="row">
         <div class="input-field col s12">
-          <textarea id="{{forma.descripcion.id_for_label}}" class="materialize-textarea" name="{{forma.descripcion.html_name}}" required></textarea>
-          <label for="{{forma.descripcion.id_for_label}}">Descripción</label>
+          <label for="{{forma.descripcion.id_for_label}}">Descripcion</label>
+          <input id="{{forma.descripcion.id_for_label}}" class="required" name="{{forma.descripcion.html_name}}" type="text" required>
         </div>
       </div>
       <div class="row">
@@ -57,9 +66,9 @@
 <div class="row">
   <div class="col s12">
     <ul class="tabs">
-      <li class="tab col s4"><a class="pink-text" href="/paquetes">Receta</a></li>
-      <li class="tab col s4"><a class="white-text active" href="/paquetes/lista_paquetes">Paquete</a></li>
-      <li class="tab col s4"><a class="pink-text" href="/paquetes/lista_paquetes">Material</a></li>
+      <li class="tab col s4"><a class="pink-text" href="/mermas/lista_mermas_receta/">Receta</a></li>
+      <li class="tab col s4"><a class="white-text active" href="/mermas/lista_mermas/">Paquete</a></li>
+      <li class="tab col s4"><a class="pink-text" href="/mermas/lista_mermas_material/">Material</a></li>
     </ul>
   </div>
 </div>
