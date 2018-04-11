@@ -1,6 +1,6 @@
 from django.forms import ModelForm
 from django import forms
-from .models import Material, Unidad
+from .models import Material, Unidad, MaterialInventario
 from django.core.exceptions import ValidationError
 
 
@@ -44,3 +44,8 @@ class UnidadForm(ModelForm):
                     if unidad.id==self.instance.id:
                         return nombre
             raise ValidationError('Ya hay una unidad con este nombre')
+
+class MaterialInventarioForm(ModelForm):
+    class Meta:
+        model = MaterialInventario
+        fields = ('material', 'compra', 'unidad_entrada', 'cantidad', 'porciones', 'costo', 'fecha_cad')
