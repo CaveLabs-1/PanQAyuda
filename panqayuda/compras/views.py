@@ -30,7 +30,7 @@ def agregar_compra(request):
             compra = Compra.objects.latest('id')
             return HttpResponseRedirect(reverse('compras:agregar_materias_primas_a_compra', kwargs={'id_compra':compra.id}))
         else:
-            messages.info(request, 'Hubo un error y no se agregó la compra. Inténtalo de nuevo.')
+            messages.error(request, 'Hubo un error y no se agregó la compra. Inténtalo de nuevo.')
     proveedores = Proveedor.objects.filter(deleted_at__isnull=True);
     forma=CompraForm()
     return render(request, 'compras/agregar_compra.html', {'forma':forma, 'proveedores':proveedores})

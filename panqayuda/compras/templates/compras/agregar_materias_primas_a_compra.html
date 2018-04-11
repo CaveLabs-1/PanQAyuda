@@ -36,6 +36,13 @@
                 }
             }
         });
+        var instance = M.Datepicker.init();
+
+
+        $('.datepicker').datepicker({
+          format: 'yyyy-mm-dd',
+          minDate: new Date(),
+        });
     });
 
     $('select').formSelect();
@@ -66,11 +73,13 @@
             }).done(function(data){
               //actualizar forma y lista
               $('#formahtml').html(data);
-              //inicializar datepicker materialize
-              $('#id_fecha_cad').datepicker({
-                  format: 'yyyy-mm-dd',
-                  minDate: new Date(),
-                });
+              var instance = M.Datepicker.init();
+
+
+              $('.datepicker').datepicker({
+                format: 'yyyy-mm-dd',
+                minDate: new Date(),
+              });
               $('select').formSelect();
               M.toast({html:'La receta se ha agregado al paquete.'});
            }).fail(function(data) {
