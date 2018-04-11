@@ -3,11 +3,16 @@ from ordenes.models import Orden
 from recetas.models import  Receta
 from django.urls import reverse
 import datetime
-
+from django.contrib.auth.models import User, Group
 
 #US15 - Agregar orden de trabajo
 class TestAgregarOrden(TestCase):
 
+    def setUp(self):
+        Group.objects.create(name="admin")
+        user = User.objects.create_user(username='temporary', email='temporary@gmail.com', password='temporary', is_superuser='True')
+        user.save()
+        self.client.login(username='temporary', password='temporary')
     #Revisar que la sesión exista
     def test_valid_session(self):
         session = self.client.session
@@ -67,6 +72,11 @@ class TestAgregarOrden(TestCase):
 # aparecer en la lista de ordnes por trabajar.
 class TestMarcarOrdenComoTerminada(TestCase):
 
+    def setUp(self):
+        Group.objects.create(name="admin")
+        user = User.objects.create_user(username='temporary', email='temporary@gmail.com', password='temporary', is_superuser='True')
+        user.save()
+        self.client.login(username='temporary', password='temporary')
     # Crear orden de trabajo para realizar pruebas.
     def crear_orden_de_trabajo(slef):
         receta = Receta.objects.create(nombre="Receta de prueba", cantidad=20, duration=datetime.timedelta(days=1))
@@ -95,7 +105,7 @@ class TestMarcarOrdenComoTerminada(TestCase):
         data = {'id': 2, 'estatus': 2}
         self.client.post(reverse('ordenes:terminar_orden'), data)
         # Comprobar que el registro se modificó correctamente
-        self.assertEqual(Orden.objects.get(pk=2).estatus, '2')
+        self.assertEqual(Orden.objects.get(pk=2).estatus, 2)
 
     def test_quitar_de_lista_las_ordenes_terminadas(self):
         # Crear 4 ordenes de trabajo con status por trabajar.
@@ -121,6 +131,12 @@ class TestMarcarOrdenComoTerminada(TestCase):
 
 
 class TestCancelarOrden(TestCase):
+
+    def setUp(self):
+        Group.objects.create(name="admin")
+        user = User.objects.create_user(username='temporary', email='temporary@gmail.com', password='temporary', is_superuser='True')
+        user.save()
+        self.client.login(username='temporary', password='temporary')
 
     def crear_receta(self):
         return Receta.objects.create(nombre="Receta de prueba", cantidad=20, duration=datetime.timedelta(days=1))
