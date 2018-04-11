@@ -21,7 +21,7 @@
         </a>
       </div>
     </div>
-    <form class="row" method="post" action="">
+    <form class="row" method="post" action="{% url 'mermas:agregar_merma_materiales' %}">
       {% csrf_token %}
       <!-- <div class="input-field col s6">
         <label for="{{forma.nombre.id_for_label}}">Nombre</label>
