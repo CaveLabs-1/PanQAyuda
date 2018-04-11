@@ -9,7 +9,7 @@ from django.http import HttpResponseRedirect, HttpResponse
 from panqayuda.decorators import group_required
 from recetas.models import Receta
 from django.utils import timezone
-from materiales.models import Material
+from materiales.models import Material, MaterialInventario, Unidad
 
 # Lista de ordenes de trabajo y forma para crear una nueva orden de trabajo.
 # @group_required('admin')
@@ -25,41 +25,47 @@ def ordenes (request):
             receta = data['receta']
             # Guarda el multiplicador en una variable
             multiplicador = data['multiplicador']
+
+            # No permite que el multiplicador sea menor o igaul a 0
+            if multiplicador < 1 :
+                messages.error(request, 'Hubo un error, no es posible agregar una orden de trabajo con multiplicador menor a 1')
+                return HttpResponseRedirect(reverse('ordenes:ordenes'))
+
             # Filtra la lista de materiales a solo los materiales usados en dicha receta.
-            materiales_receta = RelacionRecetaMaterial.objects.filter(receta = receta)
-            # Quita el material usado del inventario.
-            suficiente = True
+            materiales_receta = RelacionRecetaMaterial.objects.filter(receta = receta).filter(deleted_at__isnull=True)
+
+            # En caso de que no exista material suficiente en el invenario no permite generar la orden de trabajo.
             for material_receta in materiales_receta:
                 material = Material.objects.get(pk = material_receta.material.id)
-                if material.obtener_cantidad_inventario < material_receta.cantidad:
-                    suficiente = False
-                    break
-            if suficiente:
-                for material_receta in materiales_receta:
-                    materiales_inventario = MaterialInventario.object.filter(material = material).filter(
-                        deleted_at__isnull=True).order_by('-fecha_cad')
-                    # Calcula la cantidad que se debe restar de dicho material en el inventario.
-                    cantidad_a_restar = material_receta.cantidad * multiplicador
-                    # Modifica el inventario por recetas, tomando en cuenta la fecha de caducidself.
-                    for material_inventario in materiales_inventario:
-                        # Si la cantidad disponible de dicho registro es mayor a la cantidad que se necesita restar,
-                        # se resta directamente y se termina el proceso.
-                        if  material_inventario.cantidad_disponible > cantidad_a_restar:
-                            material_inventario.cantidad_disponible -= cantidad
-                            material_inventario.save()
+                if material.obtener_cantidad_inventario() < material_receta.cantidad * multiplicador:
+                    messages.error(request, 'Hubo un error, no hay suficiente '+ material.nombre +' en el inventario.')
+                    return HttpResponseRedirect(reverse('ordenes:ordenes'))
 
-                        else:
-                            # En caso de que no exista suficiente material en dicho registro, ocupa todo lo que existe
-                            # y pasa al siguiente registro.
-                            cantidad_a_restar -= material_inventario.cantidad_disponible
-                            material_inventario.cantidad_disponible = 0
-                            material_inventario.save()
-            else:
-                messages.error(request, 'Hubo un error, no hay suficiente material en el inventario.')
-                return HttpResponseRedirect(reverse('ordenes:ordenes'))
-            # Guarda el registro de la orden de trabajo
+            # Quita el material usado del inventario.
+            materiales_receta = RelacionRecetaMaterial.objects.filter(receta = receta).filter(deleted_at__isnull = True)
+            for material_receta in materiales_receta:
+                materiales_inventario = MaterialInventario.objects.filter(material = material_receta.material).filter(
+                    deleted_at__isnull=True).order_by('-fecha_cad')
+                # Calcula la cantidad que se debe restar de dicho material en el inventario.
+                cantidad_a_restar = material_receta.cantidad * multiplicador
+                # Modifica el inventario por recetas, tomando en cuenta la fecha de caducidself.
+                for material_inventario in materiales_inventario:
+                    # Si la cantidad disponible de dicho registro es mayor a la cantidad que se necesita restar,
+                    # se resta directamente y se termina el proceso.
+                    if  material_inventario.cantidad_disponible > cantidad_a_restar:
+                        material_inventario.cantidad_disponible -= cantidad_a_restar
+                        material_inventario.save()
+                        break
+
+                    else:
+                        # En caso de que no exista suficiente material en dicho registro, ocupa todo lo que existe
+                        # y pasa al siguiente registro.
+                        cantidad_a_restar -= material_inventario.cantidad_disponible
+                        material_inventario.cantidad_disponible = 0
+                        material_inventario.save()
             forma_post.save()
             messages.success(request, 'Se ha agregado una nueva orden de trabajo.')
+            # Guarda el registro de la orden de trabajo
             return HttpResponseRedirect(reverse('ordenes:ordenes'))
         else:
             # Si la forma no es valida, devuelve mensaje de error y recarga la página.
@@ -83,7 +89,7 @@ def terminar_orden (request):
          orden= get_object_or_404(Orden, pk=request.POST['id'])
          orden.estatus=request.POST['estatus']
          total_creadas = orden.receta.cantidad * orden.multiplicador
-         RecetaInventario.objects.create(nombre = orden.receta, cantidad = total_creadas, fecha_cad = timezone.now + orden.receta.duration)
+         RecetaInventario.objects.create(nombre = orden.receta, cantidad = total_creadas, fecha_cad = (timezone.now() + orden.receta.duration))
          orden.save()
     ordenes = Orden.ordenes_por_entregar()
     data = render_to_string('ordenes/tabla_ordenes.html', {'ordenes': ordenes})
