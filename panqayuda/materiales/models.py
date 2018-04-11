@@ -1,4 +1,5 @@
 from django.db import models
+from django.db.models import Sum
 from compras.models import Compra
 from django.utils import timezone
 
@@ -14,9 +15,8 @@ class Material(models.Model):#¿Tiene unidad?
 
 
     def obtener_cantidad_inventario(self):
-        return MaterialInventario.filter(material=self,
-            deleted_at__isnull=True, fecha_cad__gte=datetime.datetime.now(),
-            cantidad_disponible__gt=0).aggregate(cantidad_disponible=Sum('cantidad_disponible'))['cantidad_total']
+        return MaterialInventario.objects.filter(material=self,
+            deleted_at__isnull=True, fecha_cad__gte=timezone.now()).aggregate(Sum('cantidad_disponible'))['cantidad_disponible__sum']
 
     def __str__(self):
         return self.nombre
@@ -33,7 +33,7 @@ class Unidad(models.Model):
 
 class MaterialInventario(models.Model):
     material = models.ForeignKey(Material, on_delete=models.CASCADE)
-    compra = models.ForeignKey(Compra, on_delete=models.CASCADE)
+    compra = models.ForeignKey(Compra, on_delete=models.CASCADE, blank=True, null=True)
     unidad_entrada = models.ForeignKey(Unidad, on_delete=models.CASCADE)
     cantidad = models.IntegerField(blank=True, null="True")
     cantidad_salida = models.IntegerField(blank=True, null="True")

@@ -1,5 +1,5 @@
 from django.shortcuts import render, get_object_or_404
-from recetas.models import Receta, RelacionRecetaMaterial
+from recetas.models import Receta, RelacionRecetaMaterial, RecetaInventario
 from .models import Orden
 from .forms import FormOrden
 from django.contrib import messages
@@ -8,10 +8,11 @@ from django.template.loader import render_to_string
 from django.http import HttpResponseRedirect, HttpResponse
 from panqayuda.decorators import group_required
 from recetas.models import Receta
+from django.utils import timezone
 from materiales.models import Material
 
 # Lista de ordenes de trabajo y forma para crear una nueva orden de trabajo.
-@group_required('admin')
+# @group_required('admin')
 def ordenes (request):
     # En caso de que la petición sea tipo 'POST' crea la forma con los datos obtenidos y la valida.
     if request.method == 'POST':
@@ -29,8 +30,8 @@ def ordenes (request):
             # Quita el material usado del inventario.
             suficiente = True
             for material_receta in materiales_receta:
-                material = Material.object.get(pk = material_receta.material.id)
-                if material.obtener_cantidad_inventario() < material_receta.cantidad:
+                material = Material.objects.get(pk = material_receta.material.id)
+                if material.obtener_cantidad_inventario < material_receta.cantidad:
                     suficiente = False
                     break
             if suficiente:
@@ -46,9 +47,9 @@ def ordenes (request):
                         if  material_inventario.cantidad_disponible > cantidad_a_restar:
                             material_inventario.cantidad_disponible -= cantidad
                             material_inventario.save()
-                            break
+
                         else:
-                            # En caso de que no exista suficiente material en dicho registro, ocupa todo lo que exite
+                            # En caso de que no exista suficiente material en dicho registro, ocupa todo lo que existe
                             # y pasa al siguiente registro.
                             cantidad_a_restar -= material_inventario.cantidad_disponible
                             material_inventario.cantidad_disponible = 0
@@ -76,26 +77,25 @@ def ordenes (request):
         return render(request, 'ordenes/ordenes.html', {'forma': forma, 'ordenes': ordenes, 'recetas':recetas, 'tabla':tabla})
 
 
-@group_required('admin')
+# @group_required('admin')
 def terminar_orden (request):
     if request.method == 'POST':
          orden= get_object_or_404(Orden, pk=request.POST['id'])
-         print(request.POST['id'])
          orden.estatus=request.POST['estatus']
+         total_creadas = orden.receta.cantidad * orden.multiplicador
+         RecetaInventario.objects.create(nombre = orden.receta, cantidad = total_creadas, fecha_cad = timezone.now + orden.receta.duration)
          orden.save()
-
     ordenes = Orden.ordenes_por_entregar()
     data = render_to_string('ordenes/tabla_ordenes.html', {'ordenes': ordenes})
     return HttpResponse(data)
 
-@group_required('admin')
+# @group_required('admin')
 def cancelar_orden (request):
     if request.method == 'POST':
          orden= get_object_or_404(Orden, pk=request.POST['id'])
          print(request.POST['id'])
          orden.estatus=request.POST['estatus']
          orden.save()
-
     ordenes = Orden.ordenes_por_entregar()
     data = render_to_string('ordenes/tabla_ordenes.html', {'ordenes': ordenes})
     return HttpResponse(data)
