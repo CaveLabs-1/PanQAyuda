@@ -1,6 +1,6 @@
 from django.test import TestCase
 from django.urls import reverse
-from .models import MermaPaquete
+from .models import MermaPaquete, MermaMaterial, MermaReceta
 import datetime
 from django.utils import timezone
 from paquetes.models import PaqueteInventario, Paquete, RecetasPorPaquete
@@ -57,6 +57,16 @@ class TestListaMerma(TestCase):
             cantidad=1,
             fecha="2018-03-03 12:31:06-05",
             descripcion="Se lo comio valter")
+        merma2 = MermaMaterial.objects.create(
+            nombre=materialinv,
+            cantidad=1,
+            fecha="2018-03-03 12:31:06-05",
+            descripcion="Se lo comio valter")
+        merma3 = MermaReceta.objects.create(
+            nombre=recetainv,
+            cantidad=1,
+            fecha="2018-03-03 12:31:06-05",
+            descripcion="Se lo comio valter")
 
     def test_ac1_existe_la_vista(self):
         resp = self.client.get(reverse('mermas:lista_mermas_paquete'))
@@ -73,6 +83,38 @@ class TestListaMerma(TestCase):
         self.assertEqual(len(resp.context['mermas']), 1)
         merm = MermaPaquete.objects.first()
         self.assertEqual(resp.context['mermas'][0].descripcion, merm.descripcion)
+    #INICIA RECETAS
+    def test_ac1_existe_la_vista_recetas(self):
+        resp = self.client.get(reverse('mermas:lista_mermas_receta'))
+        self.assertEqual(resp.status_code, 200)
 
+    def test_ac2_muestra_lista_recetas(self):
+        resp = self.client.get(reverse('mermas:lista_mermas_receta'))
+        self.assertEqual(resp.status_code, 200)
+        self.assertEqual(len(resp.context['mermas']), 1)
 
+    def test_ac3_muestra_elementos_correctos_recetas(self):
+        resp = self.client.get(reverse('mermas:lista_mermas_receta'))
+        self.assertEqual(resp.status_code, 200)
+        self.assertEqual(len(resp.context['mermas']), 1)
+        merm = MermaReceta.objects.first()
+        self.assertEqual(resp.context['mermas'][0].descripcion, merm.descripcion)
+    #TERMINA RECETAS
+    #INICIA MATERIA PRIMA
+    def test_ac1_existe_la_vista_materiales(self):
+        resp = self.client.get(reverse('mermas:lista_mermas_material'))
+        self.assertEqual(resp.status_code, 200)
+
+    def test_ac2_muestra_lista_materiales(self):
+        resp = self.client.get(reverse('mermas:lista_mermas_material'))
+        self.assertEqual(resp.status_code, 200)
+        self.assertEqual(len(resp.context['mermas']), 1)
+
+    def test_ac3_muestra_elementos_correctos_materiales(self):
+        resp = self.client.get(reverse('mermas:lista_mermas_material'))
+        self.assertEqual(resp.status_code, 200)
+        self.assertEqual(len(resp.context['mermas']), 1)
+        merm = MermaMaterial.objects.first()
+        self.assertEqual(resp.context['mermas'][0].descripcion, merm.descripcion)
+    #TERMINA MATERIA PRIMA
 # Create your tests here.
