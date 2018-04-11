@@ -34,7 +34,9 @@ class TestListaMaterialCatalogo(TestCase):
         self.assertEqual(resp.status_code, 200)
 
     def test_ac3_la_tabla_no_imprime_objetos_con_estatus_no_disponible(self):
+        self.assertEqual(Material.objects.count(), 0)
         Material.objects.create(nombre="Test ac3", codigo=123456789, status=0)
+        self.assertEqual(Material.objects.count(), 1)
         resp = self.client.get(reverse('materiales:materiales'))
         self.assertEqual(len(resp.context['materiales']),0)
         self.assertEqual(resp.status_code, 200)
@@ -99,7 +101,7 @@ class TestAgregarMateriaCatalogo(TestCase):
         self.assertEqual(Material.objects.count(), 0)
         data = {'nombre':"Test ac7", 'codigo':"12d4s6Q890"}
         self.client.post(reverse('materiales:materiales'), data)
-        self.assertEqual(Material.objects.count(), 0)
+        self.assertEqual(Material.objects.count(), 1)
 
 #Casos de uso US54
 class TestListaUnidades(TestCase):
@@ -123,7 +125,7 @@ class TestListaUnidades(TestCase):
 
     def test_ac3_existe_vista_agregar(self):
         data = {'nombre':"ac3"}
-        resp = self.client.post(reverse('materiales:lista_unidades'), data)
+        resp = self.client.get(reverse('materiales:lista_unidades'), data)
         self.assertEqual(resp.status_code, 200)
 
     def test_ac4_no_se_agrega_la_unidad(self):
