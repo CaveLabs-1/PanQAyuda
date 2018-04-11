@@ -1,0 +1,200 @@
+{% extends 'base.html' %}}
+{% block title %} Nueva venta {% endblock title %}
+{% block navbar %} {% include 'navbar.html' %} {% endblock navbar %}
+
+{% block header %}
+    <header class="">
+        <h1 class="center-align">Generar nueva venta</h1>
+    </header>
+{% endblock header %}
+
+{% block content %}
+    <div class="container">
+        <div class="card">
+            <div class="row">
+                <div class="col s12">
+                    <form action="" method="POST">
+                            {% csrf_token %}
+                        <br>
+                            <!-- Seleccionar cliente -->
+                            <div class="row">
+                                 <div class="input-field col m10">
+                                     {{ forma_venta.cliente }}
+                                     <label for="{{forma_venta.cliente.id_for_label}}">Seleccionar un cliente</label>
+                                 </div>
+                                 <div class="input-field col m2">
+                                    <a id="nuevo_cliente" class="btn-floating waves-effect waves-light tooltipped pink modal-trigger" href="#agregar_cliente" data-position="top" data-tooltip="Crear nuevo cliente"><i class="material-icons">add</i></a>
+                                 </div>
+                            </div>
+                            <hr>
+                            <!-- Agregar paquetes a la venta -->
+                            <h4>Agregar paquetes a la venta </h4>
+                            <div class="row">
+                                <div class="input-field col s6">
+                                    <select id="seleccionar_paquete">
+                                        {% for val, nombre in forma_paquete_venta.fields.paquete.choices %}
+                                            <option value="{{ val }}">{{nombre}} </option>
+                                        {% endfor %}
+                                    </select>
+                                    <label for="{{forma_paquete_venta.paquete.id_for_label}}">Paquete</label>
+                                </div>
+                                <div class="input-field col s4">
+                                    <input id="seleccionar_cantidad" type="number">
+                                    <label for="{{forma_paquete_venta.cantidad.id_for_label}}">Cantidad</label>
+                                </div>
+                                <div class="input-field col s2">
+                                    <a id="agregar_paquete_venta" class="btn-floating btn-large waves-effect waves-light pink"><i class="material-icons">add</i></a>
+                                </div>
+                            </div>
+                            <hr>
+
+                            <!-- Resumen de la venta -->
+                            <div class="ventas">
+                                <h3> Resumen de venta </h3>
+                                <table class="striped">
+                                    <thead>
+                                      <tr>
+                                          <th>Nombre del producto</th>
+                                          <th>Cantidad</th>
+                                          <th>Precio unitario</th>
+                                          <th> Subtotal </th>
+                                          <th></th>
+                                      </tr>
+                                    </thead>
+                                    <tbody id="table_body">
+
+                                    </tbody>
+                                  </table>
+                            </div>
+                        <hr>
+                        <div class="row">
+                            <h3 id="total" class="col s12 right-align">
+                                Total: $0
+                            </h3>
+                        </div>
+                        <div class="row">
+                            <div class="col m6 offset-m6 right-align">
+                               <button class="btn waves-effect waves-light pink" type="submit" id="generar_venta" name="action">Generar venta
+                                    <i class="material-icons right">send</i>
+                               </button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+        </div>
+        {%include 'clientes/modal_agregar_cliente.html' %}
+    </div>
+
+{% endblock content %}
+
+{% block js %}
+<script>
+    $(document).ready(function () {
+        //modal de agregar cliente
+        $('.modal').modal();
+
+        $('select').formSelect();
+
+        //variable para mensaje en caso de que se quiera salir sin guardar la venta
+        var modificado = 0;
+        //Agregar venta a resumen de venta
+        $('#agregar_paquete_venta').click(function(){
+            //Obtener paquete y cantidad a agregar
+            var paquete = $('#seleccionar_paquete').val();
+            var cantidad = $('#seleccionar_cantidad').val();
+            $('#loader').show();
+            //Verificar si el paquete ya está agregado a la venta
+            var buscar_paquete = $("#paquete" + paquete);
+            if (buscar_paquete.length === 0) {
+                //Se crea una nueva fila
+                var funcion_exito = function(result){
+                    //Por si envían requests muy seguidas
+                    if ($('#paquete'+paquete).length === 0){
+                        $('#table_body').append(result);
+                    }
+                }
+            }else{
+                //Se verifica si la nueva cantidad es posible y se actualiza la fila
+                var cantidad_actual = $("input[name='cantidad'][paquete='" + paquete + "']").val();
+                cantidad = +cantidad + +cantidad_actual;
+                var funcion_exito = function(result){
+                    $('#paquete'+paquete).remove();
+                    $('#table_body').append(result);
+                }
+            }
+
+            $.ajax({
+                    url: "{% url 'ventas:agregar_paquete_a_venta' %}",
+                    data: {"paquete": paquete,
+                            "cantidad":cantidad},
+                    success: funcion_exito,
+                    error: function(result){
+                        M.toast({html:result.responseText});
+                    },
+                    complete: function(){
+                        modificado = 1;
+                        actualizar_total();
+                    }
+            });
+
+        });
+        $('.tooltipped').tooltip();
+        $('#generar_venta').click(function(){
+            modificado = 0;
+        });
+        //función ajax agregar cliente
+         $('form#forma_cliente').submit(function(event){
+            event.preventDefault();
+            $.ajax({
+                url: "{% url 'clientes:agregar_cliente_venta' %}",
+                type: 'post',
+                dataType:'json',
+                data: $('form#forma_cliente').serialize(),
+                success: function(data){
+                    //Cambiar opción en el select y actualizarlo
+                    $('#id_cliente').append("<option value='" +data.val +"'>"+ data.nombre+"</option>");
+                    $('#id_cliente').val(data.val);
+                    $('#id_cliente').formSelect();
+                    M.toast({html:"Cliente agregado con éxito."});
+                    //Cerrar modal
+                    var elem = document.querySelector('.modal');
+                    var instance = M.Modal.getInstance(elem);
+                    instance.close();
+                },
+                error: function(result){
+                        M.toast({html:result.responseText});
+                },
+            });
+        });
+        //función para preguntar si quiere salir sin guardar cambios
+        window.onbeforeunload = confirmar_salir;
+            function confirmar_salir() {
+                if (modificado == 1) {
+                    return "¿Estás seguro que quieres salir de la página? La venta no se ha guardado.";
+                }
+            }
+    });
+
+    //Eliminar fila de la venta
+    $(document.body).on('click', '.eliminar', function(e){
+        e.preventDefault();
+        var paq = $(this).attr('paquete');
+        $('#paquete'+paq).fadeOut(300, function(){
+            $(this).remove();
+            actualizar_total();
+        });
+    });
+
+    function actualizar_total(){
+        nuevo_total = 0;
+        $.each($('.subtotal'), function(){
+            nuevo_total = nuevo_total + +$(this).html();
+        });
+        $('#total').html("Total: $"+nuevo_total);
+    }
+
+</script>
+
+{% endblock js %}

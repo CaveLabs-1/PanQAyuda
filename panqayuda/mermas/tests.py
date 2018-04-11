@@ -117,4 +117,3 @@ class TestListaMerma(TestCase):
         merm = MermaMaterial.objects.first()
         self.assertEqual(resp.context['mermas'][0].descripcion, merm.descripcion)
     #TERMINA MATERIA PRIMA
-# Create your tests here.

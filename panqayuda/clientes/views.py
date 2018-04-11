@@ -2,7 +2,7 @@ from django.shortcuts import render, get_object_or_404, redirect, reverse
 from .models import Cliente
 from .forms import FormCliente
 from django.contrib import messages
-from django.http import HttpResponseRedirect
+from django.http import HttpResponseRedirect, HttpResponseNotFound, JsonResponse
 from panqayuda.decorators import group_required
 
 
@@ -38,9 +38,25 @@ def editar_cliente(request, id_cliente):
         form = FormCliente(request.POST or None, instance=cliente)
         if form.is_valid():
             cliente = form.save()
-            cliente.save
+            cliente.save()
             messages.success(request, 'Se ha editado el cliente exitosamente!')
             return redirect('clientes:clientes')
     else:
         form = FormCliente()
     return render(request, 'clientes/editar_cliente.html', {'form': form, 'cliente': cliente})
+
+
+#Agregar un cliente desde la vista de ventas y regresar el cliente
+@group_required('admin')
+def agregar_cliente_venta(request):
+    if request.method == 'POST':
+        forma_post = FormCliente(request.POST)
+        # Si la forma es válida, se guarda el nuevo cliente y devuelve la información necesaria para la vista
+        if forma_post.is_valid():
+            forma_post.save()
+            data = {'nombre':forma_post.instance.nombre, 'val':forma_post.instance.id}
+            return JsonResponse(data)
+        else:
+            print(forma_post.errors)
+            # De lo contrario devuelve mensaje de error.
+            return HttpResponseNotFound('Hubo un error agregando al cliente, inténtalo de nuevo.')
