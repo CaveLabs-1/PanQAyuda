@@ -24,7 +24,7 @@ def materiales(request):
         return HttpResponseRedirect(reverse('materiales:materiales'))
     else:
         forma = MaterialForm()
-        materiales =  Material.objects.filter(deleted_at__isnull=True)
+        materiales =  Material.objects.filter(deleted_at__isnull=True, status=1)
         return render (request, 'materiales/materiales.html', {'forma': forma, 'materiales': materiales})
 
 @group_required('admin')
@@ -86,7 +86,7 @@ def modificar_unidad(request, id_unidad):
         if form.is_valid():
             unidad = form.save()
             unidad.save
-            messages.success(request, 'Se ha editado la unidad exitosamente!')
+            messages.success(request, '¡Se ha editado la unidad exitosamente!')
             return redirect('materiales:lista_unidades')
         else:
             messages.success(request, 'Ocurrio un error, intenta de nuevo')
@@ -123,7 +123,7 @@ def editar_material(request, id_material):
         if form.is_valid():
             material = form.save()
             material.save
-            messages.success(request, 'Se ha editado el material exitosamente!')
+            messages.success(request, 'Se ha editado la material exitosamente!')
             return redirect('materiales:materiales')
     else:
         form = MaterialForm()

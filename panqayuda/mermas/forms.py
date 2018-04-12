@@ -1,7 +1,9 @@
 from django.forms import ModelForm
 from django import forms
 from .models import MermaPaquete
-from .models import MermaMateria
+from .models import MermaMaterial
+from .models import MermaReceta
+
 
 class MermaPaqueteForm(ModelForm):
     class Meta:
@@ -28,7 +30,7 @@ class MermaMaterialForm(ModelForm):
         widget = {
             'fecha': forms.DateTimeField(),
         }
-        
+
 class MermaRecetaForm(ModelForm):
     class Meta:
         model = MermaReceta
