@@ -16,7 +16,7 @@ class Material(models.Model):#¿Tiene unidad?
 
     def obtener_cantidad_inventario(self):
         return MaterialInventario.objects.filter(material=self,
-            deleted_at__isnull=True, fecha_cad__gte=timezone.now()).aggregate(Sum('cantidad_disponible'))['cantidad_disponible__sum']
+            deleted_at__isnull=True, fecha_cad__gte=timezone.now()).aggregate(Sum('cantidad_disponible'))['cantidad_disponible__sum'] or 0
 
     def __str__(self):
         return self.nombre
