@@ -37,8 +37,6 @@ def ordenes (request):
             # En caso de que no exista material suficiente en el invenario no permite generar la orden de trabajo.
             for material_receta in materiales_receta:
                 material = Material.objects.get(pk = material_receta.material.id)
-                print(material.obtener_cantidad_inventario())
-                print(material_receta.cantidad * multiplicador)
                 if material.obtener_cantidad_inventario() < material_receta.cantidad * multiplicador:
                     messages.error(request, 'Hubo un error, no hay suficiente '+ material.nombre +' en el inventario.')
                     return HttpResponseRedirect(reverse('ordenes:ordenes'))
@@ -101,7 +99,6 @@ def terminar_orden (request):
 def cancelar_orden (request):
     if request.method == 'POST':
          orden= get_object_or_404(Orden, pk=request.POST['id'])
-         print(request.POST['id'])
          orden.estatus=request.POST['estatus']
          orden.save()
     ordenes = Orden.ordenes_por_entregar()
