@@ -1,8 +1,9 @@
 from django.shortcuts import render, reverse, redirect, get_object_or_404
 from django.template.loader import render_to_string
 from .forms import CompraForm
+from proveedores.models import Proveedor
 from .models import Compra
-from materiales.models import MaterialInventario
+from materiales.models import Material, MaterialInventario
 from django.contrib import messages
 from django.http import HttpResponseRedirect, HttpResponse
 from django.db.models import Sum
@@ -30,7 +31,7 @@ def lista_detalle_compra(request):
     if request.method == 'POST':
         id_compra = request.POST.get('id_compra')
         compra = Compra.objects.get(pk=id_compra)
-        materiales_de_compra = MaterialInventario.objects.filter(compra=compra)
+        materiales_de_compra = RelacionCompraMaterial.objects.filter(compra=compra)
         response = render_to_string('compras/lista_detalle_compra.html', {'materiales_de_compra': materiales_de_compra, 'compra': compra})
         return HttpResponse(response)
     return HttpResponse('Algo ha salido mal.')
