@@ -1,11 +1,12 @@
 from django.shortcuts import render, reverse, redirect, get_object_or_404
 from django.template.loader import render_to_string
 from .forms import CompraForm
+from materiales.forms import MaterialInventarioForm
 from proveedores.models import Proveedor
 from .models import Compra
-from materiales.models import Material, MaterialInventario
+from materiales.models import Material, MaterialInventario, Unidad
 from django.contrib import messages
-from django.http import HttpResponseRedirect, HttpResponse
+from django.http import HttpResponseRedirect, HttpResponse, HttpResponseNotFound
 from django.db.models import Sum
 from panqayuda.decorators import group_required
 import datetime
