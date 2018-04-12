@@ -25,3 +25,12 @@ class RelacionVentaPaquete(models.Model):
 
     def precio_unitario(self):
         return self.monto/self.cantidad
+
+class RelacionVentaPaquete(models.Model):
+    venta = models.ForeignKey('Venta', on_delete = models.CASCADE)
+    paquete = models.ForeignKey('paquetes.PaqueteInventario',  on_delete = models.CASCADE)
+    cantidad = models.DecimalField(null=True, blank=False,max_digits=10, decimal_places=5,
+                                   validators=[MinValueValidator(0.000001, "Debes seleccionar una cantidad mayor a 0.")])
+    status = models.IntegerField(default=1)
+    def __str__(self):
+        return self.receta.nombre

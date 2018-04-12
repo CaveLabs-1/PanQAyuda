@@ -11,4 +11,5 @@ urlpatterns = [
     path('lista_detalle_venta/', views.lista_detalle_venta, name='lista_detalle_venta'),
     path('agergar_paquete_a_venta/', views.agregar_paquete_a_venta, name='agregar_paquete_a_venta'),
     path('generar_venta/', views.generar_venta, name='generar_venta'),
+
 ]+ static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

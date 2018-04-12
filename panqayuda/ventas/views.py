@@ -1,7 +1,7 @@
 from django.shortcuts import render, reverse, redirect, get_object_or_404
 from django.template.loader import render_to_string
 from .forms import VentaForm, RelacionVentaPaqueteForm
-from .models import Venta
+from .models import Venta, RelacionVentaPaquete
 from django.contrib import messages
 from paquetes.models import Paquete
 from clientes.forms import FormCliente
@@ -149,9 +149,3 @@ def agregar_paquete_a_venta(request):
         else:
             return HttpResponseNotFound("Verifica que seleccionaste un paquete y una cantidad mayor a 0.")
     return HttpResponseNotFound("No hay suficientes paquetes en inventario de " + paquete.nombre)
-
-
-
-
-
-

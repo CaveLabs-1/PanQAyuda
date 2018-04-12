@@ -270,6 +270,7 @@ class TestListaMateriaPrima(TestCase):
         self.assertEqual(resp.status_code, 200)
         #self.assertEqual(resp.context['materiales'].count(), 1)
 
+
 #tests dle caso de uso 12
 class TestEditarMateriaCatalogo(TestCase):
 
@@ -325,5 +326,3 @@ class TestEliminarUnidad(TestCase):
         objetos = Unidad.objects.first()
         self.client.get(reverse('materiales:eliminar_unidad', kwargs={'id_unidad':objetos.id}))
         self.assertEqual(Unidad.objects.filter(deleted_at__isnull=True).count(), 0)
-
-# Create your tests here.

@@ -49,3 +49,10 @@ class MaterialInventarioForm(ModelForm):
     class Meta:
         model = MaterialInventario
         fields = ('material', 'compra', 'unidad_entrada', 'cantidad', 'porciones', 'costo', 'fecha_cad')
+
+    def clean_cantidad(self):
+        cantidad=self.cleaned_data['cantidad']
+        if cantidad > 0:
+            return cantidad
+        else:
+            raise ValidationError("La cantidad debe ser mayot a 0.")

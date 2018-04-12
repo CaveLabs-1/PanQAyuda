@@ -123,7 +123,7 @@ def editar_material(request, id_material):
         if form.is_valid():
             material = form.save()
             material.save
-            messages.success(request, 'Se ha editado el material exitosamente!')
+            messages.success(request, 'Se ha editado la material exitosamente!')
             return redirect('materiales:materiales')
     else:
         form = MaterialForm()

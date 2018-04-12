@@ -143,3 +143,4 @@ def agregar_merma_recetas(request):
         forma = MermaRecetaForm()
         return render (request, 'mermas/lista_mermas_receta.html', {'forma': forma, 'mermas': lista_mermas_receta})
         # return render(reverse('mermas:lista_mermas_receta'))
+
