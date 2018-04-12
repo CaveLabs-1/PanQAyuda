@@ -20,6 +20,15 @@ class FormPaquete(forms.ModelForm):
         model = Paquete
         fields = ('nombre', 'precio')
 
+        error_messages = {
+            'nombre':{
+                'required':"Este campo no puede ser vacio",
+            },
+            'precio':{
+                'required':"Este campo no puede ser vacio",
+            },
+        }
+
 class FormEditarPaquete (forms.ModelForm):
     class Meta:
         model = PaqueteInventario
