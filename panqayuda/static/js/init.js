@@ -2,7 +2,6 @@ var data_table;
 
 $(document).ready(function(){
   $('.collapsible').collapsible();
-  
   $('.modal').modal();
   $('.tooltipped').tooltip();
   $('select').formSelect();

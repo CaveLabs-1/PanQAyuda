@@ -1,8 +1,9 @@
 from django.shortcuts import render, reverse, redirect, get_object_or_404
 from django.template.loader import render_to_string
 from .forms import CompraForm
+from proveedores.models import Proveedor
 from .models import Compra
-from materiales.models import MaterialInventario
+from materiales.models import Material, MaterialInventario
 from django.contrib import messages
 from django.http import HttpResponseRedirect, HttpResponse
 from django.db.models import Sum
