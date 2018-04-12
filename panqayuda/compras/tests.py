@@ -78,14 +78,14 @@ class TestListaCompras(TestCase):
         self.assertEqual(cuenta_prepost, cuenta_postpost)
 
     def test_ac6_ver_costo_compra(self):
-        url = "/compras/agregar_materias_primas_a_compra/"+str(self.compra.id)
-        response = self.client.get(url)
-        self.assertNotContains(response, 'Total') #no se puede usar unidades o nombre del material porque siempre aparecen por el select
+        response = self.client.get(reverse('compras:agregar_materias_primas_a_compra', kwargs={'id_compra':self.compra.id}))
+        data = {'material':self.material.id, 'fecha_cad':'2059-03-03', 'cantidad':'5', 'unidad_entrada':self.unidad.id, 'porciones':'999', 'costo':'50',  'compra':self.compra.id}
+        resp = self.client.post(reverse('compras:agregar_materia_prima_a_compra'), data)
         data2 = {'material':self.material.id, 'fecha_cad':'2059-03-03', 'cantidad':'5', 'unidad_entrada':self.unidad.id, 'porciones':'999', 'costo':'45',  'compra':self.compra.id}
         resp2 = self.client.post(reverse('compras:agregar_materia_prima_a_compra'), data2)
-        response = self.client.get(url)
+        response = self.client.get(reverse('compras:agregar_materias_primas_a_compra', kwargs={'id_compra':self.compra.id}))
         self.assertContains(response, 'Total')
-        self.assertContains(response, '153')
+        self.assertContains(response, '95')
 
     def test_ac3_agregar_materia_prima(self):
         cuenta_prepost=MaterialInventario.objects.filter(compra=self.compra.id).count()

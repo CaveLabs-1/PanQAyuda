@@ -32,7 +32,7 @@ def ordenes (request):
                 return HttpResponseRedirect(reverse('ordenes:ordenes'))
 
             # Filtra la lista de materiales a solo los materiales usados en dicha receta.
-            materiales_receta = RelacionRecetaMaterial.objects.filter(receta = receta).filter(deleted_at__isnull=True)
+            materiales_receta = RelacionRecetaMaterial.objects.filter(receta = receta)
 
             # En caso de que no exista material suficiente en el invenario no permite generar la orden de trabajo.
             for material_receta in materiales_receta:
@@ -42,7 +42,7 @@ def ordenes (request):
                     return HttpResponseRedirect(reverse('ordenes:ordenes'))
 
             # Quita el material usado del inventario.
-            materiales_receta = RelacionRecetaMaterial.objects.filter(receta = receta).filter(deleted_at__isnull = True)
+            materiales_receta = RelacionRecetaMaterial.objects.filter(receta = receta)
             for material_receta in materiales_receta:
                 materiales_inventario = MaterialInventario.objects.filter(material = material_receta.material).filter(
                     deleted_at__isnull=True).order_by('-fecha_cad')
@@ -99,7 +99,6 @@ def terminar_orden (request):
 def cancelar_orden (request):
     if request.method == 'POST':
          orden= get_object_or_404(Orden, pk=request.POST['id'])
-         print(request.POST['id'])
          orden.estatus=request.POST['estatus']
          orden.save()
     ordenes = Orden.ordenes_por_entregar()

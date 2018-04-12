@@ -4,6 +4,7 @@ from .models import MermaPaquete
 from .models import MermaMaterial
 from .models import MermaReceta
 
+
 class MermaPaqueteForm(ModelForm):
     class Meta:
         model = MermaPaquete
@@ -29,7 +30,6 @@ class MermaMaterialForm(ModelForm):
         widget = {
             'fecha': forms.DateTimeField(),
         }
-
 
 class MermaRecetaForm(ModelForm):
     class Meta:
