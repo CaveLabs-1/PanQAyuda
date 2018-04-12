@@ -17,13 +17,18 @@
   color: $rosa-pan
 
 /*Color de label
-
+textarea.materialize-textarea:focus:not([readonly]) + label
+  color: $rosa-pan
 input
-  &[type=text]:not(.browser-default):focus:not([readonly]) + label, &[type=number]:not(.browser-default):focus:not([readonly]) + label, &[type=date]:not(.browser-default):focus:not([readonly]) + label
+  &[type=text]:not(.browser-default):focus:not([readonly]) + label, &[type=number]:not(.browser-default):focus:not([readonly]) + label, &[type=date]:not(.browser-default):focus:not([readonly]) + label, textarea.materialize-textarea:focus:not([readonly]) + label
     color: $rosa-pan
-  &[type=text]:not(.browser-default):focus:not([readonly]), &[type=number]:not(.browser-default):focus:not([readonly]), &[type=date]:not(.browser-default):focus:not([readonly])
+  &[type=text]:not(.browser-default):focus:not([readonly]), &[type=number]:not(.browser-default):focus:not([readonly]), &[type=date]:not(.browser-default):focus:not([readonly]), &[type=email]:not(.browser-default):focus:not([readonly]), &[type=password]:not(.browser-default):focus:not([readonly]), textarea.materialize-textarea:focus:not([readonly])
     border-bottom: 1px solid $rosa-pan
     -webkit-box-shadow: 0 1px 0 0 $rosa-pan
     box-shadow: 0 1px 0 0 $rosa-pan
 
 /*Color de linea inferior
+textarea.materialize-textarea:focus:not([readonly])
+  border-bottom: 1px solid $rosa-pan
+  -webkit-box-shadow: 0 1px 0 0 $rosa-pan
+  box-shadow: 0 1px 0 0 $rosa-pan

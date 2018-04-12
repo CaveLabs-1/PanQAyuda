@@ -29,15 +29,20 @@ class Orden(models.Model):
     deleted_at = models.DateTimeField(blank = True, null = True)
 
     def ordenes_por_entregar():
-        return Orden.objects.filter(estatus = '1')
+        return Orden.objects.filter(estatus='1')
 
     def ordenes_lsitas():
-        return Orden.objects.filter(estatus = '2')
+        return Orden.objects.filter(estatus='2')
 
     def cantidad():
         return self.receta.cantidad * self.multiplicador
 
-
     def _str_(self):
         cantidad = str(self.receta.cantidad * self.multiplicador)
         return self.cantidad + self.receta.nombre
+
+
+
+
+class Estatus_Orden(models.Model):
+    estatus = models.CharField(max_length=15)

@@ -20,10 +20,25 @@ class FormPaquete(forms.ModelForm):
         model = Paquete
         fields = ('nombre', 'precio')
 
+        error_messages = {
+            'nombre':{
+                'required':"Este campo no puede ser vacio",
+            },
+            'precio':{
+                'required':"Este campo no puede ser vacio",
+            },
+        }
+
 class FormEditarPaquete (forms.ModelForm):
     class Meta:
         model = PaqueteInventario
         fields = ('cantidad',)
+
+        error_messages = {
+            'cantidad': {
+                'required': "Debes seleccionar una cantidad mayor a 0.",
+            },
+        }
 
 class FormRecetasPorPaquete(forms.ModelForm):
     class Meta:
@@ -44,3 +59,15 @@ class FormPaqueteInventario(forms.ModelForm):
     class Meta:
         model = PaqueteInventario
         fields = ('nombre', 'cantidad', 'fecha_cad')
+
+        error_messages = {
+            'nombre': {
+                'required': "Debes seleccionar un paquete.",
+            },
+            'cantidad': {
+                'required': "Debes seleccionar una cantidad mayor a 0.",
+            },
+            'fecha_cad': {
+                'required': "Debes seleccionar una fecha",
+            }
+        }

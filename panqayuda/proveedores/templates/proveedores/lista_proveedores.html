@@ -1,0 +1,61 @@
+{% extends "base.html" %}
+{% block title %}Lista Proveedores{% endblock title %}
+{% block navbar %}{% include "navbar.html" %}{% endblock navbar %}
+{% block header %}
+  <header classs="banner-prueba">
+    <h1 class="center-align">Lista de Proveedores</h1>
+  </header>
+{% endblock header %}
+{% block content %}
+<div class="row">
+  <div class="col s10 offset-s1">
+    <table id="table_id" class="datatable">
+      <thead>
+        <th>Nombre</th>
+        <th>Telefono</th>
+        <th>Direccion</th>
+        <th>RFC</th>
+        <th>Razon Social</th>
+        <th>Email</th>
+        <!-- <th></th> -->
+      </thead>
+      <tbody>
+        {% for item in proveedores %}
+        <tr>
+          <td>
+            <a href="/proveedores/proveedor/{{ item.id }}">
+              {{ item.nombre }}
+            </a>
+          </td>
+          <td>{{ item.telefono }}</td>
+          <td>{{ item.direccion }}</td>
+          <td>{{ item.rfc }}</td>
+          <td>{{ item.razon_social }}</td>
+          <td>{{ item.email }}</td>
+          <!-- <td>
+            <!--Aqui es el editar
+            <a href="">
+              <i class="material-icons">edit</i>
+            </a>
+          </td>
+          <td>
+            <!--Aqui agrega lo de borrar
+            <a onclick="" href="">
+              <i class="material-icons">delete</i>
+            </a>
+          </td> -->
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+    <div class="row">
+      <div class="right-align">
+        <a href="agregar_proveedor" class="btn-floating btn-large waves-effect waves-light pink"><i class="material-icons">add</i></a>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock content %}
+
+{% block js %}
+{% endblock js %}

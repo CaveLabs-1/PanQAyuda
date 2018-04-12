@@ -1,11 +1,20 @@
 from django.test import TestCase
 from materiales.models import Material
-from recetas.models import Receta, RelacionRecetaMaterial
+from recetas.models import Receta, RelacionRecetaMaterial, RecetaInventario
 import datetime
+from django.utils import timezone
 from django.urls import reverse
+from django.contrib.auth.models import User, Group
 
 #US27-Agregar Receta
 class TestAgregarReceta(TestCase):
+
+    #Revisar que la sesión exista
+    def setUp(self):
+        Group.objects.create(name="admin")
+        user = User.objects.create_user(username='temporary', email='temporary@gmail.com', password='temporary', is_superuser='True')
+        user.save()
+        self.client.login(username='temporary', password='temporary')
 
     def crear_receta_prueba(self):
         return Receta.objects.create(nombre="Receta de prueba", cantidad=20, duration=datetime.timedelta(days=1))
@@ -199,6 +208,12 @@ class TestAgregarReceta(TestCase):
 
 #US28-Editar Receta
 class TestEditarReceta(TestCase):
+
+    def setUp(self):
+        Group.objects.create(name="admin")
+        user = User.objects.create_user(username='temporary', email='temporary@gmail.com', password='temporary', is_superuser='True')
+        user.save()
+        self.client.login(username='temporary', password='temporary')
 
     def crear_receta_prueba(self):
         return Receta.objects.create(nombre="Receta de prueba", cantidad=20, duration=datetime.timedelta(days=1))
@@ -403,6 +418,12 @@ class TestEditarReceta(TestCase):
 
 class TestBorrarReceta(TestCase):
 
+    def setUp(self):
+        Group.objects.create(name="admin")
+        user = User.objects.create_user(username='temporary', email='temporary@gmail.com', password='temporary', is_superuser='True')
+        user.save()
+        self.client.login(username='temporary', password='temporary')
+
     def crear_receta(self):
         return Receta.objects.create(nombre="Prueba de Bolillo", cantidad=12, duration=datetime.timedelta(days=1))
 
@@ -427,3 +448,50 @@ class TestBorrarReceta(TestCase):
         r = self.crear_receta()
         self.client.get(reverse('recetas:borrar_receta', kwargs={'id_receta':r.id}))
         self.assertEqual(Receta.objects.filter(deleted_at__isnull=True).count(), 0)
+
+#Es parte de la US19
+class TestListaRecetasInventario(TestCase):
+
+    def setUp(self):
+        Group.objects.create(name="admin")
+        user = User.objects.create_user(username='temporary', email='temporary@gmail.com', password='temporary', is_superuser='True')
+        user.save()
+        self.client.login(username='temporary', password='temporary')
+        #Crear Receta
+        Receta.objects.create(nombre="Receta de prueba", duration=timezone.timedelta(days=1))
+
+        #Crear Receta Inventario
+        RecetaInventario.objects.create(nombre=Receta.objects.first(), cantidad=10, fecha_cad=timezone.now() + timezone.timedelta(days=10))
+
+        #Crear Receta Inventario con algunos ocupados
+        RecetaInventario.objects.create(nombre=Receta.objects.first(),cantidad=10, ocupados=5, fecha_cad=timezone.now() + timezone.timedelta(days=5))
+
+        #Crear Receta Inventario con todos ocupados
+        RecetaInventario.objects.create(nombre=Receta.objects.first(), cantidad=10, ocupados=10, fecha_cad=timezone.now() + timezone.timedelta(days=10))
+
+        #Crear Receta Inventario caducada
+        RecetaInventario.objects.create(nombre=Receta.objects.first(), cantidad=10, ocupados=0, fecha_cad=timezone.now() + timezone.timedelta(days=1))
+
+        # Crear Receta Inventario eliminada
+        RecetaInventario.objects.create(nombre=Receta.objects.first(), cantidad=10, ocupados=0,fecha_cad=timezone.now() + timezone.timedelta(days=1), estatus=0, deleted_at=timezone.now())
+
+        #Crear Receta eliminada
+        Receta.objects.create(nombre="Receta de prueba eliminada", duration=timezone.timedelta(days=1), status=0)
+
+    def test_vista_existente(self):
+        resp = self.client.get(reverse('recetas:lista_recetas_inventario'))
+        self.assertEqual(resp.status_code,200)
+
+        #Verificar que no se cuentan los que están eliminados u ocupados
+        self.assertEqual(resp.context['catalogo_recetas'][0].obtener_cantidad_inventario_con_caducados(), 25)
+
+    def test_detalle_receta_inventario(self):
+        data = {'id_receta': Receta.objects.first().id}
+        resp = self.client.post(reverse('recetas:detalle_recetas_inventario'),data)
+
+        #Verificar el detalle de la lista de recetas
+
+        #Sólo aparecen las que tienen piezas disponibles ni las eliminadas
+        self.assertEqual(resp.context['detalle_recetas_en_inventario'].count(), 3)
+
+        #Se señalan los que están caducados

@@ -1,0 +1,30 @@
+<!-- Modal Agregar materia prima a catálogo -->
+  <div id="agregar_materia_prima" class="modal">
+    <div class="modal-content">
+      <h3>Agregar una materia prima al catálogo </h3>
+        <form action="{% url 'materiales:materiales' %}" method="POST">
+            {% csrf_token %}
+            <!--Nombre-->
+            <div class="row">
+                <div class="input-field col s12 m6 l6">
+                    <input class="validate"  type="text" name="{{forma.nombre.html_name}}" id="{{forma.nombre.id_for_label}}" value="" required>
+                    <label for="{{forma.nombre.id_for_label}}">Nombre</label>
+                    <span class="helper-text" data-error="Nombre inválido"></span>
+                    <span class="red-text">{% if forma.nombre.errors %}{{ forma.nombre.errors }}{%endif%}</span>
+                </div>
+                <!-- Código -->
+                <div class="input-field col s12 m6 l6">
+                    <input class="validate"  type="text" name="{{forma.codigo.html_name}}" id="{{forma.codigo.id_for_label}}" value="" required>
+                    <label for="{{forma.codigo.id_for_label}}" data-error=''  data-success="">Código</label>
+                    <span class="helper-text" data-error=""></span>
+                    <span class="red-text">{%if forma.codigo.errors %}{{forma.codigo.errors}}{% endif %}</span>
+                </div>
+            </div>
+            <div class="row">
+                  <button class="col l3 offset-l9 m3 offset-m9 s12 btn waves-effect waves-light pink right-align" type="submit" name="action">Agregar
+                    <i class="material-icons right">send</i>
+                  </button>
+            </div>
+        </form>
+    </div>
+  </div>

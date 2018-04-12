@@ -1,20 +1,27 @@
 from django.shortcuts import render, redirect, get_object_or_404
-from .models import Receta, RelacionRecetaMaterial
+from .models import Receta, RelacionRecetaMaterial, RecetaInventario
 from django.contrib import messages
 from materiales.models import Material
 from .forms import RecetaForm, MaterialRecetaForm
 from django.http import HttpResponse, HttpResponseRedirect
+from panqayuda.decorators import group_required
 import datetime
+from django.db.models import Sum
+from django.template.loader import render_to_string
+
+
 # from django.contrib import messages
 # from django.views.generic.edit import UpdateView
 # from django.views import generic
+from django.db.models import Sum, F
+
 
 """
     Función que enlista todas las recetas guardadas dentro de la base de datos.
     Regresa objetos de recetas.
 """
 
-
+@group_required('admin')
 def lista_recetas(request):
     template_name = 'lista_recetas.html'
     recetas = list(Receta.objects.filter(status=1))
@@ -26,7 +33,7 @@ def lista_recetas(request):
     un POST te regresa la forms para hacerlo
 """
 
-
+@group_required('admin')
 def agregar_receta(request):
     if request.method == "POST":
         form = RecetaForm(request.POST)
@@ -47,6 +54,7 @@ def agregar_receta(request):
     Muestra toda la información de la receta incluyendo los materiales que tiene asignados
 """
 
+@group_required('admin')
 def detallar_receta(request, id_receta):
     receta_madre = get_object_or_404(Receta, pk=id_receta)
     materiales = list(RelacionRecetaMaterial.objects.filter(receta=receta_madre, status=1))
@@ -60,7 +68,7 @@ def detallar_receta(request, id_receta):
     0 significa que la receta fue borrada
 """
 
-
+@group_required('admin')
 def borrar_receta(request, id_receta):
     receta = get_object_or_404(Receta, pk=id_receta)
     receta.status = 0
@@ -78,7 +86,7 @@ def borrar_receta(request, id_receta):
     a cambiar, en caso de get regresa la forma con los datos a cambiar
 """
 
-
+@group_required('admin')
 def editar_receta(request, id_receta):
     receta = get_object_or_404(Receta, pk=id_receta)
     if request.method == "POST":
@@ -99,7 +107,7 @@ def editar_receta(request, id_receta):
     de material que va a ser agregado a la receta
 """
 
-
+@group_required('admin')
 def agregar_materiales(request, id_receta):
     receta = get_object_or_404(Receta, pk=id_receta)
     # Los materiales que aún no se han agregado a la receta
@@ -126,7 +134,7 @@ def agregar_materiales(request, id_receta):
     0 significa que fue borrado
 """
 
-
+@group_required('admin')
 def borrar_material(request, id_material):
     material = get_object_or_404(RelacionRecetaMaterial, pk=id_material)
     # id_receta = material.receta.id
@@ -134,3 +142,33 @@ def borrar_material(request, id_material):
     material.save()
     # messages.add_message(request, SUCCESS, 'Receta borrada exitosamente.')
     return HttpResponseRedirect(request.META.get('HTTP_REFERER', '/'))
+
+
+
+"""
+    Función que enlista todas el inventario de recetas existentes.
+    Regresa objetos de receta_inventario.
+"""
+
+@group_required('admin')
+def lista_recetas_inventario(request):
+    #recetas_inventario = list(RecetaInventario.objects.filter(deleted_at__isnull=True).filter(estatus=1))
+    catalogo_recetas=Receta.objects.filter(deleted_at__isnull=True).filter(status=1)
+
+    return render(request, 'recetas/lista_recetas_inventario.html', {'catalogo_recetas': catalogo_recetas})
+
+
+"""
+    Función que enlista todas el inventario de recetas existentes.
+    Regresa objetos de receta_inventario.
+"""
+
+@group_required('admin')
+def detalle_recetas_inventario(request):
+    if request.method == 'POST':
+        id_receta = request.POST.get('id_receta')
+        receta = Receta.objects.get(pk=id_receta)
+        detalle_recetas_en_inventario = receta.obtener_recetas_inventario()
+        response = render_to_string('recetas/lista_detalle_recetas_inventario.html', {'detalle_recetas_en_inventario': detalle_recetas_en_inventario, 'receta': receta})
+        return HttpResponse(response)
+    return HttpResponse('Algo ha salido mal.')

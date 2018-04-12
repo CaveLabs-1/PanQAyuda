@@ -1,0 +1,57 @@
+<!-- Autor: Manuel Flores -->
+{% extends "base.html" %}
+{% block title %}Ver Producto Terminado{% endblock title %}
+{% block navbar %}{% include "navbar.html" %}{% endblock navbar %}
+{% block header %}
+  <header class="banner-prueba">
+    {# buscar clase banner-prueba en main.css #}
+    <h1 class="center-align">Inventario de Producto Terminado</h1>
+  </header>
+{% endblock header %}
+{% block content %}
+
+<div class="row">
+  <div class="col s10 offset-s1">
+    <table>
+      <thead>
+        <th>Nombre</th>
+        <th>Cantidad</th>
+        <th>Fecha de Caducidad</th>
+        <th> </th>
+      </thead>
+      <tbody>
+        {% for item in Paquete_Inventario %}
+        <tr>
+          <td>{{ item.nombre }}</td>
+          <td>{{ item.cantidad }}</td>
+          <td>{{ item.fecha_cad }}</td>
+          <td>
+            <div class="row">
+              <div class="col s3 offset-s3 center">
+                <a href="editar_paquete/{{item.id}}">
+                  <i class="small material-icons">edit</i>
+                </a>
+              </div>
+              <div class="col s3 center">
+                <a>
+                  <td><a onclick="return confirm('¿Seguro que quieres borrar el paquete {{item.nombre}}?')" href="borrar_paquete/{{ item.id }}"><i class="material-icons">delete</i></a></td>
+                </a>
+              </div>
+            </div>
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+
+  </div>
+  <!--Aqui termina mi prueba-->
+</div>
+
+  <a href={% url 'paquetes:agregar_paquete_inventario' %}><i class="material-icons">add</i></a>
+{% endblock content %}
+
+{% block js %}
+<!-- Escribe aquí funciones JS extras -->
+
+{% endblock js %}

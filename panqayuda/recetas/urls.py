@@ -14,5 +14,7 @@ urlpatterns = [
     path('receta/agregar_materiales/borrar_material/<int:id_material>', views.borrar_material, name="borrar_material"),
     path('receta/borrar_receta/<int:id_receta>', views.borrar_receta, name="borrar_material"),
     path('receta/<int:id_receta>', views.detallar_receta, name='detallar_receta'),
-    path('receta/editar_receta/<int:id_receta>', views.editar_receta, name='editar_receta')
+    path('receta/editar_receta/<int:id_receta>', views.editar_receta, name='editar_receta'),
+    path('lista_recetas_inventario', views.lista_recetas_inventario, name='lista_recetas_inventario'),
+    path('detalle_recetas_inventario', views.detalle_recetas_inventario, name='detalle_recetas_inventario')
 ]

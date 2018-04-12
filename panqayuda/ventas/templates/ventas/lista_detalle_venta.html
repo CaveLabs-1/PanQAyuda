@@ -1,0 +1,22 @@
+<h4>Detalle de la venta no. {{venta.id}} </h4>
+<h5>Fecha: {{venta.created_at}}    Cliente: {{venta.cliente}}    Monto: {{venta.monto}}</h5>
+<table>
+  <thead>
+    <tr>
+      <th>Nombre</th>
+      <th>Fecha Cad</th>
+      <th>Cantidad</th>
+      <th>Editar</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for ventapaquete in paquetes_de_venta %}
+        <tr>
+          <td>{{ventapaquete.paquete.nombre}}</td>
+          <td>{{ventapaquete.paquete.fecha_cad}}</td>
+          <td>{{ventapaquete.cantidad}}</td>
+          <td><a href='' class="modal-trigger"><i class="material-icons">edit</i> </a></td>
+        </tr>
+    {% endfor %}
+    </tbody>
+  </table>

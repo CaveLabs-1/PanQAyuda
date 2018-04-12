@@ -1,0 +1,69 @@
+{% extends "base.html" %}
+{% block title %}Lista Unidades{% endblock title %}
+{% block navbar %}{% include "navbar.html" %}{% endblock navbar %}
+{% block header %}
+  <header class="banner-prueba">
+    {# buscar clase banner-prueba en main.css #}
+    <h1 class="center-align">Lista De Unidades</h1>
+  </header>
+{% endblock header %}
+{% block content %}
+
+<div class="row">
+  <div class="col s10 offset-s1">
+    <table id="table_id" class="datatable">
+      <thead>
+        <th>Nombre</th>
+        <th>Editar</th>
+        <th>Eliminar</th>
+      </thead>
+      <tbody>
+       {% for unidad in unidades %}
+        <tr>
+          <td>{{unidad.nombre}}</td>
+          <td><a href="{% url 'materiales:modificar_unidad' unidad.id %}" class="modal-trigger"><i class="material-icons">edit</i></a></td>
+          <td><a href="{% url 'materiales:eliminar_unidad' unidad.id %}" class="modal-trigger" onclick="return confirm('Vas a eliminar una Unidad del catálogo. ¿Continuar?')" ><i class="material-icons">delete</i></a></td>
+        </tr>
+       {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+
+  <div class="container">
+    <div class="fixed">
+        <a href="#modal_detalle" class="btn-floating btn-large waves-effect waves-light pink modal-trigger"  ><i class="material-icons">add</i></a>
+    </div>
+  </div>
+  <!-- Modal para agregar unidades -->
+  <div id="modal_detalle" class="modal">
+    <div class="modal-content">
+      <h4>Agregar Unidad</h4>
+      <form class="" action="/materiales/agregar_unidades" method="POST">
+        <br>
+        <br>
+        {% csrf_token %}
+        <div class="row">
+          <div class="input-field col s12">
+            <input class = "validate"  type="text" name="nombre" id="nombre" value="" required>
+            <label for="nombre" data-error='Nombre no válido'  data-success="Nombre correcto">Nombre</label>
+          </div>
+          <div class="col s6"></div>
+        </div>
+        <div class="row">
+          <div class="col s6"></div>
+          <div class="col s6 right-align">
+            <button type="submit" class="save btn pink">Crear <i class="material-icons right">send</i></button>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+{% endblock content %}
+{% block js %}
+<script type="text/javascript">
+  $(document).ready(function(){
+    $('.collapsible').collapsible();
+  });
+  </script>
+{% endblock js %}

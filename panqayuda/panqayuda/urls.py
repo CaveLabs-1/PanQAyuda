@@ -23,8 +23,15 @@ from django.conf.urls.static import static
 # from django.contrib.auth.decorators import login_required
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('prueba/', include('prueba.urls', namespace='prueba')),
     path('recetas/', include('recetas.urls', namespace='recetas')),
     path('paquetes/', include('paquetes.urls', namespace='paquetes')),
     path('ordenes/', include('ordenes.urls', namespace='ordenes')),
+    path('', include('django.contrib.auth.urls'), {'template_name': 'login/login.html'},name='login'),
+    path('clientes/', include('clientes.urls', namespace='clientes')),
+    path('proveedores/', include('proveedores.urls', namespace='proveedores')),
+    path('materiales/', include('materiales.urls', namespace='materiales')),
+    path('compras/', include('compras.urls', namespace='compras')),
+    path('ventas/', include('ventas.urls', namespace='ventas')),
+    path('mermas/', include('mermas.urls', namespace='mermas')),
+
 ]

@@ -1,0 +1,24 @@
+<h4>Inventario detallado {{receta.nombre}}</h4>
+<table>
+  <thead>
+    <tr>
+      <th>Nombre</th>
+      <th>Cantidad</th>
+      <th>Fecha de caducidad</th>
+      <th>Acciones</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for i in detalle_recetas_en_inventario %}
+
+        <tr class="{% if i.es_caducado %} pink-text {% endif %}">
+          <td>{{i.nombre}}</td>
+            <td>{{i.cantidad}}</td>
+            <td>{{i.fecha_cad}}</td>
+            <td><a href='#' class="modal-trigger"><i class="material-icons">edit</i> </a></td>
+
+        </tr>
+    {% endfor %}
+
+    </tbody>
+  </table>

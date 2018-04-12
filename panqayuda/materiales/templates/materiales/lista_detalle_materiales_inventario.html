@@ -1,0 +1,29 @@
+<h4>Detalle de {{material.nombre}} </h4>
+<table>
+  <thead>
+    <tr>
+      <th>Nombre</th>
+      <th>Compra</th>
+      <th>Unidad Entrada</th>
+      <th>Cantidad</th>
+      <th>Cantidad Salida</th>
+      <th>Costo</th>
+      <th>Fecha Cad</th>
+      <th>Editar</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for i in detalle_materiales_en_inventario %}
+        <tr>
+          <td>{{material.nombre}}</td>
+          <td>{{i.compra}}</td>
+          <td>{{i.unidad_entrada}}</td>
+          <td>{{i.cantidad}}</td>
+          <td>{{i.porciones}}</td>
+          <td>{{i.costo}}</td>
+          <td>{{i.fecha_cad}}</td>
+          <td><a href='' class="modal-trigger"><i class="material-icons">edit</i> </a></td>
+        </tr>
+    {% endfor %}
+    </tbody>
+  </table>

@@ -1,0 +1,79 @@
+{% extends "base.html" %}
+{% block title %}Recetas Inventario{% endblock title %}
+{% block navbar %}{% include "navbar.html" %}{% endblock navbar %}
+{% block header %}
+  <header class="banner-prueba">
+    {# buscar clase banner-prueba en main.css #}
+    <h1 class="center-align">Inventario Recetas</h1>
+  </header>
+{% endblock header %}
+{% block content %}
+
+  <div class="container">
+    <br><br>
+    <table id="table_id">
+        <thead>
+          <tr>
+            <th>Nombre</th>
+            <th>Cantidad en inventario</th>
+            <th>Ver detalle</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for receta_inventario in catalogo_recetas %}
+            <tr>
+                <td>{{receta_inventario.nombre}}</td>
+                <td>{{ receta_inventario.obtener_cantidad_inventario_con_caducados }} {% if receta_inventario.tiene_caducados%} -  <span class="pink-text"> Existen caducados </span> {% endif %}</td>
+                <td><a onclick="detalleRecetas({{receta_inventario.id}})" href="#modal_detalle" class="modal-trigger"><i class="material-icons">view_list</i> </a></td>
+            </tr>
+          {% endfor %}
+        </tbody>
+    </table>
+    <br>
+    <div class="fixed">
+        <a href="#" class="btn-floating btn-large waves-effect waves-light pink"><i class="material-icons">add</i></a>
+    </div>
+  </div>
+  <div id="modal_detalle" class="modal">
+    <div class="modal-content">
+      <div id="modal_paquete" class=""></div>
+    </div>
+    <div class="modal-footer">
+      <a href="#!" class="modal-action modal-close waves-effect waves-green btn-flat">Listo</a>
+    </div>
+  </div>
+{% endblock content %}
+{% block js %}
+<script type="text/javascript">
+  $(document).ready(function(){
+    $('.collapsible').collapsible();
+  });
+</script>
+<script type="text/javascript">
+  $(document).ready(function(){
+      var csrftoken = $.cookie('csrftoken');
+      function csrfSafeMethod(method) {
+      // these HTTP methods do not require CSRF protection
+          return (/^(GET|HEAD|OPTIONS|TRACE)$/.test(method));
+      }
+      $.ajaxSetup({
+          beforeSend: function(xhr, settings) {
+              if (!csrfSafeMethod(settings.type) && !this.crossDomain) {
+                  xhr.setRequestHeader("X-CSRFToken", csrftoken);
+              }
+          }
+      });
+  });
+
+
+  function detalleRecetas(id_receta){
+    console.log(id_receta);
+    var url = '{% url "recetas:detalle_recetas_inventario" %}';
+    $.post(url, {
+      id_receta: id_receta,
+    }).done(function(data){
+      $("#modal_paquete").html(data);
+    });
+  }
+</script>
+{% endblock js %}
