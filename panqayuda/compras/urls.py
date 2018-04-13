@@ -12,6 +12,7 @@ urlpatterns = [
     path('agregar_compra' , views.agregar_compra, name='agregar_compra'),
     path('agregar_materias_primas_a_compra/<int:id_compra>', views.agregar_materias_primas_a_compra, name='agregar_materias_primas_a_compra'),
     path('agregar_materia_prima_a_compra/', views.agregar_materia_prima_a_compra, name='agregar_materia_prima_a_compra'),
+    path('eliminar_compra/<int:id_compra>', views.eliminar_compra, name='eliminar_compra'),
 
 
 ]+ static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

@@ -111,6 +111,35 @@ class TestListaCompras(TestCase):
         response = self.client.get(url)
         self.assertContains(response, '999')
 
+class TestEliminarCompra(TestCase):
+
+    def setUp(self):
+        Group.objects.create(name="admin")
+        user = User.objects.create_user(username='temporary', email='temporary@gmail.com', password='temporary', is_superuser='True')
+        user.save()
+        self.client.login(username='temporary', password='temporary')
+        proveedor = Proveedor.objects.create(
+            nombre="TestLista",
+            telefono=4151043944,
+            direccion="Aqui mero patatero",
+            rfc="12342121",
+            razon_social="Un tipazo",
+            email="test@ejemplo.com"
+        )
+        compra = Compra.objects.create(
+            proveedor=proveedor,
+            fecha_compra="2059-03-03 12:31:06-05"
+        )
+        compra.save()
+
+    def test_borrar_compra(self):
+        self.assertEqual(Compra.objects.count(), 1)
+        objetos = Compra.objects.first()
+        self.client.get(reverse('compras:eliminar_compra', kwargs={'id_compra':objetos.id}))
+        self.assertEqual(Compra.objects.filter(deleted_at__isnull=True).count(), 0)
+
+
+
 
 
     #             cuenta_prepost=MaterialInventario.objects.filter(compra=self.compra.id).count()
