@@ -118,9 +118,17 @@ class TestEliminarCompra(TestCase):
         user = User.objects.create_user(username='temporary', email='temporary@gmail.com', password='temporary', is_superuser='True')
         user.save()
         self.client.login(username='temporary', password='temporary')
+        proveedor = Proveedor.objects.create(
+            nombre="TestLista",
+            telefono=4151043944,
+            direccion="Aqui mero patatero",
+            rfc="12342121",
+            razon_social="Un tipazo",
+            email="test@ejemplo.com"
+        )
         compra = Compra.objects.create(
-            proveedor='Juan',
-            fecha_compra="2059-03-03 12:31:06-05",
+            proveedor=proveedor,
+            fecha_compra="2059-03-03 12:31:06-05"
         )
         compra.save()
 

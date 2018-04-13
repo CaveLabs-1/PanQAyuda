@@ -167,8 +167,8 @@ class TestEliminarProveedor(TestCase):
             nombre='Juan',
             telefono=12345678,
             direccion='el tec',
-            rfc='holirfc'
-            razon_social='eltecholi'
+            rfc='holirfc',
+            razon_social='eltecholi',
             email='v@v.com'
         )
         proveedor.save()
