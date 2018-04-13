@@ -326,3 +326,20 @@ class TestEliminarUnidad(TestCase):
         objetos = Unidad.objects.first()
         self.client.get(reverse('materiales:eliminar_unidad', kwargs={'id_unidad':objetos.id}))
         self.assertEqual(Unidad.objects.filter(deleted_at__isnull=True).count(), 0)
+
+
+class TestEliminarMaterial(TestCase):
+
+    def setUp(self):
+        Group.objects.create(name="admin")
+        user = User.objects.create_user(username='temporary', email='temporary@gmail.com', password='temporary', is_superuser='True')
+        user.save()
+        self.client.login(username='temporary', password='temporary')
+        material = Material.objects.create(nombre='Huevo', codigo=123)
+        material.save()
+
+    def test_borrar_material(self):
+        self.assertEqual(Material.objects.count(), 1)
+        objetos = Material.objects.first()
+        self.client.get(reverse('materiales:eliminar_material', kwargs={'id_material':objetos.id}))
+        self.assertEqual(Material.objects.filter(deleted_at__isnull=True).count(), 0)

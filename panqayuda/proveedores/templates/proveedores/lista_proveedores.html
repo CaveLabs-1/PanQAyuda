@@ -17,6 +17,7 @@
         <th>RFC</th>
         <th>Razon Social</th>
         <th>Email</th>
+        <th>Eliminar</th>
         <!-- <th></th> -->
       </thead>
       <tbody>
@@ -32,6 +33,7 @@
           <td>{{ item.rfc }}</td>
           <td>{{ item.razon_social }}</td>
           <td>{{ item.email }}</td>
+          <td><a href="{% url 'proveedores:eliminar_proveedor' item.id %}" class="modal-trigger" onclick="return confirm('Vas a eliminar un Proveedor del catálogo. ¿Continuar?')" ><i class="material-icons">delete</i></a></td>
           <!-- <td>
             <!--Aqui es el editar
             <a href="">

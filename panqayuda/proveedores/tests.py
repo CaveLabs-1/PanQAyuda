@@ -153,4 +153,29 @@ class TestListaProveedores(TestCase):
         resp = self.client.get(reverse('proveedores:lista_proveedores'))
         self.assertEqual(resp.context['proveedores'].count(), 0)
 
+
+
+
+class TestEliminarProveedor(TestCase):
+
+    def setUp(self):
+        Group.objects.create(name="admin")
+        user = User.objects.create_user(username='temporary', email='temporary@gmail.com', password='temporary', is_superuser='True')
+        user.save()
+        self.client.login(username='temporary', password='temporary')
+        proveedor = Proveedor.objects.create(
+            nombre='Juan',
+            telefono=12345678,
+            direccion='el tec',
+            rfc='holirfc'
+            razon_social='eltecholi'
+            email='v@v.com'
+        )
+        proveedor.save()
+
+    def test_borrar_proveedor(self):
+        self.assertEqual(Proveedor.objects.count(), 1)
+        objetos = Proveedor.objects.first()
+        self.client.get(reverse('proveedores:eliminar_proveedor', kwargs={'id_proveedor':objetos.id}))
+        self.assertEqual(Proveedor.objects.filter(deleted_at__isnull=True).count(), 0)
 # Create your tests here.
