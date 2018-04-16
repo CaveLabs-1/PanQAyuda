@@ -28,11 +28,11 @@
                         <input type="text" hidden name="id_material" id="id_material"/>
                         <!--Cantidad de Material-->
                         <div class="input-field col l2 m2 s1">
+                            {{ form.cantidad.label_tag }}
+                            {{ form.cantidad }}
                             {% if form.cantidad.errors %}
                                 <span class="text-red">{{ form.cantidad.errors }} </span>
                             {% endif %}
-                            {{ form.cantidad.label_tag }}
-                            {{ form.cantidad }}
                         </div>
                         <!--Unidad-->
                         <div class="input-field col l2 m2 s1">

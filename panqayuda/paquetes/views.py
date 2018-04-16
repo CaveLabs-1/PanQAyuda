@@ -89,6 +89,7 @@ def agregar_paquete_inventario(request):
         paquetes = Paquete.objects.filter(deleted_at__isnull=True).order_by("nombre")
         return render(request, 'paquetes/agregar_inventario.html', {'paquetes': paquetes, 'forma':forma})
 
+@group_required('admin')
 def borrar_paquete_inventario(request, id_paquete_inventario):
     paquete_inventario = get_object_or_404(PaqueteInventario, pk=id_paquete_inventario)
     cantidad = paquete_inventario.cantidad
@@ -121,7 +122,7 @@ def editar_paquete_inventario(request, id_paquete):
 
             paquete_inventario = form.save()
             paquete_inventario.save()
-            messages.success(request, '¡Se ha editado la paquete_inventario exitosamente!')
+            messages.success(request, '¡Se ha editado el inventario de '+ paquete_inventario.nombre.nombre + ' exitosamente!')
             return redirect('paquetes:lista_paquete_inventario')
     else:
         form = FormEditarPaquete()
@@ -187,7 +188,7 @@ def editar_paquete(request, id_paquete):
             paquete = forma.save()
             return HttpResponseRedirect(reverse('paquetes:agregar_recetas_a_paquete', kwargs={'id_paquete':paquete.id}))
         else:
-            messages.info(request, 'Hubo un error con la peticion')
+            messages.info(request, 'Hubo un error en la forma. Aségurate que seleccionaste un nombre y un precio.')
             return HttpResponseRedirect(reverse('paquetes:editar_paquete', kwargs={'id_paquete':paquete.id}))
     else:
         forma = FormPaquete(initial={"nombre":paquete.nombre, "precio":paquete.precio})

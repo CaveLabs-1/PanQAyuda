@@ -24,7 +24,7 @@
         {% for item in proveedores %}
         <tr>
           <td>
-            <a href="/proveedores/proveedor/{{ item.id }}">
+            <a href="{% url 'proveedores:detallar_proveedor' item.id %}">
               {{ item.nombre }}
             </a>
           </td>
@@ -52,7 +52,7 @@
     </table>
     <div class="row">
       <div class="right-align">
-        <a href="agregar_proveedor" class="btn-floating btn-large waves-effect waves-light pink"><i class="material-icons">add</i></a>
+        <a href="{% url 'proveedores:agregar_proveedor'%}" class="btn-floating btn-large waves-effect waves-light pink"><i class="material-icons">add</i></a>
       </div>
     </div>
   </div>
