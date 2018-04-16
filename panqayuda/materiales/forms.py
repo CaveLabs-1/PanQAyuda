@@ -13,7 +13,7 @@ class MaterialForm(ModelForm):
         nombre=self.cleaned_data['nombre']
 
         #Buscar materials que tengan el mismo nombre y que estén disponibles. La consulta no es case-sensitive.
-        material_query = Material.objects.filter(nombre__iexact=nombre).exclude(status=0)
+        material_query = Material.objects.filter(nombre__iexact=nombre).exclude(status=0).exclude(deleted_at__isnull=False)
         if material_query.count() == 0:
             return nombre
         else:

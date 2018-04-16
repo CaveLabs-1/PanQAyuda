@@ -28,40 +28,40 @@
                   <div class="row">
                     <div class="input-field col m4">
                       <input class = "validate" class="validate" type="text" name="{{form.nombre.html_name}}" id="{{form.nombre.id_for_label}}" value="">
-                      <label for="{{form.nombre.id_for_label}}" data-error='Nombre inválido'  data-success="Nombre correcto">Nombre</label>
-                      <span class="helper-text" data-error="wrong" data-success="right">{%if form.nombre.errors %}{{form.nombre.errors}}{% endif %}</span>
+                      <label for="{{form.nombre.id_for_label}}" data-error='Debes introducir un nombre'  data-success="">Nombre</label>
+                      <span class="helper-text" data-error='Debes introducir un nombre'  data-success="Nombre correcto">{%if form.nombre.errors %}{{form.nombre.errors}}{% endif %}</span>
                     </div>
                     <div class="input-field col m4">
                       <input class = "number" class="validate"  type="text" name="{{form.telefono.html_name}}" id="{{form.telefono.id_for_label}}" value="">
                       <label for="{{form.telefono.id_for_label}}" data-error='Teléfono inválido'  data-success="Teléfono correcto">Teléfono</label>
-                      <span class="helper-text" data-error="wrong" data-success="right">{%if form.telefono.errors %}{{form.telefono.errors}}{% endif %}</span>
+                      <span class="helper-text" data-error="Teléfono inválido" data-success="">{%if form.telefono.errors %}{{form.telefono.errors}}{% endif %}</span>
                     </div>
                     <div class="input-field col m4">
                       <input type="email" class="validate" name="{{form.email.html_name}}" id={{form.email.id_for_label}} value="">
                       <label for="{{form.email.id_for_label}}" data-error='Email inválido'  data-success="Email correcto">Email</label>
-                      <span class="helper-text" data-error="wrong" data-success="right">{%if form.email.errors %}{{form.email.errors}}{% endif %}</span>
+                      <span class="helper-text" data-error="Email inválido" data-success="">{%if form.email.errors %}{{form.email.errors}}{% endif %}</span>
                     </div>
                   </div>
                   <div class="row">
                     <div class="input-field col m4">
                       <input type="text" class="validate" name="{{form.direccion.html_name}}" id={{form.direccion.id_for_label}} value="">
                       <label for="{{form.direccion.id_for_label}}" data-error='Dirección inválida'  data-success="Dirección correcta">Dirección</label>
-                      <span class="helper-text" data-error="wrong" data-success="right">{%if form.direccion.errors %}{{form.direccion.errors}}{% endif %}</span>
+                      <span class="helper-text" data-error="Debes introducir una dirección" data-success="">{%if form.direccion.errors %}{{form.direccion.errors}}{% endif %}</span>
                     </div>
                     <div class="input-field col m4">
                       <input type="text" class="validate" name="{{form.rfc.html_name}}" id={{form.rfc.id_for_label}} value="">
                       <label for="{{form.rfc.id_for_label}}" data-error='RFC inválido'  data-success="RFC correcta">RFC</label>
-                      <span class="helper-text" data-error="wrong" data-success="right">{%if form.rfc.errors %}{{form.rfc.errors}}{% endif %}</span>
+                      <span class="helper-text" data-error="RFC inválido" data-success="">{%if form.rfc.errors %}{{form.rfc.errors}}{% endif %}</span>
                     </div>
                     <div class="input-field col m4">
                       <input type="text" class="validate" name="{{form.razon_social.html_name}}" id={{form.razon_social.id_for_label}} value="">
                       <label for="{{form.razon_social.id_for_label}}" data-error='Razón Social inválida'  data-success="Razón Social correcta">Razón Social</label>
-                      <span class="helper-text" data-error="wrong" data-success="right">{%if form.razon_social.errors %}{{form.razon_social.errors}}{% endif %}</span>
+                      <span class="helper-text" data-error="Debes llenar este campo" data-success="">{%if form.razon_social.errors %}{{form.razon_social.errors}}{% endif %}</span>
                     </div>
                   </div>
                   <div class="row">
                     <div class="col s6">
-                      <a class="btn waves-effect waves-light pink" href="/proveedores">Regresar
+                      <a class="btn waves-effect waves-light pink" href="{% url 'proveedores:lista_proveedores' %}">Regresar
                         <i class="material-icons left">chevron_left</i>
                       </a>
                     </div>
