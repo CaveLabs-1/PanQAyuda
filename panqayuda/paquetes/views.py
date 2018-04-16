@@ -187,7 +187,7 @@ def editar_paquete(request, id_paquete):
             paquete = forma.save()
             return HttpResponseRedirect(reverse('paquetes:agregar_recetas_a_paquete', kwargs={'id_paquete':paquete.id}))
         else:
-            messages.info(request, 'Hubo un error con la peticion')
+            messages.info(request, 'Hubo un error en la forma. Aségurate que seleccionaste un nombre y un precio.')
             return HttpResponseRedirect(reverse('paquetes:editar_paquete', kwargs={'id_paquete':paquete.id}))
     else:
         forma = FormPaquete(initial={"nombre":paquete.nombre, "precio":paquete.precio})

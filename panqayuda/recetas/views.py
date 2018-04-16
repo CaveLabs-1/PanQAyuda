@@ -97,6 +97,8 @@ def editar_receta(request, id_receta):
             messages.success(request, 'Se ha editado la receta exitosamente!')
             materiales = list(RelacionRecetaMaterial.objects.filter(receta=receta, status=1))
             return render(request, 'recetas/receta.html', {'receta': receta, 'materiales': materiales})
+        else:
+            messages.error(request,'No se pudo editar la receta. Asegúrate que seleccionaste un nombre, una duración y que el nombre no exista.')
     else:
         form = RecetaForm()
     return render(request, 'recetas/editar_receta.html', {'form': form, 'receta': receta})
