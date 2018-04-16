@@ -3,7 +3,8 @@ from django.template.loader import render_to_string
 from .forms import CompraForm
 from proveedores.models import Proveedor
 from .models import Compra
-from materiales.models import Material, MaterialInventario
+from materiales.models import Material, MaterialInventario, Unidad
+from materiales.forms import MaterialInventarioForm
 from django.contrib import messages
 from django.http import HttpResponseRedirect, HttpResponse
 from django.db.models import Sum
