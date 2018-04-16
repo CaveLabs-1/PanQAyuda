@@ -10,9 +10,9 @@
                 <li class="bold"><a class="collapsible-header waves-effect waves-teal" tabindex="0"> &nbsp;  &nbsp;Inventario</a>
                   <div class="collapsible-body">
                     <ul>
-                      <li><a href="color.html">Materia Prima</a></li>
-                      <li><a href="{% url 'paquetes:lista_paquetes' %}">Producto Semi-Terminado</a></li>
-                      <li><a href="helpers.html">Producto Terminado</a></li>
+                      <li><a href="{% url 'materiales:materiales' %}">Materia Prima</a></li>
+                      <li><a href="{% url 'paquetes:lista_paquetes' %}">Producto Terminado</a></li>
+                      <li><a href="{% url 'recetas:lista_recetas_inventario' %}">Producto Semi-Terminado</a></li>
                       <li><a href="{% url 'recetas:lista_de_recetas' %}">Recetas</a></li>
                     </ul>
                   </div>
@@ -26,8 +26,8 @@
                 <li class="bold"><a class="collapsible-header waves-effect waves-teal" tabindex="0"> &nbsp;  &nbsp;Compras</a>
                   <div class="collapsible-body">
                     <ul>
-                      <li><a href="color.html">Proveedores</a></li>
-                      <li><a href="{% url 'paquetes:lista_paquetes' %}"> &Oacute;rdenes de Compra</a></li>
+                      <li><a href="{% url 'proveedores:lista_proveedores' %}">Proveedores</a></li>
+                      <li><a href="{% url 'compras:compras' %}"> &Oacute;rdenes de Compra</a></li>
                     </ul>
                   </div>
                 </li>
@@ -43,8 +43,8 @@
                 <li class="bold"><a class="collapsible-header waves-effect waves-teal" tabindex="0"> &nbsp;  &nbsp;Ventas</a>
                   <div class="collapsible-body">
                     <ul>
-                      <li><a href="color.html">Clientes</a></li>
-                      <li><a href="{% url 'paquetes:lista_paquetes' %}"> &Oacute;rdenes de Venta</a></li>
+                      <li><a href="{% url 'clientes:clientes' %}"">Clientes</a></li>
+                      <li><a href="{% url 'ventas:ventas' %}"> &Oacute;rdenes de Venta</a></li>
                     </ul>
                   </div>
                 </li>
@@ -52,6 +52,6 @@
             </li>
     <li><div class="divider"></div></li>
 
-    <li><a href="#" class="waves-effect" >Usuarios</a></li>
+    <li><a href="#" class="waves-effect">Usuarios</a></li>
   </ul>
   <a href="#" data-target="slide-out" class="sidenav-trigger"><i class="material-icons">menu</i></a>
