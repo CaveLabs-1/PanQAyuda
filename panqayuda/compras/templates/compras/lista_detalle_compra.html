@@ -1,5 +1,6 @@
 <h4>Detalle de la compra no. {{compra.id}} </h4>
 <h5>Fecha: {{compra.fecha_compra}}    Proveedor: {{compra.proveedor}}</h5>
+<h1>{{compramaterial}}</h1>
 <table>
   <thead>
     <tr>
@@ -13,10 +14,10 @@
   <tbody>
     {% for compramaterial in materiales_de_compra %}
         <tr>
-          <td>{{compramaterial.material.material.nombre}}</td>
-          <td>{{compramaterial.material.fecha_cad}}</td>
-          <td>{{compramaterial.cantidad}} {{compramaterial.material.unidad_entrada}}</td>
-          <td>{{compramaterial.material.costo}}</td>
+          <td>{{compramaterial.material}}</td>
+          <td>{{compramaterial.fecha_cad}}</td>
+          <td>{{compramaterial.cantidad}} {{compramaterial.unidad_entrada}}</td>
+          <td>{{compramaterial.costo}}</td>
           <td><a href='' class="modal-trigger"><i class="material-icons">edit</i> </a></td>
         </tr>
     {% endfor %}

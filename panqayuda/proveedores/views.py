@@ -11,7 +11,7 @@ import datetime
 def lista_proveedores(request):
     lista_proveedores = Proveedor.objects.all().filter(status=1).filter(deleted_at__isnull=True)
     return render(request, 'proveedores/lista_proveedores.html', {'proveedores':lista_proveedores})
- 
+
 @group_required('admin')
 def agregar_proveedor(request):
     if request.method == "POST":
@@ -32,3 +32,14 @@ def agregar_proveedor(request):
 def detallar_proveedor(request, id_proveedor):
         proveedor = get_object_or_404(Proveedor, pk=id_proveedor)
         return render(request, 'proveedores/proveedor.html', {'proveedor': proveedor})
+
+
+#Función para borrar un proveedor @Valter
+@group_required('admin')
+def eliminar_proveedor(request, id_proveedor):
+    proveedor = get_object_or_404(Proveedor, pk=id_proveedor)
+    proveedor.estatus = 0
+    proveedor.deleted_at = datetime.datetime.now()
+    proveedor.save()
+    messages.success(request, '¡Se ha borrado exitosamente el proveedor!')
+    return redirect('proveedores:lista_proveedores')

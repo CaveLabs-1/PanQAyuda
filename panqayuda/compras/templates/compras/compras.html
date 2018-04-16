@@ -17,6 +17,7 @@
         <th>Fecha de Compra</th>
         <th>Detalle</th>
         <th>Editar</th>
+        <th>Eliminar</th>
       </thead>
       <tbody>
        {% for compra in compras %}
@@ -26,6 +27,7 @@
           <td>{{compra.fecha_compra}}</td>
           <td><a onclick="detalleCompra({{compra.id}})" href="#modal_detalle" class="modal-trigger"><i class="material-icons">view_list</i> </a></td>
           <td><a href="editar_compra/{{ compra.id }}"><i class="material-icons">edit</i></a></td>
+          <td><a href="{% url 'compras:eliminar_compra' compra.id %}" class="modal-trigger" onclick="return confirm('Vas a eliminar una Compra del catálogo. ¿Continuar?')"><i class="material-icons">delete</i></a></td>
         </tr>
        {% endfor %}
       </tbody>

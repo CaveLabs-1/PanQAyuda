@@ -205,7 +205,7 @@ class TestListaMateriaPrima(TestCase):
             compra=compra,
             unidad_entrada=unidad,
             cantidad=1,
-            cantidad_salida=12,
+            cantidad_disponible=12,
             costo=120,
             fecha_cad="2059-03-03 12:31:06-05",
             estatus=0)
@@ -240,7 +240,7 @@ class TestListaMateriaPrima(TestCase):
             compra=compra,
             unidad_entrada=unidad,
             cantidad=1,
-            cantidad_salida=12,
+            cantidad_disponible=12,
             costo=120,
             fecha_cad="2049-03-03 12:31:06-05")
 
@@ -326,3 +326,20 @@ class TestEliminarUnidad(TestCase):
         objetos = Unidad.objects.first()
         self.client.get(reverse('materiales:eliminar_unidad', kwargs={'id_unidad':objetos.id}))
         self.assertEqual(Unidad.objects.filter(deleted_at__isnull=True).count(), 0)
+
+
+class TestEliminarMaterial(TestCase):
+
+    def setUp(self):
+        Group.objects.create(name="admin")
+        user = User.objects.create_user(username='temporary', email='temporary@gmail.com', password='temporary', is_superuser='True')
+        user.save()
+        self.client.login(username='temporary', password='temporary')
+        material = Material.objects.create(nombre='Huevo', codigo=123)
+        material.save()
+
+    def test_borrar_material(self):
+        self.assertEqual(Material.objects.count(), 1)
+        objetos = Material.objects.first()
+        self.client.get(reverse('materiales:eliminar_material', kwargs={'id_material':objetos.id}))
+        self.assertEqual(Material.objects.filter(deleted_at__isnull=True).count(), 0)

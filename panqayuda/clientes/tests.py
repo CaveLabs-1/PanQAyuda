@@ -87,3 +87,24 @@ class TestAgrergarCliente(TestCase):
         data = {'nombre': 'prueba3', 'telefono': 123432434, 'email': 'alguien@algo.com'}
         self.client.post(reverse('clientes:clientes'), data)
         self.assertEqual(Cliente.objects.count(), 3)
+
+class TestEliminarCliente(TestCase):
+
+    def setUp(self):
+        Group.objects.create(name="admin")
+        user = User.objects.create_user(username='temporary', email='temporary@gmail.com', password='temporary', is_superuser='True')
+        user.save()
+        self.client.login(username='temporary', password='temporary')
+        cliente = Cliente.objects.create(
+            nombre='Juan',
+            telefono=12345678,
+            email='v@v.com',
+            rfc='holirfc'
+        )
+        cliente.save()
+
+    def test_borrar_cliente(self):
+        self.assertEqual(Cliente.objects.count(), 1)
+        objetos = Cliente.objects.first()
+        self.client.get(reverse('clientes:eliminar_cliente', kwargs={'id_cliente':objetos.id}))
+        self.assertEqual(Cliente.objects.filter(deleted_at__isnull=True).count(), 0)

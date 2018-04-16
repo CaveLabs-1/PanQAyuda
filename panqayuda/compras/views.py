@@ -33,6 +33,7 @@ def lista_detalle_compra(request):
         id_compra = request.POST.get('id_compra')
         compra = Compra.objects.get(pk=id_compra)
         materiales_de_compra = MaterialInventario.objects.filter(compra=compra)
+        print(materiales_de_compra)
         response = render_to_string('compras/lista_detalle_compra.html', {'materiales_de_compra': materiales_de_compra, 'compra': compra})
         return HttpResponse(response)
     return HttpResponse('Algo ha salido mal.')
@@ -127,3 +128,16 @@ def agregar_materia_prima_a_compra(request):
                  for error in errors:
                      mensaje_error+=error + "\n"
             return HttpResponseNotFound('Hubo un problema agregando la materia prima a la compra: '+ mensaje_error)
+
+
+
+
+#Función para borrar una compra @Valter
+@group_required('admin')
+def eliminar_compra(request, id_compra):
+    compra = get_object_or_404(Compra, pk=id_compra)
+    compra.estatus = 0
+    compra.deleted_at = datetime.datetime.now()
+    compra.save()
+    messages.success(request, '¡Se ha borrado exitosamente la compra!')
+    return redirect('compras:compras')
