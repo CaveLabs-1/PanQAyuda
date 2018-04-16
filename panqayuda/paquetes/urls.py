@@ -18,6 +18,7 @@ urlpatterns = [
     path('agregar_paquete_inventario/', views.agregar_paquete_inventario, name='agregar_inventario'),
     path('agregar_inventario/', views.agregar_paquete_inventario, name='agregar_inventario'),
     path('paquetes_por_catalogo/', views.paquetes_por_catalogo, name='paquetes_por_catalogo'),
+    path('borrar_paquete_inventario/<int:id_paquete>', views.borrar_paquete_inventario, name='borrar_paquete_inventario'),
 
 
     #path('prueba_view/', views.prueba_view, name='prueba_view')
