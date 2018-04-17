@@ -40,4 +40,3 @@ class MermaMaterial(models.Model):
 
     def __str__(self):
         return self.fecha + self.nombre
-# Create your models here.

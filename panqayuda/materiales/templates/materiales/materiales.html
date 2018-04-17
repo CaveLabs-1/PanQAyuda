@@ -23,6 +23,7 @@
           <!-- <th>Unidad</th> -->
           <th>Codigo</th>
           <th>Editar</th>
+          <th>Eliminar</th>
         </thead>
         <tbody>
          {% for material in materiales %}
@@ -30,8 +31,9 @@
             <td>{{material.nombre}}</td>
             <!-- <td>{{material.unidad}}</td> -->
             <td>{{material.codigo}}</td>
-            <td><a href="{% url 'materiales:editar_material' material.id %}"><i class="material-icons">edit</i></a></td>
-          </tr>
+            <td><a href="{% url 'materiales:editar_material' material.id %}" class="modal-trigger"><i class="material-icons">edit</i></a></td>
+            <td><a href="{% url 'materiales:eliminar_material' material.id %}" class="modal-trigger" onclick="return confirm('Vas a eliminar un Material del catálogo. ¿Continuar?')"><i class="material-icons">delete</i></a></td>
+            </tr>
          {% endfor %}
         </tbody>
       </table>

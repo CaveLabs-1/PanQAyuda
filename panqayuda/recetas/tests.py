@@ -4,14 +4,17 @@ from recetas.models import Receta, RelacionRecetaMaterial, RecetaInventario
 import datetime
 from django.utils import timezone
 from django.urls import reverse
+from django.contrib.auth.models import User, Group
 
 #US27-Agregar Receta
 class TestAgregarReceta(TestCase):
 
     #Revisar que la sesión exista
-    def test_valid_session(self):
-        session = self.client.session
-
+    def setUp(self):
+        Group.objects.create(name="admin")
+        user = User.objects.create_user(username='temporary', email='temporary@gmail.com', password='temporary', is_superuser='True')
+        user.save()
+        self.client.login(username='temporary', password='temporary')
 
     def crear_receta_prueba(self):
         return Receta.objects.create(nombre="Receta de prueba", cantidad=20, duration=datetime.timedelta(days=1))
@@ -205,6 +208,12 @@ class TestAgregarReceta(TestCase):
 
 #US28-Editar Receta
 class TestEditarReceta(TestCase):
+
+    def setUp(self):
+        Group.objects.create(name="admin")
+        user = User.objects.create_user(username='temporary', email='temporary@gmail.com', password='temporary', is_superuser='True')
+        user.save()
+        self.client.login(username='temporary', password='temporary')
 
     def crear_receta_prueba(self):
         return Receta.objects.create(nombre="Receta de prueba", cantidad=20, duration=datetime.timedelta(days=1))
@@ -409,6 +418,12 @@ class TestEditarReceta(TestCase):
 
 class TestBorrarReceta(TestCase):
 
+    def setUp(self):
+        Group.objects.create(name="admin")
+        user = User.objects.create_user(username='temporary', email='temporary@gmail.com', password='temporary', is_superuser='True')
+        user.save()
+        self.client.login(username='temporary', password='temporary')
+
     def crear_receta(self):
         return Receta.objects.create(nombre="Prueba de Bolillo", cantidad=12, duration=datetime.timedelta(days=1))
 
@@ -438,6 +453,10 @@ class TestBorrarReceta(TestCase):
 class TestListaRecetasInventario(TestCase):
 
     def setUp(self):
+        Group.objects.create(name="admin")
+        user = User.objects.create_user(username='temporary', email='temporary@gmail.com', password='temporary', is_superuser='True')
+        user.save()
+        self.client.login(username='temporary', password='temporary')
         #Crear Receta
         Receta.objects.create(nombre="Receta de prueba", duration=timezone.timedelta(days=1))
 

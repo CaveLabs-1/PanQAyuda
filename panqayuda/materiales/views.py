@@ -24,7 +24,7 @@ def materiales(request):
         return HttpResponseRedirect(reverse('materiales:materiales'))
     else:
         forma = MaterialForm()
-        materiales =  Material.objects.filter(deleted_at__isnull=True)
+        materiales =  Material.objects.filter(deleted_at__isnull=True, status=1)
         return render (request, 'materiales/materiales.html', {'forma': forma, 'materiales': materiales})
 
 @group_required('admin')
@@ -56,7 +56,15 @@ def eliminar_unidad(request, id_unidad):
     return redirect('materiales:lista_unidades')
 
 
-
+#Función para borrar una materia prima @Valter
+@group_required('admin')
+def eliminar_material(request, id_material):
+    material = get_object_or_404(Material, pk=id_material)
+    material.estatus = 0
+    material.deleted_at = datetime.datetime.now()
+    material.save()
+    messages.success(request, '¡Se ha borrado exitosamente el material del catálogo!')
+    return redirect('materiales:materiales')
 
 
 """
@@ -123,7 +131,7 @@ def editar_material(request, id_material):
         if form.is_valid():
             material = form.save()
             material.save
-            messages.success(request, 'Se ha editado el material exitosamente!')
+            messages.success(request, 'Se ha editado la material exitosamente!')
             return redirect('materiales:materiales')
     else:
         form = MaterialForm()

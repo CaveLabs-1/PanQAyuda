@@ -1,9 +1,16 @@
 from django.test import TestCase
 from django.urls import reverse
 from proveedores.models import Proveedor
-
+from django.contrib.auth.models import User, Group
+from django.shortcuts import render
 #Test agregar proveedor
 class TestAgregarProveedor(TestCase):
+
+    def setUp(self):
+        Group.objects.create(name="admin")
+        user = User.objects.create_user(username='temporary', email='temporary@gmail.com', password='temporary', is_superuser='True')
+        user.save()
+        self.client.login(username='temporary', password='temporary')
 
     #Revisar que la sesión exista
     def test_valid_session(self):
@@ -128,6 +135,12 @@ class TestAgregarProveedor(TestCase):
 
 class TestListaProveedores(TestCase):
     #se cheva si la ruta para la vista existe
+    def setUp(self):
+        Group.objects.create(name="admin")
+        user = User.objects.create_user(username='temporary', email='temporary@gmail.com', password='temporary', is_superuser='True')
+        user.save()
+        self.client.login(username='temporary', password='temporary')
+
     def test_existe_la_vista(self):
         Proveedor.objects.create(nombre="Bancomer", telefono=4151043944, direccion="calle 100 corazones", rfc=45321343, razon_social="Somos unos cracks", email="ejemplo@hotmail.com")
         self.assertEqual(Proveedor.objects.count(), 1)
@@ -140,4 +153,29 @@ class TestListaProveedores(TestCase):
         resp = self.client.get(reverse('proveedores:lista_proveedores'))
         self.assertEqual(resp.context['proveedores'].count(), 0)
 
+
+
+
+class TestEliminarProveedor(TestCase):
+
+    def setUp(self):
+        Group.objects.create(name="admin")
+        user = User.objects.create_user(username='temporary', email='temporary@gmail.com', password='temporary', is_superuser='True')
+        user.save()
+        self.client.login(username='temporary', password='temporary')
+        proveedor = Proveedor.objects.create(
+            nombre='Juan',
+            telefono=12345678,
+            direccion='el tec',
+            rfc='holirfc',
+            razon_social='eltecholi',
+            email='v@v.com'
+        )
+        proveedor.save()
+
+    def test_borrar_proveedor(self):
+        self.assertEqual(Proveedor.objects.count(), 1)
+        objetos = Proveedor.objects.first()
+        self.client.get(reverse('proveedores:eliminar_proveedor', kwargs={'id_proveedor':objetos.id}))
+        self.assertEqual(Proveedor.objects.filter(deleted_at__isnull=True).count(), 0)
 # Create your tests here.

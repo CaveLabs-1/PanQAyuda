@@ -1,6 +1,6 @@
 from django.forms import ModelForm
 from django import forms
-from .models import Material, Unidad
+from .models import Material, Unidad, MaterialInventario
 from django.core.exceptions import ValidationError
 
 
@@ -13,7 +13,7 @@ class MaterialForm(ModelForm):
         nombre=self.cleaned_data['nombre']
 
         #Buscar materials que tengan el mismo nombre y que estén disponibles. La consulta no es case-sensitive.
-        material_query = Material.objects.filter(nombre__iexact=nombre).exclude(status=0)
+        material_query = Material.objects.filter(nombre__iexact=nombre).exclude(status=0).exclude(deleted_at__isnull=False)
         if material_query.count() == 0:
             return nombre
         else:
@@ -44,3 +44,15 @@ class UnidadForm(ModelForm):
                     if unidad.id==self.instance.id:
                         return nombre
             raise ValidationError('Ya hay una unidad con este nombre')
+
+class MaterialInventarioForm(ModelForm):
+    class Meta:
+        model = MaterialInventario
+        fields = ('material', 'compra', 'unidad_entrada', 'cantidad', 'porciones', 'costo', 'fecha_cad')
+
+    def clean_cantidad(self):
+        cantidad=self.cleaned_data['cantidad']
+        if cantidad > 0:
+            return cantidad
+        else:
+            raise ValidationError("La cantidad debe ser mayot a 0.")

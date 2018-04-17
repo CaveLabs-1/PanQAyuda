@@ -1,0 +1,23 @@
+<tr id="paquete{{forma_venta.instance.paquete.id}}">
+    <!--Nombre del paquete -->
+    <td>
+        {{forma_venta.instance.paquete.nombre}}
+        <input type="text" name="{{forma_venta.paquete.html_name}}" value="{{forma_venta.instance.paquete.id}}" hidden/>
+    </td>
+    <!-- Cantidad -->
+    <td>
+        {{forma_venta.instance.cantidad}}
+        <input class="validate"  type="text" paquete="{{forma_venta.instance.paquete.id}}" name="{{forma_venta.cantidad.html_name}}" value="{{forma_venta.instance.cantidad}}" hidden/>
+    </td>
+    <!-- Precio unitario -->
+    <td>
+        {{ forma_venta.instance.precio_unitario }}
+    </td>
+    <!-- Subtotal -->
+    <td class="subtotal">
+        {{ forma_venta.instance.monto }}
+    </td>
+    <td>
+          <a class="eliminar" paquete="{{forma_venta.instance.paquete.id}}" href=""><i class="material-icons pink-text">cancel</i> </a>
+    </td>
+</tr>

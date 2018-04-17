@@ -13,6 +13,7 @@ urlpatterns = [
     path('agregar_unidades', views.agregar_unidades, name='agregar_unidades'),
     path('materiales_por_catalogo/', views.materiales_por_catalogo, name='materiales_por_catalogo'),
     path('lista_materiales/editar_material/<int:id_material>', views.editar_material, name='editar_material'),
+    path('lista_materiales/eliminar_material/<int:id_material>', views.eliminar_material, name='eliminar_material'),
     path('lista_materiales/eliminar_unidad/<int:id_unidad>', views.eliminar_unidad, name='eliminar_unidad'),
 
 
