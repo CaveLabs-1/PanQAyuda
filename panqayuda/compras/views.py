@@ -94,7 +94,7 @@ def agregar_materia_prima_a_compra(request):
             cantidad = int(request.POST.get('cantidad'))
             id_unidad = int(request.POST.get('unidad_entrada'))
             porciones = int(request.POST.get('porciones'))
-            costo = int(request.POST.get('costo'))
+            costo = int(request.POST.get('costo'))/int(request.POST.get('cantidad'))
             id_compra =  request.POST.get('compra')
 
             materia_prima = get_object_or_404(Material, id=id_material)
