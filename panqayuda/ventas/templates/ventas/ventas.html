@@ -16,6 +16,7 @@
           <th>Monto</th>
           <th>Detalle</th>
           <th>Editar</th>
+          <th>Cancelar</th>
         </thead>
         <tbody>
          {% for venta in ventas %}
@@ -25,6 +26,8 @@
             <td>{{venta.monto}}</td>
             <td><a onclick="detalleVenta({{venta.id}})" href="#modal_detalle" class="modal-trigger"><i class="material-icons">view_list</i> </a></td>
             <td><a href="editar_venta/{{ venta.id }}"><i class="material-icons">edit</i></a></td>
+            <td><a href="{% url 'ventas:cancelar_venta' venta.id %}" class="modal-trigger" onclick="return confirm('Vas a cancelar una Venta. ¿Continuar?')"><i class="material-icons">cancel</i></a></td>
+            </tr>
           </tr>
          {% endfor %}
         </tbody>
