@@ -109,7 +109,6 @@ def generar_venta(request):
         data = {'forma_venta':forma_venta, 'forma_paquete_venta':forma_paquete_venta, 'forma':forma_cliente}
         return render(request, 'ventas/agregar_venta.html',data)
 
-@group_required('admin')
 def restar_paquetes_inventario(paquete,cantidad):
     # Obtener paquetes del inventario disponibles para restar ordenados por fecha de caducidad
     paquetes_inventario = paquete.obtener_paquetes_inventario_disponibles()
