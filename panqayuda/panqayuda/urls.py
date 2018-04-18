@@ -33,5 +33,6 @@ urlpatterns = [
     path('compras/', include('compras.urls', namespace='compras')),
     path('ventas/', include('ventas.urls', namespace='ventas')),
     path('mermas/', include('mermas.urls', namespace='mermas')),
+    path('usuarios/', include('usuarios.urls', namespace='usuarios')),
 
 ]
