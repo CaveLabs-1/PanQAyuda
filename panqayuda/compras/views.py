@@ -11,7 +11,7 @@ from django.db.models import Sum
 from panqayuda.decorators import group_required
 import datetime
 
-
+@group_required('admin')
 def compras(request):
     if request.method == 'POST':
         forma_post = CompraForm(request.POST)
@@ -27,7 +27,7 @@ def compras(request):
         compras =  Compra.objects.filter(deleted_at__isnull=True)
         return render (request, 'compras/compras.html', {'forma': forma, 'compras': compras})
 
-
+@group_required('admin')
 def lista_detalle_compra(request):
     if request.method == 'POST':
         id_compra = request.POST.get('id_compra')
