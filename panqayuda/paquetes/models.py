@@ -48,6 +48,7 @@ class PaqueteInventario (models.Model):
 	cantidad= models.IntegerField(validators=[MinValueValidator(1, "Debes seleccionar un número entero mayor a 0.")])
 	ocupados = models.IntegerField(default=0, blank=True, null=False)
 	fecha_cad = models.DateTimeField(blank = True, null = True)
+	costo = models.FloatField(blank=True, null="True")
 	estatus = models.IntegerField(default=1)
 	created_at = models.DateTimeField(default=timezone.now)
 	updated_at = models.DateTimeField(default=timezone.now)

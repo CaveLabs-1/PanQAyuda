@@ -40,6 +40,7 @@ class MaterialInventario(models.Model):
     porciones = models.IntegerField(blank=True, null="True") #equivale a 20 panqueayudaunidades cambiar porciones
     cantidad_disponible = models.IntegerField(blank=True, null="True") #empieza igual que cantidad
     costo = models.FloatField(blank=True, null="True")
+    costo_unitario = models.FloatField(blank=True, null=True)
     fecha_cad = models.DateTimeField(blank=True, null="True")
     estatus = models.IntegerField(default=1)
     created_at = models.DateTimeField(default=timezone.now)
