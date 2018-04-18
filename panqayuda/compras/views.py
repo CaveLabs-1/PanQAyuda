@@ -5,6 +5,8 @@ from materiales.forms import MaterialInventarioForm
 from proveedores.models import Proveedor
 from .models import Compra
 from materiales.models import Material, MaterialInventario, Unidad
+from materiales.forms import MaterialInventarioForm
+
 from django.contrib import messages
 from django.http import HttpResponseRedirect, HttpResponse, HttpResponseNotFound
 from django.db.models import Sum
