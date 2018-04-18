@@ -5,7 +5,8 @@
       <th>Nombre</th>
       <th>Cantidad</th>
       <th>Fecha de caducidad</th>
-      <th>Acciones</th>
+      <th>Editar</th>
+      <th>Borrar</th>
     </tr>
   </thead>
   <tbody>
@@ -15,6 +16,7 @@
             <td>{{i.cantidad}}</td>
             <td>{{i.fecha_cad}}</td>
             <td><a href='{% url "paquetes:editar_paquete_inventario" i.id %}' class="modal-trigger"><i class="material-icons">edit</i> </a></td>
+            <td><a href='{% url "paquetes:borrar_paquete_inventario" i.id %}' class="modal-trigger"><i class="material-icons">delete</i> </a></td>
         </tr>
 
 {% endfor %}

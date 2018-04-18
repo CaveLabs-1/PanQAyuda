@@ -35,7 +35,6 @@ def agregar_paquete(request):
         forma=FormPaquete()
     return render(request, 'paquetes/agregar_paquete.html', {'forma':forma})
 
-@group_required('admin')
 def borrar_paquete(request, id_paquete):
     paquete = get_object_or_404(Paquete, pk=id_paquete)
     paquete.estatus = 0
@@ -44,6 +43,7 @@ def borrar_paquete(request, id_paquete):
     messages.success(request, '¡Se ha borrado el paquete del catálogo!')
     return redirect('paquetes:lista_paquetes')
 
+@group_required('admin')
 def lista_paquete_inventario(request):
     paquetes=PaqueteInventario.objects.filter(deleted_at__isnull=True).filter(estatus=1)
     catalogo_paquetes=Paquete.objects.filter(deleted_at__isnull=True).filter(estatus=1)
@@ -64,6 +64,7 @@ def paquetes_por_catalogo(request):
         return HttpResponse(response)
     return HttpResponse('Algo ha salido mal.')
 
+@group_required('admin')
 def agregar_paquete_inventario(request):
     if request.method == 'POST':
         forma_post=FormPaqueteInventario(request.POST or None)
@@ -121,7 +122,7 @@ def editar_paquete_inventario(request, id_paquete):
 
             paquete_inventario = form.save()
             paquete_inventario.save()
-            messages.success(request, '¡Se ha editado la paquete_inventario exitosamente!')
+            messages.success(request, '¡Se ha editado el inventario de '+ paquete_inventario.nombre.nombre + ' exitosamente!')
             return redirect('paquetes:lista_paquete_inventario')
     else:
         form = FormEditarPaquete()
@@ -187,7 +188,7 @@ def editar_paquete(request, id_paquete):
             paquete = forma.save()
             return HttpResponseRedirect(reverse('paquetes:agregar_recetas_a_paquete', kwargs={'id_paquete':paquete.id}))
         else:
-            messages.info(request, 'Hubo un error con la peticion')
+            messages.info(request, 'Hubo un error en la forma. Aségurate que seleccionaste un nombre y un precio.')
             return HttpResponseRedirect(reverse('paquetes:editar_paquete', kwargs={'id_paquete':paquete.id}))
     else:
         forma = FormPaquete(initial={"nombre":paquete.nombre, "precio":paquete.precio})

@@ -12,9 +12,11 @@
     <div class="container">
         <div class="card">
             <div class="row">
-                <div class="col s12">
+                <div class="col s1"></div>
+                <div class="col s10">
                     <form action="" method="POST">
                             {% csrf_token %}
+                        <br>
                         <br>
                             <!-- Seleccionar cliente -->
                             <div class="row">
@@ -26,7 +28,7 @@
                                     <a id="nuevo_cliente" class="btn-floating waves-effect waves-light tooltipped pink modal-trigger" href="#agregar_cliente" data-position="top" data-tooltip="Crear nuevo cliente"><i class="material-icons">add</i></a>
                                  </div>
                             </div>
-                            <hr>
+                            <div class="divider"></div>
                             <!-- Agregar paquetes a la venta -->
                             <h4>Agregar paquetes a la venta </h4>
                             <div class="row">
@@ -43,10 +45,10 @@
                                     <label for="{{forma_paquete_venta.cantidad.id_for_label}}">Cantidad</label>
                                 </div>
                                 <div class="input-field col s2">
-                                    <a id="agregar_paquete_venta" class="btn-floating btn-large waves-effect waves-light pink"><i class="material-icons">add</i></a>
+                                    <a id="agregar_paquete_venta" class="btn-floating btn waves-effect waves-light pink"><i class="material-icons">add</i></a>
                                 </div>
                             </div>
-                            <hr>
+                            <div class="divider"></div>
 
                             <!-- Resumen de la venta -->
                             <div class="ventas">
@@ -66,7 +68,7 @@
                                     </tbody>
                                   </table>
                             </div>
-                        <hr>
+                        <div class="row divider"></div>
                         <div class="row">
                             <h3 id="total" class="col s12 right-align">
                                 Total: $0
@@ -81,8 +83,8 @@
                         </div>
                     </form>
                 </div>
+                <div class="col s1"></div>
             </div>
-
         </div>
         {%include 'clientes/modal_agregar_cliente.html' %}
     </div>

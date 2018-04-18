@@ -3,7 +3,7 @@ from django.template.loader import render_to_string
 from .forms import VentaForm, RelacionVentaPaqueteForm
 from .models import Venta, RelacionVentaPaquete
 from django.contrib import messages
-from paquetes.models import Paquete
+from paquetes.models import Paquete, PaqueteInventario
 from clientes.forms import FormCliente
 from django.http import HttpResponseRedirect, HttpResponse, HttpResponseNotFound
 from django.db.models import Sum
@@ -32,7 +32,7 @@ def lista_detalle_venta(request):
     if request.method == 'POST':
         id_venta = request.POST.get('id_venta')
         venta = Venta.objects.get(pk=id_venta)
-        paquetes_de_venta = RelacionVentaPaqueteForm.objects.filter(venta=venta)
+        paquetes_de_venta = RelacionVentaPaquete.objects.filter(venta=venta)
         response = render_to_string('ventas/lista_detalle_venta.html', {'paquetes_de_venta': paquetes_de_venta, 'venta': venta})
         return HttpResponse(response)
     return HttpResponse('Algo ha salido mal.')
@@ -149,3 +149,24 @@ def agregar_paquete_a_venta(request):
         else:
             return HttpResponseNotFound("Verifica que seleccionaste un paquete y una cantidad mayor a 0.")
     return HttpResponseNotFound("No hay suficientes paquetes en inventario de " + paquete.nombre)
+
+@group_required('admin')
+def cancelar_venta(request, id_venta):
+        #Checar que el objeto exista
+        venta = get_object_or_404(Venta, pk=id_venta)
+        relacion_venta_paquete = RelacionVentaPaquete.objects.filter(venta=venta)
+        #Asignación de valores
+        for registro in relacion_venta_paquete:
+            paquete = registro.paquete
+            cantidad = registro.cantidad
+            paquete_inventario = get_object_or_404(PaqueteInventario, pk=paquete.id)
+            paquete_inventario.ocupados -= cantidad
+            paquete_inventario.save()
+        #Cambio de Estatus y asignacipon de deleted_at
+        relacion_venta_paquete.estatus = 0
+        relacion_venta_paquete.deleted_at = datetime.datetime.now()
+        venta.deleted_at = datetime.datetime.now()
+        #Saves
+        venta.save()
+        messages.success(request, '¡Se ha cancelado exitosamente la venta!')
+        return redirect('ventas:ventas')

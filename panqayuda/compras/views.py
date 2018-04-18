@@ -1,17 +1,19 @@
 from django.shortcuts import render, reverse, redirect, get_object_or_404
 from django.template.loader import render_to_string
 from .forms import CompraForm
+from materiales.forms import MaterialInventarioForm
 from proveedores.models import Proveedor
 from .models import Compra
 from materiales.models import Material, MaterialInventario, Unidad
 from materiales.forms import MaterialInventarioForm
+
 from django.contrib import messages
-from django.http import HttpResponseRedirect, HttpResponse
+from django.http import HttpResponseRedirect, HttpResponse, HttpResponseNotFound
 from django.db.models import Sum
 from panqayuda.decorators import group_required
 import datetime
 
-
+@group_required('admin')
 def compras(request):
     if request.method == 'POST':
         forma_post = CompraForm(request.POST)
@@ -26,7 +28,6 @@ def compras(request):
         forma = CompraForm()
         compras =  Compra.objects.filter(deleted_at__isnull=True)
         return render (request, 'compras/compras.html', {'forma': forma, 'compras': compras})
-
 
 def lista_detalle_compra(request):
     if request.method == 'POST':
@@ -82,7 +83,7 @@ def agregar_materias_primas_a_compra(request, id_compra):
 """
     Función agrega materias primas a una compra
 """
-@group_required('admin')
+
 def agregar_materia_prima_a_compra(request):
     if request.method == 'POST':
         forma = MaterialInventarioForm(request.POST)
@@ -94,6 +95,7 @@ def agregar_materia_prima_a_compra(request):
             id_unidad = int(request.POST.get('unidad_entrada'))
             porciones = int(request.POST.get('porciones'))
             costo = int(request.POST.get('costo'))
+            costo_unitario = int(request.POST.get('costo'))/int(request.POST.get('cantidad'))
             id_compra =  request.POST.get('compra')
 
             materia_prima = get_object_or_404(Material, id=id_material)
@@ -103,7 +105,7 @@ def agregar_materia_prima_a_compra(request):
             #Dar de alta material inventario
             MaterialInventario.objects.create(material=materia_prima, fecha_cad=fecha_cad, cantidad=cantidad,
              cantidad_disponible=cantidad, unidad_entrada=unidad, porciones=porciones,
-             costo=costo, compra=compra )
+             costo=costo, costo_unitario=costo_unitario, compra=compra )
 
             #generar forma html
             forma = MaterialInventarioForm()
@@ -127,3 +129,16 @@ def agregar_materia_prima_a_compra(request):
                  for error in errors:
                      mensaje_error+=error + "\n"
             return HttpResponseNotFound('Hubo un problema agregando la materia prima a la compra: '+ mensaje_error)
+
+
+
+
+#Función para borrar una compra @Valter
+@group_required('admin')
+def eliminar_compra(request, id_compra):
+    compra = get_object_or_404(Compra, pk=id_compra)
+    compra.estatus = 0
+    compra.deleted_at = datetime.datetime.now()
+    compra.save()
+    messages.success(request, '¡Se ha borrado exitosamente la compra!')
+    return redirect('compras:compras')

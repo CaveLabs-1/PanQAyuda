@@ -16,7 +16,7 @@ class Material(models.Model):#¿Tiene unidad?
     #Obtiene la cantidad en inventario disponible para hacer recetas
     def obtener_cantidad_inventario(self):
         return MaterialInventario.objects.filter(material=self,
-            deleted_at__isnull=True, fecha_cad__gte=timezone.now()).aggregate(Sum('cantidad_disponible'))['cantidad_disponible__sum']
+            deleted_at__isnull=True, fecha_cad__gte=timezone.now()).aggregate(Sum('cantidad_disponible'))['cantidad_disponible__sum'] or 0
 
     #Obtiene la cantidad en inventario con mermas
     def obtener_cantidad_inventario_fisico(self):
@@ -45,6 +45,7 @@ class MaterialInventario(models.Model):
     porciones = models.IntegerField(blank=True, null="True") #equivale a 20 panqueayudaunidades cambiar porciones
     cantidad_disponible = models.IntegerField(blank=True, null="True") #empieza igual que cantidad
     costo = models.FloatField(blank=True, null="True")
+    costo_unitario = models.FloatField(blank=True, null=True)
     fecha_cad = models.DateTimeField(blank=True, null="True")
     estatus = models.IntegerField(default=1)
     created_at = models.DateTimeField(default=timezone.now)

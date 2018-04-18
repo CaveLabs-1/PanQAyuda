@@ -61,6 +61,7 @@ class RecetaInventario(models.Model):
     ocupados = models.IntegerField(default=0, blank=True, null=False)
     fecha_cad = models.DateTimeField(blank = True, null = True)
     estatus = models.IntegerField(default=1)
+    costo = models.FloatField(blank=True, null="True")
     created_at = models.DateTimeField(default=timezone.now)
     updated_at = models.DateTimeField(default=timezone.now)
     deleted_at = models.DateTimeField(blank = True, null = True)
@@ -87,3 +88,4 @@ class RecetaInventario(models.Model):
 
     def disponibles(self):
         return self.cantidad - self.ocupados
+

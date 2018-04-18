@@ -23,17 +23,7 @@
     </div>
     <form class="row" method="post" action="{% url 'mermas:agregar_merma_materiales' %}">
       {% csrf_token %}
-      <!-- <div class="input-field col s6">
-        <label for="{{forma.nombre.id_for_label}}">Nombre</label>
-        <input id="{{forma.nombre.id_for_label}}" name="{{forma.nombre.html_name}}" type="text" required>
-      </div> -->
       <div class="input-field col s6">
-        <!-- <select required id="{{forma.nombre.id_for_label}}" name="{{forma.nombre.html_name}}">
-          <option value="" disabled selected>Escoger Paquete</option>
-          {% for paquete in paquetes %}
-          <option value="{{paquete.id}}">{{paquete.nombre}}</option>
-          {% endfor %}
-        </select> -->
         {{forma.nombre}}
       </div>
       <div class="input-field col s6">
@@ -81,7 +71,6 @@
               <th>Cantidad</th>
               <th>Descripcion</th>
               <th>Fecha</th>
-              <!--<th>Eliminar</th>-->
             </tr>
           </thead>
           <tbody>
@@ -91,9 +80,6 @@
                 <td>{{ merma.cantidad }}</td>
                 <td>{{ merma.descripcion }}</td>
                 <td>{{ merma.fecha }}</td>
-                <!-- <td><a href="agregar_materiales/{{ merma.id }}"><i class="material-icons">edit</i></a></td> #} -->
-                <!--<td><a onclick="return confirm('¿Seguro que quieres borrar la merma de {{merma.nombre}}?')" href="borrar_merma/{{ merma.id }}"><i class="material-icons">delete</i></a></td>-->
-
             </tr>
             {% endfor %}
           </tbody>

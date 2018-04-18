@@ -68,7 +68,6 @@ def detallar_receta(request, id_receta):
     0 significa que la receta fue borrada
 """
 
-@group_required('admin')
 def borrar_receta(request, id_receta):
     receta = get_object_or_404(Receta, pk=id_receta)
     receta.status = 0
@@ -97,6 +96,8 @@ def editar_receta(request, id_receta):
             messages.success(request, 'Se ha editado la receta exitosamente!')
             materiales = list(RelacionRecetaMaterial.objects.filter(receta=receta, status=1))
             return render(request, 'recetas/receta.html', {'receta': receta, 'materiales': materiales})
+        else:
+            messages.error(request,'No se pudo editar la receta. Asegúrate que seleccionaste un nombre, una duración y que el nombre no exista.')
     else:
         form = RecetaForm()
     return render(request, 'recetas/editar_receta.html', {'form': form, 'receta': receta})
@@ -112,10 +113,10 @@ def agregar_materiales(request, id_receta):
     receta = get_object_or_404(Receta, pk=id_receta)
     # Los materiales que aún no se han agregado a la receta
     materiales_actuales = RelacionRecetaMaterial.objects.filter(receta=receta).exclude(status=0)
-    materiales_disponibles = Material.objects.exclude(id__in=materiales_actuales.values('material')).exclude(status=0)
+    materiales_disponibles = Material.objects.exclude(id__in=materiales_actuales.values('material')).exclude(status=0).exclude(deleted_at__isnull=False)
 
     if request.method == "POST":
-        material = Material.objects.exclude(status=0).get(nombre=request.POST['material'])
+        material = Material.objects.exclude(status=0).exclude(deleted_at__isnull=False).get(nombre=request.POST['material'])
         data = {'material': material.id, 'cantidad': request.POST['cantidad'], 'receta':receta.id}
         form = MaterialRecetaForm(data)
         if form.is_valid():
@@ -134,7 +135,6 @@ def agregar_materiales(request, id_receta):
     0 significa que fue borrado
 """
 
-@group_required('admin')
 def borrar_material(request, id_material):
     material = get_object_or_404(RelacionRecetaMaterial, pk=id_material)
     # id_receta = material.receta.id

@@ -1,0 +1,70 @@
+<!--Modal Agregar usuario-->
+  <div id="agregar_usuario" class="modal">
+    <div class="modal-content">
+      <h3>Agregar un usuario</h3>
+        <form id="forma_usuario" action="{% url 'usuarios:lista_usuarios' %}" method="POST">
+            {% csrf_token %}
+
+            <div class="row">
+                <!-- Nombre -->
+                <div class="input-field col s12 m6 l6">
+                    <input class="validate"  type="text" name="{{forma.first_name.html_name}}" maxlength="30" id="{{forma.first_name.id_for_label}}" required>
+                    <label for="{{forma.first_name.id_for_label}}" data-error='Nombre inválido'  data-success="">Nombre</label>
+                </div>
+                <!-- Apellido -->
+                <div class="input-field col s12 m6 l6">
+                  <input class="validate"  type="text" name="{{forma.last_name.html_name}}" maxlength="150" id="{{forma.last_name.id_for_label}}" required>
+                  <label for="{{forma.last_name.id_for_label}}" data-error='Apellido inválido'  data-success="">Apellido</label>
+                </div>
+            </div>
+
+            <!--Correo electronico-->
+            <div class="row">
+              <div class="input-field col s12 m6 l6">
+                <input class="validate"  type="text" name="{{forma.username.html_name}}" maxlength="150" id="{{forma.username.id_for_label}}" required>
+                <label for="{{forma.username.id_for_label}}" data-error='Apellido inválido'  data-success="">Usuario</label>
+              </div>
+
+              <div class="input-field col s12 m6 l6">
+                  <input class="validate"  type="email" name="{{forma.email.html_name}}" id="{{forma.email.id_for_label}}" required>
+                  <label for="{{forma.email.id_for_label}}" data-error=''  data-success="">Email</label>
+                  <span class="helper-text" data-error="Email inválido"></span>
+                  <span class="red-text"> {%if forma.email.errors %} {{forma.email.errors}} {% endif %}</span>
+              </div>
+            </div>
+
+            <div class="row">
+                <!-- Contraseña -->
+                <div class="input-field col s12 m6 l6">
+                    <input class="validate"  type="password" name="{{forma.password.html_name}}" maxlength="15" id="{{forma.password.id_for_label}}" required>
+                    <label for="{{forma.password.id_for_label}}" data-error='Contraseña'  data-success="">Contraseña</label>
+                    <span class="helper-text" data-error="Contraseña inválida"></span>
+                    <span class="red-text">{%if form.password.errors %} {{forma.password.errors}} {% endif %}</span>
+                </div>
+                <!-- Confirmar contraseña -->
+                <div class="input-field col s12 m6 l6">
+                    <input class="validate"  type="password"  id="confirm_password" name="confirm_password" required>
+                    <label for="confirm_password" data-error=''  data-success="">Confirmar Contraseña</label>
+                    <span class="helper-text" data-error="Las contraseñas no coinciden"></span>
+                </div>
+            </div>
+
+            <!-- Superuser -->
+            <div class="row">
+                <div class="input-field col s12">
+                  <label>
+                    <input type="checkbox" id="{{forma.is_superuser.id_for_label}}" name="{{forma.is_superuser.html_name}}"  class="filled-in"/>
+                    <span>Puede agregar a otros usuarios</span>
+                  </label>
+                </div>
+            </div>
+            <br>
+
+            <div class="row">
+                <button id="enviar_forma_clienteº" class="col l3 offset-l9 m3 offset-m9 s12 btn waves-effect waves-light pink right-align" type="submit" name="action">Agregar
+                  <i class="material-icons right">send</i>
+                </button>
+            </div>
+        </form>
+    </div>
+  </div>
