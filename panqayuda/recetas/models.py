@@ -84,3 +84,6 @@ class RecetaInventario(models.Model):
             return True
         else:
             return False
+
+    def disponibles(self):
+        return self.cantidad - self.ocupados
