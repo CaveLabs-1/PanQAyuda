@@ -33,7 +33,6 @@ def lista_detalle_compra(request):
         id_compra = request.POST.get('id_compra')
         compra = Compra.objects.get(pk=id_compra)
         materiales_de_compra = MaterialInventario.objects.filter(compra=compra)
-        print(materiales_de_compra)
         response = render_to_string('compras/lista_detalle_compra.html', {'materiales_de_compra': materiales_de_compra, 'compra': compra})
         return HttpResponse(response)
     return HttpResponse('Algo ha salido mal.')
@@ -94,7 +93,8 @@ def agregar_materia_prima_a_compra(request):
             cantidad = int(request.POST.get('cantidad'))
             id_unidad = int(request.POST.get('unidad_entrada'))
             porciones = int(request.POST.get('porciones'))
-            costo = int(request.POST.get('costo'))/int(request.POST.get('cantidad'))
+            costo = int(request.POST.get('costo'))
+            costo_unitario = int(request.POST.get('costo'))/int(request.POST.get('cantidad'))
             id_compra =  request.POST.get('compra')
 
             materia_prima = get_object_or_404(Material, id=id_material)
@@ -104,7 +104,7 @@ def agregar_materia_prima_a_compra(request):
             #Dar de alta material inventario
             MaterialInventario.objects.create(material=materia_prima, fecha_cad=fecha_cad, cantidad=cantidad,
              cantidad_disponible=cantidad, unidad_entrada=unidad, porciones=porciones,
-             costo=costo, compra=compra )
+             costo=costo, costo_unitario=costo_unitario, compra=compra )
 
             #generar forma html
             forma = MaterialInventarioForm()
