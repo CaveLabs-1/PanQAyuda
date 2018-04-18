@@ -33,6 +33,7 @@ def lista_mermas_material(request):
     return render (request, 'mermas/lista_mermas_material.html', {'forma': forma, 'mermas': mermas})
     # return render(request, 'mermas/lista_mermas_material.html', {'mermas': mermas})
 
+@group_required('admin')
 def agregar_merma_paquetes(request):
     if request.method == 'POST':
         newMermaPaqueteForm = MermaPaqueteForm(request.POST)
@@ -66,6 +67,7 @@ def agregar_merma_paquetes(request):
     else :
         return render(reverse('mermas:lista_mermas'))
 
+@group_required('admin')
 def agregar_merma_materiales(request):
     newMermaMaterialForm = MermaMaterialForm()
     if request.method == 'POST':
@@ -100,6 +102,7 @@ def agregar_merma_materiales(request):
         return render(reverse('mermas:lista_mermas'))
 
 
+@group_required('admin')
 def agregar_merma_materiales(request):
     if request.method == 'POST':
         newMermaMaterialForm = MermaMaterialForm(request.POST)
@@ -137,7 +140,7 @@ def agregar_merma_materiales(request):
         return render (request, 'mermas/lista_mermas_material.html', {'forma': forma, 'mermas': lista_mermas_material})
         # return render(reverse('mermas:lista_mermas_material'))
 
-
+@group_required('admin')
 def agregar_merma_recetas(request):
     if request.method == 'POST':
         newMermaRecetaForm = MermaRecetaForm(request.POST)
@@ -175,6 +178,7 @@ def agregar_merma_recetas(request):
         return render (request, 'mermas/lista_mermas_receta.html', {'forma': forma, 'mermas': lista_mermas_receta})
         # return render(reverse('mermas:lista_mermas_receta'))
 
+@group_required('admin')
 def agregar_merma_recetas(request):
     newMermaRecetaForm = MermaRecetaForm()
     if request.method == 'POST':
@@ -207,4 +211,3 @@ def agregar_merma_recetas(request):
             return render(request, 'mermas/MermaReceta.html', context)
     else :
         return render(reverse('mermas:lista_mermas'))
-

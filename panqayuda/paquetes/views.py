@@ -44,6 +44,7 @@ def borrar_paquete(request, id_paquete):
     messages.success(request, '¡Se ha borrado el paquete del catálogo!')
     return redirect('paquetes:lista_paquetes')
 
+@group_required('admin')
 def lista_paquete_inventario(request):
     paquetes=PaqueteInventario.objects.filter(deleted_at__isnull=True).filter(estatus=1)
     catalogo_paquetes=Paquete.objects.filter(deleted_at__isnull=True).filter(estatus=1)
@@ -64,6 +65,7 @@ def paquetes_por_catalogo(request):
         return HttpResponse(response)
     return HttpResponse('Algo ha salido mal.')
 
+@group_required('admin')
 def agregar_paquete_inventario(request):
     if request.method == 'POST':
         forma_post=FormPaqueteInventario(request.POST or None)
@@ -194,6 +196,7 @@ def editar_paquete(request, id_paquete):
         forma = FormPaquete(initial={"nombre":paquete.nombre, "precio":paquete.precio})
         return render(request, 'paquetes/editar_paquete.html', {'forma':forma, 'paquete':paquete})
 
+@group_required('admin')
 def agregar_paquetes_inventario_recetas(paquete,cantidad):
     # Obtener recetas del paquete
     recetas = RecetasPorPaquete.objects.filter(paquete=paquete).filter(deleted_at__isnull=True)
@@ -224,6 +227,7 @@ def agregar_paquetes_inventario_recetas(paquete,cantidad):
                 receta_inventario.save()
                 break
 
+@group_required('admin')
 def eliminar_paquetes_inventario_recetas(paquete,cantidad):
     recetas_paquete = RecetasPorPaquete.objects.filter(paquete=paquete).filter(deleted_at__isnull=True)
     for receta in recetas_paquete:
