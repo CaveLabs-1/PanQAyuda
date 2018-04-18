@@ -12,7 +12,7 @@ from django.utils import timezone
 from materiales.models import Material, MaterialInventario, Unidad
 
 # Lista de ordenes de trabajo y forma para crear una nueva orden de trabajo.
-# @group_required('admin')
+@group_required('admin')
 def ordenes (request):
     # En caso de que la petición sea tipo 'POST' crea la forma con los datos obtenidos y la valida.
     if request.method == 'POST':
@@ -83,7 +83,7 @@ def ordenes (request):
         return render(request, 'ordenes/ordenes.html', {'forma': forma, 'ordenes': ordenes, 'recetas':recetas, 'tabla':tabla})
 
 
-# @group_required('admin')
+@group_required('admin')
 def terminar_orden (request):
     if request.method == 'POST':
          orden= get_object_or_404(Orden, pk=request.POST['id'])
@@ -95,7 +95,7 @@ def terminar_orden (request):
     data = render_to_string('ordenes/tabla_ordenes.html', {'ordenes': ordenes})
     return HttpResponse(data)
 
-# @group_required('admin')
+@group_required('admin')
 def cancelar_orden (request):
     if request.method == 'POST':
          orden= get_object_or_404(Orden, pk=request.POST['id'])
