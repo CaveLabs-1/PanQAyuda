@@ -22,15 +22,19 @@
           <th>Nombres</th>
           <!-- <th>Unidad</th> -->
           <th>Codigo</th>
+          <th>Entrada</th>
+          <th>Equivalencia</th>
           <th>Editar</th>
           <th>Eliminar</th>
         </thead>
         <tbody>
          {% for material in materiales %}
           <tr>
-            <td>{{material.nombre}}</td>
+            <td>{{ material.nombre }}</td>
             <!-- <td>{{material.unidad}}</td> -->
-            <td>{{material.codigo}}</td>
+            <td>{{ material.codigo }}</td>
+            <td>{{ material.equivale_entrada }} {{ material.unidad_entrada }}</td>
+            <td>{{ material.equivale_maestra }} {{ material.unidad_maestra }}</td>
             <td><a href="{% url 'materiales:editar_material' material.id %}" class="modal-trigger"><i class="material-icons">edit</i></a></td>
             <td><a href="{% url 'materiales:eliminar_material' material.id %}" class="modal-trigger" onclick="return confirm('Vas a eliminar un Material del catálogo. ¿Continuar?')"><i class="material-icons">delete</i></a></td>
             </tr>

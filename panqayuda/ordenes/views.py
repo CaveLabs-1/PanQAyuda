@@ -52,16 +52,16 @@ def ordenes (request):
                 for material_inventario in materiales_inventario:
                     # Si la cantidad disponible de dicho registro es mayor a la cantidad que se necesita restar,
                     # se resta directamente y se termina el proceso.
-                    if  material_inventario.cantidad_disponible > cantidad_a_restar:
-                        material_inventario.cantidad_disponible -= cantidad_a_restar
+                    if  material_inventario.porciones_disponible > cantidad_a_restar:
+                        material_inventario.porciones_disponible -= cantidad_a_restar
                         material_inventario.save()
                         break
 
                     else:
                         # En caso de que no exista suficiente material en dicho registro, ocupa todo lo que existe
                         # y pasa al siguiente registro.
-                        cantidad_a_restar -= material_inventario.cantidad_disponible
-                        material_inventario.cantidad_disponible = 0
+                        cantidad_a_restar -= material_inventario.porciones_disponible
+                        material_inventario.porciones_disponible = 0
                         material_inventario.save()
             forma_post.save()
             messages.success(request, 'Se ha agregado una nueva orden de trabajo.')

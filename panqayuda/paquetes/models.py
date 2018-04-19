@@ -21,7 +21,7 @@ class Paquete (models.Model):
 	def obtener_disponibles_inventario(self):
 		return PaqueteInventario.objects.filter(nombre=self).filter(deleted_at__isnull=True).\
 			filter(fecha_cad__gte=datetime.datetime.now()).annotate(disponible=Sum(F('cantidad')- F('ocupados'))).\
-			aggregate(cantidad_disponible=Sum('disponible'))['cantidad_disponible'] or 0
+			aggregate(porciones_disponible=Sum('disponible'))['porciones_disponible'] or 0
 
 	#Devuelve la lista de paquetes_inventario que tienen paquetes disponibles
 	def obtener_paquetes_inventario_disponibles(self):

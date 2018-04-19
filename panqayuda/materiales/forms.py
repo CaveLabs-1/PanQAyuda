@@ -7,7 +7,7 @@ from django.core.exceptions import ValidationError
 class MaterialForm(ModelForm):
     class Meta:
         model = Material
-        fields = ('nombre', 'codigo')
+        fields = ('nombre', 'codigo', 'unidad_entrada', 'unidad_maestra', 'equivale_entrada', 'equivale_maestra')
 
     def clean_nombre(self):
         nombre=self.cleaned_data['nombre']
@@ -48,7 +48,7 @@ class UnidadForm(ModelForm):
 class MaterialInventarioForm(ModelForm):
     class Meta:
         model = MaterialInventario
-        fields = ('material', 'compra', 'unidad_entrada', 'cantidad', 'porciones', 'costo', 'fecha_cad')
+        fields = ('material', 'compra', 'cantidad', 'porciones', 'costo', 'fecha_cad')
 
     def clean_cantidad(self):
         cantidad=self.cleaned_data['cantidad']

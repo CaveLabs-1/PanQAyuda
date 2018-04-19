@@ -22,14 +22,14 @@ class Receta(models.Model):
         return RecetaInventario.objects.filter(nombre=self).filter(deleted_at__isnull=True). \
                    filter(fecha_cad__gte=datetime.datetime.now()).filter(cantidad__gt=0). \
                    annotate(disponible=Sum(F('cantidad') - F('ocupados'))). \
-                   aggregate(cantidad_disponible=Sum('disponible'))['cantidad_disponible'] or -1
+                   aggregate(porciones_disponible=Sum('disponible'))['porciones_disponible'] or -1
 
     #Para el detalle de las recetas inventario
     def obtener_cantidad_inventario_con_caducados(self):
         return RecetaInventario.objects.filter(nombre=self).filter(deleted_at__isnull=True). \
                    filter(cantidad__gt=0). \
                    annotate(disponible=Sum(F('cantidad') - F('ocupados'))). \
-                   aggregate(cantidad_disponible=Sum('disponible'))['cantidad_disponible'] or 0
+                   aggregate(porciones_disponible=Sum('disponible'))['porciones_disponible'] or 0
 
     #Devuelve True si hay paquetes caducados, y False en caso contrario
     def tiene_caducados(self):
@@ -72,7 +72,7 @@ class RecetaInventario(models.Model):
             return RecetaInventario.objects.filter(nombre=receta).filter(deleted_at__isnull=True).\
             filter(fecha_cad__gte=datetime.datetime.now()).filter(cantidad__gt=0).\
             annotate(disponible=Sum(F('cantidad')-F('ocupados'))).\
-            aggregate(cantidad_disponible=Sum('disponible'))['cantidad_disponible'] or -1
+            aggregate(porciones_disponible=Sum('disponible'))['porciones_disponible'] or -1
 
     def obtener_disponibles(receta):
         return RecetaInventario.objects.filter(nombre=receta).filter(deleted_at__isnull=True).\

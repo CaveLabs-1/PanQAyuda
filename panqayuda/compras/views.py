@@ -103,7 +103,7 @@ def agregar_materia_prima_a_compra(request):
 
             #Dar de alta material inventario
             MaterialInventario.objects.create(material=materia_prima, fecha_cad=fecha_cad, cantidad=cantidad,
-             cantidad_disponible=cantidad, unidad_entrada=unidad, porciones=porciones,
+             porciones_disponible=cantidad, unidad_entrada=unidad, porciones=porciones,
              costo=costo, compra=compra )
 
             #generar forma html
