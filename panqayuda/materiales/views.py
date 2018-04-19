@@ -45,14 +45,17 @@ def lista_unidades(request):
 
 
 
-
+#Funcionalidad de eliminar unidad
 @group_required('admin')
 def eliminar_unidad(request, id_unidad):
+    #Recuperar Unidad
     unidad = get_object_or_404(Unidad, pk=id_unidad)
     unidad.estatus = 0
+    #Borrado del objeto
     unidad.deleted_at = datetime.datetime.now()
     unidad.save()
     messages.success(request, '¡Se ha borrado exitosamente la unidad del catálogo!')
+    #Regresar a listado de materiales
     return redirect('materiales:lista_unidades')
 
 
