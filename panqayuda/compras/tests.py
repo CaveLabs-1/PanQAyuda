@@ -113,6 +113,7 @@ class TestListaCompras(TestCase):
 
 class TestEliminarCompra(TestCase):
 
+    #Generación de lo necesario para el ambiente de pruebas
     def setUp(self):
         Group.objects.create(name="admin")
         user = User.objects.create_user(username='temporary', email='temporary@gmail.com', password='temporary', is_superuser='True')
@@ -132,10 +133,14 @@ class TestEliminarCompra(TestCase):
         )
         compra.save()
 
+    #Test para borrar la compra
     def test_borrar_compra(self):
         self.assertEqual(Compra.objects.count(), 1)
+        #Se obtiene el objeto compra
         objetos = Compra.objects.first()
+        #Se manda llamar de la view eliminar_compra
         self.client.get(reverse('compras:eliminar_compra', kwargs={'id_compra':objetos.id}))
+        #Se revisa que no haya objetos con el campo vacío de deleted_at
         self.assertEqual(Compra.objects.filter(deleted_at__isnull=True).count(), 0)
 
 

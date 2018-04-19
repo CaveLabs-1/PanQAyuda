@@ -34,12 +34,15 @@ def detallar_proveedor(request, id_proveedor):
         return render(request, 'proveedores/proveedor.html', {'proveedor': proveedor})
 
 
-#Función para borrar un proveedor @Valter
+#Función para borrar un proveedor
 @group_required('admin')
 def eliminar_proveedor(request, id_proveedor):
+    #Se obtiene el objeto
     proveedor = get_object_or_404(Proveedor, pk=id_proveedor)
     proveedor.estatus = 0
+    #Se borra el  objeto
     proveedor.deleted_at = datetime.datetime.now()
     proveedor.save()
     messages.success(request, '¡Se ha borrado exitosamente el proveedor!')
+    #Devuelve a la lista de proveedores
     return redirect('proveedores:lista_proveedores')

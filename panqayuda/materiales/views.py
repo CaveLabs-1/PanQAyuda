@@ -56,14 +56,17 @@ def eliminar_unidad(request, id_unidad):
     return redirect('materiales:lista_unidades')
 
 
-#Función para borrar una materia prima @Valter
+#Función para borrar una materia prima del catálogo
 @group_required('admin')
 def eliminar_material(request, id_material):
+    #Obtienes la materia primas
     material = get_object_or_404(Material, pk=id_material)
     material.estatus = 0
+    #Se hace el borrado
     material.deleted_at = datetime.datetime.now()
     material.save()
     messages.success(request, '¡Se ha borrado exitosamente el material del catálogo!')
+    #Regresa a la lista de materiales
     return redirect('materiales:materiales')
 
 
