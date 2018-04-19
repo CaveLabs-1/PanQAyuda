@@ -60,3 +60,6 @@ class PaqueteInventario (models.Model):
 	#Devuelve la resta entre la cantidad y los ocupados
 	def disponibles(self):
 		return self.cantidad - self.ocupados
+
+	def multiplicar_costo_cantidad(self):
+		return self.cantidad * self.costo
