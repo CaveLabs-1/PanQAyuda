@@ -45,6 +45,9 @@ class Receta(models.Model):
         return RecetaInventario.objects.annotate(disponibles=Sum(F('cantidad')-F('ocupados')))\
             .filter(nombre_id=self, deleted_at__isnull=True, disponibles__gt=0)
 
+    def obtener_recetas_inventario_con_caducados(self):
+        return RecetaInventario.objects.annotate(disponibles=Sum(F('cantidad') - F('ocupados'))) \
+            .filter(nombre_id=self, deleted_at__isnull=True, disponibles__gt=0).order_by('fecha_cad')
 
 class RelacionRecetaMaterial(models.Model):
     receta = models.ForeignKey('Receta', on_delete = models.CASCADE)
@@ -67,7 +70,7 @@ class RecetaInventario(models.Model):
     deleted_at = models.DateTimeField(blank = True, null = True)
 
     def __str__(self):
-        return self.nombre.nombre
+        return self.nombre.nombre + " " + self.fecha_cad.strftime("%d/%m/%Y")
 
     def obtener_cantidad_inventario(receta):
             return RecetaInventario.objects.filter(nombre=receta).filter(deleted_at__isnull=True).\
