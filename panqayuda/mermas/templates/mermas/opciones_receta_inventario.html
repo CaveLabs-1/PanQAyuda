@@ -1,0 +1,4 @@
+<option value="" selected="">---------</option>
+{% for receta_inventario in recetas_inventario %}
+    <option value="{{receta_inventario.id}}"> {{receta_inventario}} </option>
+{% endfor %}

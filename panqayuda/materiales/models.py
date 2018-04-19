@@ -23,6 +23,10 @@ class Material(models.Model):#¿Tiene unidad?
         return MaterialInventario.objects.filter(material=self,deleted_at__isnull=True).\
             aggregate(Sum('cantidad_disponible'))['cantidad_disponible__sum'] or 0
 
+    #Obtiene los objetos MaterialesInventario con caducados
+    def obtener_materiales_inventario_con_caducados(self):
+        return MaterialInventario.objects.filter(material=self, deleted_at__isnull=True, cantidad_disponible__gt=0)
+
     def __str__(self):
         return self.nombre
 
@@ -53,4 +57,4 @@ class MaterialInventario(models.Model):
     deleted_at = models.DateTimeField(blank=True, null=True)
 
     def __str__(self):
-        return self.material.nombre
+        return self.material.nombre + " " + self.fecha_cad.strftime('%d/%m/%Y')
