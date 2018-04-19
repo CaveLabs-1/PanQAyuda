@@ -5,13 +5,15 @@ from materiales.forms import MaterialInventarioForm
 from proveedores.models import Proveedor
 from .models import Compra
 from materiales.models import Material, MaterialInventario, Unidad
+from materiales.forms import MaterialInventarioForm
+
 from django.contrib import messages
 from django.http import HttpResponseRedirect, HttpResponse, HttpResponseNotFound
 from django.db.models import Sum
 from panqayuda.decorators import group_required
 import datetime
 
-
+@group_required('admin')
 def compras(request):
     if request.method == 'POST':
         forma_post = CompraForm(request.POST)
@@ -27,13 +29,11 @@ def compras(request):
         compras =  Compra.objects.filter(deleted_at__isnull=True)
         return render (request, 'compras/compras.html', {'forma': forma, 'compras': compras})
 
-
 def lista_detalle_compra(request):
     if request.method == 'POST':
         id_compra = request.POST.get('id_compra')
         compra = Compra.objects.get(pk=id_compra)
         materiales_de_compra = MaterialInventario.objects.filter(compra=compra)
-        print(materiales_de_compra)
         response = render_to_string('compras/lista_detalle_compra.html', {'materiales_de_compra': materiales_de_compra, 'compra': compra})
         return HttpResponse(response)
     return HttpResponse('Algo ha salido mal.')
@@ -83,7 +83,7 @@ def agregar_materias_primas_a_compra(request, id_compra):
 """
     Función agrega materias primas a una compra
 """
-@group_required('admin')
+
 def agregar_materia_prima_a_compra(request):
     if request.method == 'POST':
         forma = MaterialInventarioForm(request.POST)
@@ -95,6 +95,7 @@ def agregar_materia_prima_a_compra(request):
             id_unidad = int(request.POST.get('unidad_entrada'))
             porciones = int(request.POST.get('porciones'))
             costo = int(request.POST.get('costo'))
+            costo_unitario = int(request.POST.get('costo'))/int(request.POST.get('cantidad'))
             id_compra =  request.POST.get('compra')
 
             materia_prima = get_object_or_404(Material, id=id_material)

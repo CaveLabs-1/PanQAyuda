@@ -24,7 +24,19 @@
     <form class="row" method="post" action="{% url 'mermas:agregar_merma_recetas' %}">
       {% csrf_token %}
       <div class="input-field col s6">
-        {{forma.nombre}}
+         <select id="recetas_catalogo" name="recetas_catalogo">
+          <option value="" selected="">---------</option>
+           {% for receta_catalogo in recetas_catalogo %}
+              <option value="{{receta_catalogo.id}}"> {{receta_catalogo.nombre}} </option>
+           {% endfor %}
+        </select>
+        <label for="recetas_catalogo">Producto Semiterminado</label>
+      </div>
+      <div class="input-field col s6">
+         <select id="{{forma.nombre.id_for_label}}" name="{{forma.nombre.html_name}}">
+              <option value="" selected="">---------</option>
+          </select>
+          <label for="{{forma.nombre.id_for_label}}">Lote</label>
       </div>
       <div class="input-field col s6">
         <label for="{{forma.cantidad.id_for_label}}">Cantidad</label>
@@ -96,6 +108,19 @@
   <script type="text/javascript">
     $(document).ready(function(){
       $('.collapsible').collapsible();
+    });
+
+    $('#recetas_catalogo').change(function(){
+        var receta_catalogo_id = $('#recetas_catalogo').val();
+        $.ajax({
+            url: "{% url 'mermas:obtener_recetas_ajuste_inventario' %}",
+            data:{'receta_catalogo_id':receta_catalogo_id},
+            success: function(response){
+                alert(response);
+                $('#{{forma.nombre.id_for_label}}').html(response);
+                $('select').formSelect();
+            }
+        });
     });
   </script>
 {% endblock js %}

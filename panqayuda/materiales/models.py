@@ -32,7 +32,7 @@ class Material(models.Model):#¿Tiene unidad?
     updated_at = models.DateTimeField(default=timezone.now)
     deleted_at = models.DateTimeField(blank=True, null=True)
 
-
+    #Obtiene la cantidad en inventario disponible para hacer recetas
     def obtener_cantidad_inventario(self):
         return MaterialInventario.objects.filter(material=self,
         deleted_at__isnull=True, fecha_cad__gte=timezone.now()).aggregate(Sum('porciones_disponible'))['porciones_disponible__sum'] or 0
@@ -59,4 +59,4 @@ class MaterialInventario(models.Model):
     deleted_at = models.DateTimeField(blank=True, null=True)
 
     def __str__(self):
-        return self.material.nombre
+        return self.material.nombre + " " + self.fecha_cad.strftime('%d/%m/%Y')

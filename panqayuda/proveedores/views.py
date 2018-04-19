@@ -35,7 +35,6 @@ def detallar_proveedor(request, id_proveedor):
 
 
 #Función para borrar un proveedor @Valter
-@group_required('admin')
 def eliminar_proveedor(request, id_proveedor):
     proveedor = get_object_or_404(Proveedor, pk=id_proveedor)
     proveedor.estatus = 0

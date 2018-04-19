@@ -50,7 +50,6 @@ def lista_unidades(request):
 
 
 
-@group_required('admin')
 def eliminar_unidad(request, id_unidad):
     unidad = get_object_or_404(Unidad, pk=id_unidad)
     unidad.estatus = 0
@@ -61,7 +60,6 @@ def eliminar_unidad(request, id_unidad):
 
 
 #Función para borrar una materia prima @Valter
-@group_required('admin')
 def eliminar_material(request, id_material):
     material = get_object_or_404(Material, pk=id_material)
     material.estatus = 0
@@ -75,7 +73,6 @@ def eliminar_material(request, id_material):
     Función que agrega una nueva unidad a la base de datos según la forma, si no tiene
     un POST te regresa la forma para hacerlo
 """
-@group_required('admin')
 def agregar_unidades(request):
     if request.method == "POST":
         form = UnidadForm(request.POST)
@@ -91,6 +88,7 @@ def agregar_unidades(request):
         messages.success(request, '¡Hubo un error con el POST!')
         return redirect('/materiales/lista_unidades')
 
+@group_required('admin')
 def modificar_unidad(request, id_unidad):
     unidad = get_object_or_404(Unidad, pk=id_unidad)
     if request.method == "POST":
@@ -107,7 +105,7 @@ def modificar_unidad(request, id_unidad):
         form = UnidadForm()
     return render(request, 'materiales/modificar_unidad.html', {'form': form, 'unidad': unidad})
 
-
+@group_required('admin')
 def lista_materiales_inventario(request):
     materiales=MaterialInventario.objects.filter(deleted_at__isnull=True).filter(estatus=1)
     catalogo_materiales=Material.objects.filter(deleted_at__isnull=True).filter(status=1)
@@ -118,6 +116,7 @@ def lista_materiales_inventario(request):
 
     return render(request, 'materiales/lista_materiales_inventario.html', {'materiales':materiales, 'catalogo_materiales':catalogo_materiales})
 
+@group_required('admin')
 def materiales_por_catalogo(request):
     if request.method == 'POST':
         id_material = request.POST.get('id_material')
@@ -128,6 +127,7 @@ def materiales_por_catalogo(request):
         return HttpResponse(response)
     return HttpResponse('Algo ha salido mal.')
 
+@group_required('admin')
 def editar_material(request, id_material):
     # Obtener el material a editar.
     material = get_object_or_404(Material, pk=id_material)

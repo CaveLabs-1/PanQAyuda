@@ -24,7 +24,19 @@
     <form class="row" method="post" action="{% url 'mermas:agregar_merma_paquetes' %}">
       {% csrf_token %}
       <div class="input-field col s6">
-        {{forma.nombre}}
+        <select name="paquetes_catalogo" id="paquetes_catalogo">
+          <option value="" selected="">---------</option>
+          {% for paquete in paquetes_catalogo %}
+            <option value="{{paquete.id}}">{{paquete.nombre}}</option>
+          {% endfor %}
+        </select>
+        <label for="paquetes_catalogo">Producto terminado</label>
+      </div>
+      <div class="input-field col s6">
+        <select name="nombre" required="" id="id_nombre">
+          <option value="" selected="">---------</option>
+        </select>
+        <label for="nombre">Lote</label>
       </div>
       <div class="input-field col s6">
         <label for="{{forma.cantidad.id_for_label}}">Cantidad</label>
@@ -96,6 +108,18 @@
   <script type="text/javascript">
     $(document).ready(function(){
       $('.collapsible').collapsible();
+
+      $('#paquetes_catalogo').change(function(){
+          var paquete_catalogo = $('#paquetes_catalogo').val();
+          $.ajax({
+                url: "{% url 'mermas:obtener_paquetes_ajuste_inventario' %}",
+                data: {'id_paquete_catalogo': paquete_catalogo},
+                success: function(response){
+                   $('#id_nombre').html(response);
+                   $('select').formSelect();
+                },
+          });
+      });
     });
   </script>
 {% endblock js %}
