@@ -124,7 +124,7 @@ def lista_materiales_inventario(request):
          catalogo_material.total=aux['cantidad__sum']
 
     return render(request, 'materiales/lista_materiales_inventario.html', {'materiales':materiales, 'catalogo_materiales':catalogo_materiales})
-    
+
 """
     Detalla el material inventario
 """
