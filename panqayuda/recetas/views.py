@@ -68,7 +68,6 @@ def detallar_receta(request, id_receta):
     0 significa que la receta fue borrada
 """
 
-@group_required('admin')
 def borrar_receta(request, id_receta):
     receta = get_object_or_404(Receta, pk=id_receta)
     receta.status = 0
@@ -136,7 +135,6 @@ def agregar_materiales(request, id_receta):
     0 significa que fue borrado
 """
 
-@group_required('admin')
 def borrar_material(request, id_material):
     material = get_object_or_404(RelacionRecetaMaterial, pk=id_material)
     # id_receta = material.receta.id

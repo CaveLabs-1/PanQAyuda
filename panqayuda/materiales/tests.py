@@ -13,6 +13,7 @@ from django.contrib.auth.models import User, Group
 class TestListaMaterialCatalogo(TestCase):
 
     def setUp(self):
+        #El setup crea un usuario e inicia sesion para poder iniciar con los tests
         Group.objects.create(name="admin")
         user = User.objects.create_user(username='temporary', email='temporary@gmail.com', password='temporary', is_superuser='True')
         user.save()
@@ -23,33 +24,56 @@ class TestListaMaterialCatalogo(TestCase):
         session = self.client.session
 
     def test_ac1_existe_la_vista_html(self):
+        #Guarda en una variable el resultado de acceder al url de materiales
         resp = self.client.get(reverse('materiales:materiales'))
+        #En este caso no debe de haber ningun material en el contexto ya que no se ha creado uno
         self.assertEqual(len(resp.context['materiales']),0)
+        #Se checa que el codigo de estatus sea de 200
         self.assertEqual(resp.status_code, 200)
 
     def test_ac2_existe_la_vista_con_algo(self):
+        #Crea un objeto de material
         Material.objects.create(nombre="Testerino", codigo=123456789)
+        #Guarda en una variable el resultado de acceder al url
         resp = self.client.get(reverse('materiales:materiales'))
+        #Como se creo una materia, ahora si debe de haber una en el contexto
         self.assertEqual(len(resp.context['materiales']),1)
+        #Se checa el estatus de la respuesta que debe ser exitoso
         self.assertEqual(resp.status_code, 200)
 
     def test_ac3_la_tabla_no_imprime_objetos_con_estatus_no_disponible(self):
+        #Se checa que no ezista ningun material
         self.assertEqual(Material.objects.count(), 0)
+        #Se crea un material
         Material.objects.create(nombre="Test ac3", codigo=123456789, status=0)
+        #Se checa que se haya creado exitosamente
         self.assertEqual(Material.objects.count(), 1)
+        #Se guarda en una variable el resultado de acceder al url
         resp = self.client.get(reverse('materiales:materiales'))
+        #Se checa que no exista en el contexto el objeto con estatus 0
         self.assertEqual(len(resp.context['materiales']),0)
+        #La respuesta al acceder al url debe ser exitosa
         self.assertEqual(resp.status_code, 200)
+
     #se agrega exitosamente el material
     def test_ac4_se_agrega_material_y_se_muestra_en_la_tabla(self):
+        #Se checa que no exista materia
         self.assertEqual(Material.objects.count(), 0)
+        #Se guarda el resultado de acceder al url de materiales
         resp = self.client.get(reverse('materiales:materiales'))
+        #Se checa que el contexto tambien este vacio
         self.assertEqual(len(resp.context['materiales']),0)
+        #Se checa que la respuesta de estatus sea exitosa
         self.assertEqual(resp.status_code, 200)
+        #Se crea una materia
         Material.objects.create(nombre="Test ac4", codigo=123456789)
+        #Se guarda en una nueva variable la respuesta de acceder al url
         resp2 = self.client.get(reverse('materiales:materiales'))
+        #Se checa que en el contexto ya este la materia que se creo
         self.assertEqual(len(resp2.context['materiales']),1)
+        #La respuesta es exitosa
         self.assertEqual(resp2.status_code, 200)
+        #Se crea otra materia
         Material.objects.create(nombre="Test ac4.2", codigo=123456789)
         resp3 = self.client.get(reverse('materiales:materiales'))
         self.assertEqual(len(resp3.context['materiales']),2)
@@ -57,6 +81,7 @@ class TestListaMaterialCatalogo(TestCase):
 class TestAgregarMateriaCatalogo(TestCase):
 
     def setUp(self):
+        #El setup crea un usuario e inicia sesion para poder iniciar con los tests
         Group.objects.create(name="admin")
         user = User.objects.create_user(username='temporary', email='temporary@gmail.com', password='temporary', is_superuser='True')
         user.save()
@@ -68,45 +93,61 @@ class TestAgregarMateriaCatalogo(TestCase):
         self.assertEqual(resp.status_code, 200)
 
     def test_ac2_se_agrega_el_material(self):
+        #Se checa que no haya materias
         self.assertEqual(Material.objects.count(), 0)
+        #Se guarda la informacion
         data = {'nombre':"Test ac2", 'codigo':123456789}
+        #Se manda la informacion al url con un POST y se crea una materia
         self.client.post(reverse('materiales:materiales'), data)
+        #Se checa que se haya creado la materia
         self.assertEqual(Material.objects.count(), 1)
 
     def test_ac3_no_permite_agregar_material_sin_nombre(self):
+        #Se checa que no exista una materia
         self.assertEqual(Material.objects.count(), 0)
         data = {'codigo':123456789}
+        #Se manda el data por medio de POST al urll que crea materias
         self.client.post(reverse('materiales:materiales'), data)
+        #Se checa que no se haya creado la materia erronea
         self.assertEqual(Material.objects.count(), 0)
 
     def test_ac4_no_permite_material_sin_codigo(self):
+        #Se checq que no exista la materia
         self.assertEqual(Material.objects.count(), 0)
         data = {'nombre':"Test ac 4"}
         self.client.post(reverse('materiales:materiales'), data)
+        #Se manda informacion erronea y se espera que no se cree la materia
         self.assertEqual(Material.objects.count(), 0)
 
     def test_ac5_no_excede_10_caracteres_codigo(self):
+        #Se checa que no haya materia existente
         self.assertEqual(Material.objects.count(), 0)
         data = {'nombre':"Test ac5", 'codigo':12345678910}
         self.client.post(reverse('materiales:materiales'), data)
+        #Se manda informacion erronea y se esera que no se cree la materia
         self.assertEqual(Material.objects.count(), 0)
 
     def test_ac6_no_excede_100_caracteres_nombre(self):
+        #Se checa que no exsita la materia existente
         self.assertEqual(Material.objects.count(), 0)
         data = {'nombre':"Test ac6 excede el limite de 100 caracteres y no permite que se guarde el nomrbe y no se guarda en la base de datos", 'codigo':123456789}
         self.client.post(reverse('materiales:materiales'), data)
+        #En el data se mando un nombre con mas de 100 caracteres y se espera que no se guarde el objeto
         self.assertEqual(Material.objects.count(), 0)
 
     def test_ac7_codigo_no_alfa_numerico(self):
+        #Se checa que no exista materia
         self.assertEqual(Material.objects.count(), 0)
         data = {'nombre':"Test ac7", 'codigo':"12d4s6Q890"}
         self.client.post(reverse('materiales:materiales'), data)
+        #Se checa que el codigo acepte codigos alfanumericos y se crea la materia
         self.assertEqual(Material.objects.count(), 1)
 
 #Casos de uso US54
 class TestListaUnidades(TestCase):
 
     def setUp(self):
+        #El setup crea un usuario e inicia sesion para poder iniciar con los tests
         Group.objects.create(name="admin")
         user = User.objects.create_user(username='temporary', email='temporary@gmail.com', password='temporary', is_superuser='True')
         user.save()
@@ -114,13 +155,18 @@ class TestListaUnidades(TestCase):
 
     def test_ac1_existe_la_vista_lista(self):
         resp = self.client.get(reverse('materiales:lista_unidades'))
+        #El codigo de repsuesta debe de ser exitoso, es decir, 200
         self.assertEqual(resp.status_code, 200)
 
     def test_ac2_se_muestra_la_lista_con_unidades_agregadas(self):
+        #Se checa que la nunidad no exista
         self.assertEqual(Unidad.objects.count(), 0)
+        #Se crea una nueva unidad
         Unidad.objects.create(nombre="ac2")
+        #Se checa que se haya creado
         self.assertEqual(Unidad.objects.count(), 1)
         resp = self.client.get(reverse('materiales:lista_unidades'))
+        #Se checa que en el contexto de la tabla se vea la unidad que se creo
         self.assertEqual(len(resp.context['unidades']), 1)
 
     def test_ac3_existe_vista_agregar(self):
@@ -186,7 +232,7 @@ class TestModificarUnidades(TestCase):
         self.client.post(reverse('materiales:modificar_unidad', kwargs={'id_unidad':2}), data)
         resp = self.client.get(reverse('materiales:modificar_unidad', kwargs={'id_unidad':2}))
         unidad = resp.context['unidad']
-
+        #Esto va a comparar el nombre que se esta mandando con el nombre de otro objeto, no pueden ser los mismos y eso es lo que se checa al final
         nombre1 = unidad1.nombre
         nombre2 = unidad.nombre
         self.assertFalse(nombre1 == nombre2)
@@ -196,6 +242,7 @@ class TestModificarUnidades(TestCase):
 class TestListaMateriaPrima(TestCase):
 
     def creacion1(self):
+        #Para poder crear material en invetario es necesario crear una unidad, un material catalogo, crear un proveedor, y una orden de compra
         unidad = Unidad.objects.first()
         material = Material.objects.first()
         proveedor = Proveedor.objects.first()
@@ -212,6 +259,7 @@ class TestListaMateriaPrima(TestCase):
         inventario2.save()
 
     def setUp(self):
+        #El setup crea un usuario e inicia sesion para poder iniciar con los tests
         Group.objects.create(name="admin")
         user = User.objects.create_user(username='temporary', email='temporary@gmail.com', password='temporary', is_superuser='True')
         user.save()
@@ -249,12 +297,16 @@ class TestListaMateriaPrima(TestCase):
         self.assertEqual(resp.status_code, 200)
 
     def test_ac2_muestra_lista_de_materiales(self):
+        #Se checq eue el material este vacio
         self.assertEqual(MaterialInventario.objects.count(), 1)
         resp = self.client.get(reverse('materiales:materiales'))
+        #Se checa que el codigo de respuesta sea exitoso
         self.assertEqual(resp.status_code, 200)
+        #Como se creo una materia, se debe de observar en el contexto
         self.assertEqual(resp.context['materiales'].count(), 1)
 
     def test_ac3_no_muestra_lista_de_materiales_estatus_cero(self):
+        #Se crean dos materiales en inventario y se checan en existencia
         self.assertEqual(MaterialInventario.objects.count(), 1)
         self.creacion1()
         self.assertEqual(MaterialInventario.objects.count(), 2)
@@ -275,6 +327,7 @@ class TestListaMateriaPrima(TestCase):
 class TestEditarMateriaCatalogo(TestCase):
 
     def setUp(self):
+        #El setup crea un usuario e inicia sesion para poder iniciar con los tests
         Group.objects.create(name="admin")
         user = User.objects.create_user(username='temporary', email='temporary@gmail.com', password='temporary', is_superuser='True')
         user.save()

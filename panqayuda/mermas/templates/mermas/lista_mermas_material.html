@@ -23,25 +23,49 @@
     </div>
     <form class="row" method="post" action="{% url 'mermas:agregar_merma_materiales' %}">
       {% csrf_token %}
+
+      <!-- Material del catálogo -->
       <div class="input-field col s6">
-        {{forma.nombre}}
+        <select name="materiales_catalogo" id="materiales_catalogo">
+          <option selected="" value="">---------</option>
+          {% for material_catalogo in materiales_catalogo %}
+          <option value="{{material_catalogo.id}}"> {{material_catalogo.nombre}} </option>
+          {% endfor %}
+        </select>
+        <label for="materiales_catalogo">Materia Prima</label>
       </div>
+
+      <!-- Material del inventario -->
+      <div class="input-field col s6">
+        <select name="{{forma.nombre.html_name}}" id="{{forma.nombre.id_for_label}}" required="">
+          <option selected="" value="">---------</option>
+        </select>
+        <label for="{{forma.nombre.id_for_label}}"> Lote </label>
+      </div>
+
+      <!-- Cantidad a ajustar -->
       <div class="input-field col s6">
         <label for="{{forma.cantidad.id_for_label}}">Cantidad</label>
         <input id="{{forma.cantidad.id_for_label}}" name="{{forma.cantidad.html_name}}" type="number" required>
       </div>
+
+      <!-- Fecha del ajuste -->
       <div class="row">
         <div class="input-field col s12">
           <input class="datepicker" id="{{forma.fecha.id_for_label}}" type="text" class="required" name="{{forma.fecha.html_name}}" required>
           <label for="{{forma.fecha_fin.id_for_label}}">Fecha</label>
         </div>
       </div>
+
+      <!-- Descripción del ajuste -->
       <div class="row">
         <div class="input-field col s12">
           <label for="{{forma.descripcion.id_for_label}}">Descripcion</label>
           <input id="{{forma.descripcion.id_for_label}}" class="required" name="{{forma.descripcion.html_name}}" type="text" required>
         </div>
       </div>
+
+      <!--Enviar forma -->
       <div class="row">
         <div class="col s12 right-align">
           <br>
@@ -96,6 +120,19 @@
   <script type="text/javascript">
     $(document).ready(function(){
       $('.collapsible').collapsible();
+    });
+
+    //Función que hace una consulta de los materiales en inventario para el material seleccionado
+    $('#materiales_catalogo').change(function(){
+        var material_catalogo_id = $('#materiales_catalogo').val();
+        $.ajax({
+            url:"{% url 'mermas:obtener_materiales_ajuste_inventario' %}",
+            data: {'material_catalogo_id':material_catalogo_id},
+            success: function(response){
+                $('#{{forma.nombre.id_for_label}}').html(response);
+                $('select').formSelect();
+            }
+        });
     });
   </script>
 {% endblock js %}

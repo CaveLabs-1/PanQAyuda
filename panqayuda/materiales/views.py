@@ -46,7 +46,6 @@ def lista_unidades(request):
 
 
 
-@group_required('admin')
 def eliminar_unidad(request, id_unidad):
     unidad = get_object_or_404(Unidad, pk=id_unidad)
     unidad.estatus = 0
@@ -57,7 +56,6 @@ def eliminar_unidad(request, id_unidad):
 
 
 #Función para borrar una materia prima @Valter
-@group_required('admin')
 def eliminar_material(request, id_material):
     material = get_object_or_404(Material, pk=id_material)
     material.estatus = 0
@@ -71,7 +69,6 @@ def eliminar_material(request, id_material):
     Función que agrega una nueva unidad a la base de datos según la forma, si no tiene
     un POST te regresa la forma para hacerlo
 """
-@group_required('admin')
 def agregar_unidades(request):
     if request.method == "POST":
         form = UnidadForm(request.POST)

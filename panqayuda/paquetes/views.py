@@ -35,7 +35,6 @@ def agregar_paquete(request):
         forma=FormPaquete()
     return render(request, 'paquetes/agregar_paquete.html', {'forma':forma})
 
-@group_required('admin')
 def borrar_paquete(request, id_paquete):
     paquete = get_object_or_404(Paquete, pk=id_paquete)
     paquete.estatus = 0
@@ -96,7 +95,6 @@ def agregar_paquete_inventario(request):
         paquetes = Paquete.objects.filter(deleted_at__isnull=True).order_by("nombre")
         return render(request, 'paquetes/agregar_inventario.html', {'paquetes': paquetes, 'forma':forma})
 
-@group_required('admin')
 def borrar_paquete_inventario(request, id_paquete_inventario):
     paquete_inventario = get_object_or_404(PaqueteInventario, pk=id_paquete_inventario)
     cantidad = paquete_inventario.cantidad

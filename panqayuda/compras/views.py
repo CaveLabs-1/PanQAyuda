@@ -5,6 +5,8 @@ from materiales.forms import MaterialInventarioForm
 from proveedores.models import Proveedor
 from .models import Compra
 from materiales.models import Material, MaterialInventario, Unidad
+from materiales.forms import MaterialInventarioForm
+
 from django.contrib import messages
 from django.http import HttpResponseRedirect, HttpResponse, HttpResponseNotFound
 from django.db.models import Sum
@@ -27,7 +29,6 @@ def compras(request):
         compras =  Compra.objects.filter(deleted_at__isnull=True)
         return render (request, 'compras/compras.html', {'forma': forma, 'compras': compras})
 
-@group_required('admin')
 def lista_detalle_compra(request):
     if request.method == 'POST':
         id_compra = request.POST.get('id_compra')
@@ -82,7 +83,7 @@ def agregar_materias_primas_a_compra(request, id_compra):
 """
     Función agrega materias primas a una compra
 """
-@group_required('admin')
+
 def agregar_materia_prima_a_compra(request):
     if request.method == 'POST':
         forma = MaterialInventarioForm(request.POST)
