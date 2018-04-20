@@ -11,6 +11,7 @@ from django.db.models import Sum
 from django.db.models.functions import Concat
 from panqayuda.decorators import group_required
 import datetime
+from django.utils import timezone
 import json
 
 #indice
@@ -171,6 +172,26 @@ def agregar_receta_a_paquete(request):
                  for error in errors:
                      mensaje_error+=error + "\n"
             return HttpResponseNotFound('Hubo un problema agregando la receta al paquete: '+ mensaje_error)
+
+@group_required('admin')
+def quitar_receta_paquete(request):
+    #Obtener la relación y 'eliminarla'
+    id_relacion = request.GET.get('id_relacion')
+    relacion =  get_object_or_404(RecetasPorPaquete,pk=id_relacion)
+    paquete = relacion.paquete
+    relacion.deleted_at = timezone.now()
+    relacion.save()
+
+    #Renderizar la lista de recetas y la forma
+    recetas_por_paquete = RecetasPorPaquete.objects.filter(paquete=paquete).filter(deleted_at__isnull=True)
+    recetas = Receta.objects.filter(deleted_at__isnull=True).exclude(id__in=recetas_por_paquete.values('receta'))
+    forma = FormRecetasPorPaquete()
+    forma_html = render_to_string('paquetes/forma_agregar_recetas_paquete.html',{'forma': forma, 'recetas': recetas, 'paquete': paquete})
+    lista_recetas = render_to_string('paquetes/lista_recetas_por_paquete.html',{'recetas_por_paquete': recetas_por_paquete})
+    data = '' + forma_html + lista_recetas + ''
+
+    #Enviar respuesta
+    return HttpResponse(data)
 
 @group_required('admin')
 def paquete(request, id_paquete):
