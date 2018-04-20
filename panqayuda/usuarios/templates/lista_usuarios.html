@@ -24,10 +24,14 @@
           <tbody>
             {% for usuario in usuarios %}
             <tr>
-                <td>{{ usuario.first_name }}{{ usuario.last_name }}</td>
+                <td>{{ usuario.first_name }} {{ usuario.last_name }}</td>
                 <td>{{ usuario.email }}</td>
                 <td><a><i class="material-icons">edit</i></a></td>
-                <td><a><i class="material-icons">delete</i></a></td>
+                <td>
+                  <a onclick="deleteRegister(this, event)" href="borrar_usuario/{{usuario.id}}">
+                    <i class="material-icons">delete</i>
+                  </a>
+                </td>
             </tr>
             {% endfor %}
           </tbody>
@@ -63,5 +67,28 @@
 
     password.onchange = validatePassword;
     confirm_password.onkeyup = validatePassword;
+    
+    //muestra mensaje antes de eliminar un usuario
+    function deleteRegister(element, event) {
+      event.preventDefault();
+      $.confirm({
+        title: '¿Deseas Continuar?',
+        content: 'El usuario se eliminará permanentemente.',
+        type: 'red',
+        closeIcon: true,
+        columnClass: 'col l6 offset-l3 s12',
+        typeAnimated: true,
+        buttons: {
+          continuar: {
+            text: 'Eliminar',
+            btnClass: 'btn-red',
+            action: function () { //si da aceptar redirije a la view para eliminar el usuario
+              window.location.href = $(element).attr("href");
+            }
+          }
+       }
+     });
+    }
+
   </script>
 {% endblock js %}
