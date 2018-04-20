@@ -14,6 +14,12 @@ from panqayuda.decorators import group_required
 import datetime
 
 @group_required('admin')
+@group_required('admin')
+
+""" --------------------------------------------------
+ Si es un GET regresa la lista de compras junto con
+ una forma para desplegar en el modal  
+ -------------------------------------------------- """
 def compras(request):
     if request.method == 'POST':
         forma_post = CompraForm(request.POST)
@@ -29,6 +35,10 @@ def compras(request):
         compras =  Compra.objects.filter(deleted_at__isnull=True)
         return render (request, 'compras/compras.html', {'forma': forma, 'compras': compras})
 
+""" --------------------------------------------------
+ Reccibe el ID de una compra, obtiene todos los materiales que le
+ corresponden y los regresa a la vista
+-------------------------------------------------- """
 def lista_detalle_compra(request):
     if request.method == 'POST':
         id_compra = request.POST.get('id_compra')
