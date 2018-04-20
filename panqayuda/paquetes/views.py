@@ -13,13 +13,17 @@ from panqayuda.decorators import group_required
 import datetime
 import json
 
-#indice
+"""
+    Regresa la lista de paquetes
+"""
 @group_required('admin')
 def lista_paquetes(request):
     lista_de_paquetes=Paquete.objects.filter(estatus=1).filter(deleted_at__isnull=True)
     return render(request, 'paquetes/ver_paquetes.html', {'paquetes':lista_de_paquetes})
 
-#agregar paquete
+"""
+    En caso de GET regresa la forma para hacer el POST correspondiente
+"""
 @group_required('admin')
 def agregar_paquete(request):
     if request.method == 'POST':
@@ -35,6 +39,11 @@ def agregar_paquete(request):
         forma=FormPaquete()
     return render(request, 'paquetes/agregar_paquete.html', {'forma':forma})
 
+"""
+    Recibe el id de el paquete a borrar, cambia su estado a 0 y su deleted_at a
+    la hora correspondiente
+"""
+@group_required('admin')
 def borrar_paquete(request, id_paquete):
     paquete = get_object_or_404(Paquete, pk=id_paquete)
     paquete.estatus = 0
@@ -43,6 +52,9 @@ def borrar_paquete(request, id_paquete):
     messages.success(request, '¡Se ha borrado el paquete del catálogo!')
     return redirect('paquetes:lista_paquetes')
 
+"""
+    Enlista los paquetes inventario que tinenen de estatus 0
+"""
 @group_required('admin')
 def lista_paquete_inventario(request):
     paquetes=PaqueteInventario.objects.filter(deleted_at__isnull=True).filter(estatus=1)
@@ -54,6 +66,9 @@ def lista_paquete_inventario(request):
 
     return render(request, 'paquetes/lista_paquetes_inventario.html', {'paquetes':paquetes, 'catalogo_paquetes':catalogo_paquetes})
 
+"""
+    Regresa los los paquetes inventario correspondiente
+"""
 @group_required('admin')
 def paquetes_por_catalogo(request):
     if request.method == 'POST':
@@ -64,6 +79,9 @@ def paquetes_por_catalogo(request):
         return HttpResponse(response)
     return HttpResponse('Algo ha salido mal.')
 
+"""
+
+"""
 @group_required('admin')
 def agregar_paquete_inventario(request):
     if request.method == 'POST':
@@ -90,6 +108,7 @@ def agregar_paquete_inventario(request):
         paquetes = Paquete.objects.filter(deleted_at__isnull=True).order_by("nombre")
         return render(request, 'paquetes/agregar_inventario.html', {'paquetes': paquetes, 'forma':forma})
 
+@group_required('admin')
 def borrar_paquete_inventario(request, id_paquete_inventario):
     paquete_inventario = get_object_or_404(PaqueteInventario, pk=id_paquete_inventario)
     cantidad = paquete_inventario.cantidad
