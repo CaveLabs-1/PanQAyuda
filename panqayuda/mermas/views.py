@@ -56,17 +56,6 @@ def agregar_merma_paquetes(request):
                     'MermaPack': newMermaPaqueteForm,
                 }
                 return HttpResponseRedirect(reverse('mermas:lista_mermas_paquete'))
-            #Si es igual, se guarda
-            elif pack.cantidad == merma.cantidad :
-                merma.save()
-                pack.delete()
-                messages.success(request, 'Se ha agregado la merma exitosamente')
-                return render(reverse('mermas:lista_mermas_paquete'))
-            else :
-                pack.cantidad -= merma.cantidad
-                merma.save()
-                message.success(request, 'Se ha agregado la merma exitosamente')
-                return render(reverse('mermas:lista_mermas'))
         #Si no pasa el POST
             elif pack.disponibles() == Merma.cantidad :
                 Merma.save()
