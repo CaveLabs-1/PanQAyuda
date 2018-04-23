@@ -31,10 +31,6 @@ def lista_usuarios(request):
         else:
             is_superuser=False
         password = request.POST.get('password')
-        print("IS STAFF")
-        print(is_staff)
-        print("IS SUPERUSER")
-        print(is_superuser)
         user = User.objects.create(username=username, email=email, first_name=first_name,
                                             last_name=last_name, is_superuser=is_superuser,
                                             is_staff=is_staff)
