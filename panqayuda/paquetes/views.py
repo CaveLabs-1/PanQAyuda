@@ -11,15 +11,20 @@ from django.db.models import Sum
 from django.db.models.functions import Concat
 from panqayuda.decorators import group_required
 import datetime
+from django.utils import timezone
 import json
 
-#indice
+"""
+    Regresa la lista de paquetes
+"""
 @group_required('admin')
 def lista_paquetes(request):
     lista_de_paquetes=Paquete.objects.filter(estatus=1).filter(deleted_at__isnull=True)
     return render(request, 'paquetes/ver_paquetes.html', {'paquetes':lista_de_paquetes})
 
-#agregar paquete
+"""
+    En caso de GET regresa la forma para hacer el POST correspondiente
+"""
 @group_required('admin')
 def agregar_paquete(request):
     if request.method == 'POST':
@@ -35,6 +40,11 @@ def agregar_paquete(request):
         forma=FormPaquete()
     return render(request, 'paquetes/agregar_paquete.html', {'forma':forma})
 
+"""
+    Recibe el id de el paquete a borrar, cambia su estado a 0 y su deleted_at a
+    la hora correspondiente
+"""
+@group_required('admin')
 def borrar_paquete(request, id_paquete):
     paquete = get_object_or_404(Paquete, pk=id_paquete)
     paquete.estatus = 0
@@ -43,6 +53,9 @@ def borrar_paquete(request, id_paquete):
     messages.success(request, '¡Se ha borrado el paquete del catálogo!')
     return redirect('paquetes:lista_paquetes')
 
+"""
+    Enlista los paquetes inventario que tinenen de estatus 0
+"""
 @group_required('admin')
 def lista_paquete_inventario(request):
     paquetes=PaqueteInventario.objects.filter(deleted_at__isnull=True).filter(estatus=1)
@@ -54,6 +67,9 @@ def lista_paquete_inventario(request):
 
     return render(request, 'paquetes/lista_paquetes_inventario.html', {'paquetes':paquetes, 'catalogo_paquetes':catalogo_paquetes})
 
+"""
+    Regresa los los paquetes inventario correspondiente
+"""
 @group_required('admin')
 def paquetes_por_catalogo(request):
     if request.method == 'POST':
@@ -64,6 +80,9 @@ def paquetes_por_catalogo(request):
         return HttpResponse(response)
     return HttpResponse('Algo ha salido mal.')
 
+"""
+
+"""
 @group_required('admin')
 def agregar_paquete_inventario(request):
     if request.method == 'POST':
@@ -95,6 +114,7 @@ def agregar_paquete_inventario(request):
         paquetes = Paquete.objects.filter(deleted_at__isnull=True).order_by("nombre")
         return render(request, 'paquetes/agregar_inventario.html', {'paquetes': paquetes, 'forma':forma})
 
+@group_required('admin')
 def borrar_paquete_inventario(request, id_paquete_inventario):
     paquete_inventario = get_object_or_404(PaqueteInventario, pk=id_paquete_inventario)
     cantidad = paquete_inventario.cantidad
@@ -177,6 +197,26 @@ def agregar_receta_a_paquete(request):
                  for error in errors:
                      mensaje_error+=error + "\n"
             return HttpResponseNotFound('Hubo un problema agregando la receta al paquete: '+ mensaje_error)
+
+@group_required('admin')
+def quitar_receta_paquete(request):
+    #Obtener la relación y 'eliminarla'
+    id_relacion = request.GET.get('id_relacion')
+    relacion =  get_object_or_404(RecetasPorPaquete,pk=id_relacion)
+    paquete = relacion.paquete
+    relacion.deleted_at = timezone.now()
+    relacion.save()
+
+    #Renderizar la lista de recetas y la forma
+    recetas_por_paquete = RecetasPorPaquete.objects.filter(paquete=paquete).filter(deleted_at__isnull=True)
+    recetas = Receta.objects.filter(deleted_at__isnull=True).exclude(id__in=recetas_por_paquete.values('receta'))
+    forma = FormRecetasPorPaquete()
+    forma_html = render_to_string('paquetes/forma_agregar_recetas_paquete.html',{'forma': forma, 'recetas': recetas, 'paquete': paquete})
+    lista_recetas = render_to_string('paquetes/lista_recetas_por_paquete.html',{'recetas_por_paquete': recetas_por_paquete})
+    data = '' + forma_html + lista_recetas + ''
+
+    #Enviar respuesta
+    return HttpResponse(data)
 
 @group_required('admin')
 def paquete(request, id_paquete):

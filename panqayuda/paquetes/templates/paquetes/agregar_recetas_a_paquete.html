@@ -66,13 +66,26 @@
             }).done(function(data){
               $('#formahtml').html(data);
               $('select').formSelect();
-              M.toast({html:'La receta se ha agregado al paquete.'});
+              M.toast({html:'Se ha agregado el producto semiterminado a este producto terminado.'});
             }).fail(function(data) {
                 M.toast({html:data.responseText});
             });
 
             return false;
        }
+    });
+
+    $(document.body).on('click', '.eliminar', function(e){
+        var id_relacion = $(this).attr('id');
+        $.ajax({
+            url:'{% url "paquetes:quitar_receta_paquete" %}',
+            data:{'id_relacion': id_relacion},
+            success: function(response){
+                $('#formahtml').html(response);
+                $('select').formSelect();
+                M.toast({html:'Se ha quitado el producto semiterminado de este producto terminado'});
+            }
+        });
     });
 
   </script>

@@ -11,6 +11,9 @@ from panqayuda.decorators import group_required
 from functools import reduce
 import datetime
 
+"""
+    View para mostrar la lista de ventas, con forma disponible para crear una nueva ventas.
+"""
 @group_required('admin')
 def ventas(request):
     if request.method == 'POST':
@@ -27,6 +30,9 @@ def ventas(request):
         ventas =  Venta.objects.filter(deleted_at__isnull=True)
         return render (request, 'ventas/ventas.html', {'forma': forma, 'ventas': ventas})
 
+"""
+    Recibe una venta y detalla la información sobre ella
+"""
 @group_required('admin')
 def lista_detalle_venta(request):
     if request.method == 'POST':
@@ -37,6 +43,9 @@ def lista_detalle_venta(request):
         return HttpResponse(response)
     return HttpResponse('Algo ha salido mal.')
 
+"""
+    Genera una nueva venta
+"""
 @group_required('admin')
 def generar_venta(request):
     if request.method == "POST":
