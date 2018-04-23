@@ -19,18 +19,24 @@ def lista_paquetes(request):
     lista_de_paquetes=Paquete.objects.filter(estatus=1).filter(deleted_at__isnull=True)
     return render(request, 'paquetes/ver_paquetes.html', {'paquetes':lista_de_paquetes})
 
-#agregar paquete
+#agregar paquete al catálogo de paquetes
 @group_required('admin')
 def agregar_paquete(request):
+    #Revisar si se manda por POST
     if request.method == 'POST':
+        #Mandar la forma
         forma=FormPaquete(request.POST)
+        #Cehcar si la forma es válida
         if forma.is_valid():
+            #Guardas la forma y mandas mensaje de éxito y redirige a agregar recetas a paquete
             forma.save()
             messages.success(request, '¡Se ha agregado el paquete al catálogo!')
             paquete = Paquete.objects.latest('id')
             return HttpResponseRedirect(reverse('paquetes:agregar_recetas_a_paquete', kwargs={'id_paquete':paquete.id}))
+            #Manda mensaje de error si la forma no es válida
         else:
             messages.info(request, 'Hubo un error y no se agregó el paquete. Inténtalo de nuevo.')
+    #Manda mensaje de error si no se manda por POST
     else:
         forma=FormPaquete()
     return render(request, 'paquetes/agregar_paquete.html', {'forma':forma})
@@ -65,25 +71,29 @@ def paquetes_por_catalogo(request):
     return HttpResponse('Algo ha salido mal.')
 
 def agregar_paquete_inventario(request):
+    #Revisa que sea método post
     if request.method == 'POST':
+        #Obtiene la forma
         forma_post=FormPaqueteInventario(request.POST or None)
+        #Revisa que la forma sea válida
         if forma_post.is_valid():
             #Obtener paquete
             id_paquete = request.POST.get('nombre')
             paquete = Paquete.objects.get(pk=id_paquete)
-
             cantidad_post = forma_post.instance.cantidad
             #Verificar que hay suficiente cantidad en inventario para agregar el paquete
             if agregar_paquetes_inventario_recetas(paquete,cantidad_post) == False:
                 messages.error(request, 'No hay inventario suficiente para agregar este paquete')
                 return HttpResponseRedirect(reverse('paquetes:agregar_inventario'))
-
+            #Guarda la forma, manda mensaje de éxito, y regresa a la lista de paquetes en inventario
             forma_post.save()
             messages.success(request, 'Se ha agregado el paquete al inventario')
             return HttpResponseRedirect(reverse('paquetes:lista_paquete_inventario'))
+        #Si la forma no es válida, manda un mensaje de error y regresa a agregar paquete en inventario
         else:
             messages.error(request, 'Hubo un error y no se agregó el paquete al inventario.')
             return HttpResponseRedirect(reverse('paquetes:agregar_inventario'))
+    #Si no se manda por método POST
     else:
         forma=FormPaqueteInventario()
         paquetes = Paquete.objects.filter(deleted_at__isnull=True).order_by("nombre")
