@@ -52,22 +52,29 @@ def lista_unidades(request):
 """
 @group_required('admin')
 def eliminar_unidad(request, id_unidad):
+    #Recuperar Unidad
     unidad = get_object_or_404(Unidad, pk=id_unidad)
     unidad.estatus = 0
+    #Borrado del objeto
     unidad.deleted_at = datetime.datetime.now()
     unidad.save()
     messages.success(request, '¡Se ha borrado exitosamente la unidad del catálogo!')
+    #Regresar a listado de materiales
     return redirect('materiales:lista_unidades')
 
 
+
+#Función para borrar una materia prima del catálogo
 @group_required('admin')
-#Función para borrar una materia prima @Valter
 def eliminar_material(request, id_material):
+    #Obtienes la materia primas
     material = get_object_or_404(Material, pk=id_material)
     material.estatus = 0
+    #Se hace el borrado
     material.deleted_at = datetime.datetime.now()
     material.save()
     messages.success(request, '¡Se ha borrado exitosamente el material del catálogo!')
+    #Regresa a la lista de materiales
     return redirect('materiales:materiales')
 
 

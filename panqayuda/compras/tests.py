@@ -158,6 +158,7 @@ class TestListaCompras(TestCase):
 
 class TestEliminarCompra(TestCase):
 
+    #Generación de lo necesario para el ambiente de pruebas
     def setUp(self):
         #El setup crea un usuario e inicia sesion para poder iniciar con los tests
         Group.objects.create(name="admin")
@@ -182,12 +183,14 @@ class TestEliminarCompra(TestCase):
         #Se guarda la compra
         compra.save()
 
+    #Test para borrar la compra
     def test_borrar_compra(self):
         self.assertEqual(Compra.objects.count(), 1)
+        #Se obtiene el objeto compra
         objetos = Compra.objects.first()
-        #Se elimina mandando una peticion GET al url de eliminar compra
+        #Se manda llamar de la view eliminar_compra
         self.client.get(reverse('compras:eliminar_compra', kwargs={'id_compra':objetos.id}))
-        #Se checa que se haya eliminado el objeto compra
+        #Se revisa que no haya objetos con el campo vacío de deleted_at
         self.assertEqual(Compra.objects.filter(deleted_at__isnull=True).count(), 0)
 
 
@@ -199,4 +202,3 @@ class TestEliminarCompra(TestCase):
     #             resp = self.client.post(reverse('compras:agregar_materia_prima_a_compra'), data)
     #             cuenta_postpost=MaterialInventario.objects.filter(compra=self.compra.id).count()
     #             self.assertEqual(cuenta_prepost+1, cuenta_postpost)
-    # # Create your tests here.

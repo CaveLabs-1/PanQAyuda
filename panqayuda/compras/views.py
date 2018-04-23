@@ -155,12 +155,15 @@ def agregar_materia_prima_a_compra(request):
 
 
 
-#Función para borrar una compra @Valter
+#Función para borrar una compra
 @group_required('admin')
 def eliminar_compra(request, id_compra):
+    #Se obtiene el objeto compra
     compra = get_object_or_404(Compra, pk=id_compra)
     compra.estatus = 0
+    #Se borra la compra
     compra.deleted_at = datetime.datetime.now()
     compra.save()
     messages.success(request, '¡Se ha borrado exitosamente la compra!')
+    #Se regresa a la lista de compras 
     return redirect('compras:compras')

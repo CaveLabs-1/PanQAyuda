@@ -29,6 +29,7 @@
         <td>{{cliente.email}}</td>
         <td>{{cliente.rfc}}</td>
         <td><a href="editar_cliente/{{ cliente.id }}"><i class="material-icons">edit</i></a></td>
+        <!--Se manda llamar la función de eliminar_cliente mandando el id de cliente-->
         <td><a href="{% url 'clientes:eliminar_cliente' cliente.id %}" class="modal-trigger" onclick="return confirm('Vas a eliminar un Cliente del catálogo. ¿Continuar?')" ><i class="material-icons">delete</i></a></td>
       </tr>
       {% endfor %}

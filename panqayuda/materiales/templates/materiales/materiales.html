@@ -34,7 +34,7 @@
             <td>{{material.codigo}}</td>
             <!--Editar material-->
             <td><a href="{% url 'materiales:editar_material' material.id %}" class="modal-trigger"><i class="material-icons">edit</i></a></td>
-            <!--Eliminar material-->
+            <!--Se manda llamar la función de eliminar_material mandando el id de material-->
             <td><a href="{% url 'materiales:eliminar_material' material.id %}" class="modal-trigger" onclick="return confirm('Vas a eliminar un Material del catálogo. ¿Continuar?')"><i class="material-icons">delete</i></a></td>
             </tr>
          {% endfor %}
