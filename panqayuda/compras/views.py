@@ -12,11 +12,21 @@ from django.db.models import Sum
 from panqayuda.decorators import group_required
 import datetime
 
+
+"""
+ Si es un GET regresa la lista de compras junto con
+ una forma para desplegar en el modal
+"""
 @group_required('admin')
 def compras(request):
     compras =  Compra.objects.filter(deleted_at__isnull=True)
-    return render (request, 'compras/compras.html', {'compras': 'compras'})
+    return render (request, 'compras/compras.html', {'compras': compras})
 
+""" --------------------------------------------------
+ Reccibe el ID de una compra, obtiene todos los materiales que le
+ corresponden y los regresa a la vista
+--------------------------------------------------
+"""
 @group_required('admin')
 def lista_detalle_compra(request):
     if request.method == 'POST':

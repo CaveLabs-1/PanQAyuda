@@ -27,7 +27,7 @@ class Paquete (models.Model):
 	def obtener_inventario_fisico(self):
 		return PaqueteInventario.objects.filter(nombre=self).filter(deleted_at__isnull=True).\
 				   annotate(disponible=Sum(F('cantidad') - F('ocupados'))).\
-				   aggregate(cantidad_disponible=Sum('disponible'))['cantidad_disponible'] or 0
+				   aggregate(porciones_disponible=Sum('disponible'))['porciones_disponible'] or 0
 
 	#Devuelve la lista de paquetes_inventario que tienen paquetes disponibles
 	def obtener_paquetes_inventario_disponibles(self):
@@ -71,3 +71,6 @@ class PaqueteInventario (models.Model):
 	#Devuelve la resta entre la cantidad y los ocupados
 	def disponibles(self):
 		return self.cantidad - self.ocupados
+
+	def multiplicar_costo_cantidad(self):
+		return self.cantidad * self.costo

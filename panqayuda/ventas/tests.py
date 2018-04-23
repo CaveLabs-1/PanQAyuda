@@ -7,9 +7,9 @@ from django.utils import timezone
 from clientes.models import Cliente
 from paquetes.models import Paquete, PaqueteInventario
 from materiales.models import Material, Unidad, MaterialInventario
-# Create your tests here.
-class TestListaVentas(TestCase):
 
+class TestListaVentas(TestCase):
+# Crea la sesión y los objetos a usarse
     def setUp(self):
         Group.objects.create(name="admin")
         user = User.objects.create_user(username='temporary', email='temporary@gmail.com', password='temporary', is_superuser='True')

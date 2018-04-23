@@ -7,7 +7,7 @@ from django.contrib.auth.models import User
 from .forms import FormUser
 
 """
-    Función que enlista todos los usuarios guardadas dentro de la base de datos.
+    Función que enlista todos los usuarios guardadas dentro de la base de datos y guarda nuevos usuarios.
     Regresa objetos de usuario.
 """
 
@@ -38,3 +38,16 @@ def lista_usuarios(request):
         usuarios =  User.objects.filter(is_active=1)
         # Se muestra la lista de usuarios con una forma disponible para dar de alta uno nuevo.
         return render (request, 'lista_usuarios.html', {'forma': forma, 'usuarios': usuarios})
+
+
+"""
+    Función para eliminar usuarios de la base de datos (soft delete).
+"""
+@group_required('admin')
+def borrar_usuario(request, id_usuario):
+    usuario = get_object_or_404(User, pk=id_usuario)
+    #soft delete django
+    usuario.is_active = 0
+    usuario.save()
+    messages.success(request, '¡Se ha eliminado al usuario!')
+    return redirect('usuarios:lista_usuarios')

@@ -8,8 +8,9 @@ from django.db.models import Sum
 from panqayuda.decorators import group_required
 import datetime
 
-
-# Lista de materiales con modal para dar de alta uno nuevo.
+"""
+    En caso de ser GET regresa una lista de materiales y la forma para agregar un material
+"""
 @group_required('admin')
 def materiales(request):
     # En caso de que exista una petición de tipo POST valida la forma y guarda el material.
@@ -31,6 +32,9 @@ def materiales(request):
         unidades = Unidad.objects.filter(deleted_at__isnull=True)
         return render (request, 'materiales/materiales.html', {'forma': forma, 'materiales': materiales, 'unidades': unidades})
 
+"""
+    Enlista las unidades existentes
+"""
 @group_required('admin')
 def lista_unidades(request):
     if request.method == 'POST':
@@ -48,8 +52,10 @@ def lista_unidades(request):
         return render (request, 'materiales/lista_unidades.html', {'forma': forma, 'unidades': unidades})
 
 
-
-
+"""
+    Recibe una unidad y cambia su estatus a 0
+"""
+@group_required('admin')
 def eliminar_unidad(request, id_unidad):
     unidad = get_object_or_404(Unidad, pk=id_unidad)
     unidad.estatus = 0
@@ -59,6 +65,7 @@ def eliminar_unidad(request, id_unidad):
     return redirect('materiales:lista_unidades')
 
 
+@group_required('admin')
 #Función para borrar una materia prima @Valter
 def eliminar_material(request, id_material):
     material = get_object_or_404(Material, pk=id_material)
@@ -73,6 +80,7 @@ def eliminar_material(request, id_material):
     Función que agrega una nueva unidad a la base de datos según la forma, si no tiene
     un POST te regresa la forma para hacerlo
 """
+@group_required('admin')
 def agregar_unidades(request):
     if request.method == "POST":
         form = UnidadForm(request.POST)
@@ -88,6 +96,9 @@ def agregar_unidades(request):
         messages.success(request, '¡Hubo un error con el POST!')
         return redirect('/materiales/lista_unidades')
 
+"""
+    Recibe una unidad y cambia los datos a los que fueron recibidos
+"""
 @group_required('admin')
 def modificar_unidad(request, id_unidad):
     unidad = get_object_or_404(Unidad, pk=id_unidad)
@@ -105,6 +116,9 @@ def modificar_unidad(request, id_unidad):
         form = UnidadForm()
     return render(request, 'materiales/modificar_unidad.html', {'form': form, 'unidad': unidad})
 
+"""
+    Enlista los materiales inevnatrio que existen dentro de los materiales
+"""
 @group_required('admin')
 def lista_materiales_inventario(request):
     materiales=MaterialInventario.objects.filter(deleted_at__isnull=True).filter(estatus=1)
@@ -116,6 +130,9 @@ def lista_materiales_inventario(request):
 
     return render(request, 'materiales/lista_materiales_inventario.html', {'materiales':materiales, 'catalogo_materiales':catalogo_materiales})
 
+"""
+    Detalla el material inventario
+"""
 @group_required('admin')
 def materiales_por_catalogo(request):
     if request.method == 'POST':
@@ -127,6 +144,9 @@ def materiales_por_catalogo(request):
         return HttpResponse(response)
     return HttpResponse('Algo ha salido mal.')
 
+"""
+    Recibe un material y cambia los datos a los que fueron recibidos
+"""
 @group_required('admin')
 def editar_material(request, id_material):
     # Obtener el material a editar.

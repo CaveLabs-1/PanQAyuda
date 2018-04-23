@@ -135,7 +135,7 @@ class TestMermaMateria(TestCase):
         u = Unidad.objects.create(nombre="kg")
 
         #Crear inventario de materia prima
-        MaterialInventario.objects.create(material = m, unidad_entrada = u, cantidad=5, cantidad_disponible=15,porciones=15, costo=500, fecha_cad=timezone.now())
+        MaterialInventario.objects.create(material = m, unidad_entrada = u, cantidad=5, porciones_disponible=15,porciones=15, costo=500, fecha_cad=timezone.now())
     #20.1, 20.3 El inventario de la materia se actualiza después de hacer la merma con datos correctos
     def test_merma_material_se_actualiza(self):
         # Material del catálogo

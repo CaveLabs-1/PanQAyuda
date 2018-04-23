@@ -11,6 +11,7 @@
   <div class="col s10 offset-s1">
     <table id="table_id" class="datatable">
       <thead>
+        <!--Encabezados de la tabla que se imprime-->
         <th>Nombre</th>
         <th>Telefono</th>
         <th>Direccion</th>
@@ -18,40 +19,32 @@
         <th>Razon Social</th>
         <th>Email</th>
         <th>Eliminar</th>
-        <!-- <th></th> -->
       </thead>
       <tbody>
+        <!-- Se itera sobre una lista de proveedores para que se impriman todos -->
         {% for item in proveedores %}
         <tr>
           <td>
             <a href="{% url 'proveedores:detallar_proveedor' item.id %}">
+              <!-- Se recupera el nombre del proveedor -->
               {{ item.nombre }}
             </a>
           </td>
+          <!-- Aqui se recuperan los atributos de los proveedores para que se muestren en pantalla -->
           <td>{{ item.telefono }}</td>
           <td>{{ item.direccion }}</td>
           <td>{{ item.rfc }}</td>
           <td>{{ item.razon_social }}</td>
           <td>{{ item.email }}</td>
+          <!-- Boton de eliminar proveedor que manda a llamar el url de eliminar_proveedor -->
           <td><a href="{% url 'proveedores:eliminar_proveedor' item.id %}" class="modal-trigger" onclick="return confirm('Vas a eliminar un Proveedor del catálogo. ¿Continuar?')" ><i class="material-icons">delete</i></a></td>
-          <!-- <td>
-            <!--Aqui es el editar
-            <a href="">
-              <i class="material-icons">edit</i>
-            </a>
-          </td>
-          <td>
-            <!--Aqui agrega lo de borrar
-            <a onclick="" href="">
-              <i class="material-icons">delete</i>
-            </a>
-          </td> -->
         </tr>
         {% endfor %}
       </tbody>
     </table>
     <div class="row">
       <div class="right-align">
+        <!-- Boton de "mas" que manda llamar la funcion agregar_proveedor -->
         <a href="{% url 'proveedores:agregar_proveedor'%}" class="btn-floating btn-large waves-effect waves-light pink"><i class="material-icons">add</i></a>
       </div>
     </div>

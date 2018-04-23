@@ -10,10 +10,12 @@ from materiales.models import Material, Unidad, MaterialInventario
 class TestListaCompras(TestCase):
 
     def setUp(self):
+        #El setup crea un usuario e inicia sesion para poder iniciar con los tests
         Group.objects.create(name="admin")
         user = User.objects.create_user(username='temporary', email='temporary@gmail.com', password='temporary', is_superuser='True')
         user.save()
         self.client.login(username='temporary', password='temporary')
+        #Se crea un proveedor
         self.proveedor = Proveedor.objects.create(
             nombre="TestLista",
             telefono=4151043944,
@@ -22,9 +24,13 @@ class TestListaCompras(TestCase):
             razon_social="Un tipazo",
             email="test@ejemplo.com"
         )
+        #Se crea una compra
         self.compra = Compra.objects.create(proveedor=self.proveedor, fecha_compra="2059-03-03 12:31:06-05")
+        #Se crea un material catalogo
         self.material = Material.objects.create(nombre="Material Test", codigo=12344)
+        #Se agrega una unidad
         self.unidad = Unidad.objects.create(nombre="Unidad")
+        #Se crea material al inventario
         materialinv = MaterialInventario.objects.create(
             material=self.material,
             compra=self.compra,
@@ -38,12 +44,16 @@ class TestListaCompras(TestCase):
 
     def test_ac1_Existe_la_vista_de_listado(self):
         resp = self.client.get(reverse('compras:compras'))
+        #El codigo de respuesta debe de ser exitoso
         self.assertEqual(resp.status_code, 200)
 
     def test_ac2_Muestra_las_compras_correctas(self):
+        #Se checa si existe el objeto compra
         self.assertEqual(Compra.objects.count(), 1)
         resp = self.client.get(reverse('compras:compras'))
+        #El codigo de repuesta debe de ser exitoso
         self.assertEqual(resp.status_code, 200)
+        #El contexto debe mostrar la compra
         self.assertEqual(resp.context['compras'].count(), 1)
         #self.assertEqual(resp.context['compras'].proveedor, "TestLista")
 
@@ -114,10 +124,13 @@ class TestListaCompras(TestCase):
 class TestEliminarCompra(TestCase):
 
     def setUp(self):
+        #El setup crea un usuario e inicia sesion para poder iniciar con los tests
         Group.objects.create(name="admin")
         user = User.objects.create_user(username='temporary', email='temporary@gmail.com', password='temporary', is_superuser='True')
         user.save()
+        #Se crea un cliente
         self.client.login(username='temporary', password='temporary')
+        #Se crea un proveedor
         proveedor = Proveedor.objects.create(
             nombre="TestLista",
             telefono=4151043944,
@@ -126,16 +139,20 @@ class TestEliminarCompra(TestCase):
             razon_social="Un tipazo",
             email="test@ejemplo.com"
         )
+        #Se crea una compra
         compra = Compra.objects.create(
             proveedor=proveedor,
             fecha_compra="2059-03-03 12:31:06-05"
         )
+        #Se guarda la compra
         compra.save()
 
     def test_borrar_compra(self):
         self.assertEqual(Compra.objects.count(), 1)
         objetos = Compra.objects.first()
+        #Se elimina mandando una peticion GET al url de eliminar compra
         self.client.get(reverse('compras:eliminar_compra', kwargs={'id_compra':objetos.id}))
+        #Se checa que se haya eliminado el objeto compra
         self.assertEqual(Compra.objects.filter(deleted_at__isnull=True).count(), 0)
 
 
