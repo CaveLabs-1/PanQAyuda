@@ -13,6 +13,7 @@
         <br>
         <br>
         <div class="row">
+          <!--producto-->
           <div class="input-field col m6">
             <select id="id_paquete" class="" name="nombre" required>
               <option value="0">Selecciona un Producto Terminado</option>
@@ -21,18 +22,18 @@
               {% endfor %}
             </select>
           </div>
+          <!--cantidad-->
           <div class="input-field col m3">
             <input type="number" step = "1" name="{{forma.cantidad.html_name}}" id={{forma.cantidad.id_for_label}} value="">
             <label for="{{forma.cantidad.id_for_label}}" data-error='Cantidad invalida'  data-success="Cantidad correcto">Cantidad</label>
           </div>
+          <!--fecha de caducidad-->
           <div class="input-field col m3">
             <input type="text" class="datepicker" name="fecha_cad">
             <label for="fecha_cad">Fecha de caducidad</label>
           </div>
           {%csrf_token%}
         </div>
-
-
 
         <div class="row">
           <div class="col s12 right-align btn-agregar-paquete">
@@ -49,10 +50,9 @@
 <script type="text/javascript">
   $('select').formSelect();
 
+  //inicializar input de fechas
   var elem = document.querySelector('.datepicker');
   var instance = M.Datepicker.init(elem);
-
-  // Or with jQuery
 
   $(document).ready(function(){
     $('.datepicker').datepicker({
