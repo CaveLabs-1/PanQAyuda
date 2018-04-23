@@ -36,6 +36,7 @@
   <script type="text/javascript">
 
     $(document).ready(function(){
+      //token CSRF para hacer peticiones POST
         var csrftoken = $.cookie('csrftoken');
         function csrfSafeMethod(method) {
         // these HTTP methods do not require CSRF protection
@@ -48,9 +49,10 @@
                 }
             }
         });
+        //materialize  habilitar campo de fecha
         var instance = M.Datepicker.init();
 
-
+        //establecer formato de fechas
         $('.datepicker').datepicker({
           format: 'yyyy-mm-dd',
           minDate: new Date(),
@@ -62,9 +64,12 @@
     $(document.body).on('click', '#agrega_select', function(e){
 
          if(document.getElementById('agrega_compra').checkValidity()) {
+             //evitar que se haga el POST luego luego
              e.preventDefault();
+             //url a la que haremos la petición POST
              var url = '{% url "compras:agregar_materia_prima_a_compra" %}';
 
+             //recuperar datos de la forma
              var id_material = $('#id_material').val();
              var fecha_cad = $('#id_fecha_cad').val();
              var cantidad  = $('#id_cantidad').val();
@@ -73,7 +78,7 @@
              var costo  = $('#id_costo').val();
              var id_compra = $('#id_compra').val();
 
-
+             //Petición POST
             $.post(url, {
               material: id_material,
               compra: id_compra,
@@ -87,16 +92,17 @@
               $('#formahtml').html(data);
               var instance = M.Datepicker.init();
 
-
+              //init input fecha
               $('.datepicker').datepicker({
                 format: 'yyyy-mm-dd',
                 minDate: new Date(),
               });
               $('select').formSelect();
+              //mensaje de éxito
               M.toast({html:'La receta se ha agregado al paquete.'});
            }).fail(function(data) {
-             //mensaje de error
-                M.toast({html:data.responseText});
+              //mensaje de error
+              M.toast({html:data.responseText});
             });
 
             return false;

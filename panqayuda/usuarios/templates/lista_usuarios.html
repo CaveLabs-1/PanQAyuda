@@ -11,7 +11,7 @@
   <div class="container">
     {{ forma.message.errors }}
     {{ forma.name_of_field.errors }}
-    <!-- Carga donde carga todo -->
+    <!-- Lista de los usuarios -->
       <table id="table_id">
           <thead>
             <tr>
@@ -27,7 +27,9 @@
             <tr>
                 <td>{{ usuario.first_name }} {{ usuario.last_name }}</td>
                 <td>{{ usuario.email }}</td>
+                <!-- Editar usuario -->
                 <td><a><i class="material-icons">edit</i></a></td>
+                <!-- Eliminar usuario -->
                 <td>
                   <a onclick="deleteRegister(this, event)" href="borrar_usuario/{{usuario.id}}">
                     <i class="material-icons">delete</i>

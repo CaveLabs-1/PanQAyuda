@@ -1,6 +1,7 @@
 <!--Esta forma se incluye en agregar_materias_primas_a_compra-->
 <form class="" action="." method="post" id="agrega_compra">
   <div class="row">
+    <!--Materia Prima-->
     <div class="input-field col m7">
       <select id="{{forma.material.id_for_label}}" name="{{forma.material.html_name}}" required>
         <option selected disabled value=''>Selecciona la materia prima</option>
@@ -10,16 +11,19 @@
       </select>
       <label for="{{forma.material.id_for_label}}">Materia Prima</label>
     </div>
+    <!--Fecha de caducidad-->
     <div class="input-field col m5">
       <input type="text" class="datepicker" name="{{forma.fecha_cad.html_name}}" id='{{forma.fecha_cad.id_for_label}}' required>
       <label for="{{forma.fecha_cad.id_for_label}}">Fecha de Caducidad</label>
     </div>
   </div>
   <div class="row">
+    <!--Cantidad-->
     <div class="input-field col m2">
       <input type="number"  id='{{forma.cantidad.id_for_label}}' class="validate" name="{{forma.cantidad.html_name}}" required>
       <label for="{{forma.cantidad.id_for_label}}">Cantidad</label>
     </div>
+    <!--Unidad-->
     <div class="input-field col m5">
       <select id="{{forma.unidad_entrada.id_for_label}}" class="" name="{{forma.unidad_entrada.html_name}}" required>
         <option selected disabled value=''>Selecciona la unidad</option>
@@ -29,14 +33,17 @@
       </select>
       <label for="{{forma.unidad_entrada.id_for_label}}">Unidades</label>
     </div>
+    <!--Equivalente en Porciones-->
     <div class="input-field col m3">
       <input type="number" id="{{forma.porciones.id_for_label}}" name="{{forma.porciones.html_name}}">
       <label for="{{forma.porciones.id_for_label}}">Porciones</label>
     </div>
+    <!--Costo de la compra-->
     <div class="input-field col m2">
       <input type="number" id="{{forma.costo.id_for_label}}" name="{{forma.costo.html_name}}">
       <label for="{{forma.costo.id_for_label}}">Costo</label>
     </div>
+    <!--Id de compra-->
     <div class="hidden">
       <input type="number"  id="{{forma.compra.id_for_label}}" name="{{forma.compra.html_name}}" required class="validate" value={{id_compra}}>
     </div>
