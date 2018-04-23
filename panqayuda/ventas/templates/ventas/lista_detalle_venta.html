@@ -1,22 +1,34 @@
-<h4>Detalle de la venta no. {{venta.id}} </h4>
-<h5>Fecha: {{venta.created_at}}    Cliente: {{venta.cliente}}    Monto: {{venta.monto}}</h5>
-<table>
+{% load mathfilters %}
+  <h3>Detalle de venta: {{ venta.id}}</h3>
+<div class="row">
+    <h5 class="col s6">
+    Fecha: {{ venta.created_at|date:"Y-m-d" }}
+    </h5>
+    <h5 class="col s6">
+      Cliente: {{ venta.cliente }}
+    </h5>
+</div>
+
+<table class="striped">
   <thead>
     <tr>
-      <th>Nombre</th>
-      <th>Fecha Cad</th>
-      <th>Cantidad</th>
-      <th>Editar</th>
+      <th> Nombre </th>
+      <th> Cantidad </th>
+      <th> Precio unitario</th>
+      <th> Subtotal </th>
     </tr>
   </thead>
   <tbody>
-    {% for ventapaquete in paquetes_de_venta %}
+    {% for venta_paquete in paquetes_de_venta %}
         <tr>
-          <td>{{ventapaquete.paquete.nombre}}</td>
-          <td>{{ventapaquete.paquete.fecha_cad}}</td>
-          <td>{{ventapaquete.cantidad}}</td>
-          <td><a href='' class="modal-trigger"><i class="material-icons">edit</i> </a></td>
+          <td>{{ venta_paquete.paquete.nombre }}</td>
+          <td>{{ venta_paquete.cantidad }}</td>
+          <td> $ {{ venta_paquete.precio_unitario|floatformat:2  }}</td>
+          <td> $ {{ venta_paquete.monto|floatformat:2  }} </td>
         </tr>
     {% endfor %}
     </tbody>
-  </table>
+</table>
+<hr>
+<h4 class="right-align"> Total: $ {{venta.monto_total|floatformat:2 }}</h4>
+
