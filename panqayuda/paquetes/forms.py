@@ -32,12 +32,15 @@ class FormPaquete(forms.ModelForm):
 class FormEditarPaquete (forms.ModelForm):
     class Meta:
         model = PaqueteInventario
-        fields = ('cantidad',)
+        fields = ('cantidad', 'fecha_cad')
 
         error_messages = {
             'cantidad': {
                 'required': "Debes seleccionar una cantidad mayor a 0.",
             },
+            'fecha_cad':{
+                'required': "Debes seleccionar una fecha",
+            }
         }
 
 class FormRecetasPorPaquete(forms.ModelForm):

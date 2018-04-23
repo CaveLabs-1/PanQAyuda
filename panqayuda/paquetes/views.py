@@ -150,7 +150,7 @@ def editar_paquete_inventario(request, id_paquete):
             messages.success(request, '¡Se ha editado el inventario de '+ paquete_inventario.nombre.nombre + ' exitosamente!')
             return redirect('paquetes:lista_paquete_inventario')
     else:
-        form = FormEditarPaquete()
+        form = FormEditarPaquete(instance=paquete_inventario)
     return render(request, 'paquetes/editar_paquete_inventario.html', {'form': form, 'paquete_inventario': paquete_inventario})
 
 
