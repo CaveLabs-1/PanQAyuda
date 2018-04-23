@@ -25,13 +25,41 @@
               <br>
               {% csrf_token %}
               <div class="row">
-                <div class="input-field col m4">
+                <div class="input-field col m6">
                   <input class = "validate"  type="text" name="{{form.nombre.html_name}}" id="{{form.nombre.id_for_label}}" value="{{material.nombre}}" required>
                   <label for="{{form.nombre.id_for_label}}" data-error='Nombre inválido'  data-success="Nombre correcto">Nombre</label>
                 </div>
-                <div class="input-field col m4">
+                <div class="input-field col m6">
                   <input class="validate "type="text" step = "0.50" name="{{form.codigo.html_name}}" id={{form.codigo.id_for_label}} value="{{material.codigo}}" min="0" required>
                   <label for="{{form.codigo.id_for_label}}" data-error='Código inválido'  data-success="Código correcto">Código</label>
+                </div>
+                <div class="input-field col s6 m3">
+                  <input type="text" class="validate" name="{{ forma.equivale_entrada.html_name }}" id="{{ forma.equivale_entrada.id_for_label }}" value="{{material.equivale_entrada}}" required>
+                  <label for="{{ forma.equivale_entrada.id_for_label }}" data-error='No es un valor valido.' data-success=''>Valor de entrada</label>
+                  <span class="red-text">{%if forma.equivale_entrada.errors %}{{ forma.equivale_entrada.errors }}{% endif %}</span>
+                </div>
+                <div class="input-field col s6 m3">
+                  <select id="{{forma.unidad_entrada.id_for_label}}" class="" name="{{forma.unidad_entrada.html_name}}" required>
+                    <option selected disabled value='{{material.unidad_entrada.id}}'>{{material.unidad_entrada}}</option>
+                    {% for unidad in unidades %}
+                    <option value="{{unidad.id}}">{{unidad.nombre}}</option>
+                    {% endfor %}
+                  </select>
+                  <label for="{{forma.unidad_entrada.id_for_label}}">Unidad de entrada</label>
+                </div>
+                <div class="input-field col s6 m3">
+                  <input type="text" class="validate" name="{{ forma.equivale_maestra.html_name }}" id="{{ forma.equivale_maestra.id_for_label }}" value="{{material.equivale_maestra}}" required>
+                  <label for="{{ forma.equivale_maestra.id_for_label }}" data-error='No es un valor valido.' data-success=''>Equivalencia</label>
+                  <span class="red-text">{%if forma.equivale_maestra.errors %}{{ forma.equivale_maestra.errors }}{% endif %}</span>
+                </div>
+                <div class="input-field col s6 m3">
+                  <select id="{{forma.unidad_maestra.id_for_label}}" class="" name="{{forma.unidad_maestra.html_name}}" required>
+                    <option selected disabled value='{{material.unidad_maestra.id}}'>{{material.unidad_maestra}}</option>
+                    {% for unidad in unidades %}
+                    <option value="{{unidad.id}}">{{unidad.nombre}}</option>
+                    {% endfor %}
+                  </select>
+                  <label for="{{forma.unidad_maestra.id_for_label}}">Unidad maestra</label>
                 </div>
               </div>
               <div class="row">

@@ -259,7 +259,7 @@ class TestListaMateriaPrima(TestCase):
             compra=compra,
             unidad_entrada=unidad,
             cantidad=1,
-            cantidad_disponible=12,
+            porciones_disponible=12,
             costo=120,
             fecha_cad="2059-03-03 12:31:06-05",
             estatus=0)
@@ -295,7 +295,7 @@ class TestListaMateriaPrima(TestCase):
             compra=compra,
             unidad_entrada=unidad,
             cantidad=1,
-            cantidad_disponible=12,
+            porciones_disponible=12,
             costo=120,
             fecha_cad="2049-03-03 12:31:06-05")
 

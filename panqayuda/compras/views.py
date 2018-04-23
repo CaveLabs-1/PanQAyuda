@@ -17,25 +17,8 @@ import datetime
 """
 @group_required('admin')
 def compras(request):
-    #si es post
-    if request.method == 'POST':
-        forma_post = CompraForm(request.POST)
-        #revisar que la forma sea válida
-        if forma_post.is_valid():
-            forma_post.save()
-            #mensaje de éxito
-            messages.success(request, 'Se ha agregado una nueva compra.')
-        else:
-            #mensaje de error
-            messages.error(request, 'Hubo un error, inténtalo de nuevo.')
-
-        return HttpResponseRedirect(reverse('compras:compras'))
-    #sino es post
-    else:
-        forma = CompraForm()
-        #recuperar compras activas
-        compras =  Compra.objects.filter(deleted_at__isnull=True)
-        return render (request, 'compras/compras.html', {'forma': forma, 'compras': compras})
+    compras =  Compra.objects.filter(deleted_at__isnull=True)
+    return render (request, 'compras/compras.html', {'compras': compras})
 
 
 """ --------------------------------------------------
@@ -105,29 +88,29 @@ def agregar_materias_primas_a_compra(request, id_compra):
 """
     Función agrega materias primas a una compra
 """
-
+@group_required('admin')
 def agregar_materia_prima_a_compra(request):
     if request.method == 'POST':
         forma = MaterialInventarioForm(request.POST)
         if forma.is_valid():
             #Recuperar datos de AJAX
             id_material = int(request.POST.get('material'))
+            materia_prima = get_object_or_404(Material, id=id_material)
             fecha_cad= request.POST.get('fecha_cad')
             cantidad = int(request.POST.get('cantidad'))
-            id_unidad = int(request.POST.get('unidad_entrada'))
-            porciones = int(request.POST.get('porciones'))
+            id_unidad = materia_prima.unidad_entrada.id
+            porciones = cantidad * materia_prima.equivale_maestra / materia_prima.equivale_entrada
             costo = int(request.POST.get('costo'))
             costo_unitario = int(request.POST.get('costo'))/int(request.POST.get('cantidad'))
             id_compra =  request.POST.get('compra')
 
-            materia_prima = get_object_or_404(Material, id=id_material)
             compra = get_object_or_404(Compra, id=id_compra)
             unidad = get_object_or_404(Unidad, id=id_unidad)
 
             #Dar de alta material inventario
             MaterialInventario.objects.create(material=materia_prima, fecha_cad=fecha_cad, cantidad=cantidad,
-             cantidad_disponible=cantidad, unidad_entrada=unidad, porciones=porciones,
-             costo=costo, costo_unitario=costo_unitario, compra=compra )
+             porciones_disponible=cantidad, unidad_entrada=unidad, porciones=porciones,
+             costo=costo, compra=compra )
 
             #generar forma html
             forma = MaterialInventarioForm()
@@ -165,5 +148,5 @@ def eliminar_compra(request, id_compra):
     compra.deleted_at = datetime.datetime.now()
     compra.save()
     messages.success(request, '¡Se ha borrado exitosamente la compra!')
-    #Se regresa a la lista de compras 
+    #Se regresa a la lista de compras
     return redirect('compras:compras')

@@ -13,19 +13,24 @@ import datetime
 """
 @group_required('admin')
 def materiales(request):
+    # En caso de que exista una petición de tipo POST valida la forma y guarda el material.
     if request.method == 'POST':
         forma_post = MaterialForm(request.POST)
         if forma_post.is_valid():
             forma_post.save()
             messages.success(request, 'Se ha agregado un nuevo material.')
         else:
+            # Si no es válida la forma devuelve un mensaje de error.
             messages.error(request, 'Hubo un error, inténtalo de nuevo.')
-
         return HttpResponseRedirect(reverse('materiales:materiales'))
     else:
+        # Genera una nueva forma.
         forma = MaterialForm()
+        # Lista de materiales.
         materiales =  Material.objects.filter(deleted_at__isnull=True, status=1)
-        return render (request, 'materiales/materiales.html', {'forma': forma, 'materiales': materiales})
+        # Lista de unidades para los selects.
+        unidades = Unidad.objects.filter(deleted_at__isnull=True)
+        return render (request, 'materiales/materiales.html', {'forma': forma, 'materiales': materiales, 'unidades': unidades})
 
 """
     Enlista las unidades existentes
@@ -158,14 +163,16 @@ def materiales_por_catalogo(request):
 """
 @group_required('admin')
 def editar_material(request, id_material):
+    # Obtener el material a editar.
     material = get_object_or_404(Material, pk=id_material)
     if request.method == "POST":
+        # Si el metodo es POST validar la forma y guardar los cambios.
         form = MaterialForm(request.POST or None, instance=material)
         if form.is_valid():
             material = form.save()
             material.save
-            messages.success(request, 'Se ha editado la material exitosamente!')
+            messages.success(request, 'Se ha editado el material exitosamente!')
             return redirect('materiales:materiales')
-    else:
-        form = MaterialForm()
-    return render(request, 'materiales/editar_material.html', {'form': form, 'material': material})
+    form = MaterialForm()
+    unidades = Unidad.objects.filter(deleted_at__isnull=True)
+    return render(request, 'materiales/editar_material.html', {'form': form, 'material': material, 'unidades': unidades})
