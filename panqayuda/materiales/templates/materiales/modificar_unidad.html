@@ -25,6 +25,7 @@
               <br>
               {% csrf_token %}
               <div class="row">
+                <!-- Campo de nombre único para unidades -->
                 <div class="input-field col s12">
                   <input class = "validate"  type="text" name="{{form.nombre.html_name}}" id="{{form.nombre.id_for_label}}" value="{{unidad.nombre}}" required>
                   <label for="{{form.nombre.id_for_label}}" data-error='Nombre inválido'  data-success="Nombre correcto">Nombre</label>
@@ -36,6 +37,7 @@
                     <i class="material-icons left">chevron_left</i>
                   </a>
                 </div>
+                <!-- Boton de submit -->
                 <div class="col s6 right-align">
                     <button type="submit" class="save btn right-align pink">Editar <i class="material-icons right">send</i></button>
                 </div>

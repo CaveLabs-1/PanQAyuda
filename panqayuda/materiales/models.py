@@ -30,7 +30,7 @@ class Material(models.Model):
     def __str__(self):
         return self.nombre
 
-#Modelo
+#Modelo con campo unico de nombre
 class Unidad(models.Model):
     nombre = models.CharField(max_length=50, null=True, blank=False)
     created_at = models.DateTimeField(default=timezone.now)

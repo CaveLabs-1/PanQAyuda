@@ -23,6 +23,7 @@ class MaterialForm(ModelForm):
                         return nombre
             raise ValidationError("Este material ya existe")
 
+#Forma con el campo único de nombre para unidades
 class UnidadForm(ModelForm):
     class Meta:
         model = Unidad
