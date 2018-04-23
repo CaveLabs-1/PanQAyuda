@@ -7,4 +7,4 @@ class CompraForm(ModelForm):
     class Meta:
         model = Compra
 
-        fields = ('proveedor',)
+        fields = ('proveedor', 'fecha_compra')

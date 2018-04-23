@@ -6,7 +6,6 @@ from proveedores.models import Proveedor
 from .models import Compra
 from materiales.models import Material, MaterialInventario, Unidad
 from materiales.forms import MaterialInventarioForm
-
 from django.contrib import messages
 from django.http import HttpResponseRedirect, HttpResponse, HttpResponseNotFound
 from django.db.models import Sum
@@ -15,20 +14,10 @@ import datetime
 
 @group_required('admin')
 def compras(request):
-    if request.method == 'POST':
-        forma_post = CompraForm(request.POST)
-        if forma_post.is_valid():
-            forma_post.save()
-            messages.success(request, 'Se ha agregado una nueva compra.')
-        else:
-            messages.error(request, 'Hubo un error, inténtalo de nuevo.')
+    compras =  Compra.objects.filter(deleted_at__isnull=True)
+    return render (request, 'compras/compras.html', {'compras': 'compras'})
 
-        return HttpResponseRedirect(reverse('compras:compras'))
-    else:
-        forma = CompraForm()
-        compras =  Compra.objects.filter(deleted_at__isnull=True)
-        return render (request, 'compras/compras.html', {'forma': forma, 'compras': compras})
-
+@group_required('admin')
 def lista_detalle_compra(request):
     if request.method == 'POST':
         id_compra = request.POST.get('id_compra')
@@ -83,22 +72,22 @@ def agregar_materias_primas_a_compra(request, id_compra):
 """
     Función agrega materias primas a una compra
 """
-
+@group_required('admin')
 def agregar_materia_prima_a_compra(request):
     if request.method == 'POST':
         forma = MaterialInventarioForm(request.POST)
         if forma.is_valid():
             #Recuperar datos de AJAX
             id_material = int(request.POST.get('material'))
+            materia_prima = get_object_or_404(Material, id=id_material)
             fecha_cad= request.POST.get('fecha_cad')
             cantidad = int(request.POST.get('cantidad'))
-            id_unidad = int(request.POST.get('unidad_entrada'))
-            porciones = int(request.POST.get('porciones'))
+            id_unidad = materia_prima.unidad_entrada.id
+            porciones = cantidad * materia_prima.equivale_maestra / materia_prima.equivale_entrada
             costo = int(request.POST.get('costo'))
             costo_unitario = int(request.POST.get('costo'))/int(request.POST.get('cantidad'))
             id_compra =  request.POST.get('compra')
 
-            materia_prima = get_object_or_404(Material, id=id_material)
             compra = get_object_or_404(Compra, id=id_compra)
             unidad = get_object_or_404(Unidad, id=id_unidad)
 

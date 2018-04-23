@@ -68,8 +68,6 @@
              var id_material = $('#id_material').val();
              var fecha_cad = $('#id_fecha_cad').val();
              var cantidad  = $('#id_cantidad').val();
-             var unidad_entrada  = $('#id_unidad_entrada').val();
-             var porciones = $('#id_porciones').val();
              var costo  = $('#id_costo').val();
              var id_compra = $('#id_compra').val();
 
@@ -77,9 +75,7 @@
             $.post(url, {
               material: id_material,
               compra: id_compra,
-              unidad_entrada: unidad_entrada,
               cantidad: cantidad,
-              porciones: porciones,
               costo: costo,
               fecha_cad:fecha_cad
             }).done(function(data){

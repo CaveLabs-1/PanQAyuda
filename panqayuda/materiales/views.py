@@ -137,9 +137,8 @@ def editar_material(request, id_material):
         if form.is_valid():
             material = form.save()
             material.save
-            messages.success(request, 'Se ha editado la material exitosamente!')
+            messages.success(request, 'Se ha editado el material exitosamente!')
             return redirect('materiales:materiales')
-    else:
-        form = MaterialForm()
-        unidades = Unidad.objects.filter(deleted_at__isnull=True)
+    form = MaterialForm()
+    unidades = Unidad.objects.filter(deleted_at__isnull=True)
     return render(request, 'materiales/editar_material.html', {'form': form, 'material': material, 'unidades': unidades})

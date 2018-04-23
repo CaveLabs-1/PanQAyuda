@@ -48,7 +48,7 @@ class UnidadForm(ModelForm):
 class MaterialInventarioForm(ModelForm):
     class Meta:
         model = MaterialInventario
-        fields = ('material', 'compra', 'cantidad', 'porciones', 'costo', 'fecha_cad')
+        fields = ('material', 'compra', 'cantidad', 'costo', 'fecha_cad')
 
     def clean_cantidad(self):
         cantidad=self.cleaned_data['cantidad']
