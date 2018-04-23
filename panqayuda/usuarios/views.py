@@ -5,6 +5,7 @@ from panqayuda.decorators import group_required
 from django.template.loader import render_to_string
 from django.contrib.auth.models import User
 from .forms import FormUser
+from django.utils import timezone
 
 """
     Función que enlista todos los usuarios guardadas dentro de la base de datos y guarda nuevos usuarios.
@@ -45,9 +46,15 @@ def lista_usuarios(request):
 """
 @group_required('admin')
 def borrar_usuario(request, id_usuario):
-    usuario = get_object_or_404(User, pk=id_usuario)
-    #soft delete django
-    usuario.is_active = 0
-    usuario.save()
-    messages.success(request, '¡Se ha eliminado al usuario!')
-    return redirect('usuarios:lista_usuarios')
+    if request.method == 'POST':
+        usuario = get_object_or_404(User, pk=id_usuario)
+        #soft delete django
+        usuario_nombre = usuario.username
+        usuario.username = usuario_nombre + "deleted" + str(timezone.now)
+        usuario.is_active = 0
+        usuario.is_superuser=False
+        usuario.save()
+        messages.success(request, '¡Se ha eliminado al usuario!')
+        return HttpResponse('usuarios:lista_usuarios')
+    else:
+        return redirect('usuarios:lista_usuarios')
