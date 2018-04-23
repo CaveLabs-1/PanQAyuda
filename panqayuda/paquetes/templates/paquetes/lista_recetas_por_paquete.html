@@ -5,12 +5,16 @@
         <tr>
           <th>Nombre</th>
           <th>Cantidad</th>
+          <th> </th>
         </tr>
         <tbody>
           {% for receta in recetas_por_paquete %}
             <tr>
               <td>{{receta.receta.nombre}}</td>
               <td>{{receta.cantidad}}</td>
+              <td>
+                <a class="eliminar" id="{{ receta.id }}" href="#"><i class="material-icons pink-text">cancel</i> </a>
+              </td>
             </tr>
           {% endfor %}
         </tbody>

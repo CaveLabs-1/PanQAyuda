@@ -8,9 +8,9 @@ from django.db.models import Sum
 from panqayuda.decorators import group_required
 import datetime
 
-
-# Create your views here.
-
+"""
+    En caso de ser GET regresa una lista de materiales y la forma para agregar un material
+"""
 @group_required('admin')
 def materiales(request):
     if request.method == 'POST':
@@ -27,6 +27,9 @@ def materiales(request):
         materiales =  Material.objects.filter(deleted_at__isnull=True, status=1)
         return render (request, 'materiales/materiales.html', {'forma': forma, 'materiales': materiales})
 
+"""
+    Enlista las unidades existentes
+"""
 @group_required('admin')
 def lista_unidades(request):
     if request.method == 'POST':
@@ -44,8 +47,9 @@ def lista_unidades(request):
         return render (request, 'materiales/lista_unidades.html', {'forma': forma, 'unidades': unidades})
 
 
-
-#Funcionalidad de eliminar unidad
+"""
+    Recibe una unidad y cambia su estatus a 0
+"""
 @group_required('admin')
 def eliminar_unidad(request, id_unidad):
     #Recuperar Unidad
@@ -57,6 +61,7 @@ def eliminar_unidad(request, id_unidad):
     messages.success(request, '¡Se ha borrado exitosamente la unidad del catálogo!')
     #Regresar a listado de materiales
     return redirect('materiales:lista_unidades')
+
 
 
 #Función para borrar una materia prima del catálogo
@@ -93,6 +98,10 @@ def agregar_unidades(request):
         messages.success(request, '¡Hubo un error con el POST!')
         return redirect('/materiales/lista_unidades')
 
+"""
+    Recibe una unidad y cambia los datos a los que fueron recibidos
+"""
+@group_required('admin')
 def modificar_unidad(request, id_unidad):
     unidad = get_object_or_404(Unidad, pk=id_unidad)
     if request.method == "POST":
@@ -109,7 +118,10 @@ def modificar_unidad(request, id_unidad):
         form = UnidadForm()
     return render(request, 'materiales/modificar_unidad.html', {'form': form, 'unidad': unidad})
 
-
+"""
+    Enlista los materiales inevnatrio que existen dentro de los materiales
+"""
+@group_required('admin')
 def lista_materiales_inventario(request):
     materiales=MaterialInventario.objects.filter(deleted_at__isnull=True).filter(estatus=1)
     catalogo_materiales=Material.objects.filter(deleted_at__isnull=True).filter(status=1)
@@ -120,6 +132,10 @@ def lista_materiales_inventario(request):
 
     return render(request, 'materiales/lista_materiales_inventario.html', {'materiales':materiales, 'catalogo_materiales':catalogo_materiales})
 
+"""
+    Detalla el material inventario
+"""
+@group_required('admin')
 def materiales_por_catalogo(request):
     if request.method == 'POST':
         id_material = request.POST.get('id_material')
@@ -130,6 +146,10 @@ def materiales_por_catalogo(request):
         return HttpResponse(response)
     return HttpResponse('Algo ha salido mal.')
 
+"""
+    Recibe un material y cambia los datos a los que fueron recibidos
+"""
+@group_required('admin')
 def editar_material(request, id_material):
     material = get_object_or_404(Material, pk=id_material)
     if request.method == "POST":

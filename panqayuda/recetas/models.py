@@ -45,8 +45,12 @@ class Receta(models.Model):
         return RecetaInventario.objects.annotate(disponibles=Sum(F('cantidad')-F('ocupados')))\
             .filter(nombre_id=self, deleted_at__isnull=True, disponibles__gt=0)
 
+    def obtener_recetas_inventario_con_caducados(self):
+        return RecetaInventario.objects.annotate(disponibles=Sum(F('cantidad') - F('ocupados'))) \
+            .filter(nombre_id=self, deleted_at__isnull=True, disponibles__gt=0).order_by('fecha_cad')
 
 class RelacionRecetaMaterial(models.Model):
+    #Relacion a la llave del Modelo de Receta
     receta = models.ForeignKey('Receta', on_delete = models.CASCADE)
     material = models.ForeignKey('materiales.Material',  on_delete = models.CASCADE)
     cantidad = models.DecimalField(null=True, blank=False,max_digits=10, decimal_places=5,
@@ -56,17 +60,19 @@ class RelacionRecetaMaterial(models.Model):
         return self.receta.nombre
 
 class RecetaInventario(models.Model):
+    #Llave al modelo receta
     nombre = models.ForeignKey('Receta', on_delete = models.CASCADE)
     cantidad = models.IntegerField(null=True, blank=False, validators=[MinValueValidator(1, "Debes seleccionar un número entero mator a 0.")])
     ocupados = models.IntegerField(default=0, blank=True, null=False)
     fecha_cad = models.DateTimeField(blank = True, null = True)
     estatus = models.IntegerField(default=1)
+    costo = models.FloatField(blank=True, null="True")
     created_at = models.DateTimeField(default=timezone.now)
     updated_at = models.DateTimeField(default=timezone.now)
     deleted_at = models.DateTimeField(blank = True, null = True)
 
     def __str__(self):
-        return self.nombre.nombre
+        return self.nombre.nombre + " " + self.fecha_cad.strftime("%d/%m/%Y")
 
     def obtener_cantidad_inventario(receta):
             return RecetaInventario.objects.filter(nombre=receta).filter(deleted_at__isnull=True).\
@@ -84,3 +90,6 @@ class RecetaInventario(models.Model):
             return True
         else:
             return False
+
+    def disponibles(self):
+        return self.cantidad - self.ocupados

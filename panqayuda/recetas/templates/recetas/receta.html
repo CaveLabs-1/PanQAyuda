@@ -15,7 +15,7 @@
                 <span class="card-title">
                     <div class="row">
                         <div class="col s6">
-                          <a href="/recetas">
+                          <a href="{% url 'recetas:lista_de_recetas' %}">
                             <button class="btn waves-effect waves-light pink" type="submit" name="action">Regresar
                               <i class="material-icons left">chevron_left</i>
                             </button>
@@ -25,20 +25,20 @@
                             <a class='dropdown-trigger btn pink' href='#' data-target='dropdown1'>Opciones<i class="material-icons">expand_more</i></a>
                             <ul id='dropdown1' class='dropdown-content'>
                             <li>
-                                <a href="editar_receta/{{ receta.id }}">
+                                <a href="{% url 'recetas:editar_receta' receta.id %}">
                                     <i class="material-icons">edit</i>
                                     Editar Receta
                                 </a>
                             </li>
                             <li class="divider" tabindex="-1"></li>
                             <li>
-                              <a href="agregar_materiales/{{ receta.id }}"><i class="material-icons">edit</i>
+                              <a href="{% url 'recetas:agregar_materiales' receta.id %}"><i class="material-icons">edit</i>
                                 Editar Materiales
                               </a>
                             </li>
                             <li class="divider" tabindex="-1"></li>
                             <li >
-                              <a onclick="deleteRegister(this, event)" class="red-text" href="borrar_receta/{{receta.id}}">
+                              <a onclick="deleteRegister(this, event)" class="red-text" href="{% url 'recetas:borrar_receta' receta.id %}">
                                 <i class="material-icons">delete</i>Borrar Receta
                               </a>
                             </li>
@@ -52,7 +52,7 @@
                             <h5>Cantidad que produce: {{ receta.cantidad }}</h5>
                         </div>
                         <div class="col s6 center-align">
-                            <h5>Duración del producto: {{ receta.duration }}</h5>
+                            <h5>Duración del producto: {{ receta.duration.days }} días </h5>
                         </div>
                         <div class="col s6 center-align">
 

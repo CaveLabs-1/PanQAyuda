@@ -1,0 +1,128 @@
+{% extends "base.html" %}
+{% block title %}Usuarios{% endblock title %}
+{% block navbar %}{% include "navbar.html" %}{% endblock navbar %}
+{% block header %}
+  <header class="banner-prueba">
+    {# buscar clase banner-prueba en main.css #}
+    <h1 class="center-align">Usuarios</h1>
+  </header>
+{% endblock header %}
+{% block content %}
+  <div class="container">
+    {{ forma.message.errors }}
+    {{ forma.name_of_field.errors }}
+    <!-- Lista de los usuarios -->
+      <table id="table_id">
+          <thead>
+            <tr>
+              <th>Nombre</th>
+              <th>Email</th>
+              <th>Editar</th>
+              <th>Eliminar</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for usuario in usuarios %}
+            <input class="hidden disabled usuarios" value='{{ usuario.username }}'>
+            <tr>
+                <td>{{ usuario.first_name }} {{ usuario.last_name }}</td>
+                <td>{{ usuario.email }}</td>
+                <!-- Editar usuario -->
+                <td><a><i class="material-icons">edit</i></a></td>
+                <!-- Eliminar usuario -->
+                <td>
+                  <a onclick="deleteRegister(this, event)" href="borrar_usuario/{{usuario.id}}">
+                    <i class="material-icons">delete</i>
+                  </a>
+                </td>
+            </tr>
+            {% endfor %}
+          </tbody>
+      </table>
+      <br>
+      <div class="row">
+        <div class="right-align">
+          <a href="#agregar_usuario" class="btn-floating btn-large waves-effect waves-light pink modal-trigger"><i class="material-icons">add</i></a>
+        </div>
+      </div>
+  </div>
+
+  {% include 'modal_agregar_usuario.html' %}
+
+{% endblock content %}
+{% block js %}
+  <script type="text/javascript">
+    $(document).ready(function(){
+      //materialize
+      $('.collapsible').collapsible();
+    });
+
+    //validación de que las contraseñas conciden
+    var password = document.getElementById("id_password");
+    var confirm_password = document.getElementById("confirm_password");
+
+    function validatePassword(){
+      if(password.value != confirm_password.value) {
+        confirm_password.setCustomValidity("Las contraseñas no conciden");
+      } else {
+        confirm_password.setCustomValidity('');
+      }
+    }
+
+    //correr la función cada que haya un cambio en password y en confirm_password
+    password.onchange = validatePassword;
+    confirm_password.onkeyup = validatePassword;
+
+    //validación para que no haya un usuario con ese username
+    //obtener todos los usuarios de la DB desde el html
+    var usernames = document.getElementsByClassName("usuarios");
+    //obtener el elemento de html que contiene el nombre del nuevo usuairo
+    var username = document.getElementById("id_username");
+
+    function validateUsername(){
+      //actualizar el nombre del usuario
+      username = document.getElementById("id_username");
+      //default de username validation
+      var username_validation = "";
+      var i;
+
+      for(i=0; i<usernames.length; i++){
+        if(usernames[i].value==username.value){
+          //si si existe un usuario con ese nombre cambiamos el defaul de username_validation
+          //sino, se queda el default
+          username_validation='Ya existe un usuario con ese nombre';
+        }
+      }
+
+      //asignamos el username_validation para que muestre o no error
+      username.setCustomValidity(username_validation);
+    }
+
+    //correr esta funcion cada que haya un cambio en el username del nuevo usuario
+    username.onchange = validateUsername;
+    username.onkeyup = validateUsername;
+
+    //muestra mensaje antes de eliminar un usuario
+    function deleteRegister(element, event) {
+      event.preventDefault();
+      $.confirm({
+        title: '¿Deseas Continuar?',
+        content: 'El usuario se eliminará permanentemente.',
+        type: 'red',
+        closeIcon: true,
+        columnClass: 'col l6 offset-l3 s12',
+        typeAnimated: true,
+        buttons: {
+          continuar: {
+            text: 'Eliminar',
+            btnClass: 'btn-red',
+            action: function () { //si da aceptar redirije a la view para eliminar el usuario
+              window.location.href = $(element).attr("href");
+            }
+          }
+       }
+     });
+    }
+
+  </script>
+{% endblock js %}

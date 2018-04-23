@@ -8,6 +8,7 @@ from django.contrib.auth.models import User, Group
 class TestEditarCliente(TestCase):
 
     def setUp(self):
+        #El setup crea un usuario e inicia sesion para poder iniciar con los tests
         Group.objects.create(name="admin")
         user = User.objects.create_user(username='temporary', email='temporary@gmail.com', password='temporary', is_superuser='True')
         user.save()
@@ -49,6 +50,7 @@ class TestEditarCliente(TestCase):
 class TestAgrergarCliente(TestCase):
     # 39.1 se muestra la lista de clientes.
     def setUp(self):
+        #El setup crea un usuario e inicia sesion para poder iniciar con los tests
         Group.objects.create(name="admin")
         user = User.objects.create_user(username='temporary', email='temporary@gmail.com', password='temporary', is_superuser='True')
         user.save()
@@ -91,6 +93,7 @@ class TestAgrergarCliente(TestCase):
 class TestEliminarCliente(TestCase):
     #Generacion de lo necesario para el ambiente de pruebas de eliminar un cliente
     def setUp(self):
+        #El setup crea un usuario e inicia sesion para poder iniciar con los tests
         Group.objects.create(name="admin")
         user = User.objects.create_user(username='temporary', email='temporary@gmail.com', password='temporary', is_superuser='True')
         user.save()

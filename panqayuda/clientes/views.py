@@ -32,6 +32,9 @@ def clientes(request):
         # Se muestra la lista de clientes con una forma disponible para dar de alta uno nuevo.
         return render (request, 'clientes/clientes.html', {'forma': forma, 'clientes': clientes})
 
+"""
+    Recibe el cliente con la información modificada y la asigna al cliente recibido
+"""
 @group_required('admin')
 def editar_cliente(request, id_cliente):
     cliente = get_object_or_404(Cliente, pk=id_cliente)
@@ -48,7 +51,7 @@ def editar_cliente(request, id_cliente):
 
 
 #Agregar un cliente desde la vista de ventas y regresar el cliente
-@group_required('admin')
+
 def agregar_cliente_venta(request):
     if request.method == 'POST':
         forma_post = FormCliente(request.POST)

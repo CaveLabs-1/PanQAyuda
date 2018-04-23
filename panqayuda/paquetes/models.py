@@ -25,11 +25,22 @@ class Paquete (models.Model):
 			filter(fecha_cad__gte=datetime.datetime.now()).annotate(disponible=Sum(F('cantidad')- F('ocupados'))).\
 			aggregate(cantidad_disponible=Sum('disponible'))['cantidad_disponible'] or 0
 
+	#Devuelve el número de paquetes incluyendo las mermas
+	def obtener_inventario_fisico(self):
+		return PaqueteInventario.objects.filter(nombre=self).filter(deleted_at__isnull=True).\
+				   annotate(disponible=Sum(F('cantidad') - F('ocupados'))).\
+				   aggregate(cantidad_disponible=Sum('disponible'))['cantidad_disponible'] or 0
+
 	#Devuelve la lista de paquetes_inventario que tienen paquetes disponibles
 	def obtener_paquetes_inventario_disponibles(self):
 		return PaqueteInventario.objects.filter(nombre=self).filter(deleted_at__isnull=True). \
 			filter(fecha_cad__gte=datetime.datetime.now()).annotate(disponible=Sum(F('cantidad') - F('ocupados'))). \
 			filter(disponible__gt=0).order_by('fecha_cad')
+
+	#Devuelve los paquetes en inventario incluyendo a los que ya pasó su fecha de caducidad
+	def obtener_paquetes_inventario_con_caducados(self):
+		return PaqueteInventario.objects.filter(nombre=self).filter(deleted_at__isnull=True). \
+			annotate(disponible=Sum(F('cantidad') - F('ocupados'))).filter(disponible__gte=0).order_by('fecha_cad')
 
 class RecetasPorPaquete (models.Model):
 	paquete=models.ForeignKey(Paquete, on_delete=models.CASCADE)
@@ -50,6 +61,7 @@ class PaqueteInventario (models.Model):
 	cantidad= models.IntegerField(validators=[MinValueValidator(1, "Debes seleccionar un número entero mayor a 0.")])
 	ocupados = models.IntegerField(default=0, blank=True, null=False)
 	fecha_cad = models.DateTimeField(blank = True, null = True)
+	costo = models.FloatField(blank=True, null="True")
 	estatus = models.IntegerField(default=1)
 	created_at = models.DateTimeField(default=timezone.now)
 	updated_at = models.DateTimeField(default=timezone.now)
@@ -57,8 +69,11 @@ class PaqueteInventario (models.Model):
 
 	#Regresa el nombre del paquete en inventario
 	def __str__(self):
-		return self.nombre.nombre
+		return self.nombre.nombre + " " + self.fecha_cad.strftime("%d/%m/%Y")
 
 	#Devuelve la resta entre la cantidad y los ocupados
 	def disponibles(self):
 		return self.cantidad - self.ocupados
+
+	def multiplicar_costo_cantidad(self):
+		return self.cantidad * self.costo

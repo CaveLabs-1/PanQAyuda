@@ -6,6 +6,7 @@ from .forms import RecetaForm, MaterialRecetaForm
 from django.http import HttpResponse, HttpResponseRedirect
 from panqayuda.decorators import group_required
 import datetime
+from django.utils import timezone
 from django.db.models import Sum
 from django.template.loader import render_to_string
 
@@ -38,6 +39,8 @@ def agregar_receta(request):
     if request.method == "POST":
         form = RecetaForm(request.POST)
         if form.is_valid():
+            #Cambiar el campo de días a un timedelta para poder guardarlo en la base de datos
+            form.instance.duration = timezone.timedelta(days=form.cleaned_data.get('duracion_en_dias'))
             receta = form.save()
             receta.save()
             messages.success(request, 'Se ha agregado la receta al catálogo!')
@@ -68,7 +71,6 @@ def detallar_receta(request, id_receta):
     0 significa que la receta fue borrada
 """
 
-@group_required('admin')
 def borrar_receta(request, id_receta):
     receta = get_object_or_404(Receta, pk=id_receta)
     receta.status = 0
@@ -92,15 +94,17 @@ def editar_receta(request, id_receta):
     if request.method == "POST":
         form = RecetaForm(request.POST or None, instance=receta)
         if form.is_valid():
+            duracion_en_dias = form.cleaned_data.get('duracion_en_dias')
+            form.instance.duration = timezone.timedelta(days=duracion_en_dias)
             receta = form.save()
-            receta.save
+            receta.save()
             messages.success(request, 'Se ha editado la receta exitosamente!')
             materiales = list(RelacionRecetaMaterial.objects.filter(receta=receta, status=1))
             return render(request, 'recetas/receta.html', {'receta': receta, 'materiales': materiales})
         else:
             messages.error(request,'No se pudo editar la receta. Asegúrate que seleccionaste un nombre, una duración y que el nombre no exista.')
     else:
-        form = RecetaForm()
+        form = RecetaForm(initial={'duracion_en_dias': receta.duration.days})
     return render(request, 'recetas/editar_receta.html', {'form': form, 'receta': receta})
 
 
@@ -136,7 +140,6 @@ def agregar_materiales(request, id_receta):
     0 significa que fue borrado
 """
 
-@group_required('admin')
 def borrar_material(request, id_material):
     material = get_object_or_404(RelacionRecetaMaterial, pk=id_material)
     # id_receta = material.receta.id

@@ -11,6 +11,7 @@
 <div class="row">
   <div class="col s12">
     <ul class="tabs">
+      <!--Menú-->
       <li class="tab col s6"><a class="active white-text" href="/materiales">Catálogo Inventario</a></li>
       <li class="tab col s6"><a class="pink-text" href="/materiales/lista_materiales">Catálogo Materia Prima</a></li>
     </ul>
@@ -18,6 +19,7 @@
 </div>
   <div class="container">
     <!-- Contenedor donde carga todo -->
+    <!--Lista materia inventario-->
     <table id="table_id">
         <thead>
           <tr>
@@ -32,6 +34,7 @@
             <tr>
                 <td>{{ material.nombre }}</td>
                 <td>{{ material.total }}</td>
+                <!--mostrar detalle-->
                 <td><a onclick="detalleMateriales({{material.id}})" href="#modal_detalle" class="modal-trigger"><i class="material-icons">view_list</i> </a></td>
             </tr>
             {% endif %}
@@ -54,12 +57,14 @@
 {% endblock content %}
 {% block js %}
   <script type="text/javascript">
+    //materializes
     $(document).ready(function(){
       $('.collapsible').collapsible();
     });
   </script>
   <script type="text/javascript">
     $(document).ready(function(){
+        //CSRF Token para hacer peticiones POST
         var csrftoken = $.cookie('csrftoken');
         function csrfSafeMethod(method) {
         // these HTTP methods do not require CSRF protection
@@ -74,6 +79,7 @@
         });
     });
 
+    //Eliminar material
     function deleteRegister(element, event) {
       event.preventDefault();
       $.confirm({
@@ -95,12 +101,14 @@
      });
     }
 
+    //mostrar detalle de material
     function detalleMateriales(id_material){
-      console.log(id_material);
       var url = '{% url "materiales:materiales_por_catalogo" %}';
+      //post para recuperar detalle del material
       $.post(url, {
         id_material: id_material,
       }).done(function(data){
+        //modificar html del modal
         $("#modal_material").html(data);
       });
     }
