@@ -20,15 +20,7 @@ def lista_usuarios(request):
         if forma_post.is_valid():
             forma_post.save()
             messages.success(request, 'Se ha agregado un nuevo usuario.')
-        else:
-            mensaje_error = ""
-            for field,errors in forma_post.errors.items():
-                 for error in errors:
-                     mensaje_error+=error
-            # De lo contrario devuelve mensaje de error.
-            print(mensaje_error)
-            messages.error(request, mensaje_error+"")
-        # Sin importar el caso se llama a sí mismo para pintar la lista de usuarios con una nueva forma para dar de alta otro usuario.
+        #se llama a sí mismo para pintar la lista de usuarios con una nueva forma para dar de alta otro usuario.
         return HttpResponseRedirect(reverse('usuarios:lista_usuarios'))
     # En caso de que no haya ninguna petición
     else:
@@ -45,9 +37,11 @@ def lista_usuarios(request):
 """
 @group_required('admin')
 def borrar_usuario(request, id_usuario):
+    #recuperar el usuario
     usuario = get_object_or_404(User, pk=id_usuario)
     #soft delete django
     usuario.is_active = 0
     usuario.save()
+    #mensaje de éxito
     messages.success(request, '¡Se ha eliminado al usuario!')
     return redirect('usuarios:lista_usuarios')

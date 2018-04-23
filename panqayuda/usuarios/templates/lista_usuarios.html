@@ -11,7 +11,7 @@
   <div class="container">
     {{ forma.message.errors }}
     {{ forma.name_of_field.errors }}
-    <!-- Carga donde carga todo -->
+    <!-- Lista de los usuarios -->
       <table id="table_id">
           <thead>
             <tr>
@@ -23,10 +23,13 @@
           </thead>
           <tbody>
             {% for usuario in usuarios %}
+            <input class="hidden disabled usuarios" value='{{ usuario.username }}'>
             <tr>
                 <td>{{ usuario.first_name }} {{ usuario.last_name }}</td>
                 <td>{{ usuario.email }}</td>
+                <!-- Editar usuario -->
                 <td><a><i class="material-icons">edit</i></a></td>
+                <!-- Eliminar usuario -->
                 <td>
                   <a onclick="deleteRegister(this, event)" href="borrar_usuario/{{usuario.id}}">
                     <i class="material-icons">delete</i>
@@ -50,24 +53,55 @@
 {% block js %}
   <script type="text/javascript">
     $(document).ready(function(){
+      //materialize
       $('.collapsible').collapsible();
     });
 
-
+    //validación de que las contraseñas conciden
     var password = document.getElementById("id_password");
     var confirm_password = document.getElementById("confirm_password");
 
     function validatePassword(){
       if(password.value != confirm_password.value) {
-        confirm_password.setCustomValidity("Passwords Don't Match");
+        confirm_password.setCustomValidity("Las contraseñas no conciden");
       } else {
         confirm_password.setCustomValidity('');
       }
     }
 
+    //correr la función cada que haya un cambio en password y en confirm_password
     password.onchange = validatePassword;
     confirm_password.onkeyup = validatePassword;
-    
+
+    //validación para que no haya un usuario con ese username
+    //obtener todos los usuarios de la DB desde el html
+    var usernames = document.getElementsByClassName("usuarios");
+    //obtener el elemento de html que contiene el nombre del nuevo usuairo
+    var username = document.getElementById("id_username");
+
+    function validateUsername(){
+      //actualizar el nombre del usuario
+      username = document.getElementById("id_username");
+      //default de username validation
+      var username_validation = "";
+      var i;
+
+      for(i=0; i<usernames.length; i++){
+        if(usernames[i].value==username.value){
+          //si si existe un usuario con ese nombre cambiamos el defaul de username_validation
+          //sino, se queda el default
+          username_validation='Ya existe un usuario con ese nombre';
+        }
+      }
+
+      //asignamos el username_validation para que muestre o no error
+      username.setCustomValidity(username_validation);
+    }
+
+    //correr esta funcion cada que haya un cambio en el username del nuevo usuario
+    username.onchange = validateUsername;
+    username.onkeyup = validateUsername;
+
     //muestra mensaje antes de eliminar un usuario
     function deleteRegister(element, event) {
       event.preventDefault();

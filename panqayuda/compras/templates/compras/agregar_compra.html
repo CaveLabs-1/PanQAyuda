@@ -9,7 +9,7 @@
 {% block content %}
   <div class="container">
     <div class="card">
-
+      <!--forma para agregar una compra-->
       <form class="" action="{% url 'compras:agregar_compra' %}" id="form" method="post">
         <br>
         <br>
@@ -50,6 +50,7 @@ $(document).ready(function(){
 
 $('select').formSelect();
 
+  //materialize habilitar campo compra
   var elem = document.querySelector('.datepicker');
   var instance = M.Datepicker.init(elem);
 
@@ -68,7 +69,7 @@ $('select').formSelect();
   mm = (mm<10)? '0'+mm : mm;
 
   var today = yyyy+'-'+mm+'-'+dd;
-  document.getElementById("id_fecha_compra").value =today;
+  document.getElementById("id_fecha_compra").value = today;
 
 });
 </script>
