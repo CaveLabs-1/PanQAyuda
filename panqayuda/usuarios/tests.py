@@ -105,3 +105,87 @@ class TestCrearUsuario(TestCase):
         self.client.post(reverse('usuarios:lista_usuarios'), data)
         #Se checa que se haya no se haya creado el usuario sin contraseña
         self.assertEqual(User.objects.count(), 1)
+
+#Tests caso de uso 50
+class TestEliminarUsuario(TestCase):
+
+    def setUp(self):
+        #El setup sirve para crear un usuario en la base de datos, pero no inicia sesion
+        Group.objects.create(name="admin")
+        user = User.objects.create_user(username='temporary', email='temporary@gmail.com', password='temporary', is_superuser='True')
+        #Guarda el usuario que se creó
+        user.save()
+
+    #Cuando elimino a un usuario, ya no puede acceder al sistema con sus datos
+    def test_ac50_1_al_eliminar_no_puedes_acceder(self):
+        #Inicio de sesion
+        self.client.login(username='temporary', password='temporary')
+        #Guardo la respuesta en resp
+        resp = self.client.get(reverse('usuarios:lista_usuarios'))
+        #Respuesta exitosa
+        self.assertEqual(resp.status_code, 200)
+        #Checo que se imprima el usuario que ya existe desde el setup en la vista
+        self.assertEqual(len(resp.context['usuarios']), 1)
+        #Se crea un usuario pero ahora con la sesion iniciada
+        data = { 'password':"test", 'first_name':"Test", 'last_name':"Testerino", 'username':"Admond", 'email':"test@test.com", 'is_superuser':'True', 'is_staff':'True' }
+        self.client.post(reverse('usuarios:lista_usuarios'), data)
+        #Se checa que se haya creado el usuario
+        self.assertEqual(User.objects.count(), 2)
+        #Se guarda la respuesta del servidor en resp2
+        resp2 = self.client.get(reverse('usuarios:lista_usuarios'))
+        #Estatus exitoso
+        self.assertEqual(resp2.status_code, 200)
+        #Se muestra en la lista correctamente
+        self.assertEqual(len(resp2.context['usuarios']), 2)
+        #cerrar sesion
+        resp3 = self.client.get("/logout")
+        self.assertEqual(resp3.status_code, 301)
+        #Se crea la informacion del usuario que se va a mandar
+        data = {'username':"Admond", 'password':"test"}
+        loginresp = self.client.post("/login", data)
+        #Inicio de sesion exitoso
+        self.assertEqual(loginresp.status_code, 301)
+        deleted_user = User.objects.get(username="temporary")
+        #Usando el deleted_user se borra ese usuario con su id
+        self.client.post(reverse('usuarios:borrar_usuario', kwargs={'id_usuario':deleted_user.id}))
+        obj = User.objects.filter(is_active=1)
+        #See checa que el estatus del usuario que queda sea de activo
+        self.assertEqual(obj[0].username, 'Admond')
+        self.client.get("/logout")
+        data = {'username':"temporary", 'password':"temporary"}
+        loginresp = self.client.post("/login", data)
+        self.assertEqual(loginresp.status_code, 200)
+
+    def test_ac50_2_Eliminados_no_salen_en_lista(self):
+        #Inicio de sesion
+        self.client.login(username='temporary', password='temporary')
+        #Guardo la respuesta en resp
+        resp = self.client.get(reverse('usuarios:lista_usuarios'))
+        #Respuesta exitosa
+        self.assertEqual(resp.status_code, 200)
+        #Checo que se imprima el usuario que ya existe desde el setup en la vista
+        self.assertEqual(len(resp.context['usuarios']), 1)
+        #Se crea un usuario pero ahora con la sesion iniciada
+        data = { 'password':"test", 'first_name':"Test", 'last_name':"Testerino", 'username':"Admond", 'email':"test@test.com", 'is_superuser':'True', 'is_staff':'True' }
+        self.client.post(reverse('usuarios:lista_usuarios'), data)
+        #Se checa que se haya creado el usuario
+        self.assertEqual(User.objects.count(), 2)
+        #Se guarda la respuesta del servidor en resp2
+        resp2 = self.client.get(reverse('usuarios:lista_usuarios'))
+        #Estatus exitoso
+        self.assertEqual(resp2.status_code, 200)
+        #Se muestra en la lista correctamente
+        self.assertEqual(len(resp2.context['usuarios']), 2)
+        deleted_user = User.objects.get(username="Admond")
+        #Usando el deleted_user se borra ese usuario con su id
+        self.client.post(reverse('usuarios:borrar_usuario', kwargs={'id_usuario':deleted_user.id}))
+        #Aqui checo la lista al acceder al nuevo url
+        listresp = self.client.get(reverse('usuarios:lista_usuarios'))
+        self.assertEqual(listresp.status_code, 200)
+
+        self.assertEqual(len(listresp.context['usuarios']), 1)
+
+        self.assertNotEqual(listresp.context['usuarios'], deleted_user.username)
+
+        # resp4 = self.client.get(reverse('usuarios:lista_usuarios'))
+        # self.assertEqual(len(resp4.context['usuarios']), 1)
