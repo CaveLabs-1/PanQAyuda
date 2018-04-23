@@ -156,7 +156,7 @@ class TestEliminarUsuario(TestCase):
         loginresp = self.client.post("/login", data)
         self.assertEqual(loginresp.status_code, 200)
 
-    def test_ac50_2_Eliminados_no_salen_en_kista(self):
+    def test_ac50_2_Eliminados_no_salen_en_lista(self):
         #Inicio de sesion
         self.client.login(username='temporary', password='temporary')
         #Guardo la respuesta en resp
@@ -182,7 +182,10 @@ class TestEliminarUsuario(TestCase):
         #Aqui checo la lista al acceder al nuevo url
         listresp = self.client.get(reverse('usuarios:lista_usuarios'))
         self.assertEqual(listresp.status_code, 200)
+
         self.assertEqual(len(listresp.context['usuarios']), 1)
+
+        self.assertNotEqual(listresp.context['usuarios'], deleted_user.username)
 
         # resp4 = self.client.get(reverse('usuarios:lista_usuarios'))
         # self.assertEqual(len(resp4.context['usuarios']), 1)
