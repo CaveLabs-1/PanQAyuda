@@ -66,11 +66,15 @@ def agregar_cliente_venta(request):
             return HttpResponseNotFound('Hubo un error agregando al cliente, inténtalo de nuevo.')
 
 
-#Función para borrar un Cliente @Valter
+#Función para borrar un Cliente
+@group_required('admin')
 def eliminar_cliente(request, id_cliente):
+    #obtienes el objeto
     cliente = get_object_or_404(Cliente, pk=id_cliente)
     cliente.estatus = 0
+    #borras al cliente
     cliente.deleted_at = datetime.datetime.now()
     cliente.save()
     messages.success(request, '¡Se ha borrado exitosamente el cliente!')
+    #regresa a la lista de clientes
     return redirect('clientes:clientes')

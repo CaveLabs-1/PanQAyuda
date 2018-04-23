@@ -14,6 +14,8 @@ class Paquete (models.Model):
 	created_at = models.DateTimeField(default=timezone.now)
 	updated_at = models.DateTimeField(default=timezone.now)
 	deleted_at = models.DateTimeField(blank=True, null=True)
+
+	#Devuelve el nombre del paquete
 	def __str__(self):
 		return self.nombre
 
@@ -65,6 +67,7 @@ class PaqueteInventario (models.Model):
 	updated_at = models.DateTimeField(default=timezone.now)
 	deleted_at = models.DateTimeField(blank = True, null = True)
 
+	#Regresa el nombre del paquete en inventario
 	def __str__(self):
 		return self.nombre.nombre + " " + self.fecha_cad.strftime("%d/%m/%Y")
 

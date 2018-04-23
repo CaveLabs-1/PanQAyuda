@@ -10,6 +10,7 @@
 
 <div class="row">
   <div class="col s10 offset-s1">
+    <!--Lista de compras-->
     <table id="table_id" class="datatable">
       <thead>
         <th>ID</th>
@@ -25,18 +26,24 @@
           <td>{{compra.id}}</td>
           <td>{{compra.proveedor}}</td>
           <td>{{compra.fecha_compra}}</td>
+          <!--Ver detalle de la compra-->
           <td><a onclick="detalleCompra({{compra.id}})" href="#modal_detalle" class="modal-trigger"><i class="material-icons">view_list</i> </a></td>
+          <!--Editar compra-->
           <td><a href="editar_compra/{{ compra.id }}"><i class="material-icons">edit</i></a></td>
+          <!--Se manda llamar la función de eliminar_compra mandando el id de compra-->
           <td><a href="{% url 'compras:eliminar_compra' compra.id %}" class="modal-trigger" onclick="return confirm('Vas a eliminar una Compra del catálogo. ¿Continuar?')"><i class="material-icons">delete</i></a></td>
         </tr>
        {% endfor %}
       </tbody>
     </table>
   </div>
+  <div class="col s1"></div>
 </div>
 <div class="fixed-action-btn ">
+  <!--Agregar nueva compra-->
   <a class="add-btn btn-floating btn-large waves-effect waves-light pink btn modal-trigger" href="agregar_compra"><i class="material-icons">add</i></a>
 </div>
+
 
 <div id="modal_detalle" class="modal">
   <div class="modal-content">
@@ -58,6 +65,7 @@
     </script>
     <script type="text/javascript">
       $(document).ready(function(){
+        //CSRF token para pedidos POST
           var csrftoken = $.cookie('csrftoken');
           function csrfSafeMethod(method) {
           // these HTTP methods do not require CSRF protection
@@ -72,6 +80,7 @@
           });
       });
 
+      //eliminar compra
       function deleteRegister(element, event) {
         event.preventDefault();
         $.confirm({
@@ -93,6 +102,7 @@
        });
       }
 
+      //mostrar detalle de la compra
       function detalleCompra(id_compra){
         console.log(id_compra);
         var url = '{% url "compras:lista_detalle_compra" %}';

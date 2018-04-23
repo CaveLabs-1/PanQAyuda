@@ -383,6 +383,7 @@ class TestEliminarUnidad(TestCase):
 
 class TestEliminarMaterial(TestCase):
 
+    #Generación para el ambiente de pruebas de eliminar materia prima
     def setUp(self):
         Group.objects.create(name="admin")
         user = User.objects.create_user(username='temporary', email='temporary@gmail.com', password='temporary', is_superuser='True')
@@ -391,8 +392,12 @@ class TestEliminarMaterial(TestCase):
         material = Material.objects.create(nombre='Huevo', codigo=123)
         material.save()
 
+    #Test para eliminar la materia prima
     def test_borrar_material(self):
         self.assertEqual(Material.objects.count(), 1)
+        #Obtienes el objeto material
         objetos = Material.objects.first()
+        #Se utiliza eliminar_material
         self.client.get(reverse('materiales:eliminar_material', kwargs={'id_material':objetos.id}))
+        #Se busca que no haya con cambio vacío de deleted_at
         self.assertEqual(Material.objects.filter(deleted_at__isnull=True).count(), 0)

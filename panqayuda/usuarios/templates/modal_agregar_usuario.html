@@ -18,13 +18,15 @@
                 </div>
             </div>
 
-            <!--Correo electronico-->
             <div class="row">
+              <!--Username-->
               <div class="input-field col s12 m6 l6">
                 <input class="validate"  type="text" name="{{forma.username.html_name}}" maxlength="150" id="{{forma.username.id_for_label}}" required>
-                <label for="{{forma.username.id_for_label}}" data-error='Apellido inválido'  data-success="">Usuario</label>
-              </div>
+                <label for="{{forma.username.id_for_label}}">Usuario</label>
+                <span class="helper-text" data-error="Ya existe un usuario con ese nombre de usuario"></span>
 
+              </div>
+              <!--Correo electronico-->
               <div class="input-field col s12 m6 l6">
                   <input class="validate"  type="email" name="{{forma.email.html_name}}" id="{{forma.email.id_for_label}}" required>
                   <label for="{{forma.email.id_for_label}}" data-error=''  data-success="">Email</label>
@@ -49,7 +51,7 @@
                 </div>
             </div>
 
-            <!-- Superuser -->
+            <!-- Es superuser -->
             <div class="row">
                 <div class="input-field col s12">
                   <label>
@@ -58,7 +60,10 @@
                   </label>
                 </div>
             </div>
+            <!-- Es staff -->
             <div class="hidden"> <input name="{{forma.is_staff.html_name}}" value="1"></div>
+            <!-- Está activo -->
+            <div class="hidden"> <input name="{{forma.is_active.html_name}}" value="1"></div>
             <br>
 
             <div class="row">

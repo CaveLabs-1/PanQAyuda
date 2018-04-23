@@ -91,7 +91,7 @@ class TestAgrergarCliente(TestCase):
         self.assertEqual(Cliente.objects.count(), 3)
 
 class TestEliminarCliente(TestCase):
-
+    #Generacion de lo necesario para el ambiente de pruebas de eliminar un cliente
     def setUp(self):
         #El setup crea un usuario e inicia sesion para poder iniciar con los tests
         Group.objects.create(name="admin")
@@ -106,8 +106,12 @@ class TestEliminarCliente(TestCase):
         )
         cliente.save()
 
+    #Test exacto para borrar un cliente
     def test_borrar_cliente(self):
         self.assertEqual(Cliente.objects.count(), 1)
+        #Obtienes el objeto cliente
         objetos = Cliente.objects.first()
+        #Utilizas la view de eliminar_cliente
         self.client.get(reverse('clientes:eliminar_cliente', kwargs={'id_cliente':objetos.id}))
+        #Busca que no haya clientes sin registro deleted_at
         self.assertEqual(Cliente.objects.filter(deleted_at__isnull=True).count(), 0)

@@ -55,4 +55,4 @@ class MaterialInventarioForm(ModelForm):
         if cantidad > 0:
             return cantidad
         else:
-            raise ValidationError("La cantidad debe ser mayot a 0.")
+            raise ValidationError("La cantidad debe ser mayor a 0.")
