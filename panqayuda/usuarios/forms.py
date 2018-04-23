@@ -30,4 +30,4 @@ class FormUser(forms.ModelForm):
             raise ValidationError('Ya hay un usuario con este correo', code='invalid')
     class Meta:
         model = User
-        fields = ('password', 'username', 'first_name', 'last_name', 'username', 'email', 'is_superuser', 'is_staff')
+        fields = ('password', 'username', 'first_name', 'last_name', 'email', 'is_superuser', 'is_staff')

@@ -5,6 +5,7 @@ from panqayuda.decorators import group_required
 from django.template.loader import render_to_string
 from django.contrib.auth.models import User
 from .forms import FormUser
+from django.utils import timezone
 
 """
     Función que enlista todos los usuarios guardadas dentro de la base de datos y guarda nuevos usuarios.
@@ -15,20 +16,38 @@ from .forms import FormUser
 def lista_usuarios(request):
     # En caso de que exista una petición de tipo POST significa que se ha intentado dar de alta un nuevo usuario.
     if request.method == 'POST':
-        forma_post = FormUser(request.POST)
-        # Si la forma es válida, se guarda el nuevo usuario y devuelve mensaje de éxito.
-        if forma_post.is_valid():
-            forma_post.save()
-            messages.success(request, 'Se ha agregado un nuevo usuario.')
+        username = request.POST.get('username')
+        first_name = request.POST.get('first_name')
+        last_name = request.POST.get('last_name')
+        email = request.POST.get('email')
+        is_superuser = request.POST.get('is_superuser')
+        is_staff = request.POST.get('is_staff') or False
+        if is_staff == 1:
+            is_staff = True
         else:
-            mensaje_error = ""
-            for field,errors in forma_post.errors.items():
-                 for error in errors:
-                     mensaje_error+=error
-            # De lo contrario devuelve mensaje de error.
-            print(mensaje_error)
-            messages.error(request, mensaje_error+"")
-        # Sin importar el caso se llama a sí mismo para pintar la lista de usuarios con una nueva forma para dar de alta otro usuario.
+            is_staff=False
+
+        if is_superuser == 'on':
+            is_superuser = True
+        else:
+            is_superuser=False
+        password = request.POST.get('password')
+        user = User.objects.create(username=username, email=email, first_name=first_name,
+                                            last_name=last_name, is_superuser=is_superuser,
+                                            is_staff=is_staff)
+        if user:
+            user.set_password(password)
+            user.save()
+        else:
+            User.objects.filter(user).delete()
+
+
+        # forma_post = FormUser(request.POST)
+        # # Si la forma es válida, se guarda el nuevo usuario y devuelve mensaje de éxito.
+        # if forma_post.is_valid():
+        #     forma_post.save()
+        #     messages.success(request, 'Se ha agregado un nuevo usuario.')
+        # #se llama a sí mismo para pintar la lista de usuarios con una nueva forma para dar de alta otro usuario.
         return HttpResponseRedirect(reverse('usuarios:lista_usuarios'))
     # En caso de que no haya ninguna petición
     else:
@@ -45,9 +64,23 @@ def lista_usuarios(request):
 """
 @group_required('admin')
 def borrar_usuario(request, id_usuario):
+    if request.method == 'POST':
+        usuario = get_object_or_404(User, pk=id_usuario)
+        #soft delete django
+        usuario_nombre = usuario.username
+        usuario.username = usuario_nombre + "deleted" + str(timezone.now)
+        usuario.is_active = 0
+        usuario.is_superuser=False
+        usuario.save()
+        messages.success(request, '¡Se ha eliminado al usuario!')
+        return HttpResponse('usuarios:lista_usuarios')
+    else:
+        return redirect('usuarios:lista_usuarios')
+    #recuperar el usuario
     usuario = get_object_or_404(User, pk=id_usuario)
     #soft delete django
     usuario.is_active = 0
     usuario.save()
+    #mensaje de éxito
     messages.success(request, '¡Se ha eliminado al usuario!')
     return redirect('usuarios:lista_usuarios')

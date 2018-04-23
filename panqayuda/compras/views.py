@@ -12,15 +12,14 @@ from django.db.models import Sum
 from panqayuda.decorators import group_required
 import datetime
 
-
 """
- Si es un GET regresa la lista de compras junto con
- una forma para desplegar en el modal
+    Función que enlista las compras y permite agregar una compra a la base de datos.
 """
 @group_required('admin')
 def compras(request):
     compras =  Compra.objects.filter(deleted_at__isnull=True)
     return render (request, 'compras/compras.html', {'compras': compras})
+
 
 """ --------------------------------------------------
  Reccibe el ID de una compra, obtiene todos los materiales que le
@@ -31,8 +30,11 @@ def compras(request):
 def lista_detalle_compra(request):
     if request.method == 'POST':
         id_compra = request.POST.get('id_compra')
+        #recuperar compra
         compra = Compra.objects.get(pk=id_compra)
+        #obtener los material inventario que pertenecen a esa compra
         materiales_de_compra = MaterialInventario.objects.filter(compra=compra)
+        #obtener html que se insertará al modal
         response = render_to_string('compras/lista_detalle_compra.html', {'materiales_de_compra': materiales_de_compra, 'compra': compra})
         return HttpResponse(response)
     return HttpResponse('Algo ha salido mal.')
@@ -43,16 +45,20 @@ def lista_detalle_compra(request):
 @group_required('admin')
 def agregar_compra(request):
     if request.method == 'POST':
-        forma=CompraForm(request.POST)
+        forma = CompraForm(request.POST)
+        #revisar que la forma sea válida
         if forma.is_valid():
             forma.save()
+            #mensaje de éxito
             messages.success(request, '¡Se ha agregado una compra!')
             compra = Compra.objects.latest('id')
             return HttpResponseRedirect(reverse('compras:agregar_materias_primas_a_compra', kwargs={'id_compra':compra.id}))
         else:
+            #mensaje de error
             messages.error(request, 'Hubo un error y no se agregó la compra. Inténtalo de nuevo.')
+    #recuperar proveedores activos
     proveedores = Proveedor.objects.filter(deleted_at__isnull=True);
-    forma=CompraForm()
+    forma = CompraForm()
     return render(request, 'compras/agregar_compra.html', {'forma':forma, 'proveedores':proveedores})
 
 """
@@ -132,12 +138,15 @@ def agregar_materia_prima_a_compra(request):
 
 
 
-#Función para borrar una compra @Valter
+#Función para borrar una compra
 @group_required('admin')
 def eliminar_compra(request, id_compra):
+    #Se obtiene el objeto compra
     compra = get_object_or_404(Compra, pk=id_compra)
     compra.estatus = 0
+    #Se borra la compra
     compra.deleted_at = datetime.datetime.now()
     compra.save()
     messages.success(request, '¡Se ha borrado exitosamente la compra!')
+    #Se regresa a la lista de compras
     return redirect('compras:compras')

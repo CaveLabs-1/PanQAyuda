@@ -18,7 +18,8 @@ class Unidad(models.Model):
         return self.nombre
 
 # Create your models here.
-class Material(models.Model):#¿Tiene unidad?
+#Modelo de catálogo de materias primas
+class Material(models.Model):
     nombre = models.CharField(max_length=100, null=True, blank=False)
     codigo = models.CharField(max_length=10, null=True, blank=False)
     status = models.IntegerField(default=1)

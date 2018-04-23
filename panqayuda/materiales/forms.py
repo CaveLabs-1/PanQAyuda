@@ -23,6 +23,7 @@ class MaterialForm(ModelForm):
                         return nombre
             raise ValidationError("Este material ya existe")
 
+#Forma con el campo único de nombre para unidades
 class UnidadForm(ModelForm):
     class Meta:
         model = Unidad
@@ -55,4 +56,4 @@ class MaterialInventarioForm(ModelForm):
         if cantidad > 0:
             return cantidad
         else:
-            raise ValidationError("La cantidad debe ser mayot a 0.")
+            raise ValidationError("La cantidad debe ser mayor a 0.")

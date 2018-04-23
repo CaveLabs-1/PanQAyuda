@@ -37,6 +37,7 @@ def materiales(request):
 """
 @group_required('admin')
 def lista_unidades(request):
+    #Si detecta el metodo POST envia la forma y agrega una nueva unidad.
     if request.method == 'POST':
         forma_post = UnidadForm(request.POST)
         if forma_post.is_valid():
@@ -44,9 +45,10 @@ def lista_unidades(request):
             messages.success(request, 'Se ha agregado una nueva unidad.')
         else:
             messages.error(request, 'Hubo un error, inténtalo de nuevo.')
-
+        #Redirige a la vista de unidades.
         return HttpResponseRedirect(reverse('materiales:lista_unidades'))
     else:
+        #Renderea el template lista_unidades.html junto con su forma
         forma = UnidadForm()
         unidades =  Unidad.objects.filter(deleted_at__isnull=True)
         return render (request, 'materiales/lista_unidades.html', {'forma': forma, 'unidades': unidades})
@@ -57,22 +59,29 @@ def lista_unidades(request):
 """
 @group_required('admin')
 def eliminar_unidad(request, id_unidad):
+    #Recuperar Unidad
     unidad = get_object_or_404(Unidad, pk=id_unidad)
     unidad.estatus = 0
+    #Borrado del objeto
     unidad.deleted_at = datetime.datetime.now()
     unidad.save()
     messages.success(request, '¡Se ha borrado exitosamente la unidad del catálogo!')
+    #Regresar a listado de materiales
     return redirect('materiales:lista_unidades')
 
 
+
+#Función para borrar una materia prima del catálogo
 @group_required('admin')
-#Función para borrar una materia prima @Valter
 def eliminar_material(request, id_material):
+    #Obtienes la materia primas
     material = get_object_or_404(Material, pk=id_material)
     material.estatus = 0
+    #Se hace el borrado
     material.deleted_at = datetime.datetime.now()
     material.save()
     messages.success(request, '¡Se ha borrado exitosamente el material del catálogo!')
+    #Regresa a la lista de materiales
     return redirect('materiales:materiales')
 
 
@@ -101,9 +110,12 @@ def agregar_unidades(request):
 """
 @group_required('admin')
 def modificar_unidad(request, id_unidad):
+    #Verifica que exista la unidad que recibe
     unidad = get_object_or_404(Unidad, pk=id_unidad)
+    #Si el metodo es POST modifica la unidad correspondiente
     if request.method == "POST":
         form = UnidadForm(request.POST or None, instance=unidad)
+        # Valida la forma antes de enviarla
         if form.is_valid():
             unidad = form.save()
             unidad.save
@@ -113,6 +125,8 @@ def modificar_unidad(request, id_unidad):
             messages.success(request, 'Ocurrio un error, intenta de nuevo')
             return render(request, 'materiales/modificar_unidad.html', {'form': form, 'unidad': unidad})
     else:
+        # Renderea la vista para modificar la unidad con su form
+        # correspondiente
         form = UnidadForm()
     return render(request, 'materiales/modificar_unidad.html', {'form': form, 'unidad': unidad})
 

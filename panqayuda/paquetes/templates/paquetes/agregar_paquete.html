@@ -15,11 +15,13 @@
         <br>
         <div class="row">
           <div class="input-field col m6">
+            <!--Nombre del nuevo paquete-->
             <input class="validate"  placeholder="Paquete de alfajores chico" type="text" name="{{forma.nombre.html_name}}" id="{{forma.nombre.id_for_label}}" value="" required="" aria-required="true" >
             <label for="{{forma.nombre.id_for_label}}" data-error='Nombre inválido'  data-success="Nombre correcto">Nombre</label>
             <span class="helper-text" data-error="Este campo es requerido"></span>
           </div>
           <div class="input-field col m6">
+            <!--Precio del nuevo paquete-->
             <input class="validate" placeholder="150.00" type="number" step = "0.50" name="{{forma.precio.html_name}}" id={{forma.precio.id_for_label}} value="" min="0"  required="" aria-required="true" >
             <label for="{{forma.precio.id_for_label}}" data-error='Precio inválido'  data-success="Precio correcto">Precio</label>
             <span class="helper-text" data-error="El precio es requerido y debe ser mayor a 0."></span>

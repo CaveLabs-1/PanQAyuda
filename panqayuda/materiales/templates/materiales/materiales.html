@@ -17,6 +17,7 @@
 </div>
   <div class="row">
     <div class="col s10 offset-s1">
+      <!--lista materiales-->
       <table id="table_id" class="datatable">
         <thead>
           <th>Nombres</th>
@@ -36,6 +37,7 @@
             <td>{{ material.equivale_entrada }} {{ material.unidad_entrada }}</td>
             <td>{{ material.equivale_maestra }} {{ material.unidad_maestra }}</td>
             <td><a href="{% url 'materiales:editar_material' material.id %}" class="modal-trigger"><i class="material-icons">edit</i></a></td>
+            <!--Se manda llamar la función de eliminar_material mandando el id de material-->
             <td><a href="{% url 'materiales:eliminar_material' material.id %}" class="modal-trigger" onclick="return confirm('Vas a eliminar un Material del catálogo. ¿Continuar?')"><i class="material-icons">delete</i></a></td>
             </tr>
          {% endfor %}
