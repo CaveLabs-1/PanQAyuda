@@ -9,7 +9,7 @@ class Proveedor(models.Model):
     telefono_regex = RegexValidator(regex=r'^\+?1?\d{9,15}$', message="El formato del número no es válido.")
     telefono = models.CharField(validators=[telefono_regex], max_length=17, blank=False, null=True)
     direccion = models.CharField(max_length=100, null=True, blank=False)
-    rfc = models.CharField(max_length=100, null=True, blank=False)
+    rfc = models.CharField(max_length=13, null=True, blank=False)
     razon_social = models.CharField(max_length=100, null=True, blank=False)
     email = models.CharField(max_length=100, null=True, blank=False,
                              validators=[EmailValidator(message='Correo inválido',
