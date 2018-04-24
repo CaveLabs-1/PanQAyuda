@@ -101,7 +101,7 @@ def agregar_materia_prima_a_compra(request):
             id_unidad = materia_prima.unidad_entrada.id
             porciones = cantidad * materia_prima.equivale_maestra / materia_prima.equivale_entrada
             costo = int(request.POST.get('costo'))
-            costo_unitario = int(request.POST.get('costo'))/int(request.POST.get('cantidad'))
+            costo_unitario = int(request.POST.get('costo'))/porciones
             id_compra =  request.POST.get('compra')
 
             compra = get_object_or_404(Compra, id=id_compra)
@@ -110,7 +110,7 @@ def agregar_materia_prima_a_compra(request):
             #Dar de alta material inventario
             MaterialInventario.objects.create(material=materia_prima, fecha_cad=fecha_cad, cantidad=cantidad,
              porciones_disponible=cantidad, unidad_entrada=unidad, porciones=porciones,
-             costo=costo, compra=compra )
+             costo=costo, compra=compra, costo_unitario=costo_unitario )
 
             #generar forma html
             forma = MaterialInventarioForm()
