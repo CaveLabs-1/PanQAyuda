@@ -16,8 +16,8 @@
               <th>Nombre</th>
               <th>Cantidad que produce</th>
               <th>Duración</th>
-              {# <th>Editar Materia Prima</th> #}
-              <!--<th>Eliminar</th>-->
+              <!--<th>Editar Materia Prima</th>
+              <th>Eliminar</th>-->
             </tr>
           </thead>
           <tbody>
@@ -35,7 +35,7 @@
       <br>
       <div class="row">
         <div class="right-align">
-          <a href="{% url 'recetas:agregar_receta' %}" class="btn-floating btn-large waves-effect waves-light pink"><i class="material-icons">add</i></a>
+          <a href="{% url 'recetas:agregar_receta' %}" class="btn-floating btn-large waves-effect waves-light waves-circle pink fixed tooltipped" data-position="left" data-tooltip="Agregar nueva receta"><i class="material-icons">add</i></a>
         </div>
       </div>
   </div>
