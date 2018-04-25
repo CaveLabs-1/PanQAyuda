@@ -35,7 +35,7 @@ class Orden(models.Model):
     def ordenes_lsitas():
         return Orden.objects.filter(estatus='2')
 
-    def cantidad():
+    def cantidad(self):
         return self.receta.cantidad * self.multiplicador
 
     def _str_(self):
