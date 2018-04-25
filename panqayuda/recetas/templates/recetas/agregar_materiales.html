@@ -62,7 +62,7 @@
                               <td>{{ material.material.nombre }}</td>
                               <td>{{ material.cantidad }}</td>
                               <td>{{ material.material.unidad }}</td>
-                              <td><a href="borrar_material/{{ material.id }}"><i class="material-icons">delete</i></a></td>
+                              <td><a href="{% url 'materiales:borrar_material' material.id %}"><i class="material-icons">delete</i></a></td>
                             </tr>
                             {% endfor %}
                           </tbody>
@@ -71,7 +71,7 @@
                   </div>
                   <div class="row">
                     <div class="col s6">
-                      <a href="/recetas/receta/{{receta.id}}">
+                      <a href="{% url 'recetas:detallar_receta' receta.id %}">
                         <button class="btn waves-effect waves-light pink" type="submit" name="action">Regresar
                           <i class="material-icons left">chevron_left</i>
                         </button>

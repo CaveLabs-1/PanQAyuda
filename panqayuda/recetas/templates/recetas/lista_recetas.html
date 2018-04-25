@@ -23,7 +23,7 @@
           <tbody>
             {% for receta in recetas %}
             <tr>
-                <td><a href="/recetas/receta/{{ receta.id }}">{{ receta.nombre }}</a></td>
+                <td><a href="{% url 'recetas:detallar_receta' receta.id %}">{{ receta.nombre }}</a></td>
                 <td>{{ receta.cantidad }}</td>
                 <td>{{ receta.duration.days }} días</td>
                 <!-- <td><a href="agregar_materiales/{{ receta.id }}"><i class="material-icons">edit</i></a></td> #} -->
@@ -35,7 +35,7 @@
       <br>
       <div class="row">
         <div class="right-align">
-          <a href="agregar_receta" class="btn-floating btn-large waves-effect waves-light pink"><i class="material-icons">add</i></a>
+          <a href="{% url 'recetas:agregar_receta' %}" class="btn-floating btn-large waves-effect waves-light pink"><i class="material-icons">add</i></a>
         </div>
       </div>
   </div>

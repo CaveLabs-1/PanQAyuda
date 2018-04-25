@@ -9,7 +9,7 @@
 {% block content %}
   <div class="container">
     <div class="card paquete-catalogo-form">
-      <form class="" action="/paquetes/agregar_paquete_inventario/" method="POST">
+      <form class="" action="{% url 'paquetes:agregar_inventario' %}" method="POST">
         <br>
         <br>
         <div class="row">
