@@ -139,8 +139,8 @@ def lista_materiales_inventario(request):
     catalogo_materiales=Material.objects.filter(deleted_at__isnull=True).filter(status=1)
 
     for catalogo_material in catalogo_materiales:
-         aux= MaterialInventario.objects.filter(material_id=catalogo_material.id).filter(deleted_at__isnull=True).aggregate(Sum('porciones'))
-         catalogo_material.total=aux['porciones__sum']
+         aux= MaterialInventario.objects.filter(material_id=catalogo_material.id).filter(deleted_at__isnull=True).aggregate(Sum('porciones_disponible'))
+         catalogo_material.total=aux['porciones_disponible__sum'] or 0
 
     return render(request, 'materiales/lista_materiales_inventario.html', {'materiales':materiales, 'catalogo_materiales':catalogo_materiales})
 

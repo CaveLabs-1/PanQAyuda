@@ -12,8 +12,8 @@
   <div class="col s12">
     <ul class="tabs">
       <!--Menú-->
-      <li class="tab col s6"><a class="active white-text" href="/materiales">Catálogo Inventario</a></li>
-      <li class="tab col s6"><a class="pink-text" href="/materiales/lista_materiales">Catálogo Materia Prima</a></li>
+      <li class="tab col s6"><a class="active white-text" href="{% url 'materiales:lista_materiales_inventario' %}">Catálogo Inventario</a></li>
+      <li class="tab col s6"><a class="pink-text" href="{% url 'materiales:materiales' %}">Catálogo Materia Prima</a></li>
     </ul>
   </div>
 </div>
@@ -30,14 +30,12 @@
         </thead>
         <tbody>
           {% for material in catalogo_materiales %}
-            {% if material.total%}
             <tr>
                 <td>{{ material.nombre }}</td>
                 <td>{{ material.total }}</td>
                 <!--mostrar detalle-->
                 <td><a onclick="detalleMateriales({{material.id}})" href="#modal_detalle" class="modal-trigger"><i class="material-icons">view_list</i> </a></td>
             </tr>
-            {% endif %}
           {% endfor %}
         </tbody>
     </table>

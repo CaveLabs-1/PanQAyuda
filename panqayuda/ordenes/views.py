@@ -10,6 +10,7 @@ from panqayuda.decorators import group_required
 from recetas.models import Receta
 from django.utils import timezone
 from materiales.models import Material, MaterialInventario, Unidad
+from django.db.models import F
 
 '''
     Lista de odenes de trabajo, con forma para dar de alta una nueva orden de trbajo.
@@ -114,7 +115,37 @@ def cancelar_orden (request):
     if request.method == 'POST':
          orden= get_object_or_404(Orden, pk=request.POST['id'])
          orden.estatus=request.POST['estatus']
+         #Reabastecer el inventario y el producto semiterminado
+         cantidad_a_sumar = orden.cantidad()
+         receta = orden.receta
+         cancelar_orden_reabastecer_material(receta,cantidad_a_sumar)
          orden.save()
+
     ordenes = Orden.ordenes_por_entregar()
     data = render_to_string('ordenes/tabla_ordenes.html', {'ordenes': ordenes})
     return HttpResponse(data)
+
+#Cuando se cancela una orden de trabajo, el inventario de materias primas se reabastece
+def cancelar_orden_reabastecer_material(receta,cantidad):
+    #Obtener las relaciones de la receta
+    relaciones_receta = RelacionRecetaMaterial.objects.filter(receta=receta)
+    for relacion_receta in relaciones_receta:
+        #Calcular cantidad a reabastecer
+        cantidad_a_sumar = float(cantidad * relacion_receta.cantidad)
+
+        #Obtener los materiales inventario de cada relacion, excluyendo a los que no pueden recibir y a los eliminados
+        material = relacion_receta.material
+        materiales_inventario = MaterialInventario.objects.filter(material=material,deleted_at__isnull=True, porciones_disponible__lt=F('porciones')).order_by('-fecha_cad')
+
+        #Abastecer materiales inventario hasta que la cantidad a sumar sea 0
+        for material_inventario in materiales_inventario:
+            #Este material inventario no puede recibirlo todo
+            if cantidad_a_sumar > (material_inventario.porciones - material_inventario.porciones_disponible):
+                cantidad_a_sumar -= (material_inventario.porciones - material_inventario.porciones_disponible)
+                material_inventario.porciones_disponible = material_inventario.porciones
+                material_inventario.save()
+            else:
+            #Este material inventario puede recibirlo todo
+                material_inventario.porciones_disponible += cantidad_a_sumar
+                material_inventario.save()
+                break
