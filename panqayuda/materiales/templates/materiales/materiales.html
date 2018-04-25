@@ -36,9 +36,15 @@
             <td>{{ material.codigo }}</td>
             <td>{{ material.equivale_entrada }} {{ material.unidad_entrada }}</td>
             <td>{{ material.equivale_maestra }} {{ material.unidad_maestra }}</td>
-            <td><a href="{% url 'materiales:editar_material' material.id %}" class="modal-trigger"><i class="material-icons">edit</i></a></td>
+            <td><a href="{% url 'materiales:editar_material' material.id %}" class="modal-trigger">
+              <i class="material-icons ">edit</i>
+            </a></td>
             <!--Se manda llamar la función de eliminar_material mandando el id de material-->
-            <td><a href="{% url 'materiales:eliminar_material' material.id %}" class="modal-trigger" onclick="return confirm('Vas a eliminar un Material del catálogo. ¿Continuar?')"><i class="material-icons">delete</i></a></td>
+            <td>
+              <a href="{% url 'materiales:eliminar_material' material.id %}" class="modal-trigger" onclick="return confirm('Vas a eliminar un Material del catálogo. ¿Continuar?')">
+                <i class="material-icons">delete</i>
+              </a>
+            </td>
             </tr>
          {% endfor %}
         </tbody>
@@ -46,7 +52,9 @@
     </div>
   </div>
   <div class="fixed-action-btn ">
-    <a class="add-btn btn-floating btn-large waves-effect waves-light pink btn modal-trigger" href="#agregar_materia_prima"><i class="material-icons">add</i></a>
+    <a class="add-btn btn-floating btn-large waves-effect waves-light pink btn modal-trigger tooltipped" href="#agregar_materia_prima" data-position="left" data-tooltip="Agregar material al catálogo">
+      <i class="material-icons">add</i>
+    </a>
   </div>
 
 {% include 'materiales/modal_agregar_materia_prima.html' %}

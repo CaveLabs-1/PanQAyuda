@@ -35,7 +35,11 @@
                 <td>{{ material.nombre }}</td>
                 <td>{{ material.total }}</td>
                 <!--mostrar detalle-->
-                <td><a onclick="detalleMateriales({{material.id}})" href="#modal_detalle" class="modal-trigger"><i class="material-icons">view_list</i> </a></td>
+                <td>
+                  <a onclick="detalleMateriales({{material.id}})" href="#modal_detalle" class="modal-trigger">
+                    <i class="material-icons" >view_list</i>
+                  </a>
+              </td>
             </tr>
             {% endif %}
           {% endfor %}
@@ -43,7 +47,9 @@
     </table>
     <br>
     <div class="fixed">
-        <a href="{% url 'compras:compras' %}" class="btn-floating btn-large waves-effect waves-light pink"><i class="material-icons">add</i></a>
+        <a href="{% url 'compras:agregar_compra' %}" class="btn-floating btn-large waves-effect waves-light waves-circle pink fixed tooltipped" data-position="left" data-tooltip="Agregar nueva compra">
+          <i class="material-icons">add</i>
+        </a>
     </div>
   </div>
   <div id="modal_detalle" class="modal">

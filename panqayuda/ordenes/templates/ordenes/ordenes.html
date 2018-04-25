@@ -6,7 +6,7 @@
     <h1 class="center-align">Órdenes de Trabajo</h1>
   </header>
 {% endblock header %}
-{% block content %} 
+{% block content %}
   {# ----------  Inicia modal  --------------  #}
   <div id="agregarOrden" class="modal">
     <div class="modal-content">
@@ -16,7 +16,7 @@
         </div>
         <div class="col s1 offset-s6">
           <a class="black-text modal-close">
-            <i class="medium material-icons">close</i>
+            <i class="small material-icons">close</i>
           </a>
         </div>
       </div>
@@ -44,7 +44,7 @@
             <label for="{{forma.multiplicador.id_for_label}}">Multiplicador</label>
           </div>
           <div class="col s1">
-            <a class="tooltipped btnAyuda" data-position="top" data-delay="50" data-tooltip="El multiplicador decidira la cantidad de veces que se producirá la receta seleccionada con la cantidad fija de esta.">
+            <a class="tooltipped btnAyuda" data-position="top" data-delay="50" data-tooltip="El multiplicador decidira la cantidad de veces que se producirá la receta seleccionada con la cantidad fija de ésta.">
               <i class="material-icons">help</i>
             </a>
           </div>
@@ -66,7 +66,7 @@
     </div>
   </div>
   <div class="fixed-action-btn ">
-    <a class="add-btn btn-floating btn-large waves-effect waves-light pink btn modal-trigger" href="#agregarOrden"><i class="material-icons">add</i></a>
+    <a class="btn-floating btn-large waves-effect waves-light waves-circle pink fixed tooltipped modal-trigger" data-position="left" data-tooltip="Agregar órden de trabajo" href="#agregarOrden"><i class="material-icons">add</i></a>
   </div>
 
 
