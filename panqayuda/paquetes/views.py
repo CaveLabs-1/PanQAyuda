@@ -36,12 +36,12 @@ def agregar_paquete(request):
         if forma.is_valid():
             #Guardas la forma y mandas mensaje de éxito y redirige a agregar recetas a paquete
             forma.save()
-            messages.success(request, '¡Se ha agregado el paquete al catálogo!')
+            messages.success(request, '¡Se ha agregado el producto al catálogo!')
             paquete = Paquete.objects.latest('id')
             return HttpResponseRedirect(reverse('paquetes:agregar_recetas_a_paquete', kwargs={'id_paquete':paquete.id}))
             #Manda mensaje de error si la forma no es válida
         else:
-            messages.info(request, 'Hubo un error y no se agregó el paquete. Inténtalo de nuevo.')
+            messages.info(request, 'Hubo un error y no se agregó el producto terminado. Inténtalo de nuevo.')
     #Manda mensaje de error si no se manda por POST
     else:
         forma=FormPaquete()
@@ -106,7 +106,7 @@ def agregar_paquete_inventario(request):
             cantidad_post = forma_post.instance.cantidad
             #Verificar que hay suficiente cantidad en inventario para agregar el paquete
             if agregar_paquetes_inventario_recetas(paquete,cantidad_post) == False:
-                messages.error(request, 'No hay inventario suficiente para agregar este paquete')
+                messages.error(request, 'No hay inventario suficiente para agregar este producto terminado')
                 return HttpResponseRedirect(reverse('paquetes:agregar_inventario'))
             costo= costo_paquetes_inventario_recetas(paquete, cantidad_post)
             PaqueteInventario.objects.create(nombre=data['nombre'], cantidad=data['cantidad'], fecha_cad=data['fecha_cad'], costo=costo)
@@ -114,7 +114,7 @@ def agregar_paquete_inventario(request):
             return HttpResponseRedirect(reverse('paquetes:lista_paquete_inventario'))
         #Si la forma no es válida, manda un mensaje de error y regresa a agregar paquete en inventario
         else:
-            messages.error(request, 'Hubo un error y no se agregó el paquete al inventario.')
+            messages.error(request, 'Hubo un error y no se agregó el producto terminado al inventario.')
             return HttpResponseRedirect(reverse('paquetes:agregar_inventario'))
     #Si no se manda por método POST
     else:
@@ -130,7 +130,7 @@ def borrar_paquete_inventario(request, id_paquete_inventario):
     paquete_inventario.estatus = 0
     paquete_inventario.deleted_at = datetime.datetime.now()
     paquete_inventario.save()
-    messages.success(request, 'Se ha borrado el paquete del inventario')
+    messages.success(request, 'Se ha borrado el producto terminado del inventario')
     return redirect('paquetes:lista_paquete_inventario')
 
 @group_required('admin')
@@ -204,7 +204,7 @@ def agregar_receta_a_paquete(request):
             for field,errors in forma.errors.items():
                  for error in errors:
                      mensaje_error+=error + "\n"
-            return HttpResponseNotFound('Hubo un problema agregando la receta al paquete: '+ mensaje_error)
+            return HttpResponseNotFound('Hubo un problema agregando el producto semit-terminado al producto terminado: '+ mensaje_error)
 
 @group_required('admin')
 def quitar_receta_paquete(request):
