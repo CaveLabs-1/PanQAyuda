@@ -14,7 +14,7 @@
     <div class="card recetas-catalogo-card">
       <div class="row">
         <div class="col s6">
-          <a class="btn waves-effect waves-light pink" href="/paquetes/lista_paquetes/editar_paquete/{{paquete.id}}">Regresar
+          <a class="btn waves-effect waves-light pink" href="{% url 'paquetes:editar_paquete' paquete.id %}">Regresar
             <i class="material-icons left">chevron_left</i>
           </a>
         </div>
@@ -26,7 +26,7 @@
         {{lista_recetas}}
       </div>
       <div class="col s12 right-align btn-agregar-paquete">
-        <a class="agregar-btn waves-effect waves-light btn pink" href="../../../paquetes/lista_paquetes">Agregar</a>
+        <a class="agregar-btn waves-effect waves-light btn pink" href="{% url 'paquetes:lista_paquetes' %}">Agregar</a>
       </div>
     </div>
   </div>

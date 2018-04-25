@@ -10,8 +10,8 @@
 <div class="row">
   <div class="col s12">
     <ul class="tabs">
-      <li class="tab col s6"><a class="pink-text" href="/materiales">Inventario</a></li>
-      <li class="tab col s6"><a class="active white-text" href="/materiales/lista_materiales">Catálogo</a></li>
+      <li class="tab col s6"><a class="pink-text" href="{% url 'materiales:lista_materiales_inventario' %}">Inventario</a></li>
+      <li class="tab col s6"><a class="active white-text" href="{% url 'materiales:materiales' %}">Catálogo</a></li>
     </ul>
   </div>
 </div>
