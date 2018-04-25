@@ -1,11 +1,20 @@
 <!-- Modal Agregar materia prima a catálogo -->
   <div id="agregar_materia_prima" class="modal">
     <div class="modal-content">
-      <h3>Agregar una materia prima al catálogo </h3>
+      <div class="row">
+        <div class="col s11">
+          <h3>Agregar una materia prima al catálogo </h3>
+        </div>
+        <div class="col s1">
+          <a class="black-text modal-close">
+            <i class="small material-icons tooltipped"  data-position="bottom" data-tooltip="Cerrar">close</i>
+          </a>
+        </div>
+      </div>
         <form action="{% url 'materiales:materiales' %}" method="POST">
             {% csrf_token %}
-            <!--Nombre-->
             <div class="row">
+              <!--Nombre-->
                 <div class="input-field col s12 m6 l6">
                     <input class="validate"  type="text" name="{{ forma.nombre.html_name }}" id="{{ forma.nombre.id_for_label }}" value="" required>
                     <label for="{{ forma.nombre.id_for_label }}">Nombre</label>
@@ -19,13 +28,15 @@
                     <span class="helper-text" data-error=""></span>
                     <span class="red-text">{%if forma.codigo.errors %}{{ forma.codigo.errors }}{% endif %}</span>
                 </div>
-                {# Valor de entrada #}
+              </div>
+              <div class="row">
+                <!--Valor de entrada -->
                 <div class="input-field col s6 m3">
                   <input type="text" class="validate" name="{{ forma.equivale_entrada.html_name }}" id="{{ forma.equivale_entrada.id_for_label }}" value="1" required>
                   <label for="{{ forma.equivale_entrada.id_for_label }}" data-error='No es un valor valido.' data-success=''>Valor de entrada</label>
                   <span class="red-text">{%if forma.equivale_entrada.errors %}{{ forma.equivale_entrada.errors }}{% endif %}</span>
                 </div>
-                {# Unidad de entrada #}
+                <!-- Unidad de entrada -->
                 <div class="input-field col s6 m3">
                   <select id="{{forma.unidad_entrada.id_for_label}}" class="" name="{{forma.unidad_entrada.html_name}}" required>
                     <option selected disabled value=''>Selecciona</option>
@@ -35,13 +46,13 @@
                   </select>
                   <label for="{{forma.unidad_entrada.id_for_label}}">Unidad de entrada</label>
                 </div>
-                {# Equivalencia a unidad maestra, la que se usará en el resto del sistema #}
+                <!-- Equivalencia a unidad maestra, la que se usará en el resto del sistema -->
                 <div class="input-field col s6 m3">
                   <input type="text" class="validate" name="{{ forma.equivale_maestra.html_name }}" id="{{ forma.equivale_maestra.id_for_label }}" value="1" required>
                   <label for="{{ forma.equivale_maestra.id_for_label }}" data-error='No es un valor valido.' data-success=''>Equivalencia</label>
                   <span class="red-text">{%if forma.equivale_maestra.errors %}{{ forma.equivale_maestra.errors }}{% endif %}</span>
                 </div>
-                {# Unidad maestra #}
+                <!-- Unidad maestra -->
                 <div class="input-field col s6 m3">
                   <select id="{{forma.unidad_maestra.id_for_label}}" class="" name="{{forma.unidad_maestra.html_name}}" required>
                     <option selected disabled value=''>Selecciona </option>
@@ -53,9 +64,15 @@
                 </div>
             </div>
             <div class="row">
-                  <button class="col l3 offset-l9 m3 offset-m9 s12 btn waves-effect waves-light pink right-align" type="submit" name="action">Agregar
-                    <i class="material-icons right">send</i>
-                  </button>
+              <br>
+              <div class="col s6">
+                <a class="btn waves-effect waves-light pink modal-close" >Regresar
+                  <i class="material-icons left">chevron_left</i>
+                </a>
+              </div>
+              <div class="col s6 right-align">
+                <button type="submit"class="btn waves-effect waves-light pink">Agregar <i class="material-icons right">send</i></button>
+              </div>
             </div>
         </form>
     </div>
