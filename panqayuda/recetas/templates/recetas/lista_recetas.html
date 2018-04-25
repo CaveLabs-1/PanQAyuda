@@ -25,7 +25,7 @@
             <tr>
                 <td><a href="/recetas/receta/{{ receta.id }}">{{ receta.nombre }}</a></td>
                 <td>{{ receta.cantidad }}</td>
-                <td>{{ receta.duration }}</td>
+                <td>{{ receta.duration.days }} días</td>
                 <!-- <td><a href="agregar_materiales/{{ receta.id }}"><i class="material-icons">edit</i></a></td> #} -->
                 <!--<td><a onclick="return confirm('¿Seguro que quieres borrar la receta de {{receta.nombre}}?')" href="borrar_receta/{{ receta.id }}"><i class="material-icons">delete</i></a></td>-->
             </tr>
