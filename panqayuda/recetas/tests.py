@@ -5,6 +5,11 @@ import datetime
 from django.utils import timezone
 from django.urls import reverse
 from django.contrib.auth.models import User, Group
+from materiales.models import MaterialInventario
+from compras.models import Compra
+from proveedores.models import Proveedor
+from materiales.models import Unidad
+from ordenes.models import Orden
 
 #US27-Agregar Receta
 class TestAgregarReceta(TestCase):
@@ -495,3 +500,91 @@ class TestListaRecetasInventario(TestCase):
         self.assertEqual(resp.context['detalle_recetas_en_inventario'].count(), 3)
 
         #Se señalan los que están caducados
+
+class TestVerCostoRecetaInventario(TestCase):
+
+    def setUp(self):
+        Group.objects.create(name="admin")
+        user = User.objects.create_user(username='temporary', email='temporary@gmail.com', password='temporary',
+                                            is_superuser='True')
+        user.save()
+        self.client.login(username='temporary', password='temporary')
+        # Agregar Unidad
+        data = {'nombre': "kilos"}
+        self.client.post(reverse('materiales:lista_unidades'), data)
+        # Agregar Proveedor
+        data = {
+            'nombre': "Nombre Proveedor",
+            'telefono': '4424708341',
+            'email': 'ale@hot.com',
+            'direccion': 'prueba de direccion',
+            'rfc': '1231230',
+            'razon_social': 'razon social'
+        }
+        self.client.post(reverse('proveedores:agregar_proveedor'), data)
+        # Agregar Catalogo Materia Prima
+        Material.objects.create(
+            id=1,
+            nombre="Materia Prima",
+            codigo='1233123',
+            unidad_entrada=Unidad.objects.all().first(),
+            unidad_maestra=Unidad.objects.all().first(),
+            equivale_entrada='1',
+            equivale_maestra='1'
+        )
+        # Agregar Orden de Compra
+        Compra.objects.create(
+            id=1,
+            proveedor=Proveedor.objects.all().first(),
+            fecha_compra='2018-10-10'
+        )
+        # Agregar Material Invertario
+        MaterialInventario.objects.create(
+            id=1,
+            material=Material.objects.all().first(),
+            compra=Compra.objects.all().first(),
+            unidad_entrada=Unidad.objects.all().first(),
+            cantidad=5,
+            costo=100,
+            costo_unitario=100 / 5,
+            fecha_cad='2018-10-10'
+        )
+        #Agregar nueva receta al catalogo
+        Receta.objects.create(
+            id=1,
+            nombre="Receta",
+            cantidad=1,
+        )
+        RelacionRecetaMaterial.objects.create(
+            id=1,
+            receta=Receta.objects.all().first(),
+            material=Material.objects.all().first(),
+            cantidad=1
+        )
+        Orden.objects.create(
+            id=1,
+            receta=Receta.objects.all().first(),
+            multiplicador=1,
+            estatus=2,
+            fecha_fin='2018-10-10',
+            costo=20
+        )
+
+        RecetaInventario.objects.create(
+            id=1,
+            nombre=Receta.objects.all().first(),
+            cantidad=1,
+            ocupados=0,
+            fecha_cad='2018-10-10',
+            costo=20
+        )
+
+    #Checar que el precio que despliega esta de acuerdo a lo que dice el objeto
+    def testVerCostoReceta(self):
+        resp = self.client.post('/recetas/detalle_recetas_inventario',{'id_receta':1})
+        for receta in resp.context['detalle_recetas_en_inventario']:
+            self.assertEqual(20, receta.costo)
+
+
+
+

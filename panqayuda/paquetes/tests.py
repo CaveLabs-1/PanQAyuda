@@ -563,3 +563,30 @@ class TestEditarPaqueteInventario(TestCase):
         resp = self.client.post(reverse('paquetes:editar_paquete_inventario', kwargs={'id_paquete': PaqueteInventario.objects.first().id}), data)
         update = PaqueteInventario.objects.first()
         self.assertNotEqual(update.cantidad, "repollo")
+
+class TestVerCostoProductoTerminado(TestCase):
+
+    def setUp(self):
+        Group.objects.create(name="admin")
+        user = User.objects.create_user(username='temporary', email='temporary@gmail.com', password='temporary',
+                                            is_superuser='True')
+        user.save()
+        self.client.login(username='temporary', password='temporary')
+
+        Paquete.objects.create(
+            nombre="Paquete",
+            precio="120",
+        )
+        PaqueteInventario.objects.create(
+            id=1,
+            nombre=Paquete.objects.all().first(),
+            cantidad=1,
+            ocupados=0,
+            fecha_cad='2018-10-10',
+            costo=20
+        )
+
+    def testVerCostoPaquete(self):
+        resp = self.client.post('/paquetes/paquetes_por_catalogo/', {'id_paquete': 1})
+        for paq in resp.context['detalle_paquetes_en_inventario']:
+            self.assertEqual(20, paq.costo)
