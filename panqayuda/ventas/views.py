@@ -133,6 +133,21 @@ def restar_paquetes_inventario(paquete,cantidad):
             paquete_inventario.save()
             break
 
+def agregar_paquetes_inventario(paquete,cantidad):
+    # Obtener paquetes del inventario disponibles para restar ordenados por fecha de caducidad
+    paquetes_inventario = paquete.obtener_paquetes_inventario_disponibles()
+    for paquete_inventario in paquetes_inventario:
+        if cantidad > paquete_inventario.ocupados:
+        # La necesitada es mayor que la cantidad que este 'lote' tiene
+            cantidad -= paquete_inventario.ocupados
+            paquete_inventario.ocupados = paquete_inventario.cantidad
+            paquete_inventario.save()
+        # Este 'lote' satisface la cantidad necesitada para el paquete
+        else:
+            paquete_inventario.ocupados -= cantidad
+            paquete_inventario.save()
+            break
+
 #Verifica si hay suficientes paquetes disponibles para realizar la venta, devuelve una fila de la tabla
 #para el resumen de venta.
 @group_required('admin')
@@ -168,9 +183,7 @@ def cancelar_venta(request, id_venta):
         for registro in relacion_venta_paquete:
             paquete = registro.paquete
             cantidad = registro.cantidad
-            paquete_inventario = get_object_or_404(PaqueteInventario, pk=paquete.id)
-            paquete_inventario.ocupados -= cantidad
-            paquete_inventario.save()
+            agregar_paquetes_inventario(paquete,cantidad)
         #Cambio de Estatus y asignacipon de deleted_at
         relacion_venta_paquete.estatus = 0
         relacion_venta_paquete.deleted_at = datetime.datetime.now()
