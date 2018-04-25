@@ -18,7 +18,7 @@ def materiales(request):
         forma_post = MaterialForm(request.POST)
         if forma_post.is_valid():
             forma_post.save()
-            messages.success(request, 'Se ha agregado un nuevo material.')
+            messages.success(request, 'Se ha agregado una nueva materia prima.')
         else:
             # Si no es válida la forma devuelve un mensaje de error.
             messages.error(request, 'Hubo un error, inténtalo de nuevo.')
@@ -80,7 +80,7 @@ def eliminar_material(request, id_material):
     #Se hace el borrado
     material.deleted_at = datetime.datetime.now()
     material.save()
-    messages.success(request, '¡Se ha borrado exitosamente el material del catálogo!')
+    messages.success(request, '¡Se ha borrado exitosamente la materia prima del catálogo!')
     #Regresa a la lista de materiales
     return redirect('materiales:materiales')
 
@@ -102,7 +102,7 @@ def agregar_unidades(request):
              messages.success(request, '¡Ya hay una unidad con este nombre!')
              return redirect('/materiales/lista_unidades')
     else:
-        messages.success(request, '¡Hubo un error con el POST!')
+        messages.success(request, '¡Hubo un error con la petición. Inténtalo de nuevo.')
         return redirect('/materiales/lista_unidades')
 
 """
@@ -170,7 +170,7 @@ def editar_material(request, id_material):
         if form.is_valid():
             material = form.save()
             material.save()
-            messages.success(request, 'Se ha editado el material exitosamente!')
+            messages.success(request, 'Se ha editado la materia prima exitosamente!')
             return redirect('materiales:materiales')
         else:
             unidades = Unidad.objects.filter(deleted_at__isnull=True)
