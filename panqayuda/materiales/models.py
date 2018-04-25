@@ -48,6 +48,7 @@ class MaterialInventario(models.Model):
     unidad_entrada = models.ForeignKey(Unidad, on_delete=models.SET(unidad_ne), blank=True, null=True)
     # Cantidad en la unidad en la que se compró.
     cantidad = models.FloatField(blank=True, null=True)
+    costo_unitario = models.FloatField(blank=True, null=True)
     # Cantidad en la unidad que se usará en todo el sistema.
     porciones = models.FloatField(blank=True, null=True)
     # Cantidad disponible en la unidad que se usará en todo el sistema.
