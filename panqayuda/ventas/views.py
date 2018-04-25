@@ -113,6 +113,7 @@ def generar_venta(request):
         forma_venta = VentaForm()
         #La forma para cada paquete que se genera en la venta
         forma_paquete_venta = RelacionVentaPaqueteForm()
+        forma_paquete_venta.fields['paquete'].queryset = Paquete.objects.filter(deleted_at__isnull=True)
         #La forma en caso de que se quiera agregar un nuevo cliente
         forma_cliente = FormCliente()
         data = {'forma_venta':forma_venta, 'forma_paquete_venta':forma_paquete_venta, 'forma':forma_cliente}
