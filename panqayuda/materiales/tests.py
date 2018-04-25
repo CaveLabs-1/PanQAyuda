@@ -408,3 +408,56 @@ class TestEliminarMaterial(TestCase):
         self.client.get(reverse('materiales:eliminar_material', kwargs={'id_material':objetos.id}))
         #Se busca que no haya con cambio vacío de deleted_at
         self.assertEqual(Material.objects.filter(deleted_at__isnull=True).count(), 0)
+
+
+class TestVerCostoMaterial(TestCase):
+
+    def setUp(self):
+        Group.objects.create(name="admin")
+        user = User.objects.create_user(username='temporary', email='temporary@gmail.com', password='temporary',
+                                        is_superuser='True')
+        user.save()
+        self.client.login(username='temporary', password='temporary')
+        #Agregar Unidad
+        data = {'nombre': "kilos"}
+        self.client.post(reverse('materiales:lista_unidades'), data)
+        # Agregar Proveedor
+        data = {
+            'nombre': "Nombre Proveedor",
+            'telefono': '4424708341',
+            'email': 'ale@hot.com',
+            'direccion': 'prueba de direccion',
+            'rfc': '1231230',
+            'razon_social': 'razon social'
+        }
+        self.client.post(reverse('proveedores:agregar_proveedor'), data)
+        # Agregar Catalogo Materia Prima
+        Material.objects.create(
+            nombre="Materia Prima",
+            codigo='1233123',
+            unidad_entrada=Unidad.objects.all().first(),
+            unidad_maestra=Unidad.objects.all().first(),
+            equivale_entrada='1',
+            equivale_maestra='1'
+        )
+        #Agregar Orden de Compra
+        Compra.objects.create(
+            proveedor=Proveedor.objects.all().first(),
+            fecha_compra='2018-10-10'
+        )
+        #Agregar Material Invertario
+        MaterialInventario.objects.create(
+            material=Material.objects.all().first(),
+            compra=Compra.objects.all().first(),
+            unidad_entrada=Unidad.objects.all().first(),
+            cantidad=5,
+            costo=100,
+            costo_unitario=100/5,
+            fecha_cad='2018-10-10'
+
+        )
+
+    def testVerCostoMaterial(self):
+        resp = self.client.get('/materiales/#modal_detalle')
+        for material in resp.context['materiales']:
+            self.assertEqual(MaterialInventario.objects.all().first().costo_unitario, material.costo_unitario)
