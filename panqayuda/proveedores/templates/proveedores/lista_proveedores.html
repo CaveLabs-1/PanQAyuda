@@ -36,7 +36,7 @@
           <td>{{ item.rfc }}</td>
           <td>{{ item.razon_social }}</td>
           <td>{{ item.email }}</td>
-          <!-- Boton de eliminar proveedor que manda a llamar el url de eliminar_proveedor -->
+          <!--Se manda llamar la función de eliminar_proveedor mandando el id de item-->
           <td><a href="{% url 'proveedores:eliminar_proveedor' item.id %}" class="modal-trigger" onclick="return confirm('Vas a eliminar un Proveedor del catálogo. ¿Continuar?')" ><i class="material-icons">delete</i></a></td>
         </tr>
         {% endfor %}

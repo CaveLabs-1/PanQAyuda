@@ -98,7 +98,7 @@
         //Diccionario con unidades para cada material
         var dict = {
                     {% for material in materiales_disponibles %}
-                     '{{ material.nombre }}': '{{ material.unidad }}',
+                     '{{ material.nombre }}': '{{ material.unidad_maestra }}',
                     {% endfor %}
                     };
         //Autocompletar para escoger materiales

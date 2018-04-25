@@ -37,6 +37,8 @@ def lista_mermas_material(request):
     return render (request, 'mermas/lista_mermas_material.html', {'forma': forma, 'mermas': mermas, 'materiales_catalogo':materiales_catalogo})
     # return render(request, 'mermas/lista_mermas_material.html', {'mermas': mermas})
 
+
+#Funcionalidad agregar merma de paquetes
 @group_required('admin')
 def agregar_merma_paquetes(request):
     if request.method == 'POST':
@@ -50,6 +52,7 @@ def agregar_merma_paquetes(request):
                 context = {
                     'MermaPack': newMermaPaqueteForm,
                 }
+                # return render(request, 'mermas/MagregarPack.html', context)
                 return HttpResponseRedirect(reverse('mermas:lista_mermas_paquete'))
             elif pack.disponibles() == Merma.cantidad :
                 Merma.save()
@@ -71,7 +74,9 @@ def agregar_merma_paquetes(request):
             # return render(request, 'mermas/MagregarPack.html', context)
             return HttpResponseRedirect(reverse('mermas:lista_mermas_paquete'))
     else :
-        return render(reverse('mermas:lista_mermas'))
+        forma = MermaPaqueteForm()
+        return render (request, 'mermas/lista_mermas_paquete.html', {'forma': forma, 'mermas': lista_mermas_paquete})
+        # return render(reverse('mermas:lista_mermas_paquete'))
 
 @group_required('admin')
 def agregar_merma_materiales(request):
@@ -81,21 +86,21 @@ def agregar_merma_materiales(request):
             Merma = newMermaMaterialForm.save(commit=False)
             #Regresa la Material Prima del inventario que se debe de borrar
             pack = MaterialInventario.objects.get(id=Merma.nombre.id)
-            if pack.cantidad_disponible < Merma.cantidad :
-                messages.success(request, 'Esta materia prima solo tiene ' + str(pack.cantidad_disponible) + " unidad" + "disponibles.")
+            if pack.porciones_disponible < Merma.cantidad :
+                messages.success(request, 'Esta materia prima solo tiene ' + str(pack.porciones_disponible) + " unidad" + "disponibles.")
                 context = {
                     'MermaPack': newMermaMaterialForm,
                 }
                 # return render(request, 'mermas/MermaMaterial.html', context)
                 return HttpResponseRedirect(reverse('mermas:lista_mermas_material'))
-            elif pack.cantidad_disponible == Merma.cantidad:
+            elif pack.porciones_disponible == Merma.cantidad:
                 Merma.save()
-                pack.cantidad_disponible = 0
+                pack.porciones_disponible = 0
                 pack.save()
                 messages.success(request, 'Se quitaron ' + str(Merma.cantidad) + ' unidad de ' + pack.material.nombre)
                 return HttpResponseRedirect(reverse('mermas:lista_mermas_material'))
             else :
-                pack.cantidad_disponible -= Merma.cantidad
+                pack.porciones_disponible -= Merma.cantidad
                 Merma.save()
                 pack.save()
                 messages.success(request, 'Se quitaron ' + str(Merma.cantidad) + ' unidad de ' + pack.material.nombre)
@@ -189,4 +194,3 @@ def obtener_materiales_ajuste_inventario(request):
     response = render_to_string('mermas/opciones_material_inventario.html', {'materiales_inventario':materiales_inventario}, request=request)
 
     return HttpResponse(response)
-

@@ -4,6 +4,7 @@
     <tr>
       <th>Nombre</th>
       <th>Cantidad</th>
+      <th>Costo</th>
       <th>Fecha de caducidad</th>
       <th>Editar</th>
       <th>Borrar</th>
@@ -14,6 +15,7 @@
         <tr>
           <td>{{paquete.nombre}}</td>
             <td>{{i.cantidad}}</td>
+            <td>{{ i.costo }}</td>
             <td>{{i.fecha_cad}}</td>
             <td>{{i.multiplicar_costo_cantidad}}</td>
             <td><a href='{% url "paquetes:editar_paquete_inventario" i.id %}' class="modal-trigger"><i class="material-icons">edit</i> </a></td>

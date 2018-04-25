@@ -30,14 +30,12 @@
         </thead>
         <tbody>
           {% for material in catalogo_materiales %}
-            {% if material.total%}
             <tr>
                 <td>{{ material.nombre }}</td>
                 <td>{{ material.total }}</td>
                 <!--mostrar detalle-->
                 <td><a onclick="detalleMateriales({{material.id}})" href="#modal_detalle" class="modal-trigger"><i class="material-icons">view_list</i> </a></td>
             </tr>
-            {% endif %}
           {% endfor %}
         </tbody>
     </table>

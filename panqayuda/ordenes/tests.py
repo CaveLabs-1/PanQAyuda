@@ -33,10 +33,10 @@ class TestAgregarOrden(TestCase):
 
         # Generar registros en el inventario para pruebas
         fecha = timezone.now() + timezone.timedelta(days=3650)
-        MaterialInventario.objects.create(material = azucar, unidad_entrada = lesters, cantidad = 1000, cantidad_salida = 100, cantidad_disponible = 100, costo = 20.50, fecha_cad = fecha)
-        MaterialInventario.objects.create(material = flores, unidad_entrada = lesters, cantidad = 50, cantidad_salida = 200, cantidad_disponible = 200, costo = 85.70,  fecha_cad = fecha)
-        MaterialInventario.objects.create(material = muchos_colores, unidad_entrada = wruandes, cantidad = 350, cantidad_salida = 150, cantidad_disponible = 150, costo = 73.50,  fecha_cad = fecha)
-        MaterialInventario.objects.create(material = sustancia_x, unidad_entrada = midiclorians, cantidad = 30, cantidad_salida = 10, cantidad_disponible = 10, costo = 27000.50, fecha_cad = fecha)
+        MaterialInventario.objects.create(material = azucar, unidad_entrada = lesters, cantidad = 1000, cantidad_salida = 100, porciones_disponible = 100, costo = 20.50, fecha_cad = fecha)
+        MaterialInventario.objects.create(material = flores, unidad_entrada = lesters, cantidad = 50, cantidad_salida = 200, porciones_disponible = 200, costo = 85.70,  fecha_cad = fecha)
+        MaterialInventario.objects.create(material = muchos_colores, unidad_entrada = wruandes, cantidad = 350, cantidad_salida = 150, porciones_disponible = 150, costo = 73.50,  fecha_cad = fecha)
+        MaterialInventario.objects.create(material = sustancia_x, unidad_entrada = midiclorians, cantidad = 30, cantidad_salida = 10, porciones_disponible = 10, costo = 27000.50, fecha_cad = fecha)
 
         # Crear receta de prueba para la alta de ordenes de trabajo
         chicas_sp = Receta.objects.create(nombre = 'Chicas Superpoderosas', cantidad = 3, duration = datetime.timedelta(days=3350))
@@ -168,10 +168,10 @@ class TestMarcarOrdenComoTerminada(TestCase):
 
         # Generar registros en el inventario para pruebas
         fecha = timezone.now() + timezone.timedelta(days=3650)
-        MaterialInventario.objects.create(material = azucar, unidad_entrada = lesters, cantidad = 1000, cantidad_salida = 100, cantidad_disponible = 100, costo = 20.50, fecha_cad = fecha)
-        MaterialInventario.objects.create(material = flores, unidad_entrada = lesters, cantidad = 50, cantidad_salida = 200, cantidad_disponible = 200, costo = 85.70,  fecha_cad = fecha)
-        MaterialInventario.objects.create(material = muchos_colores, unidad_entrada = wruandes, cantidad = 350, cantidad_salida = 150, cantidad_disponible = 150, costo = 73.50,  fecha_cad = fecha)
-        MaterialInventario.objects.create(material = sustancia_x, unidad_entrada = midiclorians, cantidad = 30, cantidad_salida = 10, cantidad_disponible = 10, costo = 27000.50, fecha_cad = fecha)
+        MaterialInventario.objects.create(material = azucar, unidad_entrada = lesters, cantidad = 1000, cantidad_salida = 100, porciones_disponible = 100, costo = 20.50, fecha_cad = fecha)
+        MaterialInventario.objects.create(material = flores, unidad_entrada = lesters, cantidad = 50, cantidad_salida = 200, porciones_disponible = 200, costo = 85.70,  fecha_cad = fecha)
+        MaterialInventario.objects.create(material = muchos_colores, unidad_entrada = wruandes, cantidad = 350, cantidad_salida = 150, porciones_disponible = 150, costo = 73.50,  fecha_cad = fecha)
+        MaterialInventario.objects.create(material = sustancia_x, unidad_entrada = midiclorians, cantidad = 30, cantidad_salida = 10, porciones_disponible = 10, costo = 27000.50, fecha_cad = fecha)
 
         # Crear receta de prueba para la alta de ordenes de trabajo
         chicas_sp = Receta.objects.create(nombre = 'Chicas Superpoderosas', cantidad = 3, duration = datetime.timedelta(days=3350))
@@ -270,10 +270,10 @@ class TestCancelarOrden(TestCase):
 
         # Generar registros en el inventario para pruebas
         fecha = timezone.now() + timezone.timedelta(days=3650)
-        MaterialInventario.objects.create(material = azucar, unidad_entrada = lesters, cantidad = 1000, cantidad_salida = 100, cantidad_disponible = 100, costo = 20.50, fecha_cad = fecha)
-        MaterialInventario.objects.create(material = flores, unidad_entrada = lesters, cantidad = 50, cantidad_salida = 200, cantidad_disponible = 200, costo = 85.70,  fecha_cad = fecha)
-        MaterialInventario.objects.create(material = muchos_colores, unidad_entrada = wruandes, cantidad = 350, cantidad_salida = 150, cantidad_disponible = 150, costo = 73.50,  fecha_cad = fecha)
-        MaterialInventario.objects.create(material = sustancia_x, unidad_entrada = midiclorians, cantidad = 30, cantidad_salida = 10, cantidad_disponible = 10, costo = 27000.50, fecha_cad = fecha)
+        MaterialInventario.objects.create(material = azucar, unidad_entrada = lesters, cantidad = 1000, cantidad_salida = 100, porciones_disponible = 100, costo = 20.50, fecha_cad = fecha)
+        MaterialInventario.objects.create(material = flores, unidad_entrada = lesters, cantidad = 50, cantidad_salida = 200, porciones_disponible = 200, costo = 85.70,  fecha_cad = fecha)
+        MaterialInventario.objects.create(material = muchos_colores, unidad_entrada = wruandes, cantidad = 350, cantidad_salida = 150, porciones_disponible = 150, costo = 73.50,  fecha_cad = fecha)
+        MaterialInventario.objects.create(material = sustancia_x, unidad_entrada = midiclorians, cantidad = 30, cantidad_salida = 10, porciones_disponible = 10, costo = 27000.50, fecha_cad = fecha)
 
         # Crear receta de prueba para la alta de ordenes de trabajo
         chicas_sp = Receta.objects.create(nombre = 'Chicas Superpoderosas', cantidad = 3, duration = datetime.timedelta(days=3350))

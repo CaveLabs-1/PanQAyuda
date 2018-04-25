@@ -12,4 +12,3 @@ class Compra(models.Model):
     deleted_at = models.DateTimeField(blank=True, null=True)
     def __str__(self):
         return self.proveedor.nombre
-# Create your models here.

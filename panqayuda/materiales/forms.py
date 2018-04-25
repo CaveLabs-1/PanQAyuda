@@ -7,7 +7,7 @@ from django.core.exceptions import ValidationError
 class MaterialForm(ModelForm):
     class Meta:
         model = Material
-        fields = ('nombre', 'codigo')
+        fields = ('nombre', 'codigo', 'unidad_entrada', 'unidad_maestra', 'equivale_entrada', 'equivale_maestra')
 
     def clean_nombre(self):
         nombre=self.cleaned_data['nombre']
@@ -23,6 +23,7 @@ class MaterialForm(ModelForm):
                         return nombre
             raise ValidationError("Este material ya existe")
 
+#Forma con el campo único de nombre para unidades
 class UnidadForm(ModelForm):
     class Meta:
         model = Unidad
@@ -48,7 +49,7 @@ class UnidadForm(ModelForm):
 class MaterialInventarioForm(ModelForm):
     class Meta:
         model = MaterialInventario
-        fields = ('material', 'compra', 'unidad_entrada', 'cantidad', 'porciones', 'costo', 'fecha_cad')
+        fields = ('material', 'compra', 'cantidad', 'costo', 'fecha_cad')
 
     def clean_cantidad(self):
         cantidad=self.cleaned_data['cantidad']

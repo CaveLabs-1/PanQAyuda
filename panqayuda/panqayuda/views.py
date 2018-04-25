@@ -3,6 +3,8 @@ from django.urls import reverse
 
 def login_success(request):
     if request.user.groups.filter(name="superuser").exists():
-        return HttpResponseRedirect(reverse('paquetes:lista_paquetes')) # Debe ir a ventas
+        # Debe ir a ventas
+        return HttpResponseRedirect(reverse('paquetes:lista_paquetes'))
     else:
-        return HttpResponseRedirect(reverse('ordenes:ordenes')) #A Ordenes porque es administrativo
+        #A Ordenes porque es administrativo
+        return HttpResponseRedirect(reverse('ordenes:ordenes'))

@@ -14,6 +14,8 @@ class Paquete (models.Model):
 	created_at = models.DateTimeField(default=timezone.now)
 	updated_at = models.DateTimeField(default=timezone.now)
 	deleted_at = models.DateTimeField(blank=True, null=True)
+
+	#Devuelve el nombre del paquete
 	def __str__(self):
 		return self.nombre
 
@@ -21,13 +23,13 @@ class Paquete (models.Model):
 	def obtener_disponibles_inventario(self):
 		return PaqueteInventario.objects.filter(nombre=self).filter(deleted_at__isnull=True).\
 			filter(fecha_cad__gte=datetime.datetime.now()).annotate(disponible=Sum(F('cantidad')- F('ocupados'))).\
-			aggregate(cantidad_disponible=Sum('disponible'))['cantidad_disponible'] or 0
+			aggregate(porciones_disponible=Sum('disponible'))['porciones_disponible'] or 0
 
 	#Devuelve el número de paquetes incluyendo las mermas
 	def obtener_inventario_fisico(self):
 		return PaqueteInventario.objects.filter(nombre=self).filter(deleted_at__isnull=True).\
 				   annotate(disponible=Sum(F('cantidad') - F('ocupados'))).\
-				   aggregate(cantidad_disponible=Sum('disponible'))['cantidad_disponible'] or 0
+				   aggregate(porciones_disponible=Sum('disponible'))['porciones_disponible'] or 0
 
 	#Devuelve la lista de paquetes_inventario que tienen paquetes disponibles
 	def obtener_paquetes_inventario_disponibles(self):
@@ -65,6 +67,7 @@ class PaqueteInventario (models.Model):
 	updated_at = models.DateTimeField(default=timezone.now)
 	deleted_at = models.DateTimeField(blank = True, null = True)
 
+	#Regresa el nombre del paquete en inventario
 	def __str__(self):
 		return self.nombre.nombre + " " + self.fecha_cad.strftime("%d/%m/%Y")
 

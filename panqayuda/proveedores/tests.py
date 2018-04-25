@@ -178,6 +178,7 @@ class TestListaProveedores(TestCase):
 
 class TestEliminarProveedor(TestCase):
 
+    #Generación para el ambiente de pruebas de eliminar proveedor
     def setUp(self):
         Group.objects.create(name="admin")
         user = User.objects.create_user(username='temporary', email='temporary@gmail.com', password='temporary', is_superuser='True')
@@ -193,9 +194,13 @@ class TestEliminarProveedor(TestCase):
         )
         proveedor.save()
 
+    #Test para borrar proveedores
     def test_borrar_proveedor(self):
         self.assertEqual(Proveedor.objects.count(), 1)
+        #Se obtiene el objeto proveedor
         objetos = Proveedor.objects.first()
+        #Se utiliza la view eliminar_proveedor
         self.client.get(reverse('proveedores:eliminar_proveedor', kwargs={'id_proveedor':objetos.id}))
+        #Se valida que no haya objetos Proveedor que tenga vacío el campio deleted_at
         self.assertEqual(Proveedor.objects.filter(deleted_at__isnull=True).count(), 0)
 # Create your tests here.

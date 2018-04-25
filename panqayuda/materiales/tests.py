@@ -193,17 +193,21 @@ class TestModificarUnidades(TestCase):
     def test_valid_session(self):
         session = self.client.session
 
+    #Crea unidad
     def crear_unidad(self):
         return Unidad.objects.create(id=1, nombre="Unidad")
 
+    #Crea unidad auxiliar
     def crear_unidad2(self):
         return Unidad.objects.create(id=2, nombre="Unidad auxiliar")
 
+    #Verifica que la vista para modificar unidad exista
     def test_vista_modificar_unidad(self):
         self.crear_unidad()
         resp = self.client.get(reverse('materiales:modificar_unidad', kwargs={'id_unidad':1}))
         self.assertEqual(resp.status_code, 200)
 
+    #Verifica que pueda modificar la unidad existente
     def test_modificarUnidad(self):
         #Checar si la base de datos esta vacia de unidades
         self.assertEqual(Unidad.objects.count(), 0)
@@ -216,6 +220,7 @@ class TestModificarUnidades(TestCase):
         self.client.post(reverse('materiales:modificar_unidad', kwargs={'id_unidad':1}), data2)
         self.assertEqual(Unidad.objects.count(), 1)
 
+    # Valida que el campo de nombre no llegue vacio
     def test_errorNombreVacia(self):
         self.crear_unidad()
         data = {'nombre':''}
@@ -224,6 +229,7 @@ class TestModificarUnidades(TestCase):
         self.assertEqual(Unidad.objects.count(), 1)
         self.assertFormError(resp, 'form', 'nombre', "Este campo no puede ser vacío")
 
+    # Valida que la unidad que se desea crear no exista en la base de datos
     def test_prohibeCrearUnidadExistente(self):
         unidad1 = self.crear_unidad()
         unidad2 = self.crear_unidad2()
@@ -232,7 +238,8 @@ class TestModificarUnidades(TestCase):
         self.client.post(reverse('materiales:modificar_unidad', kwargs={'id_unidad':2}), data)
         resp = self.client.get(reverse('materiales:modificar_unidad', kwargs={'id_unidad':2}))
         unidad = resp.context['unidad']
-        #Esto va a comparar el nombre que se esta mandando con el nombre de otro objeto, no pueden ser los mismos y eso es lo que se checa al final
+        #Esto va a comparar el nombre que se esta mandando con el nombre de
+        # otro objeto, no pueden ser los mismos y eso es lo que se checa al final
         nombre1 = unidad1.nombre
         nombre2 = unidad.nombre
         self.assertFalse(nombre1 == nombre2)
@@ -252,7 +259,7 @@ class TestListaMateriaPrima(TestCase):
             compra=compra,
             unidad_entrada=unidad,
             cantidad=1,
-            cantidad_disponible=12,
+            porciones_disponible=12,
             costo=120,
             fecha_cad="2059-03-03 12:31:06-05",
             estatus=0)
@@ -288,7 +295,7 @@ class TestListaMateriaPrima(TestCase):
             compra=compra,
             unidad_entrada=unidad,
             cantidad=1,
-            cantidad_disponible=12,
+            porciones_disponible=12,
             costo=120,
             fecha_cad="2049-03-03 12:31:06-05")
 
@@ -383,6 +390,7 @@ class TestEliminarUnidad(TestCase):
 
 class TestEliminarMaterial(TestCase):
 
+    #Generación para el ambiente de pruebas de eliminar materia prima
     def setUp(self):
         Group.objects.create(name="admin")
         user = User.objects.create_user(username='temporary', email='temporary@gmail.com', password='temporary', is_superuser='True')
@@ -391,8 +399,12 @@ class TestEliminarMaterial(TestCase):
         material = Material.objects.create(nombre='Huevo', codigo=123)
         material.save()
 
+    #Test para eliminar la materia prima
     def test_borrar_material(self):
         self.assertEqual(Material.objects.count(), 1)
+        #Obtienes el objeto material
         objetos = Material.objects.first()
+        #Se utiliza eliminar_material
         self.client.get(reverse('materiales:eliminar_material', kwargs={'id_material':objetos.id}))
+        #Se busca que no haya con cambio vacío de deleted_at
         self.assertEqual(Material.objects.filter(deleted_at__isnull=True).count(), 0)

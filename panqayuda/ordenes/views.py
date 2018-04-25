@@ -10,8 +10,13 @@ from panqayuda.decorators import group_required
 from recetas.models import Receta
 from django.utils import timezone
 from materiales.models import Material, MaterialInventario, Unidad
+from django.db.models import F
 
-# Lista de ordenes de trabajo y forma para crear una nueva orden de trabajo.
+'''
+    Lista de odenes de trabajo, con forma para dar de alta una nueva orden de trbajo.
+    En caso de que se de de alta una nueva orden de trabajo, se descuenta el material
+    que esta ocupa.
+'''
 @group_required('admin')
 def ordenes (request):
     # En caso de que la petición sea tipo 'POST' crea la forma con los datos obtenidos y la valida.
@@ -48,23 +53,23 @@ def ordenes (request):
                 materiales_inventario = MaterialInventario.objects.filter(material = material_receta.material).filter(
                     deleted_at__isnull=True).order_by('-fecha_cad')
                 # Calcula la cantidad que se debe restar de dicho material en el inventario.
-                cantidad_a_restar = material_receta.cantidad * multiplicador
+                cantidad_a_restar = float(material_receta.cantidad * multiplicador)
                 # Modifica el inventario por recetas, tomando en cuenta la fecha de caducidself.
                 for material_inventario in materiales_inventario:
                     # Si la cantidad disponible de dicho registro es mayor a la cantidad que se necesita restar,
                     # se resta directamente y se termina el proceso.
-                    if  material_inventario.cantidad_disponible > cantidad_a_restar:
-                        material_inventario.cantidad_disponible -= cantidad_a_restar
+                    if  material_inventario.porciones_disponible > cantidad_a_restar:
+                        material_inventario.porciones_disponible -= cantidad_a_restar
                         material_inventario.save()
-                        costo+=material_inventario.costo_unitario
+                        costo+=material_inventario.costo
                         break
 
                     else:
                         # En caso de que no exista suficiente material en dicho registro, ocupa todo lo que existe
                         # y pasa al siguiente registro.
-                        cantidad_a_restar -= material_inventario.cantidad_disponible
-                        material_inventario.cantidad_disponible = 0
-                        costo+=material_inventario.costo_unitario
+                        cantidad_a_restar -= material_inventario.porciones_disponible
+                        material_inventario.porciones_disponible = 0
+                        costo+=material_inventario.costo
 
             Orden.objects.create(receta=data['receta'], multiplicador=data['multiplicador'], fecha_fin=data['fecha_fin'], costo=costo)
             messages.success(request, 'Se ha agregado una nueva orden de trabajo.')
@@ -85,7 +90,10 @@ def ordenes (request):
         tabla = render_to_string('ordenes/tabla_ordenes.html', {'ordenes': ordenes})
         return render(request, 'ordenes/ordenes.html', {'forma': forma, 'ordenes': ordenes, 'recetas':recetas, 'tabla':tabla})
 
-
+'''
+    Cuando una orden de trabajo se marca como terminada, se agrega las recetas que
+    esta generó al inventario.
+'''
 @group_required('admin')
 def terminar_orden (request):
     if request.method == 'POST':
@@ -98,12 +106,46 @@ def terminar_orden (request):
     data = render_to_string('ordenes/tabla_ordenes.html', {'ordenes': ordenes})
     return HttpResponse(data)
 
+'''
+    Si se cancela una orden de trabajo se cambia el estatus de esta y desaparece
+    de la lista.
+'''
 @group_required('admin')
 def cancelar_orden (request):
     if request.method == 'POST':
          orden= get_object_or_404(Orden, pk=request.POST['id'])
          orden.estatus=request.POST['estatus']
+         #Reabastecer el inventario y el producto semiterminado
+         cantidad_a_sumar = orden.cantidad()
+         receta = orden.receta
+         cancelar_orden_reabastecer_material(receta,cantidad_a_sumar)
          orden.save()
+
     ordenes = Orden.ordenes_por_entregar()
     data = render_to_string('ordenes/tabla_ordenes.html', {'ordenes': ordenes})
     return HttpResponse(data)
+
+#Cuando se cancela una orden de trabajo, el inventario de materias primas se reabastece
+def cancelar_orden_reabastecer_material(receta,cantidad):
+    #Obtener las relaciones de la receta
+    relaciones_receta = RelacionRecetaMaterial.objects.filter(receta=receta)
+    for relacion_receta in relaciones_receta:
+        #Calcular cantidad a reabastecer
+        cantidad_a_sumar = float(cantidad * relacion_receta.cantidad)
+
+        #Obtener los materiales inventario de cada relacion, excluyendo a los que no pueden recibir y a los eliminados
+        material = relacion_receta.material
+        materiales_inventario = MaterialInventario.objects.filter(material=material,deleted_at__isnull=True, porciones_disponible__lt=F('porciones')).order_by('-fecha_cad')
+
+        #Abastecer materiales inventario hasta que la cantidad a sumar sea 0
+        for material_inventario in materiales_inventario:
+            #Este material inventario no puede recibirlo todo
+            if cantidad_a_sumar > (material_inventario.porciones - material_inventario.porciones_disponible):
+                cantidad_a_sumar -= (material_inventario.porciones - material_inventario.porciones_disponible)
+                material_inventario.porciones_disponible = material_inventario.porciones
+                material_inventario.save()
+            else:
+            #Este material inventario puede recibirlo todo
+                material_inventario.porciones_disponible += cantidad_a_sumar
+                material_inventario.save()
+                break
