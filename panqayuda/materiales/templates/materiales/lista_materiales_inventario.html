@@ -1,10 +1,10 @@
 {% extends "base.html" %}
-{% block title %}Materiales{% endblock title %}
+{% block title %}Inventario Materia Prima{% endblock title %}
 {% block navbar %}{% include "navbar.html" %}{% endblock navbar %}
 {% block header %}
   <header class="banner-prueba">
     {# buscar clase banner-prueba en main.css #}
-    <h1 class="center-align">Inventario Materiales</h1>
+    <h1 class="center-align">Inventario Materia Prima</h1>
   </header>
 {% endblock header %}
 {% block content %}
@@ -12,8 +12,8 @@
   <div class="col s12">
     <ul class="tabs">
       <!--Menú-->
-      <li class="tab col s6"><a class="active white-text" href="/materiales">Catálogo Inventario</a></li>
-      <li class="tab col s6"><a class="pink-text" href="/materiales/lista_materiales">Catálogo Materia Prima</a></li>
+      <li class="tab col s6"><a class="active white-text" href="{% url 'materiales:lista_materiales_inventario' %}">Inventario</a></li>
+      <li class="tab col s6"><a class="pink-text" href="{% url 'materiales:materiales' %}">Catálogo</a></li>
     </ul>
   </div>
 </div>
@@ -30,7 +30,6 @@
         </thead>
         <tbody>
           {% for material in catalogo_materiales %}
-            {% if material.total%}
             <tr>
                 <td>{{ material.nombre }}</td>
                 <td>{{ material.total }}</td>
@@ -41,7 +40,6 @@
                   </a>
               </td>
             </tr>
-            {% endif %}
           {% endfor %}
         </tbody>
     </table>

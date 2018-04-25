@@ -15,7 +15,7 @@
         <tr class="{% if i.es_caducado %} pink-text {% endif %}">
           <td>{{i.nombre}}</td>
             <td>{{i.cantidad}}</td>
-            <td>{{i.fecha_cad}}</td>
+            <td>{{i.fecha_cad.date}}</td>
             <td>{{i.costo}}</td>
             <!-- <td><a href='#' class="modal-trigger"><i class="material-icons">edit</i> </a></td> -->
         </tr>

@@ -1,10 +1,10 @@
 {% extends "base.html" %}
-{% block title %}Mermas Recetas{% endblock title %}
+{% block title %}Ajuste de Inventario Producto Semi-Terminado{% endblock title %}
 {% block navbar %}{% include "navbar.html" %}{% endblock navbar %}
 {% block header %}
   <header class="banner-prueba">
     {# buscar clase banner-prueba en main.css #}
-    <h1 class="center-align">Mermas Recetas</h1>
+    <h1 class="center-align">Ajuste de Inventario Producto Semi-Terminado</h1>
   </header>
 {% endblock header %}
 {% block content %}
@@ -50,7 +50,7 @@
       </div>
       <div class="row">
         <div class="input-field col s12">
-          <label for="{{forma.descripcion.id_for_label}}">Descripcion</label>
+          <label for="{{forma.descripcion.id_for_label}}">Descripción</label>
           <input id="{{forma.descripcion.id_for_label}}" class="required" name="{{forma.descripcion.html_name}}" type="text" required>
         </div>
       </div>
@@ -68,9 +68,9 @@
 <div class="row">
   <div class="col s12">
     <ul class="tabs">
-      <li class="tab col s4"><a class="white-text active" href="/mermas/lista_mermas_receta/">Receta</a></li>
-      <li class="tab col s4"><a class="pink-text" href="/mermas/lista_mermas/">Paquete</a></li>
-      <li class="tab col s4"><a class="pink-text" href="/mermas/lista_mermas_material/">Material</a></li>
+      <li class="tab col s4"><a class="white-text active" href="{% url 'mermas:lista_mermas_receta' %}">Producto Semi-Terminado</a></li>
+      <li class="tab col s4"><a class="pink-text" href="{% url 'mermas:lista_mermas_paquete' %}">Producto Terminado</a></li>
+      <li class="tab col s4"><a class="pink-text" href="{% url 'mermas:lista_mermas_material' %}">Materia Prima</a></li>
     </ul>
   </div>
 </div>

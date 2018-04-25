@@ -508,7 +508,7 @@ class TestEditarPaqueteInventario(TestCase):
 
     def test_ac_22_2_El_objeto_se_actualiza_exitosamente(self):
         #La cantidad a editar es menor de la que había
-        data = {'cantidad': "1",}
+        data = {'cantidad': "1", 'fecha_cad': "2019-12-10"}
         resp = self.client.post(reverse('paquetes:editar_paquete_inventario', kwargs={'id_paquete': PaqueteInventario.objects.first().id}), data)
         # Las recetas de inventario que tienen no tienen ninguna  pieza ocupada no se alteran
         receta_sin_piezas_ocupadas = RecetaInventario.objects.last()
@@ -525,7 +525,7 @@ class TestEditarPaqueteInventario(TestCase):
 
 
         #La cantidad a editar es mayor a la que había y no existe suficiente en inventario
-        data = {'cantidad': "50",}
+        data = {'cantidad': "50", 'fecha_cad': "2019-12-10"}
         self.client.post((reverse('paquetes:editar_paquete_inventario', kwargs={'id_paquete': PaqueteInventario.objects.first().id})), data)
 
         #no se modificó nada

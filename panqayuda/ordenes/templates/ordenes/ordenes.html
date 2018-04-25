@@ -20,7 +20,7 @@
           </a>
         </div>
       </div>
-      <form class="" method="post" action="/ordenes/">
+      <form class="" method="post" action="{% url 'ordenes:ordenes' %}">
         {% csrf_token %}
         <div class="row container">
           <div class="input-field col s7 ">
@@ -126,7 +126,7 @@
           id: id,
           estatus: estatus,
         }).done(function(data){
-          $('#table').html(data);
+          $('#table_id').html(data);
           $('select').formSelect();
           M.toast({html:'La orden fue marcada como cancelada.'});
         }).fail(function(data) {

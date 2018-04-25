@@ -1,10 +1,10 @@
 {% extends "base.html" %}
-{% block title %}Recetas{% endblock title %}
+{% block title %}Catálogo Producto Semi-Terminado{% endblock title %}
 {% block navbar %}{% include "navbar.html" %}{% endblock navbar %}
 {% block header %}
   <header class="banner-prueba">
     {# buscar clase banner-prueba en main.css #}
-    <h1 class="center-align">Recetas</h1>
+    <h1 class="center-align">Catálogo Producto Semi-Terminado</h1>
   </header>
 {% endblock header %}
 {% block content %}
@@ -23,9 +23,9 @@
           <tbody>
             {% for receta in recetas %}
             <tr>
-                <td><a href="/recetas/receta/{{ receta.id }}">{{ receta.nombre }}</a></td>
+                <td><a href="{% url 'recetas:detallar_receta' receta.id %}">{{ receta.nombre }}</a></td>
                 <td>{{ receta.cantidad }}</td>
-                <td>{{ receta.duration }}</td>
+                <td>{{ receta.duration.days }} días</td>
                 <!-- <td><a href="agregar_materiales/{{ receta.id }}"><i class="material-icons">edit</i></a></td> #} -->
                 <!--<td><a onclick="return confirm('¿Seguro que quieres borrar la receta de {{receta.nombre}}?')" href="borrar_receta/{{ receta.id }}"><i class="material-icons">delete</i></a></td>-->
             </tr>
@@ -35,7 +35,7 @@
       <br>
       <div class="row">
         <div class="right-align">
-          <a href="agregar_receta" class="btn-floating btn-large waves-effect waves-light waves-circle pink fixed tooltipped" data-position="left" data-tooltip="Agregar nueva receta"><i class="material-icons">add</i></a>
+          <a href="{% url 'recetas:agregar_receta' %}" class="btn-floating btn-large waves-effect waves-light waves-circle pink fixed tooltipped" data-position="left" data-tooltip="Agregar nueva receta"><i class="material-icons">add</i></a>
         </div>
       </div>
   </div>

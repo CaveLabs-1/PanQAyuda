@@ -1,10 +1,10 @@
 {% extends "base.html" %}
-{% block title %}Lista Unidades{% endblock title %}
+{% block title %}Catálogo Unidades{% endblock title %}
 {% block navbar %}{% include "navbar.html" %}{% endblock navbar %}
 {% block header %}
   <header class="banner-prueba">
     {# buscar clase banner-prueba en main.css #}
-    <h1 class="center-align">Lista de Unidades</h1>
+    <h1 class="center-align">Catálogo Unidades</h1>
   </header>
 {% endblock header %}
 {% block content %}
@@ -40,7 +40,7 @@
   <div id="modal_detalle" class="modal">
     <div class="modal-content">
       <h4>Agregar Unidad</h4>
-      <form class="" action="/materiales/agregar_unidades" method="POST">
+      <form class="" action="{% url 'materiales:agregar_unidades' %}" method="POST">
         <br>
         <br>
         {% csrf_token %}

@@ -18,7 +18,7 @@ def materiales(request):
         forma_post = MaterialForm(request.POST)
         if forma_post.is_valid():
             forma_post.save()
-            messages.success(request, 'Se ha agregado un nuevo material.')
+            messages.success(request, 'Se ha agregado una nueva materia prima.')
         else:
             # Si no es válida la forma devuelve un mensaje de error.
             messages.error(request, 'Hubo un error, inténtalo de nuevo.')
@@ -80,7 +80,7 @@ def eliminar_material(request, id_material):
     #Se hace el borrado
     material.deleted_at = datetime.datetime.now()
     material.save()
-    messages.success(request, '¡Se ha borrado exitosamente el material del catálogo!')
+    messages.success(request, '¡Se ha borrado exitosamente la materia prima del catálogo!')
     #Regresa a la lista de materiales
     return redirect('materiales:materiales')
 
@@ -102,7 +102,7 @@ def agregar_unidades(request):
              messages.success(request, '¡Ya hay una unidad con este nombre!')
              return redirect('/materiales/lista_unidades')
     else:
-        messages.success(request, '¡Hubo un error con el POST!')
+        messages.success(request, '¡Hubo un error con la petición. Inténtalo de nuevo.')
         return redirect('/materiales/lista_unidades')
 
 """
@@ -139,8 +139,8 @@ def lista_materiales_inventario(request):
     catalogo_materiales=Material.objects.filter(deleted_at__isnull=True).filter(status=1)
 
     for catalogo_material in catalogo_materiales:
-         aux= MaterialInventario.objects.filter(material_id=catalogo_material.id).filter(deleted_at__isnull=True).aggregate(Sum('cantidad'))
-         catalogo_material.total=aux['cantidad__sum']
+         aux= MaterialInventario.objects.filter(material_id=catalogo_material.id).filter(deleted_at__isnull=True).aggregate(Sum('porciones_disponible'))
+         catalogo_material.total=aux['porciones_disponible__sum'] or 0
 
     return render(request, 'materiales/lista_materiales_inventario.html', {'materiales':materiales, 'catalogo_materiales':catalogo_materiales})
 
@@ -153,7 +153,6 @@ def materiales_por_catalogo(request):
         id_material = request.POST.get('id_material')
         material = Material.objects.get(pk=id_material)
         detalle_materiales_en_inventario = MaterialInventario.objects.filter(material_id=id_material).filter(deleted_at__isnull=True)
-        #print(detalle_materiales_en_inventario)
         response = render_to_string('materiales/lista_detalle_materiales_inventario.html', {'detalle_materiales_en_inventario': detalle_materiales_en_inventario, 'material': material})
         return HttpResponse(response)
     return HttpResponse('Algo ha salido mal.')
@@ -170,9 +169,12 @@ def editar_material(request, id_material):
         form = MaterialForm(request.POST or None, instance=material)
         if form.is_valid():
             material = form.save()
-            material.save
-            messages.success(request, 'Se ha editado el material exitosamente!')
+            material.save()
+            messages.success(request, 'Se ha editado la materia prima exitosamente!')
             return redirect('materiales:materiales')
+        else:
+            unidades = Unidad.objects.filter(deleted_at__isnull=True)
+            return render(request, 'materiales/editar_material.html', {'form': form, 'material': material, 'unidades': unidades})
     form = MaterialForm()
     unidades = Unidad.objects.filter(deleted_at__isnull=True)
     return render(request, 'materiales/editar_material.html', {'form': form, 'material': material, 'unidades': unidades})

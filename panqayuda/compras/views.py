@@ -73,17 +73,17 @@ def agregar_materias_primas_a_compra(request, id_compra):
 
      #generar forma html
      forma = MaterialInventarioForm()
-     unidades = Unidad.objects.filter(deleted_at__isnull=True);
-     materia_primas = Material.objects.filter(deleted_at__isnull=True);
+     unidades = Unidad.objects.filter(deleted_at__isnull=True)
+     materia_primas = Material.objects.filter(deleted_at__isnull=True)
      formahtml = render_to_string('compras/forma_agregar_compra.html', {'materia_primas':materia_primas, 'unidades':unidades, 'id_compra':id_compra, 'forma':forma})
 
      #generar lista_materia_prima_por_compra
      materias_primas_de_compra = MaterialInventario.objects.filter(compra=compra).filter(deleted_at__isnull=True)
      aux= MaterialInventario.objects.filter(compra_id=id_compra).filter(deleted_at__isnull=True).aggregate(Sum('costo'))
      total=aux['costo__sum']
-     lista_materia_prima_por_compra = render_to_string('compras/lista_materia_prima_por_compra.html', {'materias_primas_de_compra':materias_primas_de_compra, 'total': total});
+     lista_materia_prima_por_compra = render_to_string('compras/lista_materia_prima_por_compra.html', {'materias_primas_de_compra':materias_primas_de_compra, 'total': total})
 
-     return render (request, 'compras/agregar_materias_primas_a_compra.html', {'formahtml':formahtml, 'lista_materia_prima_por_compra':lista_materia_prima_por_compra});
+     return render (request, 'compras/agregar_materias_primas_a_compra.html', {'formahtml':formahtml, 'lista_materia_prima_por_compra':lista_materia_prima_por_compra})
 
 """
     Función agrega materias primas a una compra
