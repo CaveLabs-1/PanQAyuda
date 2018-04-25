@@ -16,7 +16,7 @@
           <td>{{material.nombre}}</td>
           <td>{{i.compra}}</td>
           <td>{{i.porciones_disponible}} {{i.material.unidad_maestra}}</td>
-          <td>{{i.costo_unitario}}</td>
+          <td>{{i.costo_unitario|floatformat:2}}</td>
           <td>{{i.fecha_cad.date}}</td>
           <!-- <td><a href='' class="modal-trigger"><i class="material-icons">edit</i> </a></td> -->
         </tr>
