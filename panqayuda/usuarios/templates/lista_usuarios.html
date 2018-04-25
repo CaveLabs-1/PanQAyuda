@@ -31,7 +31,7 @@
                 <td><a><i class="material-icons">edit</i></a></td>
                 <!-- Eliminar usuario -->
                 <td>
-                  <a onclick="deleteRegister(this, event)" href="borrar_usuario/{{usuario.id}}">
+                  <a onclick="deleteRegister(this, event)" href="{% url 'usuarios:borrar_usuario' usuario.id %}">
                     <i class="material-icons">delete</i>
                   </a>
                 </td>

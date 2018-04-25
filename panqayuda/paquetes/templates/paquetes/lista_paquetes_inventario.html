@@ -11,8 +11,8 @@
 <div class="row">
   <div class="col s12">
     <ul class="tabs">
-      <li class="tab col s6"><a class="active white-text" href="/paquetes">Inventario</a></li>
-      <li class="tab col s6"><a class="pink-text" href="/paquetes/lista_paquetes">Catálogo</a></li>
+      <li class="tab col s6"><a class="active white-text" href="{% url 'paquetes:lista_paquete_inventario' %}">Inventario</a></li>
+      <li class="tab col s6"><a class="pink-text" href="{% url 'paquetes:lista_paquetes' %}">Catálogo</a></li>
     </ul>
   </div>
   <div id="test1" class="col s12"></div>
@@ -43,7 +43,7 @@
     </table>
     <br>
     <div class="fixed">
-        <a href="agregar_inventario" class="btn-floating btn-large waves-effect waves-light pink"><i class="material-icons">add</i></a>
+        <a href="{% url 'paquetes:agregar_inventario' %}" class="btn-floating btn-large waves-effect waves-light pink"><i class="material-icons">add</i></a>
     </div>
   </div>
   <div id="modal_detalle" class="modal">
