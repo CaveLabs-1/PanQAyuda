@@ -64,7 +64,7 @@ def lista_usuarios(request):
 """
 @group_required('admin')
 def borrar_usuario(request, id_usuario):
-    if request.method == 'POST':
+    if request.method == 'GET':
         usuario = get_object_or_404(User, pk=id_usuario)
         #soft delete django
         usuario_nombre = usuario.username
@@ -73,14 +73,6 @@ def borrar_usuario(request, id_usuario):
         usuario.is_superuser=False
         usuario.save()
         messages.success(request, '¡Se ha eliminado al usuario!')
-        return HttpResponse('usuarios:lista_usuarios')
+        return redirect('usuarios:lista_usuarios')
     else:
         return redirect('usuarios:lista_usuarios')
-    #recuperar el usuario
-    usuario = get_object_or_404(User, pk=id_usuario)
-    #soft delete django
-    usuario.is_active = 0
-    usuario.save()
-    #mensaje de éxito
-    messages.success(request, '¡Se ha eliminado al usuario!')
-    return redirect('usuarios:lista_usuarios')
