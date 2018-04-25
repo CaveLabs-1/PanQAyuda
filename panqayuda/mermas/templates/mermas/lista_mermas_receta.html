@@ -21,12 +21,15 @@
         </a>
       </div>
     </div>
+    <!-- Forma para agregar merma recetas -->
     <form class="row" method="post" action="{% url 'mermas:agregar_merma_recetas' %}">
       {% csrf_token %}
       <div class="input-field col s6">
          <select id="recetas_catalogo" name="recetas_catalogo">
           <option value="" selected="">---------</option>
            {% for receta_catalogo in recetas_catalogo %}
+           <!-- Carga los nombres de las recetas existentes y los añade a
+            las opciones del select-->
               <option value="{{receta_catalogo.id}}"> {{receta_catalogo.nombre}} </option>
            {% endfor %}
         </select>
@@ -68,6 +71,7 @@
 <div class="row">
   <div class="col s12">
     <ul class="tabs">
+      <!-- Tabs de mermas -->
       <li class="tab col s4"><a class="white-text active" href="/mermas/lista_mermas_receta/">Receta</a></li>
       <li class="tab col s4"><a class="pink-text" href="/mermas/lista_mermas/">Paquete</a></li>
       <li class="tab col s4"><a class="pink-text" href="/mermas/lista_mermas_material/">Material</a></li>
@@ -75,7 +79,7 @@
   </div>
 </div>
   <div class="container">
-    <!-- Carga donde carga todo -->
+    <!-- Tabla -->
       <table id="table_id">
           <thead>
             <tr>
@@ -86,6 +90,7 @@
             </tr>
           </thead>
           <tbody>
+            <!-- Carga lista de mermas_receta -->
             {% for merma in mermas %}
             <tr>
                 <td>{{ merma.nombre }}</td>
@@ -109,14 +114,13 @@
     $(document).ready(function(){
       $('.collapsible').collapsible();
     });
-
+    //Agrega dinamicamente a la lista
     $('#recetas_catalogo').change(function(){
         var receta_catalogo_id = $('#recetas_catalogo').val();
         $.ajax({
             url: "{% url 'mermas:obtener_recetas_ajuste_inventario' %}",
             data:{'receta_catalogo_id':receta_catalogo_id},
             success: function(response){
-                alert(response);
                 $('#{{forma.nombre.id_for_label}}').html(response);
                 $('select').formSelect();
             }

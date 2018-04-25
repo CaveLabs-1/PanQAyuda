@@ -19,7 +19,6 @@ def lista_mermas_receta(request):
     forma = MermaRecetaForm()
     recetas_catalogo = Receta.objects.filter(deleted_at__isnull=True)
     return render (request, 'mermas/lista_mermas_receta.html', {'forma': forma, 'mermas': mermas, 'recetas_catalogo':recetas_catalogo})
-    # return render(request, 'mermas/lista_mermas_receta.html', {'mermas': mermas})
 
 @group_required('admin')
 def lista_mermas_paquete(request):
@@ -35,7 +34,6 @@ def lista_mermas_material(request):
     mermas = list(MermaMaterial.objects.all())
     forma = MermaMaterialForm()
     return render (request, 'mermas/lista_mermas_material.html', {'forma': forma, 'mermas': mermas, 'materiales_catalogo':materiales_catalogo})
-    # return render(request, 'mermas/lista_mermas_material.html', {'mermas': mermas})
 
 
 #Funcionalidad agregar merma de paquetes
