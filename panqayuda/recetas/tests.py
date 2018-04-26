@@ -501,15 +501,17 @@ class TestListaRecetasInventario(TestCase):
 
         #Se señalan los que están caducados
 
+#Test US 34
 class TestVerCostoRecetaInventario(TestCase):
 
+    #Setup AC 34.1
     def setUp(self):
         Group.objects.create(name="admin")
         user = User.objects.create_user(username='temporary', email='temporary@gmail.com', password='temporary',
-                                            is_superuser='True')
+                                        is_superuser='True')
         user.save()
         self.client.login(username='temporary', password='temporary')
-        # Agregar Unidad
+        #Agregar Unidad
         data = {'nombre': "kilos"}
         self.client.post(reverse('materiales:lista_unidades'), data)
         # Agregar Proveedor
@@ -523,68 +525,74 @@ class TestVerCostoRecetaInventario(TestCase):
         }
         self.client.post(reverse('proveedores:agregar_proveedor'), data)
         # Agregar Catalogo Materia Prima
-        Material.objects.create(
-            id=1,
-            nombre="Materia Prima",
-            codigo='1233123',
-            unidad_entrada=Unidad.objects.all().first(),
-            unidad_maestra=Unidad.objects.all().first(),
-            equivale_entrada='1',
-            equivale_maestra='1'
+        data={
+            'nombre':'Material',
+            'codigo':'1223123',
+            'equivale_entrada':'1',
+            'unidad_entrada':'1',
+            'equivale_maestra':'1',
+            'unidad_maestra':1
+        }
+        self.client.post('/materiales/lista_materiales', data)
+        Proveedor.objects.create(
+            nombre='Proveedor',
+            telefono='4424708341',
+            direccion='calle 23',
+            rfc='123123',
+            razon_social='razon social',
+            email='proveedor@gmail.com'
         )
-        # Agregar Orden de Compra
-        Compra.objects.create(
-            id=1,
-            proveedor=Proveedor.objects.all().first(),
-            fecha_compra='2018-10-10'
-        )
-        # Agregar Material Invertario
-        MaterialInventario.objects.create(
-            id=1,
-            material=Material.objects.all().first(),
-            compra=Compra.objects.all().first(),
-            unidad_entrada=Unidad.objects.all().first(),
-            cantidad=5,
-            costo=100,
-            costo_unitario=100 / 5,
-            fecha_cad='2018-10-10'
-        )
-        #Agregar nueva receta al catalogo
-        Receta.objects.create(
-            id=1,
-            nombre="Receta",
-            cantidad=1,
-        )
-        RelacionRecetaMaterial.objects.create(
-            id=1,
-            receta=Receta.objects.all().first(),
-            material=Material.objects.all().first(),
-            cantidad=1
-        )
-        Orden.objects.create(
-            id=1,
-            receta=Receta.objects.all().first(),
-            multiplicador=1,
-            estatus=2,
-            fecha_fin='2018-10-10',
-            costo=20
-        )
+        data = {
+            'proveedor': '1',
+            'fecha_compra': '2018-04-04'
 
-        RecetaInventario.objects.create(
-            id=1,
-            nombre=Receta.objects.all().first(),
-            cantidad=1,
-            ocupados=0,
-            fecha_cad='2018-10-10',
-            costo=20
-        )
+        }
+        self.client.post('/compras/agregar_compra', data)
 
-    #Checar que el precio que despliega esta de acuerdo a lo que dice el objeto
+        # Crear orden de compra
+        data = {
+            'material': Material.objects.all().first().id,
+            'fecha_cad': '2019-04-04',
+            'cantidad': '2',
+            'costo': '30',
+            'compra': Compra.objects.all().first().id
+        }
+        self.client.post('/compras/agregar_materia_prima_a_compra/', data)
+
+        #Crear Receta
+        data = {
+            'nombre':'Receta Semi-Terminado',
+            'cantidad':'1',
+            'duracion_en_dias':'10',
+
+        }
+        self.client.post('/recetas/agregar_receta/', data)
+        #Crear materiales de la receta
+        data = {
+            'material': str(Material.objects.all().first().nombre),
+            'cantidad': '1',
+        }
+        self.client.post('/recetas/receta/agregar_materiales/1', data)
+        #Crear Orden De Trabajo
+        data = {
+            'receta': Receta.objects.all().first().id,
+            'fecha_fin': '2018-10-10',
+            'multiplicador': '1',
+        }
+        self.client.post('/ordenes/', data)
+        #Terminar Orden De Trabajp
+        data = {
+            'id': Orden.objects.all().first().id,
+            'estatus': '2',
+        }
+        self.client.post('/ordenes/terminar_orden', data)
+
+    #Test AC 34.1 Producto Semi-Terminado
     def testVerCostoReceta(self):
+        #Checar el precio del producto semi-terimando con el costo de la orden que fue originada
         resp = self.client.post('/recetas/detalle_recetas_inventario',{'id_receta':1})
         for receta in resp.context['detalle_recetas_en_inventario']:
-            self.assertEqual(20, receta.costo)
-
+            self.assertEqual(Orden.objects.get(receta=receta.id).costo, receta.costo)
 
 
 
