@@ -1,7 +1,7 @@
 from django.test import TestCase
 from paquetes.models import Paquete, RecetasPorPaquete, PaqueteInventario
 from django.urls import reverse
-from recetas.models import Receta, RecetaInventario
+from recetas.models import Receta, RecetaInventario, RelacionRecetaMaterial
 import datetime
 from django.contrib import messages
 from django.contrib.auth.models import User, Group
@@ -680,6 +680,7 @@ class TestVerCostoProductoTerminado(TestCase):
     #Test AC 34.1 Producto Terminado
     def testVerCostoPaquete(self):
         resp = self.client.post('/paquetes/paquetes_por_catalogo/', {'id_paquete': 1})
+        print(RelacionRecetaMaterial.objects.all().first().material)
         for paq in resp.context['detalle_paquetes_en_inventario']:
             print(paq.costo)
             print(Paquete.objects.all().first().precio)
