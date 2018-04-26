@@ -593,6 +593,7 @@ class TestVerCostoRecetaInventario(TestCase):
         resp = self.client.post('/recetas/detalle_recetas_inventario',{'id_receta':1})
         for receta in resp.context['detalle_recetas_en_inventario']:
             self.assertEqual(Orden.objects.get(receta=receta.id).costo, receta.costo)
+            self.assertEqual(receta.costo, 15)
 
 
 

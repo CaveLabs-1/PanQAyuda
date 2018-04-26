@@ -619,9 +619,9 @@ class TestVerCostoProductoTerminado(TestCase):
         # Crear orden de compra
         data = {
             'material': Material.objects.all().first().id,
-            'fecha_cad': '2019-04-04',
-            'cantidad': '2',
-            'costo': '30',
+            'fecha_cad': '2018-04-27',
+            'cantidad': '10',
+            'costo': '300',
             'compra': Compra.objects.all().first().id
         }
         self.client.post('/compras/agregar_materia_prima_a_compra/', data)
@@ -643,8 +643,8 @@ class TestVerCostoProductoTerminado(TestCase):
         # Crear Orden De Trabajo
         data = {
             'receta': Receta.objects.all().first().id,
-            'fecha_fin': '2018-10-10',
-            'multiplicador': '1',
+            'fecha_fin': '2018-04-29',
+            'multiplicador': '3',
         }
         self.client.post('/ordenes/', data)
         # Terminar Orden De Trabajp
@@ -660,7 +660,7 @@ class TestVerCostoProductoTerminado(TestCase):
             'precio': '150',
         }
         self.client.post('/paquetes/agregar_paquete/', data)
-        # Asignar Materiales del Paquete
+        # Asignar Receta del Paquete
         data = {
             'receta': Receta.objects.all().first().id,
             'cantidad': '1',
@@ -683,4 +683,4 @@ class TestVerCostoProductoTerminado(TestCase):
         print(RelacionRecetaMaterial.objects.all().first().material)
         for paq in resp.context['detalle_paquetes_en_inventario']:
             self.assertEqual(PaqueteInventario.objects.all().first().costo, paq.costo)
-
+            self.assertEqual(30, paq.costo)
