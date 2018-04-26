@@ -71,10 +71,8 @@
                   </div>
                   <div class="row">
                     <div class="col s6">
-                      <a href="{% url 'recetas:detallar_receta' receta.id %}">
-                        <button class="btn waves-effect waves-light pink" type="submit" name="action">Regresar
-                          <i class="material-icons left">chevron_left</i>
-                        </button>
+                      <a class="btn waves-effect waves-light pink"  onClick="window.history.back();return false;" >Regresar
+                        <i class="material-icons left">chevron_left</i>
                       </a>
                     </div>
                     <div class="col s3 offset-s3">

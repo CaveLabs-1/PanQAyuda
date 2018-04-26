@@ -12,21 +12,21 @@
 {% block content %}
   <div class="container paquete-catalogo-form">
     <div class="card recetas-catalogo-card">
-      <div class="row">
-        <div class="col s6">
-          <a class="btn waves-effect waves-light pink" href="{% url 'paquetes:editar_paquete' paquete.id %}">Regresar
-            <i class="material-icons left">chevron_left</i>
-          </a>
-        </div>
-      </div>
       <div id="formahtml">
         <!--Pegar html de la forma "forma_agregar_recetas_paquete.html"-->
         {{formahtml}}
         <!--Lista de las recetas que han sido agregadas al paquete "lista_recetas_por_paquete.html"-->
         {{lista_recetas}}
       </div>
-      <div class="col s12 right-align btn-agregar-paquete">
-        <a class="agregar-btn waves-effect waves-light btn pink" href="{% url 'paquetes:lista_paquetes' %}">Agregar</a>
+      <div class="row">
+        <div class="col s6">
+          <a class="btn waves-effect waves-light pink"  onClick="window.history.back();return false;" >Regresar
+            <i class="material-icons left">chevron_left</i>
+          </a>
+        </div>
+        <div class="col s6 right-align">
+           <a class="agregar-btn waves-effect waves-light btn pink"  href="{% url 'paquetes:lista_paquetes' %}">Agregar <i class="material-icons right">send</i></a>
+        </div>
       </div>
     </div>
   </div>
