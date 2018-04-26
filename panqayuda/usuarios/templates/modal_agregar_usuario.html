@@ -1,7 +1,16 @@
 <!--Modal Agregar usuario-->
   <div id="agregar_usuario" class="modal">
     <div class="modal-content">
-      <h3>Agregar un usuario</h3>
+        <div class="row">
+          <div class="col s11">
+            <h3>Agregar un usuario</h3>
+          </div>
+          <div class="col s1">
+            <a class="black-text modal-close">
+              <i class="small material-icons tooltipped"  data-position="bottom" data-tooltip="Cerrar">close</i>
+            </a>
+          </div>
+        </div>
         <form id="forma_usuario" action="{% url 'usuarios:lista_usuarios' %}" method="POST">
             {% csrf_token %}
 
@@ -60,16 +69,21 @@
                   </label>
                 </div>
             </div>
+            <br>
             <!-- Es staff -->
             <div class="hidden"> <input name="{{forma.is_staff.html_name}}" value="1"></div>
             <!-- Está activo -->
             <div class="hidden"> <input name="{{forma.is_active.html_name}}" value="1"></div>
-            <br>
 
             <div class="row">
-                <button id="enviar_forma_clienteº" class="col l3 offset-l9 m3 offset-m9 s12 btn waves-effect waves-light pink right-align" type="submit" name="action">Agregar
-                  <i class="material-icons right">send</i>
-                </button>
+              <div class="col s6">
+                <a class="btn waves-effect waves-light pink modal-close" >Regresar
+                  <i class="material-icons left">chevron_left</i>
+                </a>
+              </div>
+              <div class="col s6 right-align">
+                <button type="submit"class="btn waves-effect waves-light pink">Agregar <i class="material-icons right">send</i></button>
+              </div>
             </div>
         </form>
     </div>

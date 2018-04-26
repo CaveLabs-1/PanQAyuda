@@ -39,7 +39,17 @@
   <!-- Modal para agregar unidades -->
   <div id="modal_detalle" class="modal">
     <div class="modal-content">
-      <h4>Agregar Unidad</h4>
+      <div class="row">
+        <div class="col s11">
+          <h4>Agregar Unidad</h4>
+        </div>
+        <div class="col s1">
+          <a class="black-text modal-close">
+            <i class="small material-icons tooltipped"  data-position="bottom" data-tooltip="Cerrar">close</i>
+          </a>
+        </div>
+      </div>
+
       <form class="" action="{% url 'materiales:agregar_unidades' %}" method="POST">
         <br>
         <br>
@@ -52,9 +62,14 @@
           <div class="col s6"></div>
         </div>
         <div class="row">
-          <div class="col s6"></div>
+          <br>
+          <div class="col s6">
+            <a class="btn waves-effect waves-light pink modal-close" >Regresar
+              <i class="material-icons left">chevron_left</i>
+            </a>
+          </div>
           <div class="col s6 right-align">
-            <button type="submit" class="save btn pink">Crear <i class="material-icons right">send</i></button>
+            <button type="submit"class="btn waves-effect waves-light pink">Agregar <i class="material-icons right">send</i></button>
           </div>
         </div>
       </form>

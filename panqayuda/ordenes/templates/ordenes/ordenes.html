@@ -10,19 +10,19 @@
   {# ----------  Inicia modal  --------------  #}
   <div id="agregarOrden" class="modal">
     <div class="modal-content">
-      <div class="row valign-wrapper">
-        <div class="col s5">
-          <h4>Agregar Órden</h4>
+        <div class="row">
+          <div class="col s11">
+            <h3>Agregar Órden de Trabajo</h3>
+          </div>
+          <div class="col s1">
+            <a class="black-text modal-close">
+              <i class="small material-icons tooltipped"  data-position="bottom" data-tooltip="Cerrar">close</i>
+            </a>
+          </div>
         </div>
-        <div class="col s1 offset-s6">
-          <a class="black-text modal-close">
-            <i class="small material-icons">close</i>
-          </a>
-        </div>
-      </div>
       <form class="" method="post" action="{% url 'ordenes:ordenes' %}">
         {% csrf_token %}
-        <div class="row container">
+        <div class="row">
           <div class="input-field col s7 ">
             <select required id="id_receta" name="receta">
               <option value="" disabled selected>Escoger Receta</option>
@@ -35,10 +35,8 @@
             <input class="datepicker" id="{{forma.fecha_fin.id_for_label}}" type="text" class="required" name="{{forma.fecha_fin.html_name}}" required>
             <label for="{{forma.fecha_fin.id_for_label}}">Fecha de Entrega</label>
           </div>
-          <!-- <div class="input-field col s6 ">
-            <input id="cantidad" type="number" class="validate" name="cantidad" required>
-            <label for="cantidad">Cantidad</label>
-          </div> -->
+        </div>
+        <div class="row">
           <div class="input-field col s5">
             <input id="{{forma.multiplicador.id_for_label}}" type="number" class="validate" name="{{forma.multiplicador.html_name}}" required>
             <label for="{{forma.multiplicador.id_for_label}}">Multiplicador</label>
@@ -48,12 +46,18 @@
               <i class="material-icons">help</i>
             </a>
           </div>
-          <div class="col s12 right-align">
-            <br>
-            <button type="submit" class="btn pink waves-effect waves-light">Agregar</button>
+          <div class="col s6"></div>
           </div>
-        </div>
         <div class="row">
+          <br>
+          <div class="col s6">
+            <a class="btn waves-effect waves-light pink modal-close" >Regresar
+              <i class="material-icons left">chevron_left</i>
+            </a>
+          </div>
+          <div class="col s6 right-align">
+            <button type="submit"class="btn waves-effect waves-light pink">Agregar <i class="material-icons right">send</i></button>
+          </div>
         </div>
       </form>
     </div>
