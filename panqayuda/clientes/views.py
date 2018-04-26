@@ -5,6 +5,7 @@ from django.contrib import messages
 from django.http import HttpResponseRedirect, HttpResponseNotFound, JsonResponse
 from panqayuda.decorators import group_required
 import datetime
+from ventas.models import Venta
 
 
 
@@ -78,3 +79,16 @@ def eliminar_cliente(request, id_cliente):
     messages.success(request, '¡Se ha borrado exitosamente el cliente!')
     #regresa a la lista de clientes
     return redirect('clientes:clientes')
+
+
+#Función que muestra el historial de ventas a un cliente
+# @group_required('admin')
+def historial_cliente(request, id_cliente):
+    #Recuperar cliente
+    cliente = get_object_or_404(Cliente,pk=id_cliente)
+
+    #Recuperar ventas a ese cliente
+    ventas_cliente = Venta.objects.filter(cliente=cliente).order_by('-created_at')
+
+    data = {'cliente':cliente, 'ventas_cliente':ventas_cliente}
+    return render(request, 'clientes/historial_cliente.html', data)
