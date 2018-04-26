@@ -61,7 +61,7 @@ def ordenes (request):
                     if  material_inventario.porciones_disponible > cantidad_a_restar:
                         material_inventario.porciones_disponible -= cantidad_a_restar
                         material_inventario.save()
-                        costo+=material_inventario.costo
+                        costo+=material_inventario.costo_unitario
                         break
 
                     else:
@@ -69,7 +69,7 @@ def ordenes (request):
                         # y pasa al siguiente registro.
                         cantidad_a_restar -= material_inventario.porciones_disponible
                         material_inventario.porciones_disponible = 0
-                        costo+=material_inventario.costo
+                        costo+=material_inventario.costo_unitario
 
             Orden.objects.create(receta=data['receta'], multiplicador=data['multiplicador'], fecha_fin=data['fecha_fin'], costo=costo)
             messages.success(request, 'Se ha agregado una nueva orden de trabajo.')

@@ -16,7 +16,7 @@
           <td>{{i.nombre}}</td>
             <td>{{i.cantidad}}</td>
             <td>{{i.fecha_cad.date}}</td>
-            <td>{{i.costo}}</td>
+            <td>{{i.costo|floatformat:2}}</td>
             <!-- <td><a href='#' class="modal-trigger"><i class="material-icons">edit</i> </a></td> -->
         </tr>
     {% endfor %}

@@ -300,15 +300,6 @@ def costo_paquetes_inventario_recetas(paquete,cantidad):
             # print('---------Costo calculado-----------')
             # print(costo)
             # print('--------------------')
-            if cantidad_necesitada > receta_inventario.disponible:
-                cantidad_necesitada -= receta_inventario.disponible
-                receta_inventario.ocupados = receta_inventario.cantidad
-                receta_inventario.save()
-            # Este 'lote' satisface la cantidad necesitada para el paquete
-            else:
-                receta_inventario.ocupados += cantidad_necesitada
-                receta_inventario.save()
-                break
     return costo
 
 def eliminar_paquetes_inventario_recetas(paquete,cantidad):

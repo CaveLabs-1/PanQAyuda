@@ -36,9 +36,9 @@ class Receta(models.Model):
         #Filtrar: quitar los que están ocupados totalmente y los que están eliminados
         recetas_inventario = self.obtener_recetas_inventario().filter(fecha_cad__gte=datetime.datetime.now())
         if recetas_inventario.count() > 0:
-            return True
-        else:
             return False
+        else:
+            return True
 
     #Obtener las recetas inventrio de cierta receta
     def obtener_recetas_inventario(self):
