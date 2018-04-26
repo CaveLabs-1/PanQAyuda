@@ -409,7 +409,7 @@ class TestEliminarMaterial(TestCase):
         #Se busca que no haya con cambio vacío de deleted_at
         self.assertEqual(Material.objects.filter(deleted_at__isnull=True).count(), 0)
 
-#Test US 32
+#Test US 34
 class TestVerCostoMaterial(TestCase):
     # Setup de AC 34.1 de Materiales
     def setUp(self):
@@ -440,7 +440,8 @@ class TestVerCostoMaterial(TestCase):
             'equivale_maestra':'1',
             'unidad_maestra':1
         }
-        self.client.post('/materiales/lista_materiales', data)
+
+        self.client.post(reverse('materiales:materiales'), data)
         Proveedor.objects.create(
             nombre='Proveedor',
             telefono='4424708341',
@@ -454,7 +455,8 @@ class TestVerCostoMaterial(TestCase):
             'fecha_compra': '2018-04-04'
 
         }
-        self.client.post('/compras/agregar_compra', data)
+
+        self.client.post(reverse('compras:agregar_compra'), data)
 
 
 
@@ -468,7 +470,8 @@ class TestVerCostoMaterial(TestCase):
             'costo': '30',
             'compra': Compra.objects.all().first().id
         }
-        self.client.post('/compras/agregar_materia_prima_a_compra/', data)
+
+        self.client.post(reverse('compras:agregar_materia_prima_a_compra'), data)
         # Costo Unitario que debe aparecer cuando se guarde la forma
         costo_unitario = int((data['costo']))/int((data['cantidad']))
         # Checar en el template que el costo unitario mostrado es el mismo

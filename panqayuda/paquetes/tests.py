@@ -600,7 +600,7 @@ class TestVerCostoProductoTerminado(TestCase):
             'equivale_maestra': '1',
             'unidad_maestra': 1
         }
-        self.client.post('/materiales/lista_materiales', data)
+        self.client.post(reverse('materiales:materiales'), data)
         Proveedor.objects.create(
             nombre='Proveedor',
             telefono='4424708341',
@@ -614,7 +614,7 @@ class TestVerCostoProductoTerminado(TestCase):
             'fecha_compra': '2018-04-04'
 
         }
-        self.client.post('/compras/agregar_compra', data)
+        self.client.post(reverse('compras:agregar_compra'), data)
 
         # Crear orden de compra
         data = {
@@ -624,7 +624,7 @@ class TestVerCostoProductoTerminado(TestCase):
             'costo': '300',
             'compra': Compra.objects.all().first().id
         }
-        self.client.post('/compras/agregar_materia_prima_a_compra/', data)
+        self.client.post(reverse('compras:agregar_materia_prima_a_compra'), data)
 
         # Crear Receta
         data = {
@@ -633,40 +633,43 @@ class TestVerCostoProductoTerminado(TestCase):
             'duracion_en_dias': '10',
 
         }
-        self.client.post('/recetas/agregar_receta/', data)
+        self.client.post(reverse('recetas:agregar_receta'), data)
         # Crear materiales de la receta
         data = {
             'material': str(Material.objects.all().first().nombre),
             'cantidad': '1',
         }
-        self.client.post('/recetas/receta/agregar_materiales/1', data)
+        self.client.post(reverse('recetas:agregar_materiales', kwargs={'id_receta':1}), data)
         # Crear Orden De Trabajo
         data = {
             'receta': Receta.objects.all().first().id,
             'fecha_fin': '2018-04-29',
             'multiplicador': '3',
         }
-        self.client.post('/ordenes/', data)
+        self.client.post(reverse('ordenes:ordenes'), data)
         # Terminar Orden De Trabajp
         data = {
             'id': Orden.objects.all().first().id,
             'estatus': '2',
         }
-        self.client.post('/ordenes/terminar_orden', data)
+
+        self.client.post(reverse('ordenes:terminar_orden'), data)
 
         # Crear Catalogo Paquete
         data = {
             'nombre': "Paquetes",
             'precio': '150',
         }
-        self.client.post('/paquetes/agregar_paquete/', data)
+
+        self.client.post(reverse('paquetes:agregar_paquete'), data)
         # Asignar Receta del Paquete
         data = {
             'receta': Receta.objects.all().first().id,
             'cantidad': '1',
             'paquete': Paquete.objects.all().first().id
         }
-        resp = self.client.post('/paquetes/agregar_receta_a_paquete/', data)
+
+        resp = self.client.post(reverse('paquetes:agregar_receta_a_paquete'), data)
 
         # Asignar Materiales del Paquete
         data = {
@@ -674,12 +677,14 @@ class TestVerCostoProductoTerminado(TestCase):
             'cantidad': '1',
             'fecha_cad': '2018-10-10'
         }
-        resp = self.client.post('/paquetes/agregar_inventario/', data)
+
+        resp = self.client.post(reverse('paquetes:agregar_inventario'), data)
 
 
     #Test AC 34.1 Producto Terminado
     def testVerCostoPaquete(self):
-        resp = self.client.post('/paquetes/paquetes_por_catalogo/', {'id_paquete': 1})
+
+        resp = self.client.post(reverse('paquetes:paquetes_por_catalogo'), {'id_paquete': 1})
         print(RelacionRecetaMaterial.objects.all().first().material)
         for paq in resp.context['detalle_paquetes_en_inventario']:
             self.assertEqual(PaqueteInventario.objects.all().first().costo, paq.costo)
