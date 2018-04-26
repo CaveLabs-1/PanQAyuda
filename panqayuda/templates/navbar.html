@@ -1,4 +1,5 @@
 {% load staticfiles %}
+{% load panqayuda_template_tags %}
   <ul id="slide-out" class="sidenav sidenav-fixed">
     <li><div class="user-view">
       <div class="background navbar-color"></div>
@@ -56,7 +57,9 @@
     <li><div class="divider"></div></li>
     <li><a href="{% url 'mermas:lista_mermas_material' %}">Ajuste de Inventario</a></li>
     <li><div class="divider"></div></li>
-    <li><a href="{% url 'usuarios:lista_usuarios' %}" class="waves-effect">Usuarios</a></li>
+    {% if request.user|tiene_grupo:"superadmin" %}
+      <li><a href="{% url 'usuarios:lista_usuarios' %}" class="waves-effect">Usuarios</a></li>
+    {% endif %}
     <li><a href="{% url 'logout' %}" class="waves-effect">Cerrar Sesión</a></li>
   </ul>
   <a href="#" data-target="slide-out" class="sidenav-trigger"><i class="material-icons">menu</i></a>

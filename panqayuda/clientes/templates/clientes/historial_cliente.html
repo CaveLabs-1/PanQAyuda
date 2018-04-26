@@ -1,0 +1,89 @@
+{% extends "base.html" %}
+{% block title %}Historial de cliente {% endblock title %}
+{% block navbar %}{% include "navbar.html" %}{% endblock navbar %}
+{% block header %}
+  <header class="banner-prueba">
+    <h1 class="center-align">Historial de cliente</h1>
+  </header>
+{% endblock header %}
+{% block content %}
+    <div class="row">
+        <div class="col s1"></div>
+        <div class="col s10 center"><h3> Cliente: {{ cliente.nombre }} </h3>
+            <hr>
+
+        <div class="col s1"></div>
+    </div>
+  <div class="row">
+    <div class="col s10 offset-s1">
+      <table class="striped" id="table_id" class="datatable">
+        <thead>
+          <th>ID</th>
+          <th>Monto total</th>
+          <th>Fecha </th>
+          <th>Detalle </th>
+          <th> Cancelada </th>
+        </thead>
+        <tbody>
+         {% for venta in ventas_cliente %}
+          <tr>
+            <td>{{venta.id}}</td>
+            <td>$ {{venta.monto_total|floatformat:2 }}</td>
+            <td> {{ venta.created_at|date:"Y-m-d" }}</td>
+            <td><a onclick="detalleVenta({{venta.id}})" href="#modal_detalle" class="modal-trigger"><i class="material-icons">view_list</i> </a></td>
+            <!--Se manda llamar la función de cancelar_venta mandando el id de venta-->
+            <td class="pink-text"> {% if venta.deleted_at != None %} Cancelada {% else %} - {% endif %}</td>
+            </tr>
+          </tr>
+         {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+<div id="modal_detalle" class="modal">
+  <div class="modal-content">
+    <div id="modal_venta" class=""></div>
+  </div>
+  <div class="modal-footer">
+    <a href="#!" class="modal-action modal-close waves-effect waves-green btn-flat">Listo</a>
+  </div>
+</div>
+
+{% endblock content %}
+
+{% block js %}
+    <script type="text/js">
+        $(document).ready(function(){
+            $('.modal').modal();
+            $('select').formSelect();
+        });
+    </script>
+    <script type="text/javascript">
+      $(document).ready(function(){
+          var csrftoken = $.cookie('csrftoken');
+          function csrfSafeMethod(method) {
+          // these HTTP methods do not require CSRF protection
+              return (/^(GET|HEAD|OPTIONS|TRACE)$/.test(method));
+          }
+          $.ajaxSetup({
+              beforeSend: function(xhr, settings) {
+                  if (!csrfSafeMethod(settings.type) && !this.crossDomain) {
+                      xhr.setRequestHeader("X-CSRFToken", csrftoken);
+                  }
+              }
+          });
+      });
+
+
+      function detalleVenta(id_venta){
+        console.log(id_venta);
+        var url = '{% url "ventas:lista_detalle_venta" %}';
+        $.post(url, {
+          id_venta: id_venta,
+        }).done(function(data){
+          $("#modal_venta").html(data);
+        });
+      }
+    </script>
+{% endblock js %}
