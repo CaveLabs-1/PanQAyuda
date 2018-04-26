@@ -682,5 +682,5 @@ class TestVerCostoProductoTerminado(TestCase):
         resp = self.client.post('/paquetes/paquetes_por_catalogo/', {'id_paquete': 1})
         print(RelacionRecetaMaterial.objects.all().first().material)
         for paq in resp.context['detalle_paquetes_en_inventario']:
-            print(paq.costo)
-            print(Paquete.objects.all().first().precio)
+            self.assertEqual(PaqueteInventario.objects.all().first().costo, paq.costo)
+
