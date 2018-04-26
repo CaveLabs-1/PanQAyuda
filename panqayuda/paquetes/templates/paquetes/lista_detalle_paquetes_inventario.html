@@ -17,7 +17,7 @@
             <td>{{i.cantidad}}</td>
             <!-- <td>{{ i.costo }}</td> -->
             <td>{{i.fecha_cad.date}}</td>
-            <td>{{i.multiplicar_costo_cantidad}}</td>
+            <td>{{i.multiplicar_costo_cantidad|floatformat:2}}</td>
             <td><a href='{% url "paquetes:editar_paquete_inventario" i.id %}' class="modal-trigger"><i class="material-icons">edit</i> </a></td>
             <td><a href='{% url "paquetes:borrar_paquete_inventario" i.id %}' class="modal-trigger" onclick="return confirm('Vas a eliminar una producto del Inventario. ¿Continuar?')"><i class="material-icons">delete</i> </a></td>
         </tr>
