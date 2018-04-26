@@ -5,15 +5,14 @@
   <header class="banner-prueba">
     {# buscar clase banner-prueba en main.css #}
     <h1 class="center-align">Catálogo Producto Terminado</h1>
-
   </header>
 {% endblock header %}
 {% block content %}
 <div class="row">
   <div class="col s12">
     <ul class="tabs">
-      <li class="tab col s6"><a class="pink-text" href="/paquetes">Inventario</a></li>
-      <li class="tab col s6"><a class="white-text active" href="/paquetes/lista_paquetes">Catálogo</a></li>
+      <li class="tab col s6"><a class="pink-text" href="{% url 'paquetes:lista_paquete_inventario' %}">Inventario</a></li>
+      <li class="tab col s6"><a class="white-text active" href="{% url 'paquetes:lista_paquetes' %}">Catálogo</a></li>
     </ul>
   </div>
 </div>
@@ -34,12 +33,12 @@
           <td>{{ item.precio }}</td>
           <td>{{ item.created_at }}</td>
           <td>
-            <a href="editar_paquete/{{item.id}}">
+            <a href="{% url 'paquetes:editar_paquete' item.id %}">
               <i class="material-icons">edit</i>
             </a>
           </td>
           <td>
-            <a onclick="deleteRegister(this, event)" href="borrar_paquete/{{item.id}}">
+            <a onclick="deleteRegister(this, event)" href="{% url 'paquetes:borrar_paquete' item.id %}">
               <i class="material-icons">delete</i>
             </a>
           </td>
@@ -53,7 +52,7 @@
 </div>
 <!-- Botón de agregar -->
 <div class="fixed" >
-  <a href={% url 'paquetes:agregar_paquete' %} class="btn-floating pink"><i class="material-icons">add</i></a>
+  <a href={% url 'paquetes:agregar_paquete' %} class="btn-floating btn-large waves-effect waves-light waves-circle pink fixed tooltipped" data-position="left" data-tooltip="Agregar nuevo producto terminado"><i class="material-icons">add</i></a>
 </div>
 {% endblock content %}
 

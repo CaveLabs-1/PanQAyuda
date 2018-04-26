@@ -54,7 +54,8 @@ def lista_usuarios(request):
         # Se crea una nueva forma para dar de alta un usuario.
         forma = FormUser()
         # Se obtiene la lista de usuairos.
-        usuarios =  User.objects.filter(is_active=1)
+        usuarios =  User.objects.filter(is_active=True)
+
         # Se muestra la lista de usuarios con una forma disponible para dar de alta uno nuevo.
         return render (request, 'lista_usuarios.html', {'forma': forma, 'usuarios': usuarios})
 
@@ -64,7 +65,7 @@ def lista_usuarios(request):
 """
 @group_required('admin')
 def borrar_usuario(request, id_usuario):
-    if request.method == 'POST':
+    if request.method == 'GET':
         usuario = get_object_or_404(User, pk=id_usuario)
         #soft delete django
         usuario_nombre = usuario.username
@@ -73,14 +74,6 @@ def borrar_usuario(request, id_usuario):
         usuario.is_superuser=False
         usuario.save()
         messages.success(request, '¡Se ha eliminado al usuario!')
-        return HttpResponse('usuarios:lista_usuarios')
+        return redirect('usuarios:lista_usuarios')
     else:
         return redirect('usuarios:lista_usuarios')
-    #recuperar el usuario
-    usuario = get_object_or_404(User, pk=id_usuario)
-    #soft delete django
-    usuario.is_active = 0
-    usuario.save()
-    #mensaje de éxito
-    messages.success(request, '¡Se ha eliminado al usuario!')
-    return redirect('usuarios:lista_usuarios')

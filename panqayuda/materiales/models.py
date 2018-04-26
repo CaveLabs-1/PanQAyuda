@@ -38,8 +38,8 @@ class Material(models.Model):
         return MaterialInventario.objects.filter(material=self,
         deleted_at__isnull=True, fecha_cad__gte=timezone.now()).aggregate(Sum('porciones_disponible'))['porciones_disponible__sum'] or 0
 
-        def __str__(self):
-            return self.nombre
+    def __str__(self):
+        return self.nombre
 
 # Modelo para registros de la materia prima en el inventario.
 class MaterialInventario(models.Model):
