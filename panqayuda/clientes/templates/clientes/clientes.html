@@ -20,6 +20,7 @@
       <th>RFC</th>
       <th>Editar</th>
       <th>Eliminar</th>
+      <th> Historial </th>
       </thead>
       <tbody>
        {% for cliente in clientes %}
@@ -31,6 +32,7 @@
         <td><a href="{% url 'clientes:editar_cliente' cliente.id %}"><i class="material-icons">edit</i></a></td>
         <!--Se manda llamar la función de eliminar_cliente mandando el id de cliente-->
         <td><a href="{% url 'clientes:eliminar_cliente' cliente.id %}" class="modal-trigger" onclick="return confirm('Vas a eliminar un Cliente del catálogo. ¿Continuar?')" ><i class="material-icons">delete</i></a></td>
+        <td><a href="{% url 'clientes:historial_cliente' cliente.id %}"><i class="material-icons">history</i></a> </td>
       </tr>
       {% endfor %}
       </tbody>
