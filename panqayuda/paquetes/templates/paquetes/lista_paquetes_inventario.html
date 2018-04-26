@@ -34,7 +34,7 @@
 
             <tr>
                 <td>{{ catalogo_paquete.nombre }}</td>
-                <td>{% if catalogo_paquete.total%} {{ catalogo_paquete.total }} {% else %} 0 {% endif %}</td>
+                <td>{% if catalogo_paquete.total %} {{ catalogo_paquete.total }} {% else %} 0 {% endif %}</td>
                 <td>$ {{catalogo_paquete.precio}}</td>
                 <td><a onclick="detallePaquetes({{catalogo_paquete.id}})" href="#modal_detalle" class="modal-trigger"><i class="material-icons">view_list</i> </a></td>
             </tr>

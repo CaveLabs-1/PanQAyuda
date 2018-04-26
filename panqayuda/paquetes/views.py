@@ -7,7 +7,7 @@ from django.http import HttpResponseRedirect, HttpResponse, JsonResponse, HttpRe
 from django.contrib import messages
 from django.urls import reverse
 from django.template.loader import render_to_string
-from django.db.models import Sum
+from django.db.models import Sum, F
 from django.db.models.functions import Concat
 from panqayuda.decorators import group_required
 import datetime
@@ -69,8 +69,8 @@ def lista_paquete_inventario(request):
     catalogo_paquetes=Paquete.objects.filter(deleted_at__isnull=True).filter(estatus=1)
 
     for catalogo_paquete in catalogo_paquetes:
-         aux= PaqueteInventario.objects.filter(nombre_id=catalogo_paquete.id).filter(deleted_at__isnull=True).aggregate(Sum('cantidad'))
-         catalogo_paquete.total=aux['cantidad__sum']
+         aux= PaqueteInventario.objects.filter(nombre_id=catalogo_paquete.id).filter(deleted_at__isnull=True).annotate(cantidad_disponible=F('cantidad')-F('ocupados')).aggregate(Sum('cantidad_disponible'))
+         catalogo_paquete.total=aux['cantidad_disponible__sum']
 
     return render(request, 'paquetes/lista_paquetes_inventario.html', {'paquetes':paquetes, 'catalogo_paquetes':catalogo_paquetes})
 
