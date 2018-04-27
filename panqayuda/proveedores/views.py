@@ -34,6 +34,24 @@ def agregar_proveedor(request):
         form = FormaProveedor()
     return render(request, 'proveedores/agregar_proveedor.html', {'form': form})
 
+'''
+    Editar un proveedor activo.
+'''
+@group_required('admin')
+def editar_proveedor(request, id_proveedor):
+    proveedor = get_object_or_404(Proveedor, pk=id_proveedor)
+    if request.method == "POST":
+        form = FormaProveedor(request.POST or None, instance=proveedor)
+        if form.is_valid():
+            proveedor = form.save()
+            proveedor.save()
+            messages.success(request, 'Se ha editado el proveedor exitosamente!')
+            return redirect('proveedores:lista_proveedores')
+    else:
+        form = FormaProveedor()
+    return render(request, 'proveedores/editar_proveedor.html', {'form': form, 'proveedor': proveedor})
+
+
 """
     Recibe el proovedor y muestra sus detalles en un template aparte
 """
