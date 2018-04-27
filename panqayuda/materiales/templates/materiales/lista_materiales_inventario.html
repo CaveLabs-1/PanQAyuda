@@ -1,4 +1,5 @@
 {% extends "base.html" %}
+{% load mathfilters %}
 {% block title %}Inventario Materia Prima{% endblock title %}
 {% block navbar %}{% include "navbar.html" %}{% endblock navbar %}
 {% block header %}
@@ -24,7 +25,8 @@
         <thead>
           <tr>
             <th>Nombre</th>
-            <th>Total</th>
+            <th>Existencia </th>
+            <th></th>
             <th>Ver detalle</th>
           </tr>
         </thead>
@@ -32,7 +34,10 @@
           {% for material in catalogo_materiales %}
             <tr>
                 <td>{{ material.nombre }}</td>
-                <td>{{ material.total }}</td>
+                {% with aux=material.total|mul:material.equivale_entrada %}
+                <td>{{ aux|div:material.equivale_maestra}} {{material.unidad_entrada}}</td>
+                {% endwith %}
+                <td>{{ material.total }} {{ material.unidad_maestra}} </td>
                 <!--mostrar detalle-->
                 <td>
                   <a onclick="detalleMateriales({{material.id}})" href="#modal_detalle" class="modal-trigger">
