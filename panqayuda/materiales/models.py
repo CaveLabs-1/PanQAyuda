@@ -38,6 +38,15 @@ class Material(models.Model):
         return MaterialInventario.objects.filter(material=self,
         deleted_at__isnull=True, fecha_cad__gte=timezone.now()).aggregate(Sum('porciones_disponible'))['porciones_disponible__sum'] or 0
 
+    #Obtiene la cantidad en inventario con mermas
+    def obtener_cantidad_inventario_fisico(self):
+        return MaterialInventario.objects.filter(material=self,deleted_at__isnull=True).\
+            aggregate(Sum('porciones_disponible'))['porciones_disponible__sum'] or 0
+
+    #Obtiene los objetos MaterialesInventario con caducados
+    def obtener_materiales_inventario_con_caducados(self):
+        return MaterialInventario.objects.filter(material=self, deleted_at__isnull=True, porciones_disponible__gt=0)
+
     def __str__(self):
         return self.nombre
 
