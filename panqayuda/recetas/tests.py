@@ -5,6 +5,11 @@ import datetime
 from django.utils import timezone
 from django.urls import reverse
 from django.contrib.auth.models import User, Group
+from materiales.models import MaterialInventario
+from compras.models import Compra
+from proveedores.models import Proveedor
+from materiales.models import Unidad
+from ordenes.models import Orden
 
 #US27-Agregar Receta
 class TestAgregarReceta(TestCase):
@@ -495,3 +500,103 @@ class TestListaRecetasInventario(TestCase):
         self.assertEqual(resp.context['detalle_recetas_en_inventario'].count(), 3)
 
         #Se señalan los que están caducados
+
+#Test US 34
+class TestVerCostoRecetaInventario(TestCase):
+
+    #Setup AC 34.1
+    def setUp(self):
+        Group.objects.create(name="admin")
+        user = User.objects.create_user(username='temporary', email='temporary@gmail.com', password='temporary',
+                                        is_superuser='True')
+        user.save()
+        self.client.login(username='temporary', password='temporary')
+        #Agregar Unidad
+        data = {'nombre': "kilos"}
+        self.client.post(reverse('materiales:lista_unidades'), data)
+        # Agregar Proveedor
+        data = {
+            'nombre': "Nombre Proveedor",
+            'telefono': '4424708341',
+            'email': 'ale@hot.com',
+            'direccion': 'prueba de direccion',
+            'rfc': '1231230',
+            'razon_social': 'razon social'
+        }
+        self.client.post(reverse('proveedores:agregar_proveedor'), data)
+        # Agregar Catalogo Materia Prima
+        data={
+            'nombre':'Material',
+            'codigo':'1223123',
+            'equivale_entrada':'1',
+            'unidad_entrada':'1',
+            'equivale_maestra':'1',
+            'unidad_maestra':1
+        }
+        self.client.post(reverse('materiales:materiales'), data)
+        Proveedor.objects.create(
+            nombre='Proveedor',
+            telefono='4424708341',
+            direccion='calle 23',
+            rfc='123123',
+            razon_social='razon social',
+            email='proveedor@gmail.com'
+        )
+        data = {
+            'proveedor': '1',
+            'fecha_compra': '2018-04-04'
+
+        }
+        self.client.post(reverse('compras:agregar_compra'), data)
+
+        # Crear orden de compra
+        data = {
+            'material': Material.objects.all().first().id,
+            'fecha_cad': '2019-04-04',
+            'cantidad': '2',
+            'costo': '30',
+            'compra': Compra.objects.all().first().id
+        }
+        self.client.post(reverse('compras:agregar_materia_prima_a_compra'), data)
+
+        #Crear Receta
+        data = {
+            'nombre':'Receta Semi-Terminado',
+            'cantidad':'1',
+            'duracion_en_dias':'10',
+
+        }
+
+        self.client.post(reverse('recetas:agregar_receta'), data)
+        #Crear materiales de la receta
+        data = {
+            'material': str(Material.objects.all().first().nombre),
+            'cantidad': '1',
+        }
+
+        self.client.post(reverse('recetas:agregar_materiales', kwargs={'id_receta':1}), data)
+        #Crear Orden De Trabajo
+        data = {
+            'receta': Receta.objects.all().first().id,
+            'fecha_fin': '2018-10-10',
+            'multiplicador': '1',
+        }
+        self.client.post(reverse('ordenes:ordenes'), data)
+        #Terminar Orden De Trabajp
+        data = {
+            'id': Orden.objects.all().first().id,
+            'estatus': '2',
+        }
+        self.client.post(reverse('ordenes:terminar_orden'), data)
+
+    #Test AC 34.1 Producto Semi-Terminado
+    def testVerCostoReceta(self):
+        #Checar el precio del producto semi-terimando con el costo de la orden que fue originada
+
+        resp = self.client.post(reverse('recetas:detalle_recetas_inventario'), {'id_receta':1})
+        for receta in resp.context['detalle_recetas_en_inventario']:
+            self.assertEqual(Orden.objects.get(receta=receta.id).costo, receta.costo)
+            self.assertEqual(receta.costo, 15)
+
+
+
