@@ -17,7 +17,6 @@
             <tr>
               <th>Nombre</th>
               <th>Email</th>
-              <th>Editar</th>
               <th>Eliminar</th>
             </tr>
           </thead>
@@ -27,8 +26,6 @@
             <tr>
                 <td>{{ usuario.first_name }} {{ usuario.last_name }}</td>
                 <td>{{ usuario.email }}</td>
-                <!-- Editar usuario -->
-                <td><a><i class="material-icons">edit</i></a></td>
                 <!-- Eliminar usuario -->
                 <td>
                   <a onclick="deleteRegister(this, event)" href="{% url 'usuarios:borrar_usuario' usuario.id %}">
