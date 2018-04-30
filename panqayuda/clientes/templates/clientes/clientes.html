@@ -15,6 +15,7 @@
       <table id="table_id" class="datatable">
       <thead>
       <th>Nombre</th>
+      <th>Nombre Contacto</th>
       <th>Teléfono</th>
       <th>Email</th>
       <th>RFC</th>
@@ -26,6 +27,7 @@
        {% for cliente in clientes %}
       <tr>
         <td>{{cliente.nombre}}</td>
+        <td>{{cliente.nombreContacto}}</td>
         <td>{{cliente.telefono}}</td>
         <td>{{cliente.email}}</td>
         <td>{{cliente.rfc}}</td>
