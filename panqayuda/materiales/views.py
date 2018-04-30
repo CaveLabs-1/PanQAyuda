@@ -2,11 +2,23 @@ from django.shortcuts import render, reverse, redirect, get_object_or_404
 from django.template.loader import render_to_string
 from .forms import MaterialForm, UnidadForm
 from .models import Material, MaterialInventario, Unidad
+from recetas.models import RecetaInventario
+from paquetes.models import PaqueteInventario
 from django.contrib import messages
 from django.http import HttpResponseRedirect, HttpResponse
 from django.db.models import Sum
 from panqayuda.decorators import group_required
 import datetime
+
+@group_required('admin')
+def reporte(request):
+    materiales = list(MaterialInventario.objects.filter(deleted_at__isnull=True).filter(estatus=1))
+    paquetes = list(PaqueteInventario.objects.filter(deleted_at__isnull=True).filter(estatus=1))
+    recetas = list(RecetaInventario.objects.filter(deleted_at__isnull=True).filter(estatus=1))
+
+    lista = materiales + paquetes + recetas
+    return render (request, 'materiales/reporte.html', { 'lista': lista })
+
 
 """
     En caso de ser GET regresa una lista de materiales y la forma para agregar un material

@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+{% block title %}Reporte{% endblock title %}
+{% block navbar %}{% include "navbar.html" %}{% endblock navbar %}
+{% block header %}
+  <header class="banner-prueba">
+    <h1 class="center-align">Reporte</h1>
+  </header>
+{% endblock header %}
+{% block content %}
+  <div class="row">
+    <div class="col s10 offset-s1">
+      <table id="table_id" class="datatable">
+        <thead>
+          <th>Nombre</th>
+          <th>Código</th>
+        </thead>
+        <tbody>
+         {% for material in lista %}
+          <tr>
+            <td>{{ material.nombre }}</td>
+            <td>{{ material.codigo }}</td>
+          </tr>
+         {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+
+{% endblock content %}
+
+{% block js %}
+{% endblock js %}
