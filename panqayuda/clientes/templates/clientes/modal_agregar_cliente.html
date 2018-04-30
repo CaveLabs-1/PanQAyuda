@@ -15,11 +15,17 @@
             {% csrf_token %}
             <div class="row">
               <!--Nombre-->
-                <div class="input-field col s6">
+                <div class="input-field col s3">
                     <input class="validate"  type="text" name="{{forma.nombre.html_name}}" id="{{forma.nombre.id_for_label}}" value="" required>
-                    <label for="{{forma.nombre.id_for_label}}">Nombre Completo</label>
+                    <label for="{{forma.nombre.id_for_label}}">Nombre Organización</label>
                     <span class="helper-text" data-error="Nombre inválido"></span>
                     <span class="red-text"> {%if form.nombre.errors %} {{forma.nombre.errors}} {% endif %}</span>
+                </div>
+                <div class="input-field col s3">
+                    <input class="validate"  type="text" name="{{forma.nombreContacto.html_name}}" id="{{forma.nombreContacto.id_for_label}}" value="" required>
+                    <label for="{{forma.nombreContacto.id_for_label}}">Nombre Contacto</label>
+                    <span class="helper-text" data-error="Nombre inválido"></span>
+                    <span class="red-text"> {%if form.nombreContacto.errors %} {{forma.nombreContacto.errors}} {% endif %}</span>
                 </div>
                 <!-- RFC -->
                 <div class="input-field col s6">
