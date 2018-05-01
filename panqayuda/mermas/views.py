@@ -87,7 +87,7 @@ def agregar_merma_materiales(request):
             #Regresa la Material Prima del inventario que se debe de borrar
             pack = MaterialInventario.objects.get(id=Merma.nombre.id)
             if pack.porciones_disponible < Merma.cantidad :
-                messages.success(request, 'Esta materia prima solo tiene ' + str(pack.porciones_disponible) + " unidad" + "disponibles.")
+                messages.success(request, 'Esta materia prima solo tiene ' + str(pack.porciones_disponible) +  " "+ + "disponibles.")
                 context = {
                     'MermaPack': newMermaMaterialForm,
                 }

@@ -122,7 +122,7 @@
             url: "{% url 'mermas:obtener_recetas_ajuste_inventario' %}",
             data:{'receta_catalogo_id':receta_catalogo_id},
             success: function(response){
-                alert(response);
+                //alert(response);
                 $('#{{forma.nombre.id_for_label}}').html(response);
                 $('select').formSelect();
             }
