@@ -37,6 +37,15 @@ class Paquete (models.Model):
 			filter(fecha_cad__gte=datetime.datetime.now()).annotate(disponible=Sum(F('cantidad') - F('ocupados'))). \
 			filter(disponible__gt=0).order_by('fecha_cad')
 
+#-----------------------------------------------------------------
+	#Devuelve la lista de paquetes_inventario que tienen algun paquete ocupado
+	def obtener_paquetes_inventario_ocupado(self):
+		return PaqueteInventario.objects.filter(nombre=self).filter(deleted_at__isnull=True). \
+			filter(fecha_cad__gte=datetime.datetime.now()). \
+			exclude(ocupados=0).order_by('fecha_cad')
+
+#-----------------------------------------------------------------
+
 	#Devuelve los paquetes en inventario incluyendo a los que ya pasó su fecha de caducidad
 	def obtener_paquetes_inventario_con_caducados(self):
 		return PaqueteInventario.objects.filter(nombre=self).filter(deleted_at__isnull=True). \
