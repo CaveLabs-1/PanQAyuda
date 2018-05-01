@@ -188,8 +188,11 @@ def cancelar_venta(request, id_venta):
             paquete = registro.paquete
             cantidad = registro.cantidad
             agregar_paquetes_inventario_nuevo(paquete,cantidad)
+            registro.status = 0
+            registro.deleted_at = datetime.datetime.now()
+            registro.save()
         #Cambio de Estatus y asignacipon de deleted_at
-        relacion_venta_paquete.estatus = 0
+        relacion_venta_paquete.status = 0
         relacion_venta_paquete.deleted_at = datetime.datetime.now()
         venta.deleted_at = datetime.datetime.now()
         #Saves
@@ -205,7 +208,7 @@ def agregar_paquetes_inventario_nuevo(paquete,cantidad):
         if cantidad > paquete_inventario.ocupados:
         # La necesitada es mayor que la cantidad que este 'lote' tiene
             cantidad -= paquete_inventario.ocupados
-            paquete_inventario.ocupados = paquete_inventario.cantidad
+            paquete_inventario.ocupados = 0
             paquete_inventario.save()
         # Este 'lote' satisface la cantidad necesitada para el paquete
         else:
