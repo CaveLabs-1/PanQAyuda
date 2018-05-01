@@ -24,7 +24,7 @@ function initDataTable(){
   //Init Datatable
   data_table = $('#table_id').DataTable({
     dom: 'Bfrtip',
-    // buttons: ['copy', 'csv', 'excel', 'print'],
+    buttons: ['excel'],
     language:{
       url: "//cdn.datatables.net/plug-ins/1.10.13/i18n/Spanish.json" //Cambia idioma a español
     },
