@@ -2,8 +2,12 @@ from django.shortcuts import render, reverse, redirect, get_object_or_404
 from django.template.loader import render_to_string
 from .forms import MaterialForm, UnidadForm
 from .models import Material, MaterialInventario, Unidad
-from recetas.models import RecetaInventario
-from paquetes.models import PaqueteInventario
+from recetas.models import RecetaInventario, Receta
+from paquetes.models import PaqueteInventario, Paquete
+from compras.models import Compra
+from proveedores.models import Proveedor
+from ventas.models import  Venta
+from clientes.models import Cliente
 from django.contrib import messages
 from django.http import HttpResponseRedirect, HttpResponse
 from django.db.models import Sum
@@ -12,12 +16,20 @@ import datetime
 
 @group_required('admin')
 def reporte(request):
-    materiales = list(MaterialInventario.objects.filter(deleted_at__isnull=True).filter(estatus=1))
-    paquetes = list(PaqueteInventario.objects.filter(deleted_at__isnull=True).filter(estatus=1))
-    recetas = list(RecetaInventario.objects.filter(deleted_at__isnull=True).filter(estatus=1))
+    materiales = Material.objects.filter(deleted_at__isnull=False)
+    paquetes = Paquete.objects.filter(deleted_at__isnull=False)
+    recetas = Receta.objects.filter(deleted_at__isnull=False)
+    clientes = Cliente.objects.filter(deleted_at__isnull=False)
+    compras = Compra.objects.filter(deleted_at__isnull=False)
+    ventas = Venta.objects.filter(deleted_at__isnull=False)
+    proveedores = Proveedor.objects.filter(deleted_at__isnull=False)
 
-    lista = materiales + paquetes + recetas
-    return render (request, 'materiales/reporte.html', { 'lista': lista })
+
+
+    return render (request, 'materiales/reporte.html', { 'materiales': materiales,
+                                    'paquetes': paquetes, 'recetas': recetas,
+                                    'clientes': clientes, 'compras': compras,
+                                    'ventas': ventas, 'proveedores':proveedores })
 
 
 """

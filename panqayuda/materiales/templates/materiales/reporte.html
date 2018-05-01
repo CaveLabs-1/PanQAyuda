@@ -1,9 +1,9 @@
 {% extends "base.html" %}
-{% block title %}Reporte{% endblock title %}
+{% block title %}Historial de Eliminados{% endblock title %}
 {% block navbar %}{% include "navbar.html" %}{% endblock navbar %}
 {% block header %}
   <header class="banner-prueba">
-    <h1 class="center-align">Reporte</h1>
+    <h1 class="center-align">Historial de Eliminados</h1>
   </header>
 {% endblock header %}
 {% block content %}
@@ -11,15 +11,59 @@
     <div class="col s10 offset-s1">
       <table id="table_id" class="datatable">
         <thead>
+          <th>Tipo</th>
           <th>Nombre</th>
-          <th>Código</th>
+          <th>Fecha de Eliminado</th>
         </thead>
         <tbody>
-         {% for material in lista %}
+         {% for material in materiales %}
           <tr>
+            <td>Materia Prima</td>
             <td>{{ material.nombre }}</td>
-            <td>{{ material.codigo }}</td>
+            <td>{{ material.deleted_at }}</td>
           </tr>
+         {% endfor %}
+         {% for proveedor in proveedores %}
+          <tr>
+            <td>Proveedor</td>
+            <td>{{ proveedor.nombre }}</td>
+            <td>{{ proveedor.deleted_at }}</td>
+          </tr>
+         {% endfor %}
+         {% for paquete in paquetes %}
+         <tr>
+           <td>Paquete</td>
+           <td>{{ paquete.nombre }}</td>
+           <td>{{ paquete.deleted_at }}</td>
+         </tr>
+         {% endfor %}
+         {% for receta in recetas %}
+         <tr>
+           <td>Receta</td>
+           <td>{{ receta.nombre }}</td>
+           <td>{{ receta.deleted_at }}</td>
+         </tr>
+         {% endfor %}
+         {% for cliente in clientes %}
+         <tr>
+           <td>Cliente</td>
+           <td>{{ cliente.nombre }}</td>
+           <td>{{ cliente.deleted_at }}</td>
+         </tr>
+         {% endfor %}
+         {% for compra in compras %}
+         <tr>
+           <td>Compra</td>
+           <td>Proveedor: {{ compra.proveedor }}</td>
+           <td>{{ compra.deleted_at }}</td>
+         </tr>
+         {% endfor %}
+         {% for venta in ventas %}
+         <tr>
+           <td>Venta</td>
+           <td>{{ venta.cliente }}</td>
+           <td>{{ venta.deleted_at }}</td>
+         </tr>
          {% endfor %}
         </tbody>
       </table>
