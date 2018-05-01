@@ -32,7 +32,7 @@
             </select>
           </div>
           <div class="input-field col s5">
-            <input class="datepicker" id="{{forma.fecha_fin.id_for_label}}" type="text" class="required" name="{{forma.fecha_fin.html_name}}" required>
+            <input class="datepicker" id="{{forma.fecha_fin.id_for_label}}" type="text" class="required" name="{{forma.fecha_fin.html_name}}" required onchange="validateFecha('{{forma.fecha_fin.id_for_label}}');">
             <label for="{{forma.fecha_fin.id_for_label}}">Fecha de Entrega</label>
           </div>
         </div>

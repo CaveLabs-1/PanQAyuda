@@ -23,7 +23,7 @@
             </select>
           </div>
           <div class="input-field col m6">
-            <input type="text" class="datepicker" name="{{forma.fecha_compra.html_name}}" id='{{forma.fecha_compra.id_for_label}}' required>
+            <input type="text" class="datepicker" name="{{forma.fecha_compra.html_name}}" id='{{forma.fecha_compra.id_for_label}}' required onchange="validateFecha('{{forma.fecha_compra.id_for_label}}');">
             <label for="{{forma.fecha_compra.id_for_label}}">Fecha de Compra</label>
           </div>
           {%csrf_token%}

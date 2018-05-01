@@ -38,3 +38,15 @@ function initDataTable(){
        ],
   });
 }
+
+//validación de fechas
+function validateFecha(id){
+  var fecha_cad = document.getElementById(id);
+  var dateReg = /^\d{4}[./-]\d{2}[./-]\d{2}$/;
+
+  if(!fecha_cad.value.match(dateReg)) {
+    fecha_cad.setCustomValidity("Fecha de caducidad");
+  } else {
+    fecha_cad.setCustomValidity('');
+  }
+}
