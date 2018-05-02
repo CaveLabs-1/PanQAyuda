@@ -13,7 +13,7 @@
   <div class="modal-content">
     <div class="row">
       <div class="col s11">
-        <h3>Agregar Merma Producto Semi-Terminado</h3>
+        <h3>Ajuste Inventario Producto Semi-Terminado</h3>
       </div>
       <div class="col s1">
         <a class="black-text modal-close">
@@ -41,10 +41,19 @@
         </div>
       </div>
       <div class="row">
-        <div class="input-field col s6">
+        <div class="input-field col s5">
           <label for="{{forma.cantidad.id_for_label}}">Cantidad</label>
           <input id="{{forma.cantidad.id_for_label}}" name="{{forma.cantidad.html_name}}" type="number" required>
         </div>
+        <div class="col s1">
+          <a class="tooltipped btnAyuda" data-position="top" data-delay="50" data-tooltip="Si escribe un número positivo se agregará al inventario, si escribe uno negativo se restará. ">
+            <i class="material-icons">help</i>
+          </a>
+        </div>
+          <div class="input-field col s6">
+            <input class="datepicker" id="{{forma.fecha.id_for_label}}" type="text" class="required" name="{{forma.fecha.html_name}}" required>
+            <label for="{{forma.fecha_fin.id_for_label}}">Fecha</label>
+          </div>
         </div>
       <div class="row">
         <div class="input-field col s12">
