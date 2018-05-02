@@ -37,6 +37,9 @@ body {
 .padding-top {
   padding-top: 18%; }
 
+.error-message {
+  opacity: 0.8; }
+
 body, main#login, .login {
   padding-left: 0;
   height: 100%;
