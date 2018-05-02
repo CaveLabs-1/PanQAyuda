@@ -25,7 +25,7 @@
         <div class="row">
           <div class="input-field col s7 ">
             <select required id="id_receta" name="receta">
-              <option value="" disabled selected>Escoger Producto Semiterminado</option>
+              <option value="" disabled selected>Escoger Receta</option>
               {% for receta in recetas %}
               <option value="{{receta.id}}">{{receta.nombre}}</option>
               {% endfor %}

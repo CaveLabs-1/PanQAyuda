@@ -16,7 +16,6 @@
         <th>ID</th>
         <th>Proveedor</th>
         <th>Fecha de Compra</th>
-        <th> Monto total </th>
         <th>Detalle</th>
         <!-- <th>Editar</th> -->
         <th>Eliminar</th>
@@ -27,7 +26,6 @@
           <td>{{compra.id}}</td>
           <td>{{compra.proveedor}}</td>
           <td>{{compra.fecha_compra.date}}</td>
-          <td> $ {{ compra.monto }}</td>
           <!--Ver detalle de la compra-->
           <td><a onclick="detalleCompra({{compra.id}})" href="#modal_detalle" class="modal-trigger"><i class="material-icons">view_list</i> </a></td>
           <!--Editar compra-->
