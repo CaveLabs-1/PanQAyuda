@@ -1,8 +1,10 @@
 {% extends "loginBase.html" %}
 {% load staticfiles %}
-{% block title %}Órdenes de Trabajo{% endblock title %}
+{% block title %}Pan Q' Ayuda{% endblock title %}
 {% block content %}
 <div class="row login">
+  <!-- Imagen de fondo con id=background. Se carfa la imagen desde los
+  estilos -->
   <div class="col l5 s12 hide-on-med-and-down" id="background">
   </div>
   <div class="col l7 s12" id="login">
@@ -13,19 +15,25 @@
       {% csrf_token %}
       <!-- {{ form.as_p }} -->
       <div class="row">
+        <!--Input para username-->
         <div class="input-field col s8 offset-s2 valign-wrapper">
           <i class="material-icons login-icons">mail</i>
-          <input id="id_username" class="validate" placeholder="Email" type="text" name="username" required/>
+          <input id="id_username" class="validate" placeholder="Email"
+          type="text" name="username" required/>
         </div>
       </div>
       <div class="row">
+        <!-- Input para password -->
         <div class="input-field col s8 offset-s2 valign-wrapper">
           <i class="material-icons login-icons">lock</i>
-          <input id="id_password" class="validate" placeholder="Password" type="password" name="password" required/>
+          <input id="id_password" class="validate" placeholder="Password"
+           type="password" name="password" required/>
         </div>
       </div>
+      <!-- Boton de submit -->
       <div class="row col s8 offset-s2">
-        <button class="button btn waves-effect waves-light pink btnLogin" type="submit">LOGIN</button>
+        <button class="button btn waves-effect waves-light pink btnLogin"
+         type="submit">LOGIN</button>
       </div>
     </form>
   </div>

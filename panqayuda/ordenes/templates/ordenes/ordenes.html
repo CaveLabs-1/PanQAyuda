@@ -6,54 +6,58 @@
     <h1 class="center-align">Órdenes de Trabajo</h1>
   </header>
 {% endblock header %}
-{% block content %} 
+{% block content %}
   {# ----------  Inicia modal  --------------  #}
   <div id="agregarOrden" class="modal">
     <div class="modal-content">
-      <div class="row valign-wrapper">
-        <div class="col s5">
-          <h4>Agregar Órden</h4>
+        <div class="row">
+          <div class="col s11">
+            <h3>Agregar Órden de Trabajo</h3>
+          </div>
+          <div class="col s1">
+            <a class="black-text modal-close">
+              <i class="small material-icons tooltipped"  data-position="bottom" data-tooltip="Cerrar">close</i>
+            </a>
+          </div>
         </div>
-        <div class="col s1 offset-s6">
-          <a class="black-text modal-close">
-            <i class="medium material-icons">close</i>
-          </a>
-        </div>
-      </div>
-      <form class="" method="post" action="/ordenes/">
+      <form class="" method="post" action="{% url 'ordenes:ordenes' %}">
         {% csrf_token %}
-        <div class="row container">
+        <div class="row">
           <div class="input-field col s7 ">
             <select required id="id_receta" name="receta">
-              <option value="" disabled selected>Escoger Receta</option>
+              <option value="" disabled selected>Escoger Producto Semiterminado</option>
               {% for receta in recetas %}
               <option value="{{receta.id}}">{{receta.nombre}}</option>
               {% endfor %}
             </select>
           </div>
           <div class="input-field col s5">
-            <input class="datepicker" id="{{forma.fecha_fin.id_for_label}}" type="text" class="required" name="{{forma.fecha_fin.html_name}}" required>
+            <input class="datepicker" id="{{forma.fecha_fin.id_for_label}}" type="text" class="required" name="{{forma.fecha_fin.html_name}}" required onchange="validateFecha('{{forma.fecha_fin.id_for_label}}');">
             <label for="{{forma.fecha_fin.id_for_label}}">Fecha de Entrega</label>
           </div>
-          <!-- <div class="input-field col s6 ">
-            <input id="cantidad" type="number" class="validate" name="cantidad" required>
-            <label for="cantidad">Cantidad</label>
-          </div> -->
+        </div>
+        <div class="row">
           <div class="input-field col s5">
             <input id="{{forma.multiplicador.id_for_label}}" type="number" class="validate" name="{{forma.multiplicador.html_name}}" required>
             <label for="{{forma.multiplicador.id_for_label}}">Multiplicador</label>
           </div>
           <div class="col s1">
-            <a class="tooltipped btnAyuda" data-position="top" data-delay="50" data-tooltip="El multiplicador decidira la cantidad de veces que se producirá la receta seleccionada con la cantidad fija de esta.">
+            <a class="tooltipped btnAyuda" data-position="top" data-delay="50" data-tooltip="El multiplicador decidira la cantidad de veces que se producirá la receta seleccionada con la cantidad fija de ésta.">
               <i class="material-icons">help</i>
             </a>
           </div>
-          <div class="col s12 right-align">
-            <br>
-            <button type="submit" class="btn pink waves-effect waves-light">Agregar</button>
+          <div class="col s6"></div>
           </div>
-        </div>
         <div class="row">
+          <br>
+          <div class="col s6">
+            <a class="btn waves-effect waves-light pink modal-close" >Regresar
+              <i class="material-icons left">chevron_left</i>
+            </a>
+          </div>
+          <div class="col s6 right-align">
+            <button type="submit"class="btn waves-effect waves-light pink">Agregar <i class="material-icons right">send</i></button>
+          </div>
         </div>
       </form>
     </div>
@@ -66,7 +70,7 @@
     </div>
   </div>
   <div class="fixed-action-btn ">
-    <a class="add-btn btn-floating btn-large waves-effect waves-light pink btn modal-trigger" href="#agregarOrden"><i class="material-icons">add</i></a>
+    <a class="btn-floating btn-large waves-effect waves-light waves-circle pink fixed tooltipped modal-trigger" data-position="left" data-tooltip="Agregar órden de trabajo" href="#agregarOrden"><i class="material-icons">add</i></a>
   </div>
 
 
@@ -126,7 +130,7 @@
           id: id,
           estatus: estatus,
         }).done(function(data){
-          $('#table').html(data);
+          $('#table_id').html(data);
           $('select').formSelect();
           M.toast({html:'La orden fue marcada como cancelada.'});
         }).fail(function(data) {

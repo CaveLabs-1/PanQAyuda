@@ -2,12 +2,15 @@ from django.forms import ModelForm
 from django import forms
 from .models import Receta, RelacionRecetaMaterial
 from django.core.exceptions import ValidationError
-
+from django.core.validators import MinValueValidator
 
 class RecetaForm(ModelForm):
+    #Campo que se transformará en un timedelta
+    duracion_en_dias = forms.IntegerField(validators=[MinValueValidator(1, "La duración en días debe ser un número entero mayor a 0.")], required=True)
+
     class Meta:
         model = Receta
-        fields = ('nombre', 'cantidad', 'duration')
+        fields = ('nombre', 'cantidad', 'duracion_en_dias')
 
     def clean_nombre(self):
         nombre=self.cleaned_data['nombre']
@@ -21,8 +24,7 @@ class RecetaForm(ModelForm):
                 for receta in receta_query.all():
                     if receta.id == self.instance.id:
                         return nombre
-            raise ValidationError("Esta receta ya existe")
-
+            raise ValidationError("Este producto semiterminado ya existe")
 
 class MaterialRecetaForm(ModelForm):
     class Meta:
@@ -34,7 +36,7 @@ class MaterialRecetaForm(ModelForm):
                 'required': "Debes seleccionar una cantidad.",
             },
             'material':{
-                'required': "Debes seleccionar un material."
+                'required': "Debes seleccionar una materia prima."
             }
         }
 
@@ -46,4 +48,4 @@ class MaterialRecetaForm(ModelForm):
         if material_query.count() == 0:
             return material
         else:
-            raise ValidationError("El material seleccionado ya está en la receta.")
+            raise ValidationError("La materia prima seleccionada ya está en la receta del producto semiterminado.")

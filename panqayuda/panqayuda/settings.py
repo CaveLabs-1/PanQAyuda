@@ -43,6 +43,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'mathfilters',
     'paquetes',
     'materiales',
     'recetas',
@@ -52,6 +53,7 @@ INSTALLED_APPS = [
     'compras',
     'ventas',
     'mermas',
+    'usuarios',
 ]
 
 MIDDLEWARE = [
@@ -122,7 +124,7 @@ AUTH_PASSWORD_VALIDATORS = [
 # Internationalization
 # https://docs.djangoproject.com/en/2.0/topics/i18n/
 
-LANGUAGE_CODE = 'en-us'
+LANGUAGE_CODE = 'es-MX'
 
 TIME_ZONE = 'America/Mexico_City'
 
@@ -145,11 +147,16 @@ STATICFILES_DIRS = [
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 LOGIN_REDIRECT_URL = '/ordenes'
+LOGIN_URL = '/ordenes'
+LOGOUT_REDIRECT_URL = 'login'
 
-class DisableMigrations(object):
 
-    def __contains__(self, item):
-        return True
 
-    def __getitem__(self, item):
-        return None
+
+# class DisableMigrations(object):
+#
+#     def __contains__(self, item):
+#         return True
+#
+#     def __getitem__(self, item):
+#         return None

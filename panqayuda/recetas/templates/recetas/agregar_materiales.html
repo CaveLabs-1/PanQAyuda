@@ -27,11 +27,11 @@
                         </div>
                         <input type="text" hidden name="id_material" id="id_material"/>
                         <!--Cantidad de Material-->
-                        <div class="input-field col l2 m2 s1">
+                        <div class="input-field col l2 m2 s1" data-length="9">
                             {{ form.cantidad.label_tag }}
                             {{ form.cantidad }}
                             {% if form.cantidad.errors %}
-                                <span class="text-red">{{ form.cantidad.errors }} </span>
+                                <span class="red-text">No puedes introducir un valor con mas de 10 digitos</span>
                             {% endif %}
                         </div>
                         <!--Unidad-->
@@ -60,8 +60,8 @@
                             <tr>
                               <!-- Datos de el material -->
                               <td>{{ material.material.nombre }}</td>
-                              <td>{{ material.cantidad }}</td>
-                              <td>{{ material.material.unidad }}</td>
+                              <td>{{ material.cantidad | floatformat:"0"}}</td>
+                              <td>{{ material.material.unidad_maestra }}</td>
                               <td><a href="borrar_material/{{ material.id }}"><i class="material-icons">delete</i></a></td>
                             </tr>
                             {% endfor %}
@@ -71,10 +71,8 @@
                   </div>
                   <div class="row">
                     <div class="col s6">
-                      <a href="/recetas/receta/{{receta.id}}">
-                        <button class="btn waves-effect waves-light pink" type="submit" name="action">Regresar
-                          <i class="material-icons left">chevron_left</i>
-                        </button>
+                      <a class="btn waves-effect waves-light pink"  href="{% url 'recetas:editar_receta' receta.id %}" >Regresar
+                        <i class="material-icons left">chevron_left</i>
                       </a>
                     </div>
                     <div class="col s3 offset-s3">
@@ -98,7 +96,7 @@
         //Diccionario con unidades para cada material
         var dict = {
                     {% for material in materiales_disponibles %}
-                     '{{ material.nombre }}': '{{ material.unidad }}',
+                     '{{ material.nombre }}': '{{ material.unidad_maestra }}',
                     {% endfor %}
                     };
         //Autocompletar para escoger materiales

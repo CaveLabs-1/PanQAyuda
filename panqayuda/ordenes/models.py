@@ -24,6 +24,7 @@ class Orden(models.Model):
     multiplicador = models.IntegerField(validators=[validate_no_multiplicadores_menores_a_0])
     estatus = models.CharField(default='1' , max_length = 1, choices=LISTA_ESTATUS)
     fecha_fin = models.DateField(blank = True, null = True, validators=[validate_fecha_mayor_fecha_actual])
+    costo = models.FloatField(blank=True, null="True")
     created_at = models.DateTimeField(default=timezone.now)
     updated_at = models.DateTimeField(default=timezone.now)
     deleted_at = models.DateTimeField(blank = True, null = True)
@@ -34,7 +35,7 @@ class Orden(models.Model):
     def ordenes_lsitas():
         return Orden.objects.filter(estatus='2')
 
-    def cantidad():
+    def cantidad(self):
         return self.receta.cantidad * self.multiplicador
 
     def _str_(self):

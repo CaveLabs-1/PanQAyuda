@@ -1,11 +1,16 @@
 from django.test import TestCase
 from paquetes.models import Paquete, RecetasPorPaquete, PaqueteInventario
 from django.urls import reverse
-from recetas.models import Receta, RecetaInventario
+from recetas.models import Receta, RecetaInventario, RelacionRecetaMaterial
 import datetime
 from django.contrib import messages
 from django.contrib.auth.models import User, Group
 from django.shortcuts import render
+from materiales.models import Material
+from compras.models import Compra
+from ordenes.models import Orden
+from proveedores.models import Proveedor
+from paquetes.forms import FormRecetasPorPaquete
 
 # #Test creado por Manuel
 class TestEditarPaqueteCatalogo(TestCase):
@@ -508,7 +513,7 @@ class TestEditarPaqueteInventario(TestCase):
 
     def test_ac_22_2_El_objeto_se_actualiza_exitosamente(self):
         #La cantidad a editar es menor de la que había
-        data = {'cantidad': "1",}
+        data = {'cantidad': "1", 'fecha_cad': "2019-12-10"}
         resp = self.client.post(reverse('paquetes:editar_paquete_inventario', kwargs={'id_paquete': PaqueteInventario.objects.first().id}), data)
         # Las recetas de inventario que tienen no tienen ninguna  pieza ocupada no se alteran
         receta_sin_piezas_ocupadas = RecetaInventario.objects.last()
@@ -525,7 +530,7 @@ class TestEditarPaqueteInventario(TestCase):
 
 
         #La cantidad a editar es mayor a la que había y no existe suficiente en inventario
-        data = {'cantidad': "50",}
+        data = {'cantidad': "50", 'fecha_cad': "2019-12-10"}
         self.client.post((reverse('paquetes:editar_paquete_inventario', kwargs={'id_paquete': PaqueteInventario.objects.first().id})), data)
 
         #no se modificó nada
@@ -563,3 +568,124 @@ class TestEditarPaqueteInventario(TestCase):
         resp = self.client.post(reverse('paquetes:editar_paquete_inventario', kwargs={'id_paquete': PaqueteInventario.objects.first().id}), data)
         update = PaqueteInventario.objects.first()
         self.assertNotEqual(update.cantidad, "repollo")
+
+# Test US 34
+class TestVerCostoProductoTerminado(TestCase):
+    # Test Setup AC 34.1 Producto Terminado
+    def setUp(self):
+        Group.objects.create(name="admin")
+        user = User.objects.create_user(username='temporary', email='temporary@gmail.com', password='temporary',
+                                        is_superuser='True')
+        user.save()
+        self.client.login(username='temporary', password='temporary')
+        # Agregar Unidad
+        data = {'nombre': "kilos"}
+        self.client.post(reverse('materiales:lista_unidades'), data)
+        # Agregar Proveedor
+        data = {
+            'nombre': "Nombre Proveedor",
+            'telefono': '4424708341',
+            'email': 'ale@hot.com',
+            'direccion': 'prueba de direccion',
+            'rfc': '1231230',
+            'razon_social': 'razon social'
+        }
+        self.client.post(reverse('proveedores:agregar_proveedor'), data)
+        # Agregar Catalogo Materia Prima
+        data = {
+            'nombre': 'Material',
+            'codigo': '1223123',
+            'equivale_entrada': '1',
+            'unidad_entrada': '1',
+            'equivale_maestra': '1',
+            'unidad_maestra': 1
+        }
+        self.client.post(reverse('materiales:materiales'), data)
+        Proveedor.objects.create(
+            nombre='Proveedor',
+            telefono='4424708341',
+            direccion='calle 23',
+            rfc='123123',
+            razon_social='razon social',
+            email='proveedor@gmail.com'
+        )
+        data = {
+            'proveedor': '1',
+            'fecha_compra': '2018-04-04'
+
+        }
+        self.client.post(reverse('compras:agregar_compra'), data)
+
+        # Crear orden de compra
+        data = {
+            'material': Material.objects.all().first().id,
+            'fecha_cad': '2018-04-27',
+            'cantidad': '10',
+            'costo': '300',
+            'compra': Compra.objects.all().first().id
+        }
+        self.client.post(reverse('compras:agregar_materia_prima_a_compra'), data)
+
+        # Crear Receta
+        data = {
+            'nombre': 'Receta Semi-Terminado',
+            'cantidad': '1',
+            'duracion_en_dias': '10',
+
+        }
+        self.client.post(reverse('recetas:agregar_receta'), data)
+        # Crear materiales de la receta
+        data = {
+            'material': str(Material.objects.all().first().nombre),
+            'cantidad': '1',
+        }
+        self.client.post(reverse('recetas:agregar_materiales', kwargs={'id_receta':1}), data)
+        # Crear Orden De Trabajo
+        data = {
+            'receta': Receta.objects.all().first().id,
+            'fecha_fin': '2018-04-29',
+            'multiplicador': '3',
+        }
+        self.client.post(reverse('ordenes:ordenes'), data)
+        # Terminar Orden De Trabajp
+        data = {
+            'id': Orden.objects.all().first().id,
+            'estatus': '2',
+        }
+
+        self.client.post(reverse('ordenes:terminar_orden'), data)
+
+        # Crear Catalogo Paquete
+        data = {
+            'nombre': "Paquetes",
+            'precio': '150',
+        }
+
+        self.client.post(reverse('paquetes:agregar_paquete'), data)
+        # Asignar Receta del Paquete
+        data = {
+            'receta': Receta.objects.all().first().id,
+            'cantidad': '1',
+            'paquete': Paquete.objects.all().first().id
+        }
+
+        resp = self.client.post(reverse('paquetes:agregar_receta_a_paquete'), data)
+
+        # Asignar Materiales del Paquete
+        data = {
+            'nombre': Paquete.objects.all().first().id,
+            'cantidad': '1',
+            'fecha_cad': '2018-10-10'
+        }
+
+        resp = self.client.post(reverse('paquetes:agregar_inventario'), data)
+
+
+    #Test AC 34.1 Producto Terminado
+    def testVerCostoPaquete(self):
+
+        resp = self.client.post(reverse('paquetes:paquetes_por_catalogo'), {'id_paquete': 1})
+        print(RelacionRecetaMaterial.objects.all().first().material)
+        for paq in resp.context['detalle_paquetes_en_inventario']:
+            self.assertEqual(PaqueteInventario.objects.all().first().costo, paq.costo)
+            self.assertEqual(30, paq.costo)

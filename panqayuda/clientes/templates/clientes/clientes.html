@@ -1,9 +1,9 @@
 {% extends "base.html" %}
-{% block title %}Clientes{% endblock title %}
+{% block title %}Catálogo Clientes{% endblock title %}
 {% block navbar %}{% include "navbar.html" %}{% endblock navbar %}
 {% block header %}
   <header class="banner-prueba">
-    <h1 class="center-align">Clientes</h1>
+    <h1 class="center-align">Catálogo Clientes</h1>
   </header>
 {% endblock header %}
 {% block content %}
@@ -14,30 +14,36 @@
     <div class="col s10 offset-s1">
       <table id="table_id" class="datatable">
       <thead>
-      <th>Nombres</th>
+      <th>Nombre</th>
+      <th>Nombre Contacto</th>
       <th>Teléfono</th>
       <th>Email</th>
       <th>RFC</th>
       <th>Editar</th>
       <th>Eliminar</th>
+      <th> Historial </th>
       </thead>
       <tbody>
        {% for cliente in clientes %}
       <tr>
         <td>{{cliente.nombre}}</td>
+        <td>{{cliente.nombreContacto}}</td>
         <td>{{cliente.telefono}}</td>
         <td>{{cliente.email}}</td>
         <td>{{cliente.rfc}}</td>
-        <td><a href="editar_cliente/{{ cliente.id }}"><i class="material-icons">edit</i></a></td>
+        <td><a href="{% url 'clientes:editar_cliente' cliente.id %}"><i class="material-icons">edit</i></a></td>
+        <!--Se manda llamar la función de eliminar_cliente mandando el id de cliente-->
         <td><a href="{% url 'clientes:eliminar_cliente' cliente.id %}" class="modal-trigger" onclick="return confirm('Vas a eliminar un Cliente del catálogo. ¿Continuar?')" ><i class="material-icons">delete</i></a></td>
+        <td><a href="{% url 'clientes:historial_cliente' cliente.id %}"><i class="material-icons">history</i></a> </td>
       </tr>
       {% endfor %}
       </tbody>
       </table>
     </div>
+    <div class="col s1"></div>
   </div>
   <div class="fixed-action-btn ">
-    <a class="add-btn btn-floating btn-large waves-effect waves-light pink btn modal-trigger" href="#agregar_cliente"><i class="material-icons">add</i></a>
+    <a class="btn-floating btn-large waves-effect waves-light waves-circle pink fixed tooltipped modal-trigger" data-position="left" data-tooltip="Agregar nuevo cliente" href="#agregar_cliente"><i class="material-icons">add</i></a>
   </div>
 
 {% include 'clientes/modal_agregar_cliente.html' %}

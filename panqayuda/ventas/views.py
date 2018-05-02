@@ -3,14 +3,18 @@ from django.template.loader import render_to_string
 from .forms import VentaForm, RelacionVentaPaqueteForm
 from .models import Venta, RelacionVentaPaquete
 from django.contrib import messages
-from paquetes.models import Paquete
+from paquetes.models import Paquete, PaqueteInventario
 from clientes.forms import FormCliente
+from clientes.models import Cliente
 from django.http import HttpResponseRedirect, HttpResponse, HttpResponseNotFound
 from django.db.models import Sum
 from panqayuda.decorators import group_required
 from functools import reduce
 import datetime
 
+"""
+    View para mostrar la lista de ventas, con forma disponible para crear una nueva ventas.
+"""
 @group_required('admin')
 def ventas(request):
     if request.method == 'POST':
@@ -27,6 +31,9 @@ def ventas(request):
         ventas =  Venta.objects.filter(deleted_at__isnull=True)
         return render (request, 'ventas/ventas.html', {'forma': forma, 'ventas': ventas})
 
+"""
+    Recibe una venta y detalla la información sobre ella
+"""
 @group_required('admin')
 def lista_detalle_venta(request):
     if request.method == 'POST':
@@ -37,6 +44,9 @@ def lista_detalle_venta(request):
         return HttpResponse(response)
     return HttpResponse('Algo ha salido mal.')
 
+"""
+    Genera una nueva venta
+"""
 @group_required('admin')
 def generar_venta(request):
     if request.method == "POST":
@@ -91,7 +101,7 @@ def generar_venta(request):
                         restar_paquetes_inventario(relacion.paquete, relacion.cantidad)
 
                     messages.success(request, "¡La venta se ha generado con éxito!")
-                    return redirect('ventas:generar_venta')
+                    return redirect('ventas:ventas')
                 else:
                     messages.error(request, 'Hubo un error con la forma. Inténtanlo de nuevo.')
                     return redirect('ventas:generar_venta')
@@ -102,8 +112,10 @@ def generar_venta(request):
     else:
         #La forma que contiene el campo para seleccionar al cliente
         forma_venta = VentaForm()
+        forma_venta.fields['cliente'].queryset = Cliente.objects.filter(deleted_at__isnull=True)
         #La forma para cada paquete que se genera en la venta
         forma_paquete_venta = RelacionVentaPaqueteForm()
+        forma_paquete_venta.fields['paquete'].queryset = Paquete.objects.filter(deleted_at__isnull=True)
         #La forma en caso de que se quiera agregar un nuevo cliente
         forma_cliente = FormCliente()
         data = {'forma_venta':forma_venta, 'forma_paquete_venta':forma_paquete_venta, 'forma':forma_cliente}
@@ -123,6 +135,22 @@ def restar_paquetes_inventario(paquete,cantidad):
             paquete_inventario.ocupados += cantidad
             paquete_inventario.save()
             break
+
+def agregar_paquetes_inventario(paquete,cantidad):
+    # Obtener paquetes del inventario disponibles para restar ordenados por fecha de caducidad
+    paquetes_inventario = paquete.obtener_paquetes_inventario_disponibles()
+    for paquete_inventario in paquetes_inventario:
+        if cantidad > paquete_inventario.ocupados:
+        # La necesitada es mayor que la cantidad que este 'lote' tiene
+            cantidad -= paquete_inventario.ocupados
+            paquete_inventario.ocupados = paquete_inventario.cantidad
+            paquete_inventario.save()
+        # Este 'lote' satisface la cantidad necesitada para el paquete
+        else:
+            paquete_inventario.ocupados -= cantidad
+            paquete_inventario.save()
+            break
+
 
 #Verifica si hay suficientes paquetes disponibles para realizar la venta, devuelve una fila de la tabla
 #para el resumen de venta.
@@ -149,3 +177,64 @@ def agregar_paquete_a_venta(request):
         else:
             return HttpResponseNotFound("Verifica que seleccionaste un paquete y una cantidad mayor a 0.")
     return HttpResponseNotFound("No hay suficientes paquetes en inventario de " + paquete.nombre)
+
+@group_required('admin')
+def cancelar_venta(request, id_venta):
+        #Checar que el objeto exista
+        venta = get_object_or_404(Venta, pk=id_venta)
+        relacion_venta_paquete = RelacionVentaPaquete.objects.filter(venta=venta)
+        #Asignación de valores
+        for registro in relacion_venta_paquete:
+            paquete = registro.paquete
+            cantidad = registro.cantidad
+            agregar_paquetes_inventario_nuevo(paquete,cantidad)
+            registro.status = 0
+            registro.deleted_at = datetime.datetime.now()
+            registro.save()
+        #Cambio de Estatus y asignacipon de deleted_at
+        relacion_venta_paquete.status = 0
+        relacion_venta_paquete.deleted_at = datetime.datetime.now()
+        venta.deleted_at = datetime.datetime.now()
+        #Saves
+        venta.save()
+        messages.success(request, '¡Se ha cancelado exitosamente la venta!')
+        return redirect('ventas:ventas')
+
+#Versión corregida de agregar_paquete_inventario (no borrar el anterior porque se utiliza en otras views)
+def agregar_paquetes_inventario_nuevo(paquete,cantidad):
+    # Obtener paquetes del inventario disponibles para restar ordenados por fecha de caducidad
+    paquetes_inventario = paquete.obtener_paquetes_inventario_ocupado()
+    for paquete_inventario in paquetes_inventario:
+        if cantidad > paquete_inventario.ocupados:
+        # La necesitada es mayor que la cantidad que este 'lote' tiene
+            cantidad -= paquete_inventario.ocupados
+            paquete_inventario.ocupados = 0
+            paquete_inventario.save()
+        # Este 'lote' satisface la cantidad necesitada para el paquete
+        else:
+            paquete_inventario.ocupados -= cantidad
+            paquete_inventario.save()
+            break
+
+
+
+# def cancelar_venta(request, id_venta):
+#         #Checar que el objeto exista
+#         venta = get_object_or_404(Venta, pk=id_venta)
+#         relacion_venta_paquete = RelacionVentaPaquete.objects.filter(venta=venta)
+#         #Asignación de valores
+#         for registro in relacion_venta_paquete:
+#             paquete = registro.paquete
+#             cantidad = registro.cantidad
+#             paquete_inventario = get_object_or_404(PaqueteInventario, pk=paquete.id)
+#             paquete_inventario.ocupados -= cantidad
+#             paquete_inventario.fecha_cad =
+#             paquete_inventario.save()
+#         #Cambio de Estatus y asignacipon de deleted_at
+#         relacion_venta_paquete.estatus = 0
+#         relacion_venta_paquete.deleted_at = datetime.datetime.now()
+#         venta.deleted_at = datetime.datetime.now()
+#         #Saves
+#         venta.save()
+#         messages.success(request, '¡Se ha cancelado exitosamente la venta!')
+#         return redirect('ventas:ventas')

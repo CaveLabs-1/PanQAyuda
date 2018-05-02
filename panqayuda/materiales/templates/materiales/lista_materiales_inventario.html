@@ -1,46 +1,58 @@
 {% extends "base.html" %}
-{% block title %}Materiales{% endblock title %}
+{% load mathfilters %}
+{% block title %}Inventario Materia Prima{% endblock title %}
 {% block navbar %}{% include "navbar.html" %}{% endblock navbar %}
 {% block header %}
   <header class="banner-prueba">
     {# buscar clase banner-prueba en main.css #}
-    <h1 class="center-align">Inventario Materiales</h1>
+    <h1 class="center-align">Inventario Materia Prima</h1>
   </header>
 {% endblock header %}
 {% block content %}
 <div class="row">
   <div class="col s12">
     <ul class="tabs">
-      <li class="tab col s6"><a class="active white-text" href="/materiales">Catálogo Inventario</a></li>
-      <li class="tab col s6"><a class="pink-text" href="/materiales/lista_materiales">Catálogo Materia Prima</a></li>
+      <!--Menú-->
+      <li class="tab col s6"><a class="active white-text" href="{% url 'materiales:lista_materiales_inventario' %}">Inventario</a></li>
+      <li class="tab col s6"><a class="pink-text" href="{% url 'materiales:materiales' %}">Catálogo</a></li>
     </ul>
   </div>
 </div>
   <div class="container">
     <!-- Contenedor donde carga todo -->
+    <!--Lista materia inventario-->
     <table id="table_id">
         <thead>
           <tr>
             <th>Nombre</th>
-            <th>Total</th>
+            <th>Existencia </th>
+            <th>Unidades</th>
             <th>Ver detalle</th>
           </tr>
         </thead>
         <tbody>
           {% for material in catalogo_materiales %}
-            {% if material.total%}
             <tr>
                 <td>{{ material.nombre }}</td>
-                <td>{{ material.total }}</td>
-                <td><a onclick="detalleMateriales({{material.id}})" href="#modal_detalle" class="modal-trigger"><i class="material-icons">view_list</i> </a></td>
+                {% with aux=material.total|mul:material.equivale_entrada %}
+                <td>{{ aux|div:material.equivale_maestra}} {{material.unidad_entrada}}</td>
+                {% endwith %}
+                <td>{{ material.total }} {{ material.unidad_maestra}} </td>
+                <!--mostrar detalle-->
+                <td>
+                  <a onclick="detalleMateriales({{material.id}})" href="#modal_detalle" class="modal-trigger">
+                    <i class="material-icons" >view_list</i>
+                  </a>
+              </td>
             </tr>
-            {% endif %}
           {% endfor %}
         </tbody>
     </table>
     <br>
     <div class="fixed">
-        <a href="{% url 'compras:compras' %}" class="btn-floating btn-large waves-effect waves-light pink"><i class="material-icons">add</i></a>
+        <a href="{% url 'compras:agregar_compra' %}" class="btn-floating btn-large waves-effect waves-light waves-circle pink fixed tooltipped" data-position="left" data-tooltip="Agregar nueva compra">
+          <i class="material-icons">add</i>
+        </a>
     </div>
   </div>
   <div id="modal_detalle" class="modal">
@@ -54,12 +66,14 @@
 {% endblock content %}
 {% block js %}
   <script type="text/javascript">
+    //materializes
     $(document).ready(function(){
       $('.collapsible').collapsible();
     });
   </script>
   <script type="text/javascript">
     $(document).ready(function(){
+        //CSRF Token para hacer peticiones POST
         var csrftoken = $.cookie('csrftoken');
         function csrfSafeMethod(method) {
         // these HTTP methods do not require CSRF protection
@@ -74,6 +88,7 @@
         });
     });
 
+    //Eliminar material
     function deleteRegister(element, event) {
       event.preventDefault();
       $.confirm({
@@ -95,12 +110,14 @@
      });
     }
 
+    //mostrar detalle de material
     function detalleMateriales(id_material){
-      console.log(id_material);
       var url = '{% url "materiales:materiales_por_catalogo" %}';
+      //post para recuperar detalle del material
       $.post(url, {
         id_material: id_material,
       }).done(function(data){
+        //modificar html del modal
         $("#modal_material").html(data);
       });
     }

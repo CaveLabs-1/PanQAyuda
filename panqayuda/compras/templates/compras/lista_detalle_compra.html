@@ -1,5 +1,7 @@
+{% load mathfilters %}
 <h4>Detalle de la compra no. {{compra.id}} </h4>
-<h5>Fecha: {{compra.fecha_compra}}    Proveedor: {{compra.proveedor}}</h5>
+<h5>Fecha: {{ compra.fecha_compra.date }} </h5>
+<h5>Proveedor: {{compra.proveedor}}</h5>
 <h1>{{compramaterial}}</h1>
 <table>
   <thead>
@@ -7,6 +9,7 @@
       <th>Nombre</th>
       <th>Fecha Cad</th>
       <th>Cantidad</th>
+      <th>Equivale</th>
       <th>Costo</th>
       <th>Editar</th>
     </tr>
@@ -14,9 +17,10 @@
   <tbody>
     {% for compramaterial in materiales_de_compra %}
         <tr>
-          <td>{{compramaterial.material}}</td>
-          <td>{{compramaterial.fecha_cad}}</td>
+          <td>{{compramaterial.material.nombre}}</td>
+          <td>{{compramaterial.fecha_cad.date}}</td>
           <td>{{compramaterial.cantidad}} {{compramaterial.unidad_entrada}}</td>
+          <td>{{compramaterial.cantidad|mul:compramaterial.material.equivale_maestra|div:compramaterial.material.equivale_entrada}} {{compramaterial.material.unidad_maestra}}</td>
           <td>{{compramaterial.costo}}</td>
           <td><a href='' class="modal-trigger"><i class="material-icons">edit</i> </a></td>
         </tr>

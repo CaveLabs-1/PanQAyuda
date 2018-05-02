@@ -15,29 +15,32 @@ class FormPaquete(forms.ModelForm):
                 for paquete in paquete_existente.all():
                     if paquete.id==self.instance.id:
                         return nombre
-            raise ValidationError('Ya hay un paquete con este nombre')
+            raise ValidationError('Ya hay un producto terminado con este nombre')
     class Meta:
         model = Paquete
-        fields = ('nombre', 'precio')
+        fields = ('nombre', 'precio', 'codigo')
 
         error_messages = {
             'nombre':{
-                'required':"Este campo no puede ser vacio",
+                'required':"Este campo no puede ser vacío",
             },
             'precio':{
-                'required':"Este campo no puede ser vacio",
+                'required':"Este campo no puede ser vacío",
             },
         }
 
 class FormEditarPaquete (forms.ModelForm):
     class Meta:
         model = PaqueteInventario
-        fields = ('cantidad',)
+        fields = ('cantidad', 'fecha_cad')
 
         error_messages = {
             'cantidad': {
                 'required': "Debes seleccionar una cantidad mayor a 0.",
             },
+            'fecha_cad':{
+                'required': "Debes seleccionar una fecha",
+            }
         }
 
 class FormRecetasPorPaquete(forms.ModelForm):
@@ -50,8 +53,8 @@ class FormRecetasPorPaquete(forms.ModelForm):
                 'required': "Debes seleccionar una cantidad mayor a 0.",
             },
             'receta': {
-                'required': "Debes seleccionar una receta",
-                'invalid_choice': "Debes seleccionar una receta",
+                'required': "Debes seleccionar un producto semiterminado",
+                'invalid_choice': "Debes seleccionar un producto semiterminado",
             }
         }
 
@@ -62,7 +65,7 @@ class FormPaqueteInventario(forms.ModelForm):
 
         error_messages = {
             'nombre': {
-                'required': "Debes seleccionar un paquete.",
+                'required': "Debes seleccionar un producto terminado.",
             },
             'cantidad': {
                 'required': "Debes seleccionar una cantidad mayor a 0.",

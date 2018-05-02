@@ -7,34 +7,50 @@ from django.http import HttpResponseRedirect, HttpResponse, JsonResponse, HttpRe
 from django.contrib import messages
 from django.urls import reverse
 from django.template.loader import render_to_string
-from django.db.models import Sum
+from django.db.models import Sum, F
 from django.db.models.functions import Concat
 from panqayuda.decorators import group_required
 import datetime
+from django.utils import timezone
 import json
 
-#indice
+"""
+    Regresa la lista de paquetes
+"""
 @group_required('admin')
 def lista_paquetes(request):
     lista_de_paquetes=Paquete.objects.filter(estatus=1).filter(deleted_at__isnull=True)
     return render(request, 'paquetes/ver_paquetes.html', {'paquetes':lista_de_paquetes})
 
-#agregar paquete
+
+"""
+    En caso de GET regresa la forma para hacer el POST correspondiente
+"""
 @group_required('admin')
 def agregar_paquete(request):
+    #Revisar si se manda por POST
     if request.method == 'POST':
+        #Mandar la forma
         forma=FormPaquete(request.POST)
+        #Cehcar si la forma es válida
         if forma.is_valid():
+            #Guardas la forma y mandas mensaje de éxito y redirige a agregar recetas a paquete
             forma.save()
-            messages.success(request, '¡Se ha agregado el paquete al catálogo!')
+            messages.success(request, '¡Se ha agregado el producto al catálogo!')
             paquete = Paquete.objects.latest('id')
             return HttpResponseRedirect(reverse('paquetes:agregar_recetas_a_paquete', kwargs={'id_paquete':paquete.id}))
+            #Manda mensaje de error si la forma no es válida
         else:
-            messages.info(request, 'Hubo un error y no se agregó el paquete. Inténtalo de nuevo.')
+            messages.info(request, 'Hubo un error y no se agregó el producto terminado. Inténtalo de nuevo.')
+    #Manda mensaje de error si no se manda por POST
     else:
         forma=FormPaquete()
     return render(request, 'paquetes/agregar_paquete.html', {'forma':forma})
 
+"""
+    Recibe el id de el paquete a borrar, cambia su estado a 0 y su deleted_at a
+    la hora correspondiente
+"""
 @group_required('admin')
 def borrar_paquete(request, id_paquete):
     paquete = get_object_or_404(Paquete, pk=id_paquete)
@@ -44,16 +60,23 @@ def borrar_paquete(request, id_paquete):
     messages.success(request, '¡Se ha borrado el paquete del catálogo!')
     return redirect('paquetes:lista_paquetes')
 
+"""
+    Enlista los paquetes inventario que tinenen de estatus 0
+"""
+@group_required('admin')
 def lista_paquete_inventario(request):
     paquetes=PaqueteInventario.objects.filter(deleted_at__isnull=True).filter(estatus=1)
     catalogo_paquetes=Paquete.objects.filter(deleted_at__isnull=True).filter(estatus=1)
 
     for catalogo_paquete in catalogo_paquetes:
-         aux= PaqueteInventario.objects.filter(nombre_id=catalogo_paquete.id).filter(deleted_at__isnull=True).aggregate(Sum('cantidad'))
-         catalogo_paquete.total=aux['cantidad__sum']
+         aux= PaqueteInventario.objects.filter(nombre_id=catalogo_paquete.id).filter(deleted_at__isnull=True).annotate(cantidad_disponible=F('cantidad')-F('ocupados')).aggregate(Sum('cantidad_disponible'))
+         catalogo_paquete.total=aux['cantidad_disponible__sum']
 
     return render(request, 'paquetes/lista_paquetes_inventario.html', {'paquetes':paquetes, 'catalogo_paquetes':catalogo_paquetes})
 
+"""
+    Regresa los los paquetes inventario correspondiente
+"""
 @group_required('admin')
 def paquetes_por_catalogo(request):
     if request.method == 'POST':
@@ -64,26 +87,36 @@ def paquetes_por_catalogo(request):
         return HttpResponse(response)
     return HttpResponse('Algo ha salido mal.')
 
+"""
+
+"""
+@group_required('admin')
 def agregar_paquete_inventario(request):
+    #Revisa que sea método post
     if request.method == 'POST':
+        #Obtiene la forma
         forma_post=FormPaqueteInventario(request.POST or None)
+        #Revisa que la forma sea válida
         if forma_post.is_valid():
             #Obtener paquete
             id_paquete = request.POST.get('nombre')
             paquete = Paquete.objects.get(pk=id_paquete)
+            data = forma_post.cleaned_data
 
             cantidad_post = forma_post.instance.cantidad
             #Verificar que hay suficiente cantidad en inventario para agregar el paquete
             if agregar_paquetes_inventario_recetas(paquete,cantidad_post) == False:
-                messages.error(request, 'No hay inventario suficiente para agregar este paquete')
+                messages.error(request, 'No hay inventario suficiente para agregar este producto terminado')
                 return HttpResponseRedirect(reverse('paquetes:agregar_inventario'))
-
-            forma_post.save()
+            costo= costo_paquetes_inventario_recetas(paquete, cantidad_post)
+            PaqueteInventario.objects.create(nombre=data['nombre'], cantidad=data['cantidad'], fecha_cad=data['fecha_cad'], costo=costo)
             messages.success(request, 'Se ha agregado el paquete al inventario')
             return HttpResponseRedirect(reverse('paquetes:lista_paquete_inventario'))
+        #Si la forma no es válida, manda un mensaje de error y regresa a agregar paquete en inventario
         else:
-            messages.error(request, 'Hubo un error y no se agregó el paquete al inventario.')
+            messages.error(request, 'Hubo un error y no se agregó el producto terminado al inventario.')
             return HttpResponseRedirect(reverse('paquetes:agregar_inventario'))
+    #Si no se manda por método POST
     else:
         forma=FormPaqueteInventario()
         paquetes = Paquete.objects.filter(deleted_at__isnull=True).order_by("nombre")
@@ -97,7 +130,7 @@ def borrar_paquete_inventario(request, id_paquete_inventario):
     paquete_inventario.estatus = 0
     paquete_inventario.deleted_at = datetime.datetime.now()
     paquete_inventario.save()
-    messages.success(request, 'Se ha borrado el paquete del inventario')
+    messages.success(request, 'Se ha borrado el producto terminado del inventario')
     return redirect('paquetes:lista_paquete_inventario')
 
 @group_required('admin')
@@ -125,7 +158,7 @@ def editar_paquete_inventario(request, id_paquete):
             messages.success(request, '¡Se ha editado el inventario de '+ paquete_inventario.nombre.nombre + ' exitosamente!')
             return redirect('paquetes:lista_paquete_inventario')
     else:
-        form = FormEditarPaquete()
+        form = FormEditarPaquete(instance=paquete_inventario)
     return render(request, 'paquetes/editar_paquete_inventario.html', {'form': form, 'paquete_inventario': paquete_inventario})
 
 
@@ -139,10 +172,11 @@ def agregar_recetas_a_paquete(request, id_paquete):
         raise Http404
     forma = FormRecetasPorPaquete()
     recetas_por_paquete = RecetasPorPaquete.objects.filter(paquete=paquete).filter(deleted_at__isnull=True)
-    recetas = Receta.objects.filter(deleted_at__isnull=True).exclude(id__in=recetas_por_paquete.values('receta'))
+    recetas = Receta.objects_con_empaquetado.filter(deleted_at__isnull=True).exclude(id__in=recetas_por_paquete.values('receta'))
     formahtml = render_to_string('paquetes/forma_agregar_recetas_paquete.html', {'forma': forma, 'recetas': recetas, 'paquete': paquete})
     lista_recetas = render_to_string('paquetes/lista_recetas_por_paquete.html', {'recetas_por_paquete': recetas_por_paquete})
-    return render(request, 'paquetes/agregar_recetas_a_paquete.html', {'formahtml': formahtml, 'lista_recetas':lista_recetas, 'recetas': recetas, 'paquete': paquete, 'forma': forma})
+    return render(request, 'paquetes/agregar_recetas_a_paquete.html',
+    {'formahtml': formahtml, 'lista_recetas':lista_recetas, 'recetas': recetas, 'paquete': paquete, 'forma': forma})
 
 @group_required('admin')
 def agregar_receta_a_paquete(request):
@@ -170,7 +204,27 @@ def agregar_receta_a_paquete(request):
             for field,errors in forma.errors.items():
                  for error in errors:
                      mensaje_error+=error + "\n"
-            return HttpResponseNotFound('Hubo un problema agregando la receta al paquete: '+ mensaje_error)
+            return HttpResponseNotFound('Hubo un problema agregando el producto semit-terminado al producto terminado: '+ mensaje_error)
+
+@group_required('admin')
+def quitar_receta_paquete(request):
+    #Obtener la relación y 'eliminarla'
+    id_relacion = request.GET.get('id_relacion')
+    relacion =  get_object_or_404(RecetasPorPaquete,pk=id_relacion)
+    paquete = relacion.paquete
+    relacion.deleted_at = timezone.now()
+    relacion.save()
+
+    #Renderizar la lista de recetas y la forma
+    recetas_por_paquete = RecetasPorPaquete.objects.filter(paquete=paquete).filter(deleted_at__isnull=True)
+    recetas = Receta.objects.filter(deleted_at__isnull=True).exclude(id__in=recetas_por_paquete.values('receta'))
+    forma = FormRecetasPorPaquete()
+    forma_html = render_to_string('paquetes/forma_agregar_recetas_paquete.html',{'forma': forma, 'recetas': recetas, 'paquete': paquete})
+    lista_recetas = render_to_string('paquetes/lista_recetas_por_paquete.html',{'recetas_por_paquete': recetas_por_paquete})
+    data = '' + forma_html + lista_recetas + ''
+
+    #Enviar respuesta
+    return HttpResponse(data)
 
 @group_required('admin')
 def paquete(request, id_paquete):
@@ -211,7 +265,11 @@ def agregar_paquetes_inventario_recetas(paquete,cantidad):
     for receta in recetas:
         # Obtener recetas del inventario disponibles para restar ordenadas por fecha de caducidad
         recetas_inventario = RecetaInventario.obtener_disponibles(receta.receta)
+        #Verificar que sea un material de empaquetado
         cantidad_necesitada = cantidad * receta.cantidad
+        if receta.receta.material_empaque != None:
+            #Como esta receta es un material de empaquetado, se le resta al material en lugar de a la receta
+            receta.receta.material_empaque.restar_inventario(cantidad_necesitada)
         for receta_inventario in recetas_inventario:
             # La necesitada es mayor que la cantidad que este 'lote' tiene
             if cantidad_necesitada > receta_inventario.disponible:
@@ -224,22 +282,42 @@ def agregar_paquetes_inventario_recetas(paquete,cantidad):
                 receta_inventario.save()
                 break
 
+def costo_paquetes_inventario_recetas(paquete,cantidad):
+    # Obtener recetas del paquete
+    recetas = RecetasPorPaquete.objects.filter(paquete=paquete).filter(deleted_at__isnull=True)
+    costo=0
+    for receta in recetas:
+        #Obtener recetas del inventario disponibles para restar ordenadas por fecha de caducidad
+        recetas_inventario = RecetaInventario.obtener_disponibles(receta.receta)
+        cantidad_necesitada = cantidad * receta.cantidad
+        for receta_inventario in recetas_inventario:
+            # La necesitada es mayor que la cantidad que este 'lote' tiene
+            costo+=receta_inventario.costo * cantidad_necesitada
+    return costo
+
 def eliminar_paquetes_inventario_recetas(paquete,cantidad):
     recetas_paquete = RecetasPorPaquete.objects.filter(paquete=paquete).filter(deleted_at__isnull=True)
     for receta in recetas_paquete:
-        # Obtener recetas_inventario para abastecer
-        recetas_inventario = RecetaInventario.objects.filter(deleted_at__isnull=True).filter(
-            nombre=receta.receta).order_by('-fecha_cad')
         # Calcular cantidad a sumar
         cantidad_a_sumar = cantidad * receta.cantidad
-        for receta_inventario in recetas_inventario:
-            # Verificar que a esta receta_inventario se le pueden quitar de los ocupados
-            if receta_inventario.ocupados > 0:
-                if cantidad_a_sumar <= receta_inventario.ocupados:
-                    receta_inventario.ocupados-=cantidad_a_sumar
-                    receta_inventario.save()
-                    break
-                else:
-                    cantidad_a_sumar -= receta_inventario.ocupados
-                    receta_inventario.ocupados = 0
-                    receta_inventario.save()
+
+        #Verificar si esta receta no es un material de empaquetado
+        if receta.receta.material_empaque != None:
+            #Como este es un material de empaquetado, no se le agrega a las recetas, si no directo al material
+            receta.receta.material_empaque.agregar_inventario(cantidad_a_sumar)
+
+        else:
+            # Obtener recetas_inventario para abastecer
+            recetas_inventario = RecetaInventario.objects.filter(deleted_at__isnull=True).filter(
+                nombre=receta.receta).order_by('-fecha_cad')
+            for receta_inventario in recetas_inventario:
+                # Verificar que a esta receta_inventario se le pueden quitar de los ocupados
+                if receta_inventario.ocupados > 0:
+                    if cantidad_a_sumar <= receta_inventario.ocupados:
+                        receta_inventario.ocupados-=cantidad_a_sumar
+                        receta_inventario.save()
+                        break
+                    else:
+                        cantidad_a_sumar -= receta_inventario.ocupados
+                        receta_inventario.ocupados = 0
+                        receta_inventario.save()

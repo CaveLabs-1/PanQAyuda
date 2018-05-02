@@ -1,9 +1,9 @@
 {% extends "base.html" %}
-{% block title %}Lista Proveedores{% endblock title %}
+{% block title %}Catálogo Proveedores{% endblock title %}
 {% block navbar %}{% include "navbar.html" %}{% endblock navbar %}
 {% block header %}
-  <header classs="banner-prueba">
-    <h1 class="center-align">Lista de Proveedores</h1>
+  <header class="banner-prueba">
+    <h1 class="center-align">Catálogo Proveedores</h1>
   </header>
 {% endblock header %}
 {% block content %}
@@ -11,48 +11,43 @@
   <div class="col s10 offset-s1">
     <table id="table_id" class="datatable">
       <thead>
-        <th>Nombre</th>
-        <th>Telefono</th>
-        <th>Direccion</th>
+        <!--Encabezados de la tabla que se imprime-->
+        <th>Razón Social</th>
+        <th>Nombre Contacto</th>
+        <th>Teléfono</th>
+        <th>Dirección</th>
         <th>RFC</th>
-        <th>Razon Social</th>
         <th>Email</th>
+        <th>Editar</th>
         <th>Eliminar</th>
-        <!-- <th></th> -->
       </thead>
       <tbody>
+        <!-- Se itera sobre una lista de proveedores para que se impriman todos -->
         {% for item in proveedores %}
         <tr>
           <td>
             <a href="{% url 'proveedores:detallar_proveedor' item.id %}">
-              {{ item.nombre }}
+              <!-- Se recupera el nombre del proveedor -->
+              {{ item.razon_social }}
             </a>
           </td>
+          <!-- Aqui se recuperan los atributos de los proveedores para que se muestren en pantalla -->
+          <td>{{ item.nombre }}</td>
           <td>{{ item.telefono }}</td>
           <td>{{ item.direccion }}</td>
           <td>{{ item.rfc }}</td>
-          <td>{{ item.razon_social }}</td>
           <td>{{ item.email }}</td>
+          <td><a href="{% url 'proveedores:editar_proveedor' item.id %}"><i class="material-icons">edit</i></a></td>
+          <!--Se manda llamar la función de eliminar_proveedor mandando el id de item-->
           <td><a href="{% url 'proveedores:eliminar_proveedor' item.id %}" class="modal-trigger" onclick="return confirm('Vas a eliminar un Proveedor del catálogo. ¿Continuar?')" ><i class="material-icons">delete</i></a></td>
-          <!-- <td>
-            <!--Aqui es el editar
-            <a href="">
-              <i class="material-icons">edit</i>
-            </a>
-          </td>
-          <td>
-            <!--Aqui agrega lo de borrar
-            <a onclick="" href="">
-              <i class="material-icons">delete</i>
-            </a>
-          </td> -->
         </tr>
         {% endfor %}
       </tbody>
     </table>
     <div class="row">
       <div class="right-align">
-        <a href="{% url 'proveedores:agregar_proveedor'%}" class="btn-floating btn-large waves-effect waves-light pink"><i class="material-icons">add</i></a>
+        <!-- Boton de "mas" que manda llamar la funcion agregar_proveedor -->
+        <a href="{% url 'proveedores:agregar_proveedor' %}" class="btn-floating btn-large waves-effect waves-light waves-circle pink fixed tooltipped" data-position="left" data-tooltip="Agregar nuevo proveedor"><i class="material-icons">add</i></a>
       </div>
     </div>
   </div>

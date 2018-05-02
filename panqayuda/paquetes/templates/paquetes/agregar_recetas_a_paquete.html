@@ -12,19 +12,21 @@
 {% block content %}
   <div class="container paquete-catalogo-form">
     <div class="card recetas-catalogo-card">
+      <div id="formahtml">
+        <!--Pegar html de la forma "forma_agregar_recetas_paquete.html"-->
+        {{formahtml}}
+        <!--Lista de las recetas que han sido agregadas al paquete "lista_recetas_por_paquete.html"-->
+        {{lista_recetas}}
+      </div>
       <div class="row">
         <div class="col s6">
-          <a class="btn waves-effect waves-light pink" href="/paquetes/lista_paquetes/editar_paquete/{{paquete.id}}">Regresar
+          <a class="btn waves-effect waves-light pink"  onClick="window.history.back();return false;" >Regresar
             <i class="material-icons left">chevron_left</i>
           </a>
         </div>
-      </div>
-      <div id="formahtml">
-        {{formahtml}}
-        {{lista_recetas}}
-      </div>
-      <div class="col s12 right-align btn-agregar-paquete">
-        <a class="agregar-btn waves-effect waves-light btn pink" href="../../../paquetes/lista_paquetes">Agregar</a>
+        <div class="col s6 right-align">
+           <a class="agregar-btn waves-effect waves-light btn pink"  href="{% url 'paquetes:lista_paquetes' %}">Agregar <i class="material-icons right">send</i></a>
+        </div>
       </div>
     </div>
   </div>
@@ -33,6 +35,7 @@
 {% block js %}
   <script type="text/javascript">
     $(document).ready(function(){
+      //CSRF Token para peticiones POST
         var csrftoken = $.cookie('csrftoken');
         function csrfSafeMethod(method) {
         // these HTTP methods do not require CSRF protection
@@ -48,31 +51,53 @@
     });
 
     $('select').formSelect();
+    //correr cuando se haga click en agregar
     $(document.body).on('click', '#agrega_select', function(e){
+      //recuperar forma, checar validez
         if(document.getElementById('agrega_receta').checkValidity()) {
+          //evitar que se haga el post
             e.preventDefault();
+
+            //url a la que se hará el post
             var url = '{% url "paquetes:agregar_receta_a_paquete" %}';
 
-            var  receta = $('#id_receta').val();
-
+            //datos que se enviarán
+            var receta = $('#id_receta').val();
             var cantidad  = $('#{{forma.cantidad.id_for_label}}').val();
-
             var paquete = {{paquete.id}};
 
+            //post para agregar la receta al paquete
             $.post(url, {
               receta: receta,
               cantidad: cantidad,
               paquete: paquete
             }).done(function(data){
+              //insertar nuevo html en la forma para que se queden en blanco los campos de la forma
               $('#formahtml').html(data);
+              //insertar nuevo html en la lista para que aparezca el registro recien agregado
               $('select').formSelect();
-              M.toast({html:'La receta se ha agregado al paquete.'});
+              //mensaje de éxito
+              M.toast({html:'Se ha agregado el producto semiterminado a este producto terminado.'});
             }).fail(function(data) {
+              //mensaje de error
                 M.toast({html:data.responseText});
             });
 
             return false;
        }
+    });
+
+    $(document.body).on('click', '.eliminar', function(e){
+        var id_relacion = $(this).attr('id');
+        $.ajax({
+            url:'{% url "paquetes:quitar_receta_paquete" %}',
+            data:{'id_relacion': id_relacion},
+            success: function(response){
+                $('#formahtml').html(response);
+                $('select').formSelect();
+                M.toast({html:'Se ha quitado el producto semiterminado de este producto terminado'});
+            }
+        });
     });
 
   </script>

@@ -1,10 +1,10 @@
 {% extends "base.html" %}
-{% block title %}Lista Unidades{% endblock title %}
+{% block title %}Catálogo Unidades{% endblock title %}
 {% block navbar %}{% include "navbar.html" %}{% endblock navbar %}
 {% block header %}
   <header class="banner-prueba">
     {# buscar clase banner-prueba en main.css #}
-    <h1 class="center-align">Lista De Unidades</h1>
+    <h1 class="center-align">Catálogo Unidades</h1>
   </header>
 {% endblock header %}
 {% block content %}
@@ -22,6 +22,7 @@
         <tr>
           <td>{{unidad.nombre}}</td>
           <td><a href="{% url 'materiales:modificar_unidad' unidad.id %}" class="modal-trigger"><i class="material-icons">edit</i></a></td>
+          <!--Manda a la vista de eliminar_unidad con el id de unidad -->
           <td><a href="{% url 'materiales:eliminar_unidad' unidad.id %}" class="modal-trigger" onclick="return confirm('Vas a eliminar una Unidad del catálogo. ¿Continuar?')" ><i class="material-icons">delete</i></a></td>
         </tr>
        {% endfor %}
@@ -32,14 +33,24 @@
 
   <div class="container">
     <div class="fixed">
-        <a href="#modal_detalle" class="btn-floating btn-large waves-effect waves-light pink modal-trigger"  ><i class="material-icons">add</i></a>
+        <a href="#modal_detalle" class="btn-floating btn-large waves-effect waves-light waves-circle pink fixed tooltipped modal-trigger" data-position="left" data-tooltip="Agregar nueva unidad" ><i class="material-icons">add</i></a>
     </div>
   </div>
   <!-- Modal para agregar unidades -->
   <div id="modal_detalle" class="modal">
     <div class="modal-content">
-      <h4>Agregar Unidad</h4>
-      <form class="" action="/materiales/agregar_unidades" method="POST">
+      <div class="row">
+        <div class="col s11">
+          <h4>Agregar Unidad</h4>
+        </div>
+        <div class="col s1">
+          <a class="black-text modal-close">
+            <i class="small material-icons tooltipped"  data-position="bottom" data-tooltip="Cerrar">close</i>
+          </a>
+        </div>
+      </div>
+
+      <form class="" action="{% url 'materiales:agregar_unidades' %}" method="POST">
         <br>
         <br>
         {% csrf_token %}
@@ -51,9 +62,14 @@
           <div class="col s6"></div>
         </div>
         <div class="row">
-          <div class="col s6"></div>
+          <br>
+          <div class="col s6">
+            <a class="btn waves-effect waves-light pink modal-close" >Regresar
+              <i class="material-icons left">chevron_left</i>
+            </a>
+          </div>
           <div class="col s6 right-align">
-            <button type="submit" class="save btn pink">Crear <i class="material-icons right">send</i></button>
+            <button type="submit"class="btn waves-effect waves-light pink">Agregar <i class="material-icons right">send</i></button>
           </div>
         </div>
       </form>

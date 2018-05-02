@@ -1,9 +1,12 @@
 from django.db import models
 from django.utils import timezone
 from proveedores.models import Proveedor
+from django.db.models import Sum, F
+
 from django.core.validators import MinValueValidator
 
 class Compra(models.Model):
+    #Llave foranea al modelo de proveedor ya que una compra siempre esta cinculada al proveedor que te vende
     proveedor = models.ForeignKey(Proveedor, on_delete=models.CASCADE)
     fecha_compra = models.DateTimeField(blank=True, null=True)
     created_at = models.DateTimeField(default=timezone.now)
@@ -11,4 +14,6 @@ class Compra(models.Model):
     deleted_at = models.DateTimeField(blank=True, null=True)
     def __str__(self):
         return self.proveedor.nombre
-# Create your models here.
+
+    def monto(self):
+         return self.materialinventario_set.aggregate(costo_total=Sum('costo'))['costo_total'] or 0

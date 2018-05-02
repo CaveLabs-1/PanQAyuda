@@ -1,14 +1,16 @@
 <form class="" action="." method="post" id="agrega_receta">
   {% csrf_token %}
   <div class="row">
+    <!--Receta-->
     <div class="input-field col m6">
       <select id="id_receta" class="" name="receta" required>
-        <option value="0">Selecciona una Receta</option>
+        <option value="0">Selecciona un producto terminado o un material de empaque </option>
         {% for receta in recetas %}
         <option value="{{receta.id}}">{{receta.nombre}}</option>
         {% endfor %}
       </select>
     </div>
+    <!--Cantidad-->
     <div class="input-field col  m4 offset-m2">
       <input min="1" class="validate" min="1" id="{{forma.cantidad.id_for_label}}" type="number" step="1" name="{{forma.cantidad.html_name}}" value="" required>
       <label data-error="Debe ser un número mayor o igual a 1" for="{{forma.cantidad.id_for_label}}">Cantidad</label>
@@ -17,7 +19,9 @@
   </div>
   <div class="row">
     <div id="agrega_select" class="col s12 right-align btn-agregar-paquete">
-      <button type="submit"  class="btn waves-effect waves-lightwaves-effect waves-light blue lighten-1"><i class="material-icons">add</i></button>
+      <button type="submit"  class="btn waves-effect waves-light pink tooltipped"  data-position="left" data-tooltip="Agregar producto semi-terminado a producto terminado">
+        <i class="material-icons">add</i>
+      </button>
     </div>
   </div>
 </form>
