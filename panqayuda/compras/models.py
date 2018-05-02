@@ -1,8 +1,6 @@
 from django.db import models
 from django.utils import timezone
 from proveedores.models import Proveedor
-from django.db.models import Sum, F
-
 from django.core.validators import MinValueValidator
 
 class Compra(models.Model):
@@ -14,6 +12,3 @@ class Compra(models.Model):
     deleted_at = models.DateTimeField(blank=True, null=True)
     def __str__(self):
         return self.proveedor.nombre
-
-    def monto(self):
-         return self.materialinventario_set.aggregate(costo_total=Sum('costo'))['costo_total'] or 0
