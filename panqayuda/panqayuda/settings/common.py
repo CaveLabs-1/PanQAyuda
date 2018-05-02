@@ -13,7 +13,7 @@ https://docs.djangoproject.com/en/2.0/ref/settings/
 import os
 #
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
-BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 PROJECT_PATH = os.path.realpath(os.path.dirname(__file__))
 
@@ -22,17 +22,6 @@ MEDIA_ROOT = PROJECT_PATH + '/media/'
 TEMPLATE_DIRS = (
     PROJECT_PATH + '/templates/',
 )
-
-# Quick-start development settings - unsuitable for production
-# See https://docs.djangoproject.com/en/2.0/howto/deployment/checklist/
-
-# SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = '1*yt_mox3++ki9r^6gcy9glammohks$3kt6=aypexc(5d9k41v'
-
-# SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
-
-ALLOWED_HOSTS = ['138.68.224.112', 'localhost', 'tests.panqayuda.com.mx', 'panqayuda.com.mx', '127.0.0.1']
 
 # Application definition
 
@@ -149,14 +138,3 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 LOGIN_REDIRECT_URL = '/ordenes'
 LOGIN_URL = '/ordenes'
 LOGOUT_REDIRECT_URL = 'login'
-
-
-
-
-# class DisableMigrations(object):
-#
-#     def __contains__(self, item):
-#         return True
-#
-#     def __getitem__(self, item):
-#         return None
