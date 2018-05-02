@@ -20,6 +20,7 @@ class Paquete (models.Model):
 	def __str__(self):
 		return self.nombre
 
+
 	#Devuelve el número de paquetes en inventario disponibles para este tipo de paquete
 	def obtener_disponibles_inventario(self):
 		return PaqueteInventario.objects.filter(nombre=self).filter(deleted_at__isnull=True).\
