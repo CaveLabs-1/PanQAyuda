@@ -26,6 +26,7 @@
       <div class="input-field col s6">
         <select name="paquetes_catalogo" id="paquetes_catalogo">
           <option value="" selected="">---------</option>
+          <!-- Carga lista de paquetes_catalogo para el select -->
           {% for paquete in paquetes_catalogo %}
             <option value="{{paquete.id}}">{{paquete.nombre}}</option>
           {% endfor %}
@@ -79,7 +80,7 @@
   </div>
 </div>
   <div class="container">
-    <!-- Carga donde carga todo -->
+    <!-- Tabla -->
       <table id="table_id">
           <thead>
             <tr>
@@ -90,6 +91,7 @@
             </tr>
           </thead>
           <tbody>
+            <!-- Añade lista mermas_paquete -->
             {% for merma in mermas %}
             <tr>
                 <td>{{ merma.nombre }}</td>
@@ -113,6 +115,7 @@
     $(document).ready(function(){
       $('.collapsible').collapsible();
 
+      // Agrega lista de manera dinamica
       $('#paquetes_catalogo').change(function(){
           var paquete_catalogo = $('#paquetes_catalogo').val();
           $.ajax({
