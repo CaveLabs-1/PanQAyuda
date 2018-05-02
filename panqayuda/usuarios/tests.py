@@ -2,6 +2,8 @@ from django.test import TestCase
 from django.urls import reverse
 import datetime
 from django.contrib.auth.models import User, Group
+from django.shortcuts import render_to_response
+from django.template import RequestContext
 
 #Test crear_usuario (US 48)
 class TestCrearUsuario(TestCase):
@@ -189,3 +191,36 @@ class TestEliminarUsuario(TestCase):
 
         # resp4 = self.client.get(reverse('usuarios:lista_usuarios'))
         # self.assertEqual(len(resp4.context['usuarios']), 1)
+
+class TestTerminarSesion(TestCase):
+
+    def setUp(self):
+        #El setup sirve para crear un usuario en la base de datos, pero no inicia sesion
+        Group.objects.create(name="admin")
+        user = User.objects.create_user(username='temporary', email='temporary@gmail.com', password='temporary', is_superuser='True')
+        #Guarda el usuario que se creó
+        user.save()
+
+    def test_ac47_1_cerrando_sesion_no_accede_a_vistas_protegidas(self):
+        self.client.login(username='temporary', password='temporary')
+        #Guardo la respuesta en resp
+        resp = self.client.get(reverse('usuarios:lista_usuarios'))
+        #Respuesta exitosa
+        self.assertEqual(resp.status_code, 200)
+        #se cierra la sesion
+        self.client.get("/logout")
+        #se intenta iniciar sesion sin usuario
+        response_sin_usuario = self.client.get(reverse('usuarios:lista_usuarios'))
+        self.assertEqual(response_sin_usuario.status_code, 200)
+
+    def test_ac47_2_cerrando_sesion_te_manda_al_logout(self):
+        self.client.login(username='temporary', password='temporary')
+        #Guardo la respuesta en resp
+        resp = self.client.get(reverse('usuarios:lista_usuarios'))
+        #Respuesta exitosa
+        self.assertEqual(resp.status_code, 200)
+        #se cierra la sesion
+        self.client.get("/logout")
+        #se intenta iniciar sesion sin usuario
+        response_sin_usuario = self.client.get(reverse('materiales:materiales'))
+        self.assertEqual(response_sin_usuario.status_code, 200)
