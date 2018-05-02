@@ -28,6 +28,7 @@
       <div class="input-field col s6">
         <select name="materiales_catalogo" id="materiales_catalogo">
           <option selected="" value="">---------</option>
+          <!-- Carga lista de material_catalogo y las añade a select -->
           {% for material_catalogo in materiales_catalogo %}
           <option value="{{material_catalogo.id}}"> {{material_catalogo.nombre}} </option>
           {% endfor %}
@@ -90,7 +91,7 @@
   </div>
 </div>
   <div class="container">
-    <!-- Carga donde carga todo -->
+    <!-- Tabla -->
       <table id="table_id">
           <thead>
             <tr>
@@ -101,6 +102,7 @@
             </tr>
           </thead>
           <tbody>
+            <!-- Carga lista lista_mermas_material -->
             {% for merma in mermas %}
             <tr>
                 <td>{{ merma.nombre }}</td>

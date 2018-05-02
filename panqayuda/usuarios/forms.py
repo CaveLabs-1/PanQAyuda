@@ -31,3 +31,11 @@ class FormUser(forms.ModelForm):
     class Meta:
         model = User
         fields = ('password', 'username', 'first_name', 'last_name', 'email', 'is_superuser', 'is_staff')
+        error_messages = {
+            'username':{
+                'required':"Este campo no puede ser vacio",
+            },
+            'password':{
+                'required':"Este campo no puede ser vacio",
+            },
+        }

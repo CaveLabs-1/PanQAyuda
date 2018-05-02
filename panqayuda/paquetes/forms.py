@@ -27,6 +27,9 @@ class FormPaquete(forms.ModelForm):
             'precio':{
                 'required':"Este campo no puede ser vacío",
             },
+            'codigo':{
+                'required':"Este campo no puede ser vacío",
+            },
         }
 
 class FormEditarPaquete (forms.ModelForm):
