@@ -30,6 +30,11 @@ function initDataTable(){
     },
     // "scrollY": (window.innerHeight - 500) + "px",
     paging: true,
+      "oLanguage": {
+
+        "sSearch": "Buscar sobre todos los campos presentes:"
+
+      },
     columnDefs: [
            {
                targets: [ 0, 1, 2 ],

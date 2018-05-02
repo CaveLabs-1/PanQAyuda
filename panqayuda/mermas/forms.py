@@ -11,12 +11,8 @@ class MermaPaqueteForm(ModelForm):
         fields = (
             'nombre',
             'cantidad',
-            'fecha',
             'descripcion'
         )
-        widget = {
-            'fecha': forms.DateTimeField(),
-        }
 
 class MermaMaterialForm(ModelForm):
     class Meta:
@@ -24,12 +20,8 @@ class MermaMaterialForm(ModelForm):
         fields = (
             'nombre',
             'cantidad',
-            'fecha',
             'descripcion'
         )
-        widget = {
-            'fecha': forms.DateTimeField(),
-        }
 
 class MermaRecetaForm(ModelForm):
     class Meta:
@@ -37,9 +29,5 @@ class MermaRecetaForm(ModelForm):
         fields = (
             'nombre',
             'cantidad',
-            'fecha',
             'descripcion'
         )
-        widget = {
-            'fecha': forms.DateTimeField(),
-        }
