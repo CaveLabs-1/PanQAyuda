@@ -18,7 +18,7 @@ class FormPaquete(forms.ModelForm):
             raise ValidationError('Ya hay un producto terminado con este nombre')
     class Meta:
         model = Paquete
-        fields = ('nombre', 'precio')
+        fields = ('nombre', 'precio', 'codigo')
 
         error_messages = {
             'nombre':{

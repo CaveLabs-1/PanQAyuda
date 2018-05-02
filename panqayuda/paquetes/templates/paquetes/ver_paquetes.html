@@ -21,6 +21,7 @@
     <table id="table_id">
       <thead>
         <th>Nombre</th>
+        <th>Código</th>
         <th>Precio</th>
         <th>Editar</th>
         <th>Eliminar</th>
@@ -29,6 +30,7 @@
         {% for item in paquetes %}
         <tr>
           <td>{{ item.nombre }}</td>
+          <td>{{ item.codigo }}</td>
           <td>{{ item.precio }}</td>
           <td>
             <a href="{% url 'paquetes:editar_paquete' item.id %}">
