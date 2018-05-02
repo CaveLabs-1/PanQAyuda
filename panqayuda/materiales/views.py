@@ -42,6 +42,11 @@ def materiales(request):
         forma_post = MaterialForm(request.POST)
         if forma_post.is_valid():
             forma_post.save()
+            #Verificar si el material es material de empaque
+            if request.POST.get('material_empaque'):
+                #Crear 'receta' con el mismo nombre que el material de empaque y asociada a este material
+                receta = Receta.objects.create(nombre=forma_post.instance.nombre, cantidad=1, duration=datetime.timedelta(days=450000),material_empaque=forma_post.instance)
+                receta.save()
             messages.success(request, 'Se ha agregado una nueva materia prima.')
         else:
             # Si no es válida la forma devuelve un mensaje de error.
