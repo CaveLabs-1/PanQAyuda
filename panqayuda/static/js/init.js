@@ -24,7 +24,7 @@ function initDataTable(){
   //Init Datatable
   data_table = $('#table_id').DataTable({
     dom: 'Bfrtip',
-    // buttons: ['copy', 'csv', 'excel', 'print'],
+    buttons: ['excel'],
     language:{
       url: "//cdn.datatables.net/plug-ins/1.10.13/i18n/Spanish.json" //Cambia idioma a español
     },
@@ -37,4 +37,16 @@ function initDataTable(){
            }
        ],
   });
+}
+
+//validación de fechas
+function validateFecha(id){
+  var fecha_cad = document.getElementById(id);
+  var dateReg = /^\d{4}[./-]\d{2}[./-]\d{2}$/;
+
+  if(!fecha_cad.value.match(dateReg)) {
+    fecha_cad.setCustomValidity("Fecha de caducidad");
+  } else {
+    fecha_cad.setCustomValidity('');
+  }
 }

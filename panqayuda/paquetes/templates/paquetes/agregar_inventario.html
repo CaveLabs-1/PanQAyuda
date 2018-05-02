@@ -29,7 +29,7 @@
           </div>
           <!--fecha de caducidad-->
           <div class="input-field col m3">
-            <input type="text" class="datepicker" name="fecha_cad">
+            <input type="text" class="datepicker" name="fecha_cad" id="fecha_cad" onchange="validateFecha('fecha_cad');">
             <label for="fecha_cad">Fecha de caducidad</label>
           </div>
           {%csrf_token%}
@@ -65,5 +65,7 @@
       minDate: new Date(),
     });
   });
+
+
   </script>
 {% endblock js %}
