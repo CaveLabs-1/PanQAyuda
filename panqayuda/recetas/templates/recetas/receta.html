@@ -15,10 +15,8 @@
                 <span class="card-title">
                     <div class="row">
                         <div class="col s6">
-                          <a href="{% url 'recetas:lista_de_recetas' %}">
-                            <button class="btn waves-effect waves-light pink" type="submit" name="action">Regresar
-                              <i class="material-icons left">chevron_left</i>
-                            </button>
+                          <a class="btn waves-effect waves-light pink"  onClick="window.history.back();return false;" >Regresar
+                            <i class="material-icons left">chevron_left</i>
                           </a>
                         </div>
                         <div class="col s6 right-align">
@@ -27,19 +25,19 @@
                             <li>
                                 <a href="{% url 'recetas:editar_receta' receta.id %}">
                                     <i class="material-icons">edit</i>
-                                    Editar Receta
+                                    Editar Producto Semi-Terminado
                                 </a>
                             </li>
                             <li class="divider" tabindex="-1"></li>
                             <li>
                               <a href="{% url 'recetas:agregar_materiales' receta.id %}"><i class="material-icons">edit</i>
-                                Editar Materiales
+                                Editar Materia Prima
                               </a>
                             </li>
                             <li class="divider" tabindex="-1"></li>
                             <li >
                               <a onclick="deleteRegister(this, event)" class="red-text" href="{% url 'recetas:borrar_receta' receta.id %}">
-                                <i class="material-icons">delete</i>Borrar Receta
+                                <i class="material-icons">delete</i>Borrar Producto Semi-Terminado
                               </a>
                             </li>
                             </ul>
@@ -73,11 +71,10 @@
                                 {% for material in materiales %}
                                 <tr>
                                     <td>{{ material.material.nombre }}</td>
-                                    <td>{{ material.cantidad }}</td>
-                                    <td>{{ material.material.unidad }}</td>
+                                    <td>{{ material.cantidad | floatformat:"0" }}</td>
+                                    <td>{{ material.material.unidad_maestra }}</td>
                                     <!-- <td><a href="borrar_material/{{ material.id }}"><i class="material-icons">delete</i></a></td> -->
                                 </tr>
-                                <tr>
                                 {% endfor %}
                             </tbody>
                         </table>

@@ -1,9 +1,9 @@
 {% extends "base.html" %}
-{% block title %}Compras{% endblock title %}
+{% block title %}Órdenes de Compra{% endblock title %}
 {% block navbar %}{% include "navbar.html" %}{% endblock navbar %}
 {% block header %}
   <header class="banner-prueba">
-    <h1 class="center-align">Compras</h1>
+    <h1 class="center-align">Órdenes de Compra</h1>
   </header>
 {% endblock header %}
 {% block content %}
@@ -16,8 +16,9 @@
         <th>ID</th>
         <th>Proveedor</th>
         <th>Fecha de Compra</th>
+        <th> Monto total </th>
         <th>Detalle</th>
-        <th>Editar</th>
+        <!-- <th>Editar</th> -->
         <th>Eliminar</th>
       </thead>
       <tbody>
@@ -25,13 +26,14 @@
         <tr>
           <td>{{compra.id}}</td>
           <td>{{compra.proveedor}}</td>
-          <td>{{compra.fecha_compra}}</td>
+          <td>{{compra.fecha_compra.date}}</td>
+          <td> $ {{ compra.monto }}</td>
           <!--Ver detalle de la compra-->
           <td><a onclick="detalleCompra({{compra.id}})" href="#modal_detalle" class="modal-trigger"><i class="material-icons">view_list</i> </a></td>
           <!--Editar compra-->
-          <td><a href="editar_compra/{{ compra.id }}"><i class="material-icons">edit</i></a></td>
+          <!-- <td><a href="editar_compra/{{ compra.id }}"><i class="material-icons">edit</i></a></td> -->
           <!--Se manda llamar la función de eliminar_compra mandando el id de compra-->
-          <td><a href="{% url 'compras:eliminar_compra' compra.id %}" class="modal-trigger" onclick="return confirm('Vas a eliminar una Compra del catálogo. ¿Continuar?')"><i class="material-icons">delete</i></a></td>
+          <td><a onclick="deleteRegister(this, event)" href="{% url 'compras:eliminar_compra' compra.id %}" class="modal-trigger"><i class="material-icons">delete</i></a></td>
         </tr>
        {% endfor %}
       </tbody>
@@ -41,7 +43,9 @@
 </div>
 <div class="fixed-action-btn ">
   <!--Agregar nueva compra-->
-  <a class="add-btn btn-floating btn-large waves-effect waves-light pink btn modal-trigger" href="agregar_compra"><i class="material-icons">add</i></a>
+  <a class="btn-floating btn-large waves-effect waves-light waves-circle pink fixed tooltipped modal-trigger" data-position="left" data-tooltip="Agregar nueva compra" href="agregar_compra">
+    <i class="material-icons">add</i>
+  </a>
 </div>
 
 

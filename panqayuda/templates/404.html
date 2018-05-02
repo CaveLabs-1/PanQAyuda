@@ -1,0 +1,22 @@
+{% extends "loginBase.html" %}
+{% load staticfiles %}
+{% block title %}Pan Q' Ayuda{% endblock title %}
+{% block content %}
+<div class="row login">
+  <!-- Imagen de fondo con id=background. Se carfa la imagen desde los
+  estilos -->
+  <div class="col l12 s12" id="background">
+    <div class="row padding-top">
+      <div class="col s8 offset-s2">
+        <!-- <h1 class="white-text">Ocurrio un error, intenta de nuevo</h1> -->
+        <h1 class="white error-message">Ocurrió un error, intenta de nuevo</h1>
+      </div>
+    </div>
+  </div>
+</div>
+
+{% endblock content %}
+
+{% block js %}
+
+{% endblock js %}

@@ -16,8 +16,8 @@
           <thead>
             <tr>
               <th>Nombre</th>
+              <th>Nombre de usuario</th>
               <th>Email</th>
-              <th>Editar</th>
               <th>Eliminar</th>
             </tr>
           </thead>
@@ -26,12 +26,11 @@
             <input class="hidden disabled usuarios" value='{{ usuario.username }}'>
             <tr>
                 <td>{{ usuario.first_name }} {{ usuario.last_name }}</td>
+                <td> {{ usuario.username }}</td>
                 <td>{{ usuario.email }}</td>
-                <!-- Editar usuario -->
-                <td><a><i class="material-icons">edit</i></a></td>
                 <!-- Eliminar usuario -->
                 <td>
-                  <a onclick="deleteRegister(this, event)" href="borrar_usuario/{{usuario.id}}">
+                  <a onclick="deleteRegister(this, event)" href="{% url 'usuarios:borrar_usuario' usuario.id %}">
                     <i class="material-icons">delete</i>
                   </a>
                 </td>
@@ -42,7 +41,7 @@
       <br>
       <div class="row">
         <div class="right-align">
-          <a href="#agregar_usuario" class="btn-floating btn-large waves-effect waves-light pink modal-trigger"><i class="material-icons">add</i></a>
+          <a href="#agregar_usuario" class="btn-floating btn-large waves-effect waves-light waves-circle pink fixed tooltipped modal-trigger" data-position="left" data-tooltip="Agregar nuevo usuario"><i class="material-icons">add</i></a>
         </div>
       </div>
   </div>

@@ -20,12 +20,12 @@
       <hr>
       <div class="row">
         <div class="col s6">
-          <a class="btn waves-effect waves-light pink" href="{% url 'compras:compras' %}">Regresar
+          <a class="btn waves-effect waves-light pink"  onClick="window.history.back();return false;" >Regresar
             <i class="material-icons left">chevron_left</i>
           </a>
         </div>
-        <div class="col s6 right-align btn-agregar-paquete">
-          <a class="agregar-btn waves-effect waves-light btn pink"  href="{% url 'compras:compras' %}">Agregar</a>
+        <div class="col s6 right-align">
+           <a class="agregar-btn waves-effect waves-light btn pink"  href="{% url 'compras:compras' %}">Agregar <i class="material-icons right">send</i></a>
         </div>
       </div>
     </div>
@@ -73,8 +73,6 @@
              var id_material = $('#id_material').val();
              var fecha_cad = $('#id_fecha_cad').val();
              var cantidad  = $('#id_cantidad').val();
-             var unidad_entrada  = $('#id_unidad_entrada').val();
-             var porciones = $('#id_porciones').val();
              var costo  = $('#id_costo').val();
              var id_compra = $('#id_compra').val();
 
@@ -82,9 +80,7 @@
             $.post(url, {
               material: id_material,
               compra: id_compra,
-              unidad_entrada: unidad_entrada,
               cantidad: cantidad,
-              porciones: porciones,
               costo: costo,
               fecha_cad:fecha_cad
             }).done(function(data){
@@ -99,7 +95,7 @@
               });
               $('select').formSelect();
               //mensaje de éxito
-              M.toast({html:'La receta se ha agregado al paquete.'});
+              M.toast({html:'La materia prima se ha agregado a la compra.'});
            }).fail(function(data) {
               //mensaje de error
               M.toast({html:data.responseText});

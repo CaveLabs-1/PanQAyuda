@@ -8,6 +8,7 @@ from django.core.validators import MinValueValidator
 # Create your models here.
 class Paquete (models.Model):
 	nombre = models.CharField(max_length=70)
+	codigo = models.CharField(max_length=10, null=True, blank=False)
 	recetas = models.ManyToManyField(Receta, through='RecetasPorPaquete', through_fields=('paquete', 'receta'),)
 	precio = models.FloatField(validators=[MinValueValidator(0.00001, "El precio del paquete debe ser mayor a 0.")])
 	estatus = models.IntegerField(default=1)
@@ -23,19 +24,28 @@ class Paquete (models.Model):
 	def obtener_disponibles_inventario(self):
 		return PaqueteInventario.objects.filter(nombre=self).filter(deleted_at__isnull=True).\
 			filter(fecha_cad__gte=datetime.datetime.now()).annotate(disponible=Sum(F('cantidad')- F('ocupados'))).\
-			aggregate(cantidad_disponible=Sum('disponible'))['cantidad_disponible'] or 0
+			aggregate(porciones_disponible=Sum('disponible'))['porciones_disponible'] or 0
 
 	#Devuelve el número de paquetes incluyendo las mermas
 	def obtener_inventario_fisico(self):
 		return PaqueteInventario.objects.filter(nombre=self).filter(deleted_at__isnull=True).\
 				   annotate(disponible=Sum(F('cantidad') - F('ocupados'))).\
-				   aggregate(cantidad_disponible=Sum('disponible'))['cantidad_disponible'] or 0
+				   aggregate(porciones_disponible=Sum('disponible'))['porciones_disponible'] or 0
 
 	#Devuelve la lista de paquetes_inventario que tienen paquetes disponibles
 	def obtener_paquetes_inventario_disponibles(self):
 		return PaqueteInventario.objects.filter(nombre=self).filter(deleted_at__isnull=True). \
 			filter(fecha_cad__gte=datetime.datetime.now()).annotate(disponible=Sum(F('cantidad') - F('ocupados'))). \
 			filter(disponible__gt=0).order_by('fecha_cad')
+
+#-----------------------------------------------------------------
+	#Devuelve la lista de paquetes_inventario que tienen algun paquete ocupado
+	def obtener_paquetes_inventario_ocupado(self):
+		return PaqueteInventario.objects.filter(nombre=self).filter(deleted_at__isnull=True). \
+			filter(fecha_cad__gte=datetime.datetime.now()). \
+			exclude(ocupados=0).order_by('fecha_cad')
+
+#-----------------------------------------------------------------
 
 	#Devuelve los paquetes en inventario incluyendo a los que ya pasó su fecha de caducidad
 	def obtener_paquetes_inventario_con_caducados(self):

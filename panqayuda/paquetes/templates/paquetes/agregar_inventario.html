@@ -3,13 +3,13 @@
 {% block navbar %}{% include "navbar.html" %}{% endblock navbar %}
 {% block header %}
   <header>
-    <h2 class="center-align">Agregar Producto Terminado</h2>
+    <h2 class="center-align">Agregar Orden de Empaquetado</h2>
   </header>
 {% endblock header %}
 {% block content %}
   <div class="container">
     <div class="card paquete-catalogo-form">
-      <form class="" action="/paquetes/agregar_paquete_inventario/" method="POST">
+      <form class="" action="{% url 'paquetes:agregar_inventario' %}" method="POST">
         <br>
         <br>
         <div class="row">
@@ -29,15 +29,20 @@
           </div>
           <!--fecha de caducidad-->
           <div class="input-field col m3">
-            <input type="text" class="datepicker" name="fecha_cad">
+            <input type="text" class="datepicker" name="fecha_cad" id="fecha_cad" onchange="validateFecha('fecha_cad');">
             <label for="fecha_cad">Fecha de caducidad</label>
           </div>
           {%csrf_token%}
         </div>
 
         <div class="row">
-          <div class="col s12 right-align btn-agregar-paquete">
-            <button type="submit" class="agregar-btn waves-effect waves-light btn pink">Agregar</button>
+          <div class="col s6">
+            <a class="btn waves-effect waves-light pink"  onClick="window.history.back();return false;" >Regresar
+              <i class="material-icons left">chevron_left</i>
+            </a>
+          </div>
+          <div class="col s6 right-align">
+            <button type="submit"class="btn waves-effect waves-light pink btn-agregar-paquete">Agregar <i class="material-icons right">send</i></button>
           </div>
         </div>
       </form>
@@ -60,5 +65,7 @@
       minDate: new Date(),
     });
   });
+
+
   </script>
 {% endblock js %}

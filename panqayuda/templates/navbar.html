@@ -1,50 +1,53 @@
 {% load staticfiles %}
+{% load panqayuda_template_tags %}
   <ul id="slide-out" class="sidenav sidenav-fixed">
     <li><div class="user-view">
       <div class="background navbar-color"></div>
       <a href="#!user"><img class="navbar-logo" src="{% static "img/navbar/panqayudalogo.png" %}"></a>
     </div></li>
+
     <li><div class="divider"></div></li>
     <li class="no-padding">
               <ul class="collapsible collapsible-accordion">
                 <li class="bold"><a class="collapsible-header waves-effect waves-teal" tabindex="0"> &nbsp;  &nbsp;Inventario</a>
                   <div class="collapsible-body">
                     <ul>
-                      <li><a href="{% url 'materiales:materiales' %}">Materia Prima</a></li>
-                      <li><a href="{% url 'paquetes:lista_paquetes' %}">Producto Terminado</a></li>
+                      <li><a href="{% url 'materiales:lista_materiales_inventario' %}">Materia Prima</a></li>
                       <li><a href="{% url 'recetas:lista_recetas_inventario' %}">Producto Semi-Terminado</a></li>
-                      <li><a href="{% url 'recetas:lista_de_recetas' %}">Recetas</a></li>
-                      <li><a href="{% url 'materiales:lista_unidades' %}">Unidades</a></li>
+                      <li><a href="{% url 'paquetes:lista_paquete_inventario' %}">Producto Terminado</a></li>
                     </ul>
                   </div>
                 </li>
               </ul>
             </li>
-    <li><div class="divider"></div></li>
 
+            <li><div class="divider"></div></li>
+            <li class="no-padding">
+                      <ul class="collapsible collapsible-accordion">
+                        <li class="bold"><a class="collapsible-header waves-effect waves-teal" tabindex="0"> &nbsp;  &nbsp;Catálogos</a>
+                          <div class="collapsible-body">
+                            <ul>
+                              <li><a href="{% url 'clientes:clientes' %}">Clientes</a></li>
+                              <li><a href="{% url 'proveedores:lista_proveedores' %}">Proovedores</a></li>
+                              <li><a href="{% url 'materiales:lista_unidades' %}">Unidades</a></li>
+                              <li><a href="{% url 'materiales:materiales' %}">Materia Prima</a></li>
+                              <li><a href="{% url 'recetas:lista_de_recetas' %}">Producto Semi-Terminado</a></li>
+                              <li><a href="{% url 'paquetes:lista_paquetes' %}">Producto Terminado</a></li>
+                            </ul>
+                          </div>
+                        </li>
+                      </ul>
+                    </li>
+
+    <li><div class="divider"></div></li>
     <li class="no-padding">
               <ul class="collapsible collapsible-accordion">
-                <li class="bold"><a class="collapsible-header waves-effect waves-teal" tabindex="0"> &nbsp;  &nbsp;Compras</a>
+                <li class="bold"><a class="collapsible-header waves-effect waves-teal" tabindex="0"> &nbsp;  &nbsp;Órdenes</a>
                   <div class="collapsible-body">
                     <ul>
-                      <li><a href="{% url 'proveedores:lista_proveedores' %}">Proveedores</a></li>
-                      <li><a href="{% url 'compras:compras' %}"> &Oacute;rdenes de Compra</a></li>
-                    </ul>
-                  </div>
-                </li>
-              </ul>
-            </li>
-    <li><div class="divider"></div></li>
-
-    <li><a href="{% url 'ordenes:ordenes' %}" class="waves-effect" >&Oacute;rdenes de Trabajo</a></li>
-    <li><div class="divider"></div></li>
-
-    <li class="no-padding">
-              <ul class="collapsible collapsible-accordion">
-                <li class="bold"><a class="collapsible-header waves-effect waves-teal" tabindex="0"> &nbsp;  &nbsp;Ventas</a>
-                  <div class="collapsible-body">
-                    <ul>
-                      <li><a href="{% url 'clientes:clientes' %}"">Clientes</a></li>
+                      <li><a href="{% url 'compras:compras' %}">&Oacute;rdenes de Compra</a></li>
+                      <li><a href="{% url 'ordenes:ordenes' %}"> &Oacute;rdenes de Trabajo</a></li>
+                      <li><a href="{% url 'paquetes:agregar_inventario' %}"> &Oacute;rdenes de Empaquetado</a></li>
                       <li><a href="{% url 'ventas:ventas' %}"> &Oacute;rdenes de Venta</a></li>
                     </ul>
                   </div>
@@ -52,7 +55,11 @@
               </ul>
             </li>
     <li><div class="divider"></div></li>
+    <li><a href="{% url 'mermas:lista_mermas_material' %}">Ajuste de Inventario</a></li>
+    <li><div class="divider"></div></li>
+    {% if request.user|tiene_grupo:"superadmin" %}
+      <li><a href="{% url 'usuarios:lista_usuarios' %}" class="waves-effect">Usuarios</a></li>
+    {% endif %}
     <li><a href="{% url 'logout' %}" class="waves-effect">Cerrar Sesión</a></li>
-    <li><a href="{% url 'usuarios:lista_usuarios' %}" class="waves-effect">Usuarios</a></li>
   </ul>
   <a href="#" data-target="slide-out" class="sidenav-trigger"><i class="material-icons">menu</i></a>

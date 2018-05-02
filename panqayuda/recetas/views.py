@@ -43,7 +43,7 @@ def agregar_receta(request):
             form.instance.duration = timezone.timedelta(days=form.cleaned_data.get('duracion_en_dias'))
             receta = form.save()
             receta.save()
-            messages.success(request, 'Se ha agregado la receta al catálogo!')
+            messages.success(request, 'Se ha agregado el producto semiterminado al catálogo!')
             return redirect('recetas:agregar_materiales', id_receta=receta.id)
         else:
             messages.success(request, 'Hubo un error en la forma!')
@@ -102,7 +102,7 @@ def editar_receta(request, id_receta):
             materiales = list(RelacionRecetaMaterial.objects.filter(receta=receta, status=1))
             return render(request, 'recetas/receta.html', {'receta': receta, 'materiales': materiales})
         else:
-            messages.error(request,'No se pudo editar la receta. Asegúrate que seleccionaste un nombre, una duración y que el nombre no exista.')
+            messages.error(request,'No se pudo editar el producto semiterminado. Asegúrate que seleccionaste un nombre, una duración y que el nombre no exista.')
     else:
         form = RecetaForm(initial={'duracion_en_dias': receta.duration.days})
     return render(request, 'recetas/editar_receta.html', {'form': form, 'receta': receta})

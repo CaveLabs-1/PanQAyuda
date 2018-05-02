@@ -259,7 +259,7 @@ class TestListaMateriaPrima(TestCase):
             compra=compra,
             unidad_entrada=unidad,
             cantidad=1,
-            cantidad_disponible=12,
+            porciones_disponible=12,
             costo=120,
             fecha_cad="2059-03-03 12:31:06-05",
             estatus=0)
@@ -295,7 +295,7 @@ class TestListaMateriaPrima(TestCase):
             compra=compra,
             unidad_entrada=unidad,
             cantidad=1,
-            cantidad_disponible=12,
+            porciones_disponible=12,
             costo=120,
             fecha_cad="2049-03-03 12:31:06-05")
 
@@ -408,3 +408,75 @@ class TestEliminarMaterial(TestCase):
         self.client.get(reverse('materiales:eliminar_material', kwargs={'id_material':objetos.id}))
         #Se busca que no haya con cambio vacío de deleted_at
         self.assertEqual(Material.objects.filter(deleted_at__isnull=True).count(), 0)
+
+#Test US 34
+class TestVerCostoMaterial(TestCase):
+    # Setup de AC 34.1 de Materiales
+    def setUp(self):
+        Group.objects.create(name="admin")
+        user = User.objects.create_user(username='temporary', email='temporary@gmail.com', password='temporary',
+                                        is_superuser='True')
+        user.save()
+        self.client.login(username='temporary', password='temporary')
+        #Agregar Unidad
+        data = {'nombre': "kilos"}
+        self.client.post(reverse('materiales:lista_unidades'), data)
+        # Agregar Proveedor
+        data = {
+            'nombre': "Nombre Proveedor",
+            'telefono': '4424708341',
+            'email': 'ale@hot.com',
+            'direccion': 'prueba de direccion',
+            'rfc': '1231230',
+            'razon_social': 'razon social'
+        }
+        self.client.post(reverse('proveedores:agregar_proveedor'), data)
+        # Agregar Catalogo Materia Prima
+        data={
+            'nombre':'Material',
+            'codigo':'1223123',
+            'equivale_entrada':'1',
+            'unidad_entrada':'1',
+            'equivale_maestra':'1',
+            'unidad_maestra':1
+        }
+
+        self.client.post(reverse('materiales:materiales'), data)
+        Proveedor.objects.create(
+            nombre='Proveedor',
+            telefono='4424708341',
+            direccion='calle 23',
+            rfc='123123',
+            razon_social='razon social',
+            email='proveedor@gmail.com'
+        )
+        data = {
+            'proveedor': '1',
+            'fecha_compra': '2018-04-04'
+
+        }
+
+        self.client.post(reverse('compras:agregar_compra'), data)
+
+
+
+    # AC 34.1 de Materiales
+    def testVerCostoMaterial(self):
+        #Crear orden de compra
+        data = {
+            'material': Material.objects.all().first().id,
+            'fecha_cad': '2019-04-04',
+            'cantidad': '2',
+            'costo': '30',
+            'compra': Compra.objects.all().first().id
+        }
+
+        self.client.post(reverse('compras:agregar_materia_prima_a_compra'), data)
+        # Costo Unitario que debe aparecer cuando se guarde la forma
+        costo_unitario = int((data['costo']))/int((data['cantidad']))
+        # Checar en el template que el costo unitario mostrado es el mismo
+        resp = self.client.get('/materiales/#modal_detalle')
+        for material in resp.context['materiales']:
+            self.assertEqual(int(costo_unitario), int(material.costo_unitario))
+
+

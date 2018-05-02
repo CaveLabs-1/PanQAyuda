@@ -25,7 +25,6 @@ def lista_mermas_paquete(request):
     mermas = list(MermaPaquete.objects.all())
     forma = MermaPaqueteForm()
     paquetes_catalogo = Paquete.objects.filter(deleted_at__isnull=True)
-    print(paquetes_catalogo)
     return render (request, 'mermas/lista_mermas_paquete.html', {'forma': forma, 'mermas': mermas,'paquetes_catalogo':paquetes_catalogo})
 
 @group_required('admin')
@@ -39,33 +38,42 @@ def lista_mermas_material(request):
 #Funcionalidad agregar merma de paquetes
 @group_required('admin')
 def agregar_merma_paquetes(request):
-    #Se revisa que se esté mandando por POST
     if request.method == 'POST':
         newMermaPaqueteForm = MermaPaqueteForm(request.POST)
-        #Que la forma seq válida
         if newMermaPaqueteForm.is_valid():
-            Merma = newMermaPaqueteForm.save(commit=False)
+            merma = newMermaPaqueteForm.save(commit=False)
             #esto regresa el paquete del inventario que se debe borrar
             pack = PaqueteInventario.objects.get(id=merma.nombre.id)
-            #Se revisa que la cantidad no sea mayor
-            if pack.cantidad < Merma.cantidad :
-                messages.success(request, 'No hay inventario suficiente de este paquete')
-                context = {
-                    'MermaPack': newMermaPaqueteForm,
-                }
-                return HttpResponseRedirect(reverse('mermas:lista_mermas_paquete'))
-        #Si no pasa el POST
-            elif pack.disponibles() == Merma.cantidad :
-                Merma.save()
-                pack.ocupados  = pack.cantidad
-                pack.save()
-                messages.success(request, 'Se quitaron ' + str(Merma.cantidad) + ' paquetes de ' + pack.nombre.nombre)
-                return HttpResponseRedirect(reverse('mermas:lista_mermas_paquete'))
-            else :
-                pack.ocupados += Merma.cantidad
-                Merma.save()
-                pack.save()
-                messages.success(request, 'Se quitaron ' + str(Merma.cantidad) + ' paquetes de ' + pack.nombre.nombre)
+            if merma.cantidad < 0:
+                merma_cantidad = merma.cantidad * -1
+                if pack.disponibles() < merma_cantidad :
+                    messages.success(request, 'Este producto terminado solo tiene ' + str(pack.disponibles()) + " paquetes disponibles.")
+                    context = {
+                        'MermaPack': newMermaPaqueteForm,
+                    }
+                    # return render(request, 'mermas/MagregarPack.html', context)
+                    return HttpResponseRedirect(reverse('mermas:lista_mermas_paquete'))
+                elif pack.disponibles() == merma_cantidad :
+                    merma.save()
+                    pack.ocupados  = pack.cantidad
+                    pack.save()
+                    messages.success(request, 'Se quitaron ' + str(merma_cantidad) + ' paquetes de ' + pack.nombre.nombre)
+                    return HttpResponseRedirect(reverse('mermas:lista_mermas_paquete'))
+                else :
+                    pack.ocupados += merma_cantidad
+                    merma.save()
+                    pack.save()
+                    messages.success(request, 'Se quitaron ' + str(merma_cantidad) + ' paquetes de ' + pack.nombre.nombre)
+                    return HttpResponseRedirect(reverse('mermas:lista_mermas_paquete'))
+            else:
+                merma.save()
+                nombre = pack.nombre
+                cantidad = merma.cantidad
+                fecha_cad= pack.fecha_cad
+                #agregar nuevo registro
+                PaqueteInventario.objects.create( nombre = nombre,
+                cantidad = cantidad, fecha_cad=fecha_cad )
+                messages.success(request, 'Se agregaron' + str(merma.cantidad) + ' paquetes de ' + pack.nombre.nombre)
                 return HttpResponseRedirect(reverse('mermas:lista_mermas_paquete'))
         else :
             messages.success(request, 'Hubo un error en la forma y no se pudo completar la acción con éxito.')
@@ -74,79 +82,61 @@ def agregar_merma_paquetes(request):
             }
             # return render(request, 'mermas/MagregarPack.html', context)
             return HttpResponseRedirect(reverse('mermas:lista_mermas_paquete'))
-    #Devuelve a la lista de mermas
     else :
-        return render(reverse('mermas:lista_mermas'))
-
-def agregar_merma_materiales(request):
-    newMermaMaterialForm = MermaMaterialForm()
-    #Revisa que se esté mandando por POST
-    if request.method == 'POST':
-        newMermaMaterialForm = MermaMaterialForm(request.POST)
-        #Revisar que a forma sea válida
-        if newMermaMaterialForm.is_valid():
-            merma = newMermaMaterialForm.save(commit=False)
-            #Regresa la Material Prima del inventario que se deve de borrar
-            pack = MaterialInventario.objects.filter(id=merma.nombre.id)
-            #Que la cantidad de la merma no sea mayor que la de inventario
-            if pack.cantidad < merma.cantidad :
-                messages.success(request, 'No hay inventario suficiente de esta Materia Prima')
-                context = {
-                    'MermaPack': newMermaMaterialForm,
-                }
-                return render(request, 'mermas/MermaMaterial.html', context)
-                #Si es igual, que pase
-            elif pack.cantidad == merma.cantidad :
-                merma.save()
-                pack.delete()
-                message.success(request, 'Se ha agregado la merma de Materia Prima exitosamente')
-                return render(reverse('mermas:lista_mermas'))
-            else :
-                pack.cantidad -= merma.cantidad
-                merma.save()
-                message.success(request, 'Se ha agregado la merma de Materia Prima exitosamente')
-                return render(reverse('mermas:lista_mermas'))
-        #Si para el POST
-        else :
-            messages.success(request, 'Hubo un error en la forma y no se pudo agregar la merma.')
-            context = {
-                'MermaPack': newMermaMaterialForm,
-            }
-            return render(request, 'mermas/MermaMaterial.html', context)
-    #Devuelve a la lista de mermas
-    else :
-        return render(reverse('mermas:lista_mermas'))
-
-
+        forma = MermaPaqueteForm()
+        return render (request, 'mermas/lista_mermas_paquete.html', {'forma': forma, 'mermas': lista_mermas_paquete})
+        # return render(reverse('mermas:lista_mermas_paquete'))
 
 @group_required('admin')
 def agregar_merma_materiales(request):
     if request.method == 'POST':
         newMermaMaterialForm = MermaMaterialForm(request.POST)
         if newMermaMaterialForm.is_valid():
-            Merma = newMermaMaterialForm.save(commit=False)
+            merma = newMermaMaterialForm.save(commit=False)
             #Regresa la Material Prima del inventario que se debe de borrar
-            pack = MaterialInventario.objects.get(id=Merma.nombre.id)
-            if pack.cantidad_disponible < Merma.cantidad :
-                messages.success(request, 'Esta materia prima solo tiene ' + str(pack.cantidad_disponible) + " unidad" + "disponibles.")
-                context = {
-                    'MermaPack': newMermaMaterialForm,
-                }
-                # return render(request, 'mermas/MermaMaterial.html', context)
+            pack = MaterialInventario.objects.get(id=merma.nombre.id)
+
+            if merma.cantidad < 0 :
+                merma_cantidad = merma.cantidad*-1
+                if pack.porciones_disponible < merma_cantidad :
+                    messages.success(request, 'Esta materia prima solo tiene ' + str(pack.porciones_disponible) +  " disponibles.")
+                    context = {
+                        'MermaPack': newMermaMaterialForm,
+                    }
+                    # return render(request, 'mermas/MermaMaterial.html', context)
+                    return HttpResponseRedirect(reverse('mermas:lista_mermas_material'))
+                elif pack.porciones_disponible == merma_cantidad:
+                    merma.save()
+                    pack.porciones_disponible = 0
+                    pack.save()
+                    messages.success(request, 'Se quitaron ' + str(merma_cantidad) + ' unidad de ' + pack.material.nombre)
+                    return HttpResponseRedirect(reverse('mermas:lista_mermas_material'))
+                else :
+                    pack.porciones_disponible -= merma_cantidad
+                    merma.save()
+                    pack.save()
+                    messages.success(request, 'Se quitaron ' + str(merma_cantidad) + ' unidad de ' + pack.material.nombre)
+                    # return render(reverse('mermas:lista_mermas_material'))
+                    return HttpResponseRedirect(reverse('mermas:lista_mermas_material'))
+            else:
+                merma.save()
+                #agregar nuevo registro
+                materia_prima = pack.material
+                fecha_cad= pack.fecha_cad
+                cantidad = merma.cantidad
+                unidad = pack.unidad_entrada
+                porciones = cantidad * materia_prima.equivale_maestra / materia_prima.equivale_entrada
+                costo_unitario = pack.costo_unitario
+
+
+                #Dar de alta material inventario
+                MaterialInventario.objects.create(material=materia_prima, fecha_cad=fecha_cad, cantidad=cantidad,
+                 porciones_disponible=porciones, unidad_entrada=unidad, porciones=porciones,
+                 costo_unitario=costo_unitario )
+
+                messages.success(request, 'Se agregaron ' + str(merma.cantidad) + ' unidad de ' + pack.material.nombre)
                 return HttpResponseRedirect(reverse('mermas:lista_mermas_material'))
-            elif pack.cantidad_disponible == Merma.cantidad:
-                Merma.save()
-                pack.cantidad_disponible = 0
-                pack.save()
-                messages.success(request, 'Se quitaron ' + str(Merma.cantidad) + ' unidad de ' + pack.material.nombre)
-                return HttpResponseRedirect(reverse('mermas:lista_mermas_material'))
-            else :
-                pack.cantidad_disponible -= Merma.cantidad
-                Merma.save()
-                pack.save()
-                messages.success(request, 'Se quitaron ' + str(Merma.cantidad) + ' unidad de ' + pack.material.nombre)
-                # return render(reverse('mermas:lista_mermas_material'))
-                return HttpResponseRedirect(reverse('mermas:lista_mermas_material'))
+
         else :
             messages.success(request, 'Hubo un error en la forma y no se pudo completar la acción con éxito.')
             context = {
@@ -167,37 +157,48 @@ def agregar_merma_recetas(request):
             merma = newMermaRecetaForm.save(commit=False)
             #Regresa la Material Prima del inventario que se deve de borrar
             pack = RecetaInventario.objects.get(id=merma.nombre.id)
-            if pack.disponibles() < merma.cantidad :
-                messages.success(request, 'Este producto semiterminado solo tiene ' + str(pack.disponibles()) + " porciones disponibles")
-                context = {
-                    'MermaPack': newMermaRecetaForm,
-                }
-                return HttpResponseRedirect(reverse('mermas:lista_mermas_receta'))
-                # return render(request, 'mermas/MermaReceta.html', context)
-            elif pack.disponibles() == merma.cantidad :
+            if merma.cantidad < 0:
+                merma_cantidad = merma.cantidad*-1
+                if pack.disponibles() < merma_cantidad :
+                    messages.success(request, 'Este producto semiterminado solo tiene ' + str(pack.disponibles()) + " porciones disponibles")
+                    context = {
+                        'MermaPack': newMermaRecetaForm,
+                    }
+                    return HttpResponseRedirect(reverse('mermas:lista_mermas_receta'))
+                    # return render(request, 'mermas/MermaReceta.html', context)
+                elif pack.disponibles() == merma_cantidad :
+                    merma.save()
+                    pack.ocupados = pack.cantidad
+                    pack.save()
+                    messages.success(request, 'Se quitaron ' + str(merma_cantidad) + ' porciones de ' + pack.nombre.nombre)
+                    return HttpResponseRedirect(reverse('mermas:lista_mermas_receta'))
+                else :
+                    pack.ocupados += merma_cantidad
+                    merma.save()
+                    pack.save()
+                    messages.success(request, 'Se quitaron ' + str(merma_cantidad) + ' porciones de ' + pack.nombre.nombre)
+                    # return render(reverse('mermas:lista_mermas_receta'))
+                    return HttpResponseRedirect(reverse('mermas:lista_mermas_receta'))
+            else:
                 merma.save()
-                pack.ocupados = pack.cantidad
-                pack.save()
-                messages.success(request, 'Se quitaron ' + str(merma.cantidad) + ' porciones de ' + pack.nombre.nombre)
+                #agregar nuevo registro
+                nombre = pack.nombre
+                cantidad = merma.cantidad
+                fecha_cad = pack.fecha_cad
+                RecetaInventario.objects.create(nombre = nombre, cantidad = cantidad,
+                fecha_cad = fecha_cad)
+                messages.success(request, 'Se agregaron ' + str(merma.cantidad) + ' porciones de ' + pack.nombre.nombre)
                 return HttpResponseRedirect(reverse('mermas:lista_mermas_receta'))
-            else :
-                pack.ocupados += merma.cantidad
-                merma.save()
-                pack.save()
-                messages.success(request, 'Se quitaron ' + str(merma.cantidad) + ' porciones de ' + pack.nombre.nombre)
-                # return render(reverse('mermas:lista_mermas_receta'))
-                return HttpResponseRedirect(reverse('mermas:lista_mermas_receta'))
+
         else :
             messages.success(request, 'Hubo un error en la forma y no se pudo completar la acción con éxito.')
             context = {
                 'MermaPack': newMermaRecetaForm,
             }
             return HttpResponseRedirect(reverse('mermas:lista_mermas_receta'))
-            # return render(request, 'mermas/MermaReceta.html', context)
     else :
         forma = MermaRecetaForm()
         return render(request, 'mermas/lista_mermas_receta.html', {'forma': forma, 'mermas': lista_mermas_receta})
-        # return render(reverse('mermas:lista_mermas_receta'))
 
 #Devuelve una respuesta con una lista de opciones para un select con los paquetes inventario del paquete solicitado
 @group_required('admin')

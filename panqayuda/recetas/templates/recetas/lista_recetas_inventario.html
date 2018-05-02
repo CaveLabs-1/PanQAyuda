@@ -1,5 +1,5 @@
 {% extends "base.html" %}
-{% block title %}Pruducto Semi-Terminado Inventario{% endblock title %}
+{% block title %}Inventario Producto Semi-Terminado{% endblock title %}
 {% block navbar %}{% include "navbar.html" %}{% endblock navbar %}
 {% block header %}
   <header class="banner-prueba">
@@ -31,7 +31,9 @@
     </table>
     <br>
     <div class="fixed">
-        <a href="#" class="btn-floating btn-large waves-effect waves-light pink"><i class="material-icons">add</i></a>
+        <a href="{% url 'ordenes:ordenes' %}" class="btn-floating btn-large waves-effect waves-light waves-circle pink fixed tooltipped" data-position="left" data-tooltip="Agregar producto semi-terminado">
+          <i class="material-icons">add</i>
+        </a>
     </div>
   </div>
   <div id="modal_detalle" class="modal">

@@ -4,7 +4,7 @@
     <!--Receta-->
     <div class="input-field col m6">
       <select id="id_receta" class="" name="receta" required>
-        <option value="0">Selecciona una Receta</option>
+        <option value="0">Selecciona un producto terminado o un material de empaque </option>
         {% for receta in recetas %}
         <option value="{{receta.id}}">{{receta.nombre}}</option>
         {% endfor %}
@@ -19,7 +19,9 @@
   </div>
   <div class="row">
     <div id="agrega_select" class="col s12 right-align btn-agregar-paquete">
-      <button type="submit"  class="btn waves-effect waves-lightwaves-effect waves-light blue lighten-1"><i class="material-icons">add</i></button>
+      <button type="submit"  class="btn waves-effect waves-light pink tooltipped"  data-position="left" data-tooltip="Agregar producto semi-terminado a producto terminado">
+        <i class="material-icons">add</i>
+      </button>
     </div>
   </div>
 </form>

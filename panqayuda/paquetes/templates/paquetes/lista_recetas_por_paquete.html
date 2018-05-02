@@ -1,4 +1,4 @@
-  <h4 class="center-align">Recetas</h4>
+<h4 class="center-align">Productos semiterminados y materiales de empaque</h4>
   <div id="lista_recetas">
     <table class="striped">
       <thead>
@@ -13,7 +13,7 @@
               <td>{{receta.receta.nombre}}</td>
               <td>{{receta.cantidad}}</td>
               <td>
-                <a class="eliminar" id="{{ receta.id }}" href="#"><i class="material-icons pink-text">cancel</i> </a>
+                <a class="eliminar tooltipped" id="{{ receta.id }}" href="#"  data-position="left" data-tooltip="Eliminar producto semiterminado de este producto terminado"><i class="material-icons pink-text">cancel</i> </a>
               </td>
             </tr>
           {% endfor %}

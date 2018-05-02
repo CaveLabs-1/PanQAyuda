@@ -1,42 +1,44 @@
 {% extends "base.html" %}
-{% block title %}Órdenes de Venta{% endblock title %}
+{% block title %}Historial de cliente {% endblock title %}
 {% block navbar %}{% include "navbar.html" %}{% endblock navbar %}
 {% block header %}
   <header class="banner-prueba">
-    <h1 class="center-align">Órdenes de Venta</h1>
+    <h1 class="center-align">Historial de cliente</h1>
   </header>
 {% endblock header %}
 {% block content %}
+    <div class="row">
+        <div class="col s1"></div>
+        <div class="col s10 center"><h3> Cliente: {{ cliente.nombre }} </h3>
+            <hr>
+
+        <div class="col s1"></div>
+    </div>
   <div class="row">
     <div class="col s10 offset-s1">
       <table class="striped" id="table_id" class="datatable">
         <thead>
           <th>ID</th>
-          <th>Cliente</th>
           <th>Monto total</th>
           <th>Fecha </th>
           <th>Detalle </th>
-          <th>Cancelar</th>
+          <th> Cancelada </th>
         </thead>
         <tbody>
-         {% for venta in ventas %}
+         {% for venta in ventas_cliente %}
           <tr>
             <td>{{venta.id}}</td>
-            <td>{{venta.cliente}}</td>
             <td>$ {{venta.monto_total|floatformat:2 }}</td>
             <td> {{ venta.created_at|date:"Y-m-d" }}</td>
             <td><a onclick="detalleVenta({{venta.id}})" href="#modal_detalle" class="modal-trigger"><i class="material-icons">view_list</i> </a></td>
             <!--Se manda llamar la función de cancelar_venta mandando el id de venta-->
-            <td><a onclick="deleteRegister(this, event)" href="{% url 'ventas:cancelar_venta' venta.id %}" class="modal-trigger"><i class="material-icons">cancel</i></a></td>
+            <td class="pink-text"> {% if venta.deleted_at != None %} Cancelada {% else %} - {% endif %}</td>
             </tr>
           </tr>
          {% endfor %}
         </tbody>
       </table>
     </div>
-  </div>
-  <div class="fixed-action-btn ">
-    <a class="btn-floating btn-large waves-effect waves-light waves-circle pink fixed tooltipped modal-trigger" data-position="left" data-tooltip="Agregar venta" href="{% url 'ventas:generar_venta' %}"><i class="material-icons">add</i></a>
   </div>
 
 <div id="modal_detalle" class="modal">
@@ -73,26 +75,6 @@
           });
       });
 
-      function deleteRegister(element, event) {
-        event.preventDefault();
-        $.confirm({
-          title: '¿Deseas Continuar?',
-          content: 'La venta se eliminará permanentemente.',
-          type: 'red',
-          closeIcon: true,
-          columnClass: 'col l6 offset-l3 s12',
-          typeAnimated: true,
-          buttons: {
-            continuar: {
-              text: 'Eliminar',
-              btnClass: 'btn-red',
-              action: function () {
-                window.location.href = $(element).attr("href");
-              }
-            }
-         }
-       });
-      }
 
       function detalleVenta(id_venta){
         console.log(id_venta);

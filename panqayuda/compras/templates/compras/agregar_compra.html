@@ -23,19 +23,19 @@
             </select>
           </div>
           <div class="input-field col m6">
-            <input type="text" class="datepicker" name="{{forma.fecha_compra.html_name}}" id='{{forma.fecha_compra.id_for_label}}' required>
+            <input type="text" class="datepicker" name="{{forma.fecha_compra.html_name}}" id='{{forma.fecha_compra.id_for_label}}' required onchange="validateFecha('{{forma.fecha_compra.id_for_label}}');">
             <label for="{{forma.fecha_compra.id_for_label}}">Fecha de Compra</label>
           </div>
           {%csrf_token%}
         </div>
         <div class="row">
           <div class="col s6">
-            <a class="btn waves-effect waves-light pink" href="{% url 'compras:compras' %}">Regresar
+            <a class="btn waves-effect waves-light pink"  onClick="window.history.back();return false;" >Regresar
               <i class="material-icons left">chevron_left</i>
             </a>
           </div>
           <div class="col s6 right-align btn-agregar-paquete">
-            <button type="submit" class="agregar-btn waves-effect waves-light btn pink">Agregar</button>
+            <button type="submit"class="btn waves-effect waves-light pink">Agregar <i class="material-icons right">send</i></button>
           </div>
         </div>
       </form>

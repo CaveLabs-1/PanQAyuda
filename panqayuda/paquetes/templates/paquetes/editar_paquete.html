@@ -23,11 +23,17 @@
                 <!-- Forma del Paquete -->
                 <form class="row post-form" method="POST" id='theForm' onsubmit="return processForm()">
                   <div class="row">
-                    <div class="input-field col m6">
+                    <div class="input-field col m4">
                       <input class = "validate"  type="text" name="{{forma.nombre.html_name}}" id="{{forma.nombre.id_for_label}}" value="{{paquete.nombre}}">
                       <label for="{{forma.nombre.id_for_label}}" data-error='Numero invalido'  data-success="Nombre correcto">Nombre</label>
                     </div>
-                    <div class="input-field col m6">
+                    <div class="input-field col m4">
+                        <input class="validate"  type="text" name="{{ forma.codigo.html_name }}" id="{{ forma.codigo.id_for_label }}" value="{{paquete.codigo}}">
+                        <label for="{{ forma.codigo.id_for_label }}" data-error=''  data-success="">Código</label>
+                        <span class="helper-text" data-error=""></span>
+                        <span class="red-text">{%if forma.codigo.errors %}Código no válido{% endif %}</span>
+                    </div>
+                    <div class="input-field col m4">
                       <input type="number" step = "0.50" name="{{forma.precio.html_name}}" id={{forma.precio.id_for_label}} value="{{paquete.precio}}">
                       <label for="{{forma.precio.id_for_label}}" data-error='Precio invalido'  data-success="Precio correcto">Precio</label>
                     </div>
@@ -35,7 +41,7 @@
                   </div>
                   <div class="row">
                     <div class="col s6">
-                      <a class="btn waves-effect waves-light pink" href="/paquetes/lista_paquetes">Regresar
+                      <a class="btn waves-effect waves-light pink"  onClick="window.history.back();return false;" >Regresar
                         <i class="material-icons left">chevron_left</i>
                       </a>
                     </div>

@@ -36,7 +36,7 @@ class TestListaCompras(TestCase):
             compra=self.compra,
             unidad_entrada=self.unidad,
             cantidad=12,
-            cantidad_disponible=12,
+            porciones_disponible=12,
             costo=100,
             fecha_cad="2059-03-03 12:31:06-05"
         )

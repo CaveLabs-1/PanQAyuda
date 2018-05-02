@@ -1,30 +1,31 @@
 {% extends "base.html" %}
-{% block title %}Mermas Recetas{% endblock title %}
+{% block title %}Ajuste de Inventario Producto Semi-Terminado{% endblock title %}
 {% block navbar %}{% include "navbar.html" %}{% endblock navbar %}
 {% block header %}
   <header class="banner-prueba">
     {# buscar clase banner-prueba en main.css #}
-    <h1 class="center-align">Mermas Recetas</h1>
+    <h1 class="center-align">Ajuste de Inventario Producto Semi-Terminado</h1>
   </header>
 {% endblock header %}
 {% block content %}
 {# ----------  Inicia modal  --------------  #}
 <div id="agregarMermaReceta" class="modal">
   <div class="modal-content">
-    <div class="row valign-wrapper">
-      <div class="col s7">
-        <h4>Agregar Merma Recetas</h4>
+    <div class="row">
+      <div class="col s11">
+        <h3>Ajuste Inventario Producto Semi-Terminado</h3>
       </div>
-      <div class="col s1 offset-s4">
+      <div class="col s1">
         <a class="black-text modal-close">
-          <i class="medium material-icons">close</i>
+          <i class="small material-icons tooltipped"  data-position="bottom" data-tooltip="Cerrar">close</i>
         </a>
       </div>
     </div>
     <!-- Forma para agregar merma recetas -->
     <form class="row" method="post" action="{% url 'mermas:agregar_merma_recetas' %}">
       {% csrf_token %}
-      <div class="input-field col s6">
+      <div class="row">
+        <div class="input-field col s6">
          <select id="recetas_catalogo" name="recetas_catalogo">
           <option value="" selected="">---------</option>
            {% for receta_catalogo in recetas_catalogo %}
@@ -40,27 +41,34 @@
               <option value="" selected="">---------</option>
           </select>
           <label for="{{forma.nombre.id_for_label}}">Lote</label>
-      </div>
-      <div class="input-field col s6">
-        <label for="{{forma.cantidad.id_for_label}}">Cantidad</label>
-        <input id="{{forma.cantidad.id_for_label}}" name="{{forma.cantidad.html_name}}" type="number" required>
-      </div>
-      <div class="row">
-        <div class="input-field col s12">
-          <input class="datepicker" id="{{forma.fecha.id_for_label}}" type="text" class="required" name="{{forma.fecha.html_name}}" required>
-          <label for="{{forma.fecha_fin.id_for_label}}">Fecha</label>
         </div>
       </div>
       <div class="row">
+        <div class="input-field col s11">
+          <label for="{{forma.cantidad.id_for_label}}">Cantidad</label>
+          <input id="{{forma.cantidad.id_for_label}}" name="{{forma.cantidad.html_name}}" type="number" required>
+        </div>
+        <div class="col s1">
+          <a class="tooltipped btnAyuda" data-position="top" data-delay="50" data-tooltip="Si escribe un número positivo se agregará al inventario, si escribe uno negativo se restará. ">
+            <i class="material-icons">help</i>
+          </a>
+        </div>
+
+      </div>
+      <div class="row">
         <div class="input-field col s12">
-          <label for="{{forma.descripcion.id_for_label}}">Descripcion</label>
+          <label for="{{forma.descripcion.id_for_label}}">Descripción</label>
           <input id="{{forma.descripcion.id_for_label}}" class="required" name="{{forma.descripcion.html_name}}" type="text" required>
         </div>
       </div>
       <div class="row">
-        <div class="col s12 right-align">
-          <br>
-          <button type="submit" class="btn pink waves-effect waves-light">Agregar</button>
+        <div class="col s6">
+          <a class="btn waves-effect waves-light pink modal-close" >Regresar
+            <i class="material-icons left">chevron_left</i>
+          </a>
+        </div>
+        <div class="col s6 right-align">
+          <button type="submit"class="btn waves-effect waves-light pink">Agregar <i class="material-icons right">send</i></button>
         </div>
       </div>
     </form>
@@ -71,10 +79,9 @@
 <div class="row">
   <div class="col s12">
     <ul class="tabs">
-      <!-- Tabs de mermas -->
-      <li class="tab col s4"><a class="white-text active" href="/mermas/lista_mermas_receta/">Receta</a></li>
-      <li class="tab col s4"><a class="pink-text" href="/mermas/lista_mermas/">Paquete</a></li>
-      <li class="tab col s4"><a class="pink-text" href="/mermas/lista_mermas_material/">Material</a></li>
+      <li class="tab col s4"><a class="white-text active" href="{% url 'mermas:lista_mermas_receta' %}">Producto Semi-Terminado</a></li>
+      <li class="tab col s4"><a class="pink-text" href="{% url 'mermas:lista_mermas_paquete' %}">Producto Terminado</a></li>
+      <li class="tab col s4"><a class="pink-text" href="{% url 'mermas:lista_mermas_material' %}">Materia Prima</a></li>
     </ul>
   </div>
 </div>
@@ -104,7 +111,7 @@
       <br>
       <div class="row">
         <div class="right-align">
-          <a href="#agregarMermaReceta" class="btn-floating btn-large waves-effect waves-light pink modal-trigger"><i class="material-icons">add</i></a>
+          <a href="#agregarMermaReceta" class="btn-floating btn-large waves-effect waves-light waves-circle pink fixed tooltipped modal-trigger" data-position="left" data-tooltip="Agregar merma producto semi-terminado" ><i class="material-icons">add</i></a>
         </div>
       </div>
   </div>

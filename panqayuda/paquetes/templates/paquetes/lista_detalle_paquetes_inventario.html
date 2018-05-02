@@ -5,20 +5,24 @@
       <th>Nombre</th>
       <th>Cantidad</th>
       <th>Fecha de caducidad</th>
+      <th>Costo</th>
       <th>Editar</th>
       <th>Borrar</th>
     </tr>
   </thead>
   <tbody>
 {% for i in detalle_paquetes_en_inventario %}
+    {% if i.disponibles > 0 %}
         <tr>
           <td>{{paquete.nombre}}</td>
-            <td>{{i.cantidad}}</td>
-            <td>{{i.fecha_cad}}</td>
-            <td>{{i.multiplicar_costo_cantidad}}</td>
+            <td>{{i.disponibles}}</td>
+            <!-- <td>{{ i.costo }}</td> -->
+            <td>{{i.fecha_cad.date}}</td>
+            <td>{{i.multiplicar_costo_cantidad|floatformat:2}}</td>
             <td><a href='{% url "paquetes:editar_paquete_inventario" i.id %}' class="modal-trigger"><i class="material-icons">edit</i> </a></td>
-            <td><a href='{% url "paquetes:borrar_paquete_inventario" i.id %}' class="modal-trigger"><i class="material-icons">delete</i> </a></td>
+            <td><a href='{% url "paquetes:borrar_paquete_inventario" i.id %}' class="modal-trigger" onclick="return confirm('Vas a eliminar una producto del Inventario. ¿Continuar?')"><i class="material-icons">delete</i> </a></td>
         </tr>
+    {% endif %}
 
 {% endfor %}
     </tbody>

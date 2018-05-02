@@ -6,7 +6,7 @@
       <select id="{{forma.material.id_for_label}}" name="{{forma.material.html_name}}" required>
         <option selected disabled value=''>Selecciona la materia prima</option>
         {% for materia_prima in materia_primas %}
-        <option value="{{materia_prima.id}}">{{materia_prima.nombre}}</option>
+        <option value="{{materia_prima.id}}">{{materia_prima.nombre}} ({{materia_prima.unidad_entrada}})</option>
         {% endfor %}
       </select>
       <label for="{{forma.material.id_for_label}}">Materia Prima</label>
@@ -18,28 +18,11 @@
     </div>
   </div>
   <div class="row">
-    <!--Cantidad-->
-    <div class="input-field col m2">
+    <div class="input-field col m4">
       <input type="number"  id='{{forma.cantidad.id_for_label}}' class="validate" name="{{forma.cantidad.html_name}}" required>
       <label for="{{forma.cantidad.id_for_label}}">Cantidad</label>
     </div>
-    <!--Unidad-->
-    <div class="input-field col m5">
-      <select id="{{forma.unidad_entrada.id_for_label}}" class="" name="{{forma.unidad_entrada.html_name}}" required>
-        <option selected disabled value=''>Selecciona la unidad</option>
-        {% for unidad in unidades %}
-        <option value="{{unidad.id}}">{{unidad.nombre}}</option>
-        {% endfor %}
-      </select>
-      <label for="{{forma.unidad_entrada.id_for_label}}">Unidades</label>
-    </div>
-    <!--Equivalente en Porciones-->
-    <div class="input-field col m3">
-      <input type="number" id="{{forma.porciones.id_for_label}}" name="{{forma.porciones.html_name}}">
-      <label for="{{forma.porciones.id_for_label}}">Porciones</label>
-    </div>
-    <!--Costo de la compra-->
-    <div class="input-field col m2">
+    <div class="input-field col m4">
       <input type="number" id="{{forma.costo.id_for_label}}" name="{{forma.costo.html_name}}">
       <label for="{{forma.costo.id_for_label}}">Costo</label>
     </div>
@@ -48,10 +31,9 @@
       <input type="number"  id="{{forma.compra.id_for_label}}" name="{{forma.compra.html_name}}" required class="validate" value={{id_compra}}>
     </div>
   </div>
-
   <div class="row">
     <div id="agrega_select" class="col s12 right-align btn-agregar-paquete">
-      <button type="submit"  class="btn waves-effect waves-lightwaves-effect waves-light blue lighten-1"><i class="material-icons">add</i></button>
+      <button type="submit"  class="btn waves-effect waves-light pink tooltipped"  data-position="left" data-tooltip="Agregar materia prima a la compra"><i class="material-icons">add</i></button>
     </div>
   </div>
 </form>

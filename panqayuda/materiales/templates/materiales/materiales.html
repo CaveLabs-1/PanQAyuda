@@ -1,17 +1,17 @@
 {% extends "base.html" %}
-{% block title %}Materiales{% endblock title %}
+{% block title %}Catálogo de Materia Prima{% endblock title %}
 {% block navbar %}{% include "navbar.html" %}{% endblock navbar %}
 {% block header %}
   <header class="banner-prueba">
-    <h1 class="center-align">Materiales</h1>
+    <h1 class="center-align">Catálogo Materia Prima</h1>
   </header>
 {% endblock header %}
 {% block content %}
 <div class="row">
   <div class="col s12">
     <ul class="tabs">
-      <li class="tab col s6"><a class="pink-text" href="/materiales">Catálogo Inventario</a></li>
-      <li class="tab col s6"><a class="active white-text" href="/materiales/lista_materiales">Catálogo Materiales</a></li>
+      <li class="tab col s6"><a class="pink-text" href="{% url 'materiales:lista_materiales_inventario' %}">Inventario</a></li>
+      <li class="tab col s6"><a class="active white-text" href="{% url 'materiales:materiales' %}">Catálogo</a></li>
     </ul>
   </div>
 </div>
@@ -22,20 +22,29 @@
         <thead>
           <th>Nombres</th>
           <!-- <th>Unidad</th> -->
-          <th>Codigo</th>
+          <th>Código</th>
+          <th>Entrada</th>
+          <th>Equivalencia</th>
           <th>Editar</th>
           <th>Eliminar</th>
         </thead>
         <tbody>
          {% for material in materiales %}
           <tr>
-            <td>{{material.nombre}}</td>
+            <td>{{ material.nombre }}</td>
             <!-- <td>{{material.unidad}}</td> -->
-            <td>{{material.codigo}}</td>
-            <!--Editar material-->
-            <td><a href="{% url 'materiales:editar_material' material.id %}" class="modal-trigger"><i class="material-icons">edit</i></a></td>
+            <td>{{ material.codigo }}</td>
+            <td>{{ material.equivale_entrada }} {{ material.unidad_entrada }}</td>
+            <td>{{ material.equivale_maestra }} {{ material.unidad_maestra }}</td>
+            <td><a href="{% url 'materiales:editar_material' material.id %}" class="modal-trigger">
+              <i class="material-icons ">edit</i>
+            </a></td>
             <!--Se manda llamar la función de eliminar_material mandando el id de material-->
-            <td><a href="{% url 'materiales:eliminar_material' material.id %}" class="modal-trigger" onclick="return confirm('Vas a eliminar un Material del catálogo. ¿Continuar?')"><i class="material-icons">delete</i></a></td>
+            <td>
+              <a href="{% url 'materiales:eliminar_material' material.id %}" class="modal-trigger" onclick="return confirm('Vas a eliminar un Material del catálogo. ¿Continuar?')">
+                <i class="material-icons">delete</i>
+              </a>
+            </td>
             </tr>
          {% endfor %}
         </tbody>
@@ -43,7 +52,9 @@
     </div>
   </div>
   <div class="fixed-action-btn ">
-    <a class="add-btn btn-floating btn-large waves-effect waves-light pink btn modal-trigger" href="#agregar_materia_prima"><i class="material-icons">add</i></a>
+    <a class="add-btn btn-floating btn-large waves-effect waves-light pink btn modal-trigger tooltipped" href="#agregar_materia_prima" data-position="left" data-tooltip="Agregar material al catálogo">
+      <i class="material-icons">add</i>
+    </a>
   </div>
 
 {% include 'materiales/modal_agregar_materia_prima.html' %}
