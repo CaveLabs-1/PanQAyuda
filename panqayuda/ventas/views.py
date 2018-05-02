@@ -101,7 +101,7 @@ def generar_venta(request):
                         restar_paquetes_inventario(relacion.paquete, relacion.cantidad)
 
                     messages.success(request, "¡La venta se ha generado con éxito!")
-                    return redirect('ventas:generar_venta')
+                    return redirect('ventas:ventas')
                 else:
                     messages.error(request, 'Hubo un error con la forma. Inténtanlo de nuevo.')
                     return redirect('ventas:generar_venta')

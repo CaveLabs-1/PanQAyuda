@@ -8,6 +8,7 @@ from django.core.validators import MinValueValidator
 # Create your models here.
 class Paquete (models.Model):
 	nombre = models.CharField(max_length=70)
+	codigo = models.CharField(max_length=10, null=True, blank=False)
 	recetas = models.ManyToManyField(Receta, through='RecetasPorPaquete', through_fields=('paquete', 'receta'),)
 	precio = models.FloatField(validators=[MinValueValidator(0.00001, "El precio del paquete debe ser mayor a 0.")])
 	estatus = models.IntegerField(default=1)
