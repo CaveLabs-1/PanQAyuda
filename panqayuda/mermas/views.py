@@ -43,11 +43,11 @@ def agregar_merma_paquetes(request):
     if request.method == 'POST':
         newMermaPaqueteForm = MermaPaqueteForm(request.POST)
         if newMermaPaqueteForm.is_valid():
-            Merma = newMermaPaqueteForm.save(commit=False)
+            merma = newMermaPaqueteForm.save(commit=False)
             #esto regresa el paquete del inventario que se debe borrar
-            pack = PaqueteInventario.objects.get(id=Merma.nombre.id)
-            if Merma.cantidad < 0:
-                merma_cantidad = Merma.cantidad * -1
+            pack = PaqueteInventario.objects.get(id=merma.nombre.id)
+            if merma.cantidad < 0:
+                merma_cantidad = merma.cantidad * -1
                 if pack.disponibles() < merma_cantidad :
                     messages.success(request, 'Este producto terminado solo tiene ' + str(pack.disponibles()) + " paquetes disponibles.")
                     context = {
@@ -56,26 +56,26 @@ def agregar_merma_paquetes(request):
                     # return render(request, 'mermas/MagregarPack.html', context)
                     return HttpResponseRedirect(reverse('mermas:lista_mermas_paquete'))
                 elif pack.disponibles() == merma_cantidad :
-                    Merma.save()
+                    merma.save()
                     pack.ocupados  = pack.cantidad
                     pack.save()
                     messages.success(request, 'Se quitaron ' + str(merma_cantidad) + ' paquetes de ' + pack.nombre.nombre)
                     return HttpResponseRedirect(reverse('mermas:lista_mermas_paquete'))
                 else :
                     pack.ocupados += merma_cantidad
-                    Merma.save()
+                    merma.save()
                     pack.save()
                     messages.success(request, 'Se quitaron ' + str(merma_cantidad) + ' paquetes de ' + pack.nombre.nombre)
                     return HttpResponseRedirect(reverse('mermas:lista_mermas_paquete'))
             else:
-                Merma.save()
+                merma.save()
                 nombre = pack.nombre
-                cantidad = Merma.cantidad
+                cantidad = merma.cantidad
                 fecha_cad= pack.fecha_cad
                 #agregar nuevo registro
                 PaqueteInventario.objects.create( nombre = nombre,
                 cantidad = cantidad, fecha_cad=fecha_cad )
-                messages.success(request, 'Se agregaron' + str(Merma.cantidad) + ' paquetes de ' + pack.nombre.nombre)
+                messages.success(request, 'Se agregaron' + str(merma.cantidad) + ' paquetes de ' + pack.nombre.nombre)
                 return HttpResponseRedirect(reverse('mermas:lista_mermas_paquete'))
         else :
             messages.success(request, 'Hubo un error en la forma y no se pudo completar la acción con éxito.')
@@ -94,38 +94,38 @@ def agregar_merma_materiales(request):
     if request.method == 'POST':
         newMermaMaterialForm = MermaMaterialForm(request.POST)
         if newMermaMaterialForm.is_valid():
-            Merma = newMermaMaterialForm.save(commit=False)
+            merma = newMermaMaterialForm.save(commit=False)
             #Regresa la Material Prima del inventario que se debe de borrar
-            pack = MaterialInventario.objects.get(id=Merma.nombre.id)
+            pack = MaterialInventario.objects.get(id=merma.nombre.id)
 
-            if Merma.cantidad < 0 :
-                merma_cantidad = Merma.cantidad*-1
+            if merma.cantidad < 0 :
+                merma_cantidad = merma.cantidad*-1
                 if pack.porciones_disponible < merma_cantidad :
-                    messages.success(request, 'Esta materia prima solo tiene ' + str(pack.porciones_disponible) +  " "+ + "disponibles.")
+                    messages.success(request, 'Esta materia prima solo tiene ' + str(pack.porciones_disponible) +  " disponibles.")
                     context = {
                         'MermaPack': newMermaMaterialForm,
                     }
                     # return render(request, 'mermas/MermaMaterial.html', context)
                     return HttpResponseRedirect(reverse('mermas:lista_mermas_material'))
                 elif pack.porciones_disponible == merma_cantidad:
-                    Merma.save()
+                    merma.save()
                     pack.porciones_disponible = 0
                     pack.save()
                     messages.success(request, 'Se quitaron ' + str(merma_cantidad) + ' unidad de ' + pack.material.nombre)
                     return HttpResponseRedirect(reverse('mermas:lista_mermas_material'))
                 else :
                     pack.porciones_disponible -= merma_cantidad
-                    Merma.save()
+                    merma.save()
                     pack.save()
                     messages.success(request, 'Se quitaron ' + str(merma_cantidad) + ' unidad de ' + pack.material.nombre)
                     # return render(reverse('mermas:lista_mermas_material'))
                     return HttpResponseRedirect(reverse('mermas:lista_mermas_material'))
             else:
-                Merma.save()
+                merma.save()
                 #agregar nuevo registro
                 materia_prima = pack.material
                 fecha_cad= pack.fecha_cad
-                cantidad = Merma.cantidad
+                cantidad = merma.cantidad
                 unidad = pack.unidad_entrada
                 porciones = cantidad * materia_prima.equivale_maestra / materia_prima.equivale_entrada
                 costo_unitario = pack.costo_unitario
@@ -136,7 +136,7 @@ def agregar_merma_materiales(request):
                  porciones_disponible=porciones, unidad_entrada=unidad, porciones=porciones,
                  costo_unitario=costo_unitario )
 
-                messages.success(request, 'Se agregaron ' + str(Merma.cantidad) + ' unidad de ' + pack.material.nombre)
+                messages.success(request, 'Se agregaron ' + str(merma.cantidad) + ' unidad de ' + pack.material.nombre)
                 return HttpResponseRedirect(reverse('mermas:lista_mermas_material'))
 
         else :
