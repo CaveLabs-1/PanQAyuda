@@ -217,7 +217,7 @@ def agregar_paquetes_inventario_nuevo(paquete,cantidad):
             break
 
 
-#
+
 # def cancelar_venta(request, id_venta):
 #         #Checar que el objeto exista
 #         venta = get_object_or_404(Venta, pk=id_venta)

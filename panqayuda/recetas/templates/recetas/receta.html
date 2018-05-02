@@ -25,19 +25,19 @@
                             <li>
                                 <a href="{% url 'recetas:editar_receta' receta.id %}">
                                     <i class="material-icons">edit</i>
-                                    Editar Receta
+                                    Editar Producto Semi-Terminado
                                 </a>
                             </li>
                             <li class="divider" tabindex="-1"></li>
                             <li>
                               <a href="{% url 'recetas:agregar_materiales' receta.id %}"><i class="material-icons">edit</i>
-                                Editar Materiales
+                                Editar Materia Prima
                               </a>
                             </li>
                             <li class="divider" tabindex="-1"></li>
                             <li >
                               <a onclick="deleteRegister(this, event)" class="red-text" href="{% url 'recetas:borrar_receta' receta.id %}">
-                                <i class="material-icons">delete</i>Borrar Receta
+                                <i class="material-icons">delete</i>Borrar Producto Semi-Terminado
                               </a>
                             </li>
                             </ul>
