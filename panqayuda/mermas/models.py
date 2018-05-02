@@ -8,7 +8,7 @@ class MermaReceta(models.Model):
     #id receta que se mermó
     nombre = models.ForeignKey(RecetaInventario, on_delete=models.CASCADE)
     cantidad = models.IntegerField(default=0, blank=False)
-    fecha = models.DateTimeField(blank=True, null=False)
+    fecha = models.DateTimeField(default=timezone.now)
     descripcion = models.CharField(max_length=500, null=True, blank=False)
     created_at = models.DateTimeField(default=timezone.now)
     updated_at = models.DateTimeField(default=timezone.now)
@@ -21,7 +21,7 @@ class MermaPaquete(models.Model):
     #Llave al paquete invenrario del cual se mermo
     nombre = models.ForeignKey(PaqueteInventario, on_delete=models.CASCADE)
     cantidad = models.IntegerField(default=0, blank=False)
-    fecha = models.DateTimeField(blank=True, null=False)
+    fecha = models.DateTimeField(default=timezone.now)
     descripcion = models.CharField(max_length=500, null=True, blank=False)
     created_at = models.DateTimeField(default=timezone.now)
     updated_at = models.DateTimeField(default=timezone.now)
@@ -34,7 +34,7 @@ class MermaMaterial(models.Model):
     #Llave al modelo del material que se mermo
     nombre = models.ForeignKey(MaterialInventario, on_delete=models.CASCADE)
     cantidad = models.IntegerField(default=0, blank=False)
-    fecha = models.DateTimeField(blank=True, null=False)
+    fecha = models.DateTimeField(default=timezone.now)
     descripcion = models.CharField(max_length=500, null=True, blank=False)
     created_at = models.DateTimeField(default=timezone.now)
     updated_at = models.DateTimeField(default=timezone.now)

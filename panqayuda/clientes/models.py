@@ -7,7 +7,7 @@ class Cliente(models.Model):
         ordering = ['nombre']
 
     nombre = models.CharField(max_length=100, null = False)
-    nombreContacto = models.CharField(max_length=100, null = False)
+    nombreContacto = models.CharField(max_length=100, null = False, default='David')
     telefono_regex = RegexValidator(regex=r'^\+?1?\d{9,15}$', message="El formato del número no es válido.")
     telefono = models.CharField(validators=[telefono_regex], max_length=17, blank=True)
     email = models.EmailField(max_length=70,blank=True)
