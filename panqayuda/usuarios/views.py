@@ -25,9 +25,9 @@ def lista_usuarios(request):
             else:
                 usuario.is_staff=False
 
-            if usuario.is_superuser == 'on':
+            if usuario.is_superuser == True:
                 usuario.nombre_grupo = 'superadmin'
-                usuario.is_superuser = True
+                #usuario.is_superuser = True
             else:
                 usuario.nombre_grupo = 'admin'
                 usuario.is_superuser=False
