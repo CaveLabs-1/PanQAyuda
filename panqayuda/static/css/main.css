@@ -47,7 +47,7 @@ body, main#login, .login {
 
 #background {
   height: 100%;
-  background: url(../img/prueba/galletas.jpg) no-repeat;
+  background: url(../img/prueba/pan.png) no-repeat;
   background-size: cover;
   background-position: center; }
 
@@ -150,10 +150,10 @@ button.dt-button {
 
 .banner-prueba {
   color: #333333;
-  background: -webkit-gradient(linear, left top, left bottom, from(rgba(255, 255, 255, 0.5)), to(rgba(255, 255, 255, 0.5))), url(../img/prueba/banner-prueba.jpeg);
-  background: -webkit-linear-gradient(rgba(255, 255, 255, 0.5), rgba(255, 255, 255, 0.5)), url(../img/prueba/banner-prueba.jpeg);
-  background: -o-linear-gradient(rgba(255, 255, 255, 0.5), rgba(255, 255, 255, 0.5)), url(../img/prueba/banner-prueba.jpeg);
-  background: linear-gradient(rgba(255, 255, 255, 0.5), rgba(255, 255, 255, 0.5)), url(../img/prueba/banner-prueba.jpeg);
+  background: -webkit-gradient(linear, left top, left bottom, from(rgba(255, 255, 255, 0.5)), to(rgba(255, 255, 255, 0.5))), url(../img/prueba/pan2.png);
+  background: -webkit-linear-gradient(rgba(255, 255, 255, 0.5), rgba(255, 255, 255, 0.5)), url(../img/prueba/pan2.png);
+  background: -o-linear-gradient(rgba(255, 255, 255, 0.5), rgba(255, 255, 255, 0.5)), url(../img/prueba/pan2.png);
+  background: linear-gradient(rgba(255, 255, 255, 0.5), rgba(255, 255, 255, 0.5)), url(../img/prueba/pan2.png);
   margin-top: -2em;
   padding-top: .8em;
   padding-bottom: .8em; }
