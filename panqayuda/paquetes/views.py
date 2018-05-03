@@ -290,9 +290,12 @@ def costo_paquetes_inventario_recetas(paquete,cantidad):
         #Obtener recetas del inventario disponibles para restar ordenadas por fecha de caducidad
         recetas_inventario = RecetaInventario.obtener_disponibles(receta.receta)
         cantidad_necesitada = cantidad * receta.cantidad
+        x = 0
         for receta_inventario in recetas_inventario:
-            # La necesitada es mayor que la cantidad que este 'lote' tiene
-            costo+=receta_inventario.costo * cantidad_necesitada
+            x += 1
+            if x >= cantidad_necesitada:
+                break
+            costo+=receta_inventario.costo
     return costo
 
 def eliminar_paquetes_inventario_recetas(paquete,cantidad):

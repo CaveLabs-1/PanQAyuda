@@ -45,7 +45,7 @@ def materiales(request):
             #Verificar si el material es material de empaque
             if request.POST.get('material_empaque'):
                 #Crear 'receta' con el mismo nombre que el material de empaque y asociada a este material
-                receta = Receta.objects.create(nombre=forma_post.instance.nombre, cantidad=1, duration=datetime.timedelta(days=450000),material_empaque=forma_post.instance)
+                receta = Receta.objects.create(nombre=forma_post.instance.nombre, cantidad=1, duration=timezone.timedelta(days=450000),material_empaque=forma_post.instance)
                 receta.save()
             messages.success(request, 'Se ha agregado una nueva materia prima.')
         else:
@@ -92,7 +92,7 @@ def eliminar_unidad(request, id_unidad):
     unidad = get_object_or_404(Unidad, pk=id_unidad)
     unidad.estatus = 0
     #Borrado del objeto
-    unidad.deleted_at = datetime.datetime.now()
+    unidad.deleted_at = timezone.datetime.now()
     unidad.save()
     messages.success(request, '¡Se ha borrado exitosamente la unidad del catálogo!')
     #Regresar a listado de materiales
@@ -107,7 +107,7 @@ def eliminar_material(request, id_material):
     material = get_object_or_404(Material, pk=id_material)
     material.estatus = 0
     #Se hace el borrado
-    material.deleted_at = datetime.datetime.now()
+    material.deleted_at = timezone.datetime.now()
     material.save()
     messages.success(request, '¡Se ha borrado exitosamente la materia prima del catálogo!')
     #Regresa a la lista de materiales

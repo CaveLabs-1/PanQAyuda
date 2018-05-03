@@ -2,6 +2,8 @@ from django.test import TestCase
 from ordenes.models import Orden
 from recetas.models import Receta, RelacionRecetaMaterial, RecetaInventario
 from materiales.models import Material, Unidad, MaterialInventario
+from compras.models import Compra
+from proveedores.models import Proveedor
 from django.urls import reverse
 from django.utils import timezone
 import datetime
@@ -26,17 +28,23 @@ class TestAgregarOrden(TestCase):
         wruandes = Unidad.objects.create(nombre = 'wruandes')
 
         # Crear registro de catalogo materiales para pruebas
-        azucar = Material.objects.create(nombre = 'Azúcar', codigo = '234')
-        flores = Material.objects.create(nombre = 'Flores', codigo = '420')
-        muchos_colores = Material.objects.create(nombre = 'Muchos Colores', codigo = '4453')
-        sustancia_x = Material.objects.create(nombre = 'Sustancia X', codigo = '355')
+        azucar = Material.objects.create(nombre = 'Azúcar', codigo = '234', unidad_entrada = lesters, unidad_maestra = lesters, equivale_entrada = 1, equivale_maestra = 1)
+        flores = Material.objects.create(nombre = 'Flores', codigo = '420', unidad_entrada = lesters, unidad_maestra = lesters, equivale_entrada = 1, equivale_maestra = 1)
+        muchos_colores = Material.objects.create(nombre = 'Muchos Colores', codigo = '4453', unidad_entrada = wruandes, unidad_maestra = wruandes, equivale_entrada = 1, equivale_maestra = 1)
+        sustancia_x = Material.objects.create(nombre = 'Sustancia X', codigo = '355', unidad_entrada = midiclorians, unidad_maestra = midiclorians, equivale_entrada = 1, equivale_maestra = 1)
+
+        #Se crea un proveedor par ahacer una compra
+        proveedor = Proveedor.objects.create(nombre='Toño', telefono=4423214567, direccion='aqui mero', rfc='hsggw872652', razon_social='SAMS', email='a@j.com')
+
+        #Se ctea una orden de compra para llevar inventario
+        compra = Compra.objects.create(proveedor=proveedor, fecha_compra='2038-03-31')
 
         # Generar registros en el inventario para pruebas
         fecha = timezone.now() + timezone.timedelta(days=3650)
-        MaterialInventario.objects.create(material = azucar, unidad_entrada = lesters, cantidad = 1000, cantidad_salida = 100, porciones_disponible = 100, costo = 20.50, fecha_cad = fecha)
-        MaterialInventario.objects.create(material = flores, unidad_entrada = lesters, cantidad = 50, cantidad_salida = 200, porciones_disponible = 200, costo = 85.70,  fecha_cad = fecha)
-        MaterialInventario.objects.create(material = muchos_colores, unidad_entrada = wruandes, cantidad = 350, cantidad_salida = 150, porciones_disponible = 150, costo = 73.50,  fecha_cad = fecha)
-        MaterialInventario.objects.create(material = sustancia_x, unidad_entrada = midiclorians, cantidad = 30, cantidad_salida = 10, porciones_disponible = 10, costo = 27000.50, fecha_cad = fecha)
+        MaterialInventario.objects.create(material = azucar, compra=compra, unidad_entrada = lesters, cantidad = 1000, costo_unitario = 1, porciones = 1000, porciones_disponible = 1000, fecha_cad = fecha)
+        MaterialInventario.objects.create(material = flores, compra=compra, unidad_entrada = lesters, cantidad = 200, costo_unitario = 1, porciones = 200, porciones_disponible = 200, fecha_cad = fecha)
+        MaterialInventario.objects.create(material = muchos_colores, compra=compra, unidad_entrada = wruandes, cantidad = 150, costo_unitario = 1, porciones = 150, porciones_disponible = 150, fecha_cad = fecha)
+        MaterialInventario.objects.create(material = sustancia_x, compra=compra, unidad_entrada = midiclorians, cantidad = 10, costo_unitario = 1, porciones = 10, porciones_disponible = 10, fecha_cad = fecha)
 
         # Crear receta de prueba para la alta de ordenes de trabajo
         chicas_sp = Receta.objects.create(nombre = 'Chicas Superpoderosas', cantidad = 3, duration = datetime.timedelta(days=3350))
@@ -161,17 +169,23 @@ class TestMarcarOrdenComoTerminada(TestCase):
         wruandes = Unidad.objects.create(nombre = 'wruandes')
 
         # Crear registro de catalogo materiales para pruebas
-        azucar = Material.objects.create(nombre = 'Azúcar', codigo = '234')
-        flores = Material.objects.create(nombre = 'Flores', codigo = '420')
-        muchos_colores = Material.objects.create(nombre = 'Muchos Colores', codigo = '4453')
-        sustancia_x = Material.objects.create(nombre = 'Sustancia X', codigo = '355')
+        azucar = Material.objects.create(nombre = 'Azúcar', codigo = '234', unidad_entrada = lesters, unidad_maestra = lesters, equivale_entrada = 1, equivale_maestra = 1)
+        flores = Material.objects.create(nombre = 'Flores', codigo = '420', unidad_entrada = lesters, unidad_maestra = lesters, equivale_entrada = 1, equivale_maestra = 1)
+        muchos_colores = Material.objects.create(nombre = 'Muchos Colores', codigo = '4453', unidad_entrada = wruandes, unidad_maestra = wruandes, equivale_entrada = 1, equivale_maestra = 1)
+        sustancia_x = Material.objects.create(nombre = 'Sustancia X', codigo = '355', unidad_entrada = midiclorians, unidad_maestra = midiclorians, equivale_entrada = 1, equivale_maestra = 1)
+
+        #Se crea un proveedor par ahacer una compra
+        proveedor = Proveedor.objects.create(nombre='Toño', telefono=4423214567, direccion='aqui mero', rfc='hsggw872652', razon_social='SAMS', email='a@j.com')
+
+        #Se ctea una orden de compra para llevar inventario
+        compra = Compra.objects.create(proveedor=proveedor, fecha_compra='2038-03-31')
 
         # Generar registros en el inventario para pruebas
         fecha = timezone.now() + timezone.timedelta(days=3650)
-        MaterialInventario.objects.create(material = azucar, unidad_entrada = lesters, cantidad = 1000, cantidad_salida = 100, porciones_disponible = 100, costo = 20.50, fecha_cad = fecha)
-        MaterialInventario.objects.create(material = flores, unidad_entrada = lesters, cantidad = 50, cantidad_salida = 200, porciones_disponible = 200, costo = 85.70,  fecha_cad = fecha)
-        MaterialInventario.objects.create(material = muchos_colores, unidad_entrada = wruandes, cantidad = 350, cantidad_salida = 150, porciones_disponible = 150, costo = 73.50,  fecha_cad = fecha)
-        MaterialInventario.objects.create(material = sustancia_x, unidad_entrada = midiclorians, cantidad = 30, cantidad_salida = 10, porciones_disponible = 10, costo = 27000.50, fecha_cad = fecha)
+        MaterialInventario.objects.create(material = azucar, compra=compra, unidad_entrada = lesters, cantidad = 1000, costo_unitario = 1, porciones = 1000, porciones_disponible = 1000, fecha_cad = fecha)
+        MaterialInventario.objects.create(material = flores, compra=compra, unidad_entrada = lesters, cantidad = 200, costo_unitario = 1, porciones = 200, porciones_disponible = 200, fecha_cad = fecha)
+        MaterialInventario.objects.create(material = muchos_colores, compra=compra, unidad_entrada = wruandes, cantidad = 150, costo_unitario = 1, porciones = 150, porciones_disponible = 150, fecha_cad = fecha)
+        MaterialInventario.objects.create(material = sustancia_x, compra=compra, unidad_entrada = midiclorians, cantidad = 10, costo_unitario = 1, porciones = 10, porciones_disponible = 10, fecha_cad = fecha)
 
         # Crear receta de prueba para la alta de ordenes de trabajo
         chicas_sp = Receta.objects.create(nombre = 'Chicas Superpoderosas', cantidad = 3, duration = datetime.timedelta(days=3350))
@@ -216,10 +230,11 @@ class TestMarcarOrdenComoTerminada(TestCase):
         # Crear 4 ordenes de trabajo con status por trabajar.
         registros_ordenes = self.crear_orden_de_trabajo()
         # Recrear petición POST para modificar el estatus de una orden de trabajo
-        data = {'id': 6, 'estatus': 2}
+        orden = Orden.objects.first()
+        data = {'id': orden.id, 'estatus': 2}
         self.client.post(reverse('ordenes:terminar_orden'), data)
         # Comprobar que el registro se modificó correctamente
-        self.assertEqual(Orden.objects.get(pk=2).estatus, 2)
+        self.assertEqual(Orden.objects.get(id=orden.id).estatus, '2')
 
     def test_quitar_de_lista_las_ordenes_terminadas(self):
         # Crear 4 ordenes de trabajo con status por trabajar.
@@ -245,12 +260,6 @@ class TestMarcarOrdenComoTerminada(TestCase):
 
 
 class TestCancelarOrden(TestCase):
-    def datos_prueba(self):
-        # Crear registro de unidades de prueba
-        midiclorians = Unidad.objects.create(nombre = 'midiclorians')
-        lesters = Unidad.objects.create(nombre = 'lesters')
-        wruandes = Unidad.objects.create(nombre = 'wruandes')
-
 
     def setUp(self):
         Group.objects.create(name="admin")
@@ -258,22 +267,30 @@ class TestCancelarOrden(TestCase):
         user.save()
         self.client.login(username='temporary', password='temporary')
 
-    def crear_receta(self):
-        return Receta.objects.create(nombre="Receta de prueba", cantidad=20, duration=datetime.timedelta(days=1))
+    def datos_prueba(self):
+        # Crear registro de unidades de prueba
+        midiclorians = Unidad.objects.create(nombre = 'midiclorians')
+        lesters = Unidad.objects.create(nombre = 'lesters')
+        wruandes = Unidad.objects.create(nombre = 'wruandes')
 
         # Crear registro de catalogo materiales para pruebas
-        azucar = Material.objects.create(nombre = 'Azúcar', codigo = '234')
-        flores = Material.objects.create(nombre = 'Flores', codigo = '420')
-        muchos_colores = Material.objects.create(nombre = 'Muchos Colores', codigo = '4453')
-        sustancia_x = Material.objects.create(nombre = 'Sustancia X', codigo = '355')
+        azucar = Material.objects.create(nombre = 'Azúcar', codigo = '234', unidad_entrada = lesters, unidad_maestra = lesters, equivale_entrada = 1, equivale_maestra = 1)
+        flores = Material.objects.create(nombre = 'Flores', codigo = '420', unidad_entrada = lesters, unidad_maestra = lesters, equivale_entrada = 1, equivale_maestra = 1)
+        muchos_colores = Material.objects.create(nombre = 'Muchos Colores', codigo = '4453', unidad_entrada = wruandes, unidad_maestra = wruandes, equivale_entrada = 1, equivale_maestra = 1)
+        sustancia_x = Material.objects.create(nombre = 'Sustancia X', codigo = '355', unidad_entrada = midiclorians, unidad_maestra = midiclorians, equivale_entrada = 1, equivale_maestra = 1)
 
+        #Se crea un proveedor par ahacer una compra
+        proveedor = Proveedor.objects.create(nombre='Toño', telefono=4423214567, direccion='aqui mero', rfc='hsggw872652', razon_social='SAMS', email='a@j.com')
+
+        #Se ctea una orden de compra para llevar inventario
+        compra = Compra.objects.create(proveedor=proveedor, fecha_compra='2038-03-31')
 
         # Generar registros en el inventario para pruebas
         fecha = timezone.now() + timezone.timedelta(days=3650)
-        MaterialInventario.objects.create(material = azucar, unidad_entrada = lesters, cantidad = 1000, cantidad_salida = 100, porciones_disponible = 100, costo = 20.50, fecha_cad = fecha)
-        MaterialInventario.objects.create(material = flores, unidad_entrada = lesters, cantidad = 50, cantidad_salida = 200, porciones_disponible = 200, costo = 85.70,  fecha_cad = fecha)
-        MaterialInventario.objects.create(material = muchos_colores, unidad_entrada = wruandes, cantidad = 350, cantidad_salida = 150, porciones_disponible = 150, costo = 73.50,  fecha_cad = fecha)
-        MaterialInventario.objects.create(material = sustancia_x, unidad_entrada = midiclorians, cantidad = 30, cantidad_salida = 10, porciones_disponible = 10, costo = 27000.50, fecha_cad = fecha)
+        MaterialInventario.objects.create(material = azucar, compra=compra, unidad_entrada = lesters, cantidad = 1000, costo_unitario = 1, porciones = 1000, porciones_disponible = 1000, fecha_cad = fecha)
+        MaterialInventario.objects.create(material = flores, compra=compra, unidad_entrada = lesters, cantidad = 200, costo_unitario = 1, porciones = 200, porciones_disponible = 200, fecha_cad = fecha)
+        MaterialInventario.objects.create(material = muchos_colores, compra=compra, unidad_entrada = wruandes, cantidad = 150, costo_unitario = 1, porciones = 150, porciones_disponible = 150, fecha_cad = fecha)
+        MaterialInventario.objects.create(material = sustancia_x, compra=compra, unidad_entrada = midiclorians, cantidad = 10, costo_unitario = 1, porciones = 10, porciones_disponible = 10, fecha_cad = fecha)
 
         # Crear receta de prueba para la alta de ordenes de trabajo
         chicas_sp = Receta.objects.create(nombre = 'Chicas Superpoderosas', cantidad = 3, duration = datetime.timedelta(days=3350))
