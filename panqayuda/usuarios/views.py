@@ -17,36 +17,31 @@ from django.contrib.auth.models import Group
 def lista_usuarios(request):
     # En caso de que exista una petición de tipo POST significa que se ha intentado dar de alta un nuevo usuario.
     if request.method == 'POST':
-        username = request.POST.get('username')
-        first_name = request.POST.get('first_name')
-        last_name = request.POST.get('last_name')
-        email = request.POST.get('email')
-        is_superuser = request.POST.get('is_superuser')
-        is_staff = request.POST.get('is_staff') or False
-        if is_staff == 1:
-            is_staff = True
-        else:
-            is_staff=False
+        form = FormUser(request.POST)
+        if form.is_valid():
+            usuario = form.save()
+            if usuario.is_staff == 1:
+                usuario.is_staff = True
+            else:
+                usuario.is_staff=False
 
-        if is_superuser == 'on':
-            nombre_grupo = 'superadmin'
-            is_superuser = True
+            if usuario.is_superuser == 'on':
+                usuario.nombre_grupo = 'superadmin'
+                usuario.is_superuser = True
+            else:
+                usuario.nombre_grupo = 'admin'
+                usuario.is_superuser=False
+            usuario.set_password(usuario.password)
+            usuario.save()
+            # user = User.objects.create(username=username, password=password, email=email, first_name=first_name,
+            #                                     last_name=last_name, is_superuser=is_superuser,
+            #                                     is_staff=is_staff)
+            #Añadir usuario al grupo correspondiente
+            grupo = Group.objects.get(name=usuario.nombre_grupo)
+            grupo.user_set.add(usuario)
+            grupo.save()
         else:
-            nombre_grupo = 'admin'
-            is_superuser=False
-        password = request.POST.get('password')
-        user = User.objects.create(username=username, email=email, first_name=first_name,
-                                            last_name=last_name, is_superuser=is_superuser,
-                                            is_staff=is_staff)
-        #Añadir usuario al grupo correspondiente
-        grupo = Group.objects.get(name=nombre_grupo)
-        grupo.user_set.add(user)
-        grupo.save()
-        if user:
-            user.set_password(password)
-            user.save()
-        else:
-            User.objects.filter(user).delete()
+            form = FormUser()
 
 
         # forma_post = FormUser(request.POST)
@@ -72,15 +67,12 @@ def lista_usuarios(request):
 """
 @group_required('superadmin')
 def borrar_usuario(request, id_usuario):
-    if request.method == 'GET':
-        usuario = get_object_or_404(User, pk=id_usuario)
-        #soft delete django
-        usuario_nombre = usuario.username
-        usuario.username = usuario_nombre + "deleted" + str(timezone.now)
-        usuario.is_active = 0
-        usuario.is_superuser=False
-        usuario.save()
-        messages.success(request, '¡Se ha eliminado al usuario!')
-        return redirect('usuarios:lista_usuarios')
-    else:
-        return redirect('usuarios:lista_usuarios')
+    usuario = get_object_or_404(User, pk=id_usuario)
+    #soft delete django
+    usuario_nombre = usuario.username
+    usuario.username = usuario_nombre + "deleted" + str(timezone.now)
+    usuario.is_active = False
+    usuario.is_superuser=False
+    usuario.save()
+    messages.success(request, '¡Se ha eliminado al usuario!')
+    return redirect('usuarios:lista_usuarios')
