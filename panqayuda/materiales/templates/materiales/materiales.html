@@ -41,7 +41,7 @@
             </a></td>
             <!--Se manda llamar la función de eliminar_material mandando el id de material-->
             <td>
-              <a href="{% url 'materiales:eliminar_material' material.id %}" class="modal-trigger" onclick="return confirm('Vas a eliminar un Material del catálogo. ¿Continuar?')">
+              <a onclick="deleteRegister(this, event)" href="{% url 'materiales:eliminar_material' material.id %}" class="modal-trigger" >
                 <i class="material-icons">delete</i>
               </a>
             </td>
@@ -67,5 +67,28 @@
             $('.modal').modal();
             $('select').formSelect();
         });
+    </script>
+    <script type="text/javascript">
+        //eliminar compra
+        function deleteRegister(element, event) {
+          event.preventDefault();
+          $.confirm({
+            title: '¿Deseas Continuar?',
+            content: 'La Materia Prima se eliminará permanentemente.',
+            type: 'red',
+            closeIcon: true,
+            columnClass: 'col l6 offset-l3 s12',
+            typeAnimated: true,
+            buttons: {
+              continuar: {
+                text: 'Eliminar',
+                btnClass: 'btn-red',
+                action: function () {
+                  window.location.href = $(element).attr("href");
+                }
+              }
+           }
+         });
+        }
     </script>
 {% endblock js %}

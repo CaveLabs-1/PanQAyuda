@@ -1,5 +1,5 @@
 from django.test import TestCase
-from materiales.models import Material
+from materiales.models import Material, Unidad
 from recetas.models import Receta, RelacionRecetaMaterial, RecetaInventario
 import datetime
 from django.utils import timezone
@@ -10,22 +10,35 @@ from compras.models import Compra
 from proveedores.models import Proveedor
 from materiales.models import Unidad
 from ordenes.models import Orden
+from django.utils import timezone
 
 #US27-Agregar Receta
 class TestAgregarReceta(TestCase):
 
     #Revisar que la sesión exista
     def setUp(self):
+        #Crear usuario de prueba
         Group.objects.create(name="admin")
         user = User.objects.create_user(username='temporary', email='temporary@gmail.com', password='temporary', is_superuser='True')
         user.save()
+
+        #Crear unidades de prueba
+        Unidad.objects.create(nombre="kg")
+        Unidad.objects.create(nombre="pz")
+
         self.client.login(username='temporary', password='temporary')
 
     def crear_receta_prueba(self):
-        return Receta.objects.create(nombre="Receta de prueba", cantidad=20, duration=datetime.timedelta(days=1))
+        return Receta.objects.create(nombre="Producto semiterminado de prueba", cantidad=20, duration=timezone.timedelta(days=1))
 
     def crear_material_prueba(self):
-        return Material.objects.create(nombre="Huevo", unidad="kg", codigo="T1")
+        unidad_entrada = Unidad.objects.first()
+        unidad_maestra = Unidad.objects.last()
+        equivale_entrada = 1
+        equivale_maestra = 16
+
+        return Material.objects.create(nombre="Huevo", unidad_entrada=unidad_entrada, equivale_entrada=equivale_entrada, unidad_maestra=unidad_maestra,
+                                       equivale_maestra=equivale_maestra,codigo="T1")
 
     def crear_relacion_receta_material(self,receta,material):
         RelacionRecetaMaterial.objects.create(receta=receta, material=material, cantidad=10)
@@ -43,7 +56,7 @@ class TestAgregarReceta(TestCase):
         self.assertEqual(Receta.objects.count(), 0)
 
         #Simular POST con información correcta
-        data = {'nombre': "Receta de prueba", 'cantidad': 20, 'duration':'1 day'}
+        data = {'nombre': "Producto semiterminado de prueba", 'cantidad': 20, 'duracion_en_dias':'1'}
         self.client.post(reverse('recetas:agregar_receta'), data)
 
         #Verificar que se creó el objeto
@@ -52,10 +65,10 @@ class TestAgregarReceta(TestCase):
         #Verificar la lista de recetas
         resp = self.client.get(reverse('recetas:lista_de_recetas'))
         self.assertEqual(len(resp.context['recetas']), 1)
-        self.assertEqual(resp.context['recetas'][0].nombre, "Receta de prueba")
+        self.assertEqual(resp.context['recetas'][0].nombre, "Producto semiterminado de prueba")
 
         #Crear receta con caracteres especiales
-        data = {'nombre': "Canción de náàvïda", 'cantidad': 20, 'duration': '1 day'}
+        data = {'nombre': "Canción de náàvïda", 'cantidad': 20, 'duracion_en_dias': '1'}
         self.client.post(reverse('recetas:agregar_receta'), data)
         self.assertEqual(Receta.objects.count(), 2)
 
@@ -75,21 +88,21 @@ class TestAgregarReceta(TestCase):
     #AC 27.3 La cantidad de producto que genera la receta sólo puede ser un número positivo entero.
     def test_ac_27_3(self):
         #POST con cantidad negativa
-        data = {'nombre': 'Receta de prueba', 'cantidad': '-5', 'duration': '1 days'}
+        data = {'nombre': 'Producto semiterminado de prueba', 'cantidad': '-5', 'duracion_en_dias': '1'}
         resp = self.client.post(reverse('recetas:agregar_receta'), data)
 
         #Verificar que no se haya creado
         self.assertEqual(Receta.objects.count(),0)
 
         #POST con cantidad decimal
-        data = {'nombre': 'Receta de prueba', 'cantidad': '0.05', 'duration': '1 days'}
+        data = {'nombre': 'Producto semiterminado de prueba', 'cantidad': '0.05', 'duracion_en_dias': '1'}
         resp = self.client.post(reverse('recetas:agregar_receta'), data)
 
         # Verificar que no se haya creado
         self.assertEqual(Receta.objects.count(), 0)
 
         #POST con cantidad entera positiva
-        data = {'nombre': 'Receta de prueba', 'cantidad': '1', 'duration': '1 days'}
+        data = {'nombre': 'Producto semiterminado de prueba', 'cantidad': '1', 'duracion_en_dias': '1'}
         resp = self.client.post(reverse('recetas:agregar_receta'), data)
         self.assertEqual(Receta.objects.count(), 1)
 
@@ -110,21 +123,21 @@ class TestAgregarReceta(TestCase):
         self.assertEqual(r.material.count(), 1)
 
         #Verificar mensaje de error
-        self.assertFormError(resp, 'form','material', "El material seleccionado ya está en la receta.")
+        self.assertFormError(resp, 'form','material', "La materia prima seleccionada ya está en la receta del producto semiterminado.")
 
     #AC 27.6 No se puede agregar una receta con un nombre existente
     def test_ac_27_6(self):
-        #Crear receta de prueba con nombre 'Receta de prueba'
+        #Crear PST de prueba con nombre 'Producto semiterminado de prueba'
         r = self.crear_receta_prueba()
         # POST con nombre repetido
-        data = {'nombre': 'receta de prueba', 'cantidad': '10', 'duration': '1 days'}
+        data = {'nombre': 'Producto semiterminado de prueba', 'cantidad': '10', 'duracion_en_dias': '1 days'}
         resp = self.client.post(reverse('recetas:agregar_receta'), data)
 
         #Verificar que no se haya creado la receta
         self.assertEqual(Receta.objects.count(),1)
 
         #Verificar mensaje de error
-        self.assertFormError(resp,'form','nombre',"Esta receta ya existe")
+        self.assertFormError(resp,'form','nombre',"Este producto semiterminado ya existe")
 
     #AC 27.8 Cuando se agrega un material con su respectiva cantidad a la receta, se agrega en la lista de materiales
     # de la receta
@@ -192,7 +205,7 @@ class TestAgregarReceta(TestCase):
     #AC 27.12 El nombre de la receta no puede estar vacío
     def ac_27_12(self):
         # Simular POST con información correcta
-        data = {'nombre': "", 'cantidad': 20, 'duration': '1 day'}
+        data = {'nombre': "", 'cantidad': 20, 'duracion_en_dias': '1'}
         self.client.post(reverse('recetas:agregar_receta'), data)
 
         self.assertEqual(Receta.objects.count(),0)
@@ -218,13 +231,25 @@ class TestEditarReceta(TestCase):
         Group.objects.create(name="admin")
         user = User.objects.create_user(username='temporary', email='temporary@gmail.com', password='temporary', is_superuser='True')
         user.save()
+
+        # Crear unidades de prueba
+        Unidad.objects.create(nombre="kg")
+        Unidad.objects.create(nombre="pz")
+
         self.client.login(username='temporary', password='temporary')
 
     def crear_receta_prueba(self):
-        return Receta.objects.create(nombre="Receta de prueba", cantidad=20, duration=datetime.timedelta(days=1))
+        return Receta.objects.create(nombre="Producto semiterminado de prueba", cantidad=20, duration=timezone.timedelta(days=1))
 
     def crear_material_prueba(self):
-        return Material.objects.create(nombre="Huevo", unidad="kg", codigo="T1")
+        unidad_entrada = Unidad.objects.first()
+        unidad_maestra = Unidad.objects.last()
+        equivale_entrada = 1
+        equivale_maestra = 16
+
+        return Material.objects.create(nombre="Huevo", unidad_entrada=unidad_entrada, equivale_entrada=equivale_entrada,
+                                       unidad_maestra=unidad_maestra,
+                                       equivale_maestra=equivale_maestra, codigo="T1")
 
     def crear_relacion_receta_material(self,receta,material):
         RelacionRecetaMaterial.objects.create(receta=receta, material=material, cantidad=10)
@@ -237,186 +262,72 @@ class TestEditarReceta(TestCase):
         resp = self.client.get(reverse('recetas:editar_receta', kwargs={'id_receta': r.id}))
         self.assertEqual(resp.status_code,200)
 
-    #Verificar que la receta editada se puede ver en la lista
-    def test_ver_receta_editada_en_lista(self):
-        # Crear objetos de prueba
-        r = self.crear_receta_prueba()
-
-        #Base de datos vacía
-        self.assertEqual(Receta.objects.count(), 0)
-
-        #Simular POST con información correcta
-        data = {'nombre': "Receta de prueba", 'cantidad': 20, 'duration':'1 day'}
-        self.client.post(reverse('recetas:editar_receta', kwargs={'id_receta': r.id}), data)
-
-        #Verificar que se creó el objeto
-        self.assertEqual(Receta.objects.count(), 1)
-
-        #Verificar la lista de recetas
-        resp = self.client.get(reverse('recetas:lista_de_recetas'))
-        self.assertEqual(len(resp.context['recetas']), 1)
-        self.assertEqual(resp.context['recetas'][0].nombre, "Receta de prueba")
-
-        #Editar receta con caracteres especiales
-        data = {'nombre': "Canción de náàvïda", 'cantidad': 20, 'duration': '1 day'}
-        self.client.post(reverse('recetas:editar_receta'), data)
-        self.assertEqual(Receta.objects.count(), 2)
-
-    #Los materiales que ya están en la receta no aparecen disponibles para agregar
-    def test_validar_materiales(self):
-        #Crear objetos de prueba
-        r = self.crear_receta_prueba()
-        m = self.crear_material_prueba()
-        #Asignar material a receta
-        self.crear_relacion_receta_material(r,m)
-
-        #Verificar que el material no se le muestra al usuario para agregar
-        resp = self.client.get(reverse('recetas:agregar_materiales', kwargs={'id_receta':r.id}))
-        self.assertEqual(len(resp.context['materiales_disponibles']),0)
-
-    #La cantidad de producto que genera la receta sólo puede ser un número positivo entero.
-    def test_cantidad_producto_positiva(self):
-        #Crear objetos de prueba
-        r = self.crear_receta_prueba()
-
-        #POST con cantidad negativa
-        data = {'nombre': 'Receta de prueba', 'cantidad': '-5', 'duration': '1 days'}
-        resp = self.client.post(reverse('recetas:editar_receta', kwargs={'id_receta': r.id}), data)
-
-        #Verificar que no se haya creado
-        self.assertEqual(Receta.objects.count(),0)
-
-        #POST con cantidad decimal
-        data = {'nombre': 'Receta de prueba', 'cantidad': '0.05', 'duration': '1 days'}
-        resp = self.client.post(reverse('recetas:editar_receta'), data)
-
-        # Verificar que no se haya creado
-        self.assertEqual(Receta.objects.count(), 0)
-
-        #POST con cantidad entera positiva
-        data = {'nombre': 'Receta de prueba', 'cantidad': '1', 'duration': '1 days'}
-        resp = self.client.post(reverse('recetas:editar_receta'), data)
-        self.assertEqual(Receta.objects.count(), 1)
-
-    #No se puede agregar un material que ya esté en la receta
-    def test_material_existente(self):
-        #Asignar material a receta
-        r = self.crear_receta_prueba()
-        m = self.crear_material_prueba()
-        self.crear_relacion_receta_material(r,m)
-        #Verificar que se hizo la asignación
-        self.assertEqual(r.material.count(), 1)
-
-        #POST con cantidad correcta
-        data = {'material': m.nombre, 'cantidad': '10', 'receta':r.id}
-        resp = self.client.post(reverse('recetas:editar_receta', kwargs={'id_receta':r.id}), data)
-
-        #Verificar que no se haya hecho la asignación
-        self.assertEqual(r.material.count(), 1)
-
-        #Verificar mensaje de error
-        self.assertFormError(resp, 'form','material', "El material seleccionado ya está en la receta.")
-
-    #No se puede agregar una receta con un nombre existente
+    # 28.1 No se puede editar una receta con un nombre existente
     def test_receta_nombre_existente(self):
-        #Crear receta de prueba con nombre 'Receta de prueba'
+        # Crear receta de prueba con nombre 'Receta de prueba'
         r = self.crear_receta_prueba()
-        # POST con nombre repetido
-        data = {'nombre': 'receta de prueba', 'cantidad': '10', 'duration': '1 days'}
-        resp = self.client.post(reverse('recetas:editar_receta', kwargs={'id_receta': r.id}), data)
 
-        #Verificar que no se haya creado la receta
-        self.assertEqual(Receta.objects.count(),1)
+        #Agregar nuevo producto semiterminado
+        data = {'nombre': 'Producto semiterminado 2', 'cantidad': '10', 'duracion_en_dias': '1'}
+        self.client.post(reverse('recetas:agregar_receta'), data)
 
-        #Verificar mensaje de error
-        self.assertFormError(resp,'form','nombre',"Esta receta ya existe")
+        r2 = Receta.objects.get(nombre="Producto semiterminado 2")
+        #Tratar de editar producto semiterminado recién creado y asignarle el nombre del primero
+        data = {'nombre': 'Producto semiterminado de prueba', 'cantidad': '10', 'duracion_en_dias': '1'}
+        resp = self.client.post(reverse('recetas:editar_receta', kwargs={'id_receta': r2.id}), data)
+        # Verificar que no se haya editado la receta
+        self.assertEqual(r2.nombre, "Producto semiterminado 2")
 
-    #Cuando se agrega un material con su respectiva cantidad a la receta, se agrega en la lista de materiales
-    # de la receta
-    def test_agregar_material(self):
-        # Asignar material a receta
-        r = self.crear_receta_prueba()
-        m = self.crear_material_prueba()
-
-        # POST con cantidad correcta
-        data = {'material': m.nombre, 'cantidad': '10', 'receta':r.id}
-        resp = self.client.post(reverse('recetas:editar_receta', kwargs={'id_receta': r.id}), data)
-
-        resp = self.client.get(reverse('recetas:editar_receta', kwargs={'id_receta':r.id}))
-        # Verificar que está en la lista de materiales
-        #self.assertEqual(len(resp.context['materiales_actuales']), 1)
-        #self.assertEqual(resp.context['materiales_actuales'][0].material.nombre, m.nombre)
-
-    #Cuando se termina agregar la receta, el usuario visualiza un resumen de esta.
-    def test_resumen_receta(self):
-        # Crear objetos de prueba
-        r = self.crear_receta_prueba()
-        resp = self.client.get(reverse('recetas:agregar_materiales', kwargs={'id_receta':r.id}))
-        #Verificar que el link que lleve a la vista de detalle se encuentre en la respuesta
-        self.assertContains(resp, reverse('recetas:detallar_receta', kwargs={'id_receta':r.id}))
-        #Verificar que la vista se muestra correctamente
-        resp = self.client.get(reverse('recetas:detallar_receta', kwargs={'id_receta':r.id}))
-        self.assertEquals(resp.status_code,200)
-
-    #Un material que se agrega a la receta no puede dejarse sin cantidad o cantidad 0.
-    def test_cantidad_material(self):
-        # Crear objetos de prueba
-        r = self.crear_receta_prueba()
-        m = self.crear_material_prueba()
-        # POST con cantidad negativa
-        data = {'material': m.nombre, 'cantidad': '-1', 'receta':r.id}
-        resp = self.client.post(reverse('recetas:agregar_materiales', kwargs={'id_receta': r.id}), data)
-
-        # Verificar que no se hizo la relación
-        self.assertEqual(r.material.count(), 0)
-
-        # POST con cantidad cero
-        data = {'material': m.nombre, 'cantidad': '0', 'receta':r.id}
-        resp = self.client.post(reverse('recetas:agregar_materiales', kwargs={'id_receta': r.id}), data)
-
-        # Verificar que no se hizo la relación
-        self.assertEqual(r.material.count(), 0)
-
-        # POST sin cantidad
-        data = {'material': 'Huevo', 'cantidad': '', 'receta':r.id}
-        resp = self.client.post(reverse('recetas:agregar_materiales', kwargs={'id_receta': r.id}), data)
-        # Verificar que no se hizo la relación
-        self.assertEqual(r.material.count(), 0)
         # Verificar mensaje de error
-        self.assertFormError(resp,'form','cantidad','Debes seleccionar una cantidad.')
-        # POST con cantidad correcta
-        data = {'material': m.nombre, 'cantidad': '10', 'receta':r.id}
-        resp = self.client.post(reverse('recetas:agregar_materiales', kwargs={'id_receta': r.id}), data)
+        self.assertFormError(resp, 'form', 'nombre', "Este producto semiterminado ya existe")
 
-        # Verificar que sí se hizo la relación
-        self.assertEqual(r.material.count(), 1)
-        self.assertEqual(r.material.first().status, 1)
-
-    #El nombre de la receta no puede estar vacío
+    # 28.2 El nombre de la receta no puede estar vacío
     def test_nombre_vacio(self):
         # Crear objetos de prueba
         r = self.crear_receta_prueba()
 
         # Simular POST con información correcta
-        data = {'nombre': "", 'cantidad': 20, 'duration': '1 day'}
+        data = {'nombre': "", 'cantidad': 20, 'duracion_en_dias': '1'}
         self.client.post(reverse('recetas:editar_receta', kwargs={'id_receta': r.id}), data)
 
-        self.assertEqual(Receta.objects.count(),0)
+        #Verificar que no se editó el producto semiterminado
+        self.assertEqual(r.nombre, "Producto semiterminado de prueba")
 
-    #No se pueden agregan materiales a una receta inexistente
-    def test_material_receta_inexistente(self):
-        #Verificar que una receta que se haya dado de baja arroje error 404
+
+    #28.3 La cantidad de producto que genera la receta sólo puede ser un número positivo entero.
+    def test_cantidad_producto_positiva(self):
+        #Crear objetos de prueba
         r = self.crear_receta_prueba()
-        r.status = 0
 
-        #Verificar que una receta inexistente regrese 404
-        resp = self.client.get(reverse('recetas:agregar_materiales', kwargs={'id_receta': r.id}))
-        self.assertEqual(resp.status_code, 404)
+        #POST con cantidad negativa
+        data = {'nombre': 'Producto semiterminado de prueba', 'cantidad': '-5', 'duracion_en_dias': '1'}
+        resp = self.client.post(reverse('recetas:editar_receta', kwargs={'id_receta': r.id}), data)
 
+        #Verificar que no se haya editado
+        self.assertTrue(r.cantidad is not -5)
 
+        #POST con cantidad decimal
+        data = {'nombre': 'Producto semiterminado de prueba', 'cantidad': '0.05', 'duracion_en_dias': '1'}
+        resp = self.client.post(reverse('recetas:editar_receta', kwargs={'id_receta': r.id}), data)
 
-        resp = self.client.get(reverse('recetas:agregar_materiales', kwargs={'id_materiales':1}))
-        self.assertEqual(resp.status_code, 404)
+        # Verificar que no se haya creado
+        self.assertTrue(r.cantidad is not 0.05)
+
+        #POST con cantidad entera positiva
+        data = {'nombre': 'Producto semiterminado de prueba', 'cantidad': '1', 'duracion_en_dias': '1'}
+        resp = self.client.post(reverse('recetas:editar_receta', kwargs={'id_receta': r.id}), data)
+        self.assertTrue(r.cantidad,1)
+
+        #28.4 Cuando se edita el producto semiterminado, los cambios son visibles
+        def test_cantidad_producto_positiva(self):
+            # Crear objetos de prueba
+            r = self.crear_receta_prueba()
+
+            # POST con cantidad entera positiva
+            data = {'nombre': 'Producto semiterminado', 'cantidad': '5', 'duracion_en_dias': '10'}
+            self.client.post(reverse('recetas:editar_receta', kwargs={'id_receta': r.id}), data)
+            self.assertEqual(r.cantidad, 5)
+            self.assertEqual(r.nombre, "Producto semiterminado")
 
 # ------------------------------ US 29 Borrar Receta ------------------------------ #
 
@@ -427,11 +338,17 @@ class TestBorrarReceta(TestCase):
         Group.objects.create(name="admin")
         user = User.objects.create_user(username='temporary', email='temporary@gmail.com', password='temporary', is_superuser='True')
         user.save()
+
+        # Crear unidades de prueba
+        Unidad.objects.create(nombre="kg")
+        Unidad.objects.create(nombre="pz")
+
         self.client.login(username='temporary', password='temporary')
 
     def crear_receta(self):
-        return Receta.objects.create(nombre="Prueba de Bolillo", cantidad=12, duration=datetime.timedelta(days=1))
+        return Receta.objects.create(nombre="Prueba de Bolillo", cantidad=12, duration=timezone.timedelta(days=1))
 
+    #Al borrar sigue existiendo en la base de datos
     def test_ac_29_1(self):
         self.assertEqual(Receta.objects.count(), 0)
         r = self.crear_receta()
@@ -439,7 +356,7 @@ class TestBorrarReceta(TestCase):
         self.client.get(reverse('recetas:borrar_receta', kwargs={'id_receta':r.id}))
         self.assertEqual(Receta.objects.count(), 1)
 
-
+    #Ya no aparece en la lista de productos semiterminados despues de borrar
     def test_ac_29_2(self):
         r = self.crear_receta()
         resp = self.client.get(reverse('recetas:lista_de_recetas'))
@@ -448,11 +365,6 @@ class TestBorrarReceta(TestCase):
         resp = self.client.get(reverse('recetas:lista_de_recetas'))
         self.assertEqual(len(resp.context['recetas']),0)
 
-
-    def test_ac_29_3(self):
-        r = self.crear_receta()
-        self.client.get(reverse('recetas:borrar_receta', kwargs={'id_receta':r.id}))
-        self.assertEqual(Receta.objects.filter(deleted_at__isnull=True).count(), 0)
 
 #Es parte de la US19
 class TestListaRecetasInventario(TestCase):
@@ -511,8 +423,11 @@ class TestVerCostoRecetaInventario(TestCase):
                                         is_superuser='True')
         user.save()
         self.client.login(username='temporary', password='temporary')
-        #Agregar Unidad
+        #Agregar Unidades
         data = {'nombre': "kilos"}
+        self.client.post(reverse('materiales:lista_unidades'), data)
+
+        data = {'nombre': "pieza"}
         self.client.post(reverse('materiales:lista_unidades'), data)
         # Agregar Proveedor
         data = {
@@ -525,13 +440,15 @@ class TestVerCostoRecetaInventario(TestCase):
         }
         self.client.post(reverse('proveedores:agregar_proveedor'), data)
         # Agregar Catalogo Materia Prima
+        unidad_entrada = Unidad.objects.first()
+        unidad_maestra = Unidad.objects.last()
         data={
             'nombre':'Material',
             'codigo':'1223123',
             'equivale_entrada':'1',
-            'unidad_entrada':'1',
+            'unidad_entrada':unidad_entrada.id,
             'equivale_maestra':'1',
-            'unidad_maestra':1
+            'unidad_maestra':unidad_maestra.id
         }
         self.client.post(reverse('materiales:materiales'), data)
         Proveedor.objects.create(
@@ -551,11 +468,11 @@ class TestVerCostoRecetaInventario(TestCase):
 
         # Crear orden de compra
         data = {
-            'material': Material.objects.all().first().id,
+            'material': Material.objects.first().id,
             'fecha_cad': '2019-04-04',
             'cantidad': '2',
             'costo': '30',
-            'compra': Compra.objects.all().first().id
+            'compra': Compra.objects.first().id
         }
         self.client.post(reverse('compras:agregar_materia_prima_a_compra'), data)
 
@@ -570,21 +487,21 @@ class TestVerCostoRecetaInventario(TestCase):
         self.client.post(reverse('recetas:agregar_receta'), data)
         #Crear materiales de la receta
         data = {
-            'material': str(Material.objects.all().first().nombre),
+            'material': str(Material.objects.first().nombre),
             'cantidad': '1',
         }
 
-        self.client.post(reverse('recetas:agregar_materiales', kwargs={'id_receta':1}), data)
+        self.client.post(reverse('recetas:agregar_materiales', kwargs={'id_receta':Receta.objects.first().id}), data)
         #Crear Orden De Trabajo
         data = {
-            'receta': Receta.objects.all().first().id,
+            'receta': Receta.objects.first().id,
             'fecha_fin': '2018-10-10',
             'multiplicador': '1',
         }
         self.client.post(reverse('ordenes:ordenes'), data)
         #Terminar Orden De Trabajp
         data = {
-            'id': Orden.objects.all().first().id,
+            'id': Orden.objects.first().id,
             'estatus': '2',
         }
         self.client.post(reverse('ordenes:terminar_orden'), data)
@@ -592,11 +509,4 @@ class TestVerCostoRecetaInventario(TestCase):
     #Test AC 34.1 Producto Semi-Terminado
     def testVerCostoReceta(self):
         #Checar el precio del producto semi-terimando con el costo de la orden que fue originada
-
-        resp = self.client.post(reverse('recetas:detalle_recetas_inventario'), {'id_receta':1})
-        for receta in resp.context['detalle_recetas_en_inventario']:
-            self.assertEqual(Orden.objects.get(receta=receta.id).costo, receta.costo)
-            self.assertEqual(receta.costo, 15)
-
-
-
+        self.assertEqual(RecetaInventario.objects.first().costo, 15)
