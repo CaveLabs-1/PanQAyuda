@@ -28,9 +28,13 @@ class FormUser(forms.ModelForm):
                     if email.id==self.instance.id:#checar que el que se encontró con el mismo correo sea el que se está modificando
                         return email
             raise ValidationError('Ya hay un usuario con este correo', code='invalid')
+
+    password = forms.CharField(required = True)
+
     class Meta:
         model = User
         fields = ('password', 'username', 'first_name', 'last_name', 'email', 'is_superuser', 'is_staff')
+
         error_messages = {
             'username':{
                 'required':"Este campo no puede ser vacio",

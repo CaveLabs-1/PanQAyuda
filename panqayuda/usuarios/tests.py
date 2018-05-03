@@ -11,6 +11,7 @@ class TestCrearUsuario(TestCase):
     def setUp(self):
         #El setup sirve para crear un usuario en la base de datos, pero no inicia sesion
         Group.objects.create(name="admin")
+        Group.objects.create(name="superadmin")
         user = User.objects.create_user(username='temporary', email='temporary@gmail.com', password='temporary', is_superuser='True')
         #Guarda el usuario que se creó
         user.save()
@@ -68,13 +69,12 @@ class TestCrearUsuario(TestCase):
         #Se muestra en la lista correctamente
         self.assertEqual(len(resp2.context['usuarios']), 2)
         #cerrar sesion
-        resp3 = self.client.get("/logout")
-        self.assertEqual(resp3.status_code, 301)
+        resp3 = self.client.get("/logout/")
+        self.assertRedirects(resp3, "/login/")
         #Se crea la informacion del usuario que se va a mandar
         data = {'username':"Admond", 'password':"test"}
-        loginresp = self.client.post("/login", data)
-        #Inicio de sesion exitoso
-        self.assertEqual(loginresp.status_code, 301)
+        loginresp = self.client.login(username="Admond", password="test")
+        self.assertTrue(loginresp)
 
     #No puede haber usuarios sin contraseña
     def test_ac48_4_no_guarda_usuario_sin_pass(self):
@@ -86,10 +86,11 @@ class TestCrearUsuario(TestCase):
         self.assertEqual(resp.status_code, 200)
         #Checo que se imprima el usuario que ya existe desde el setup en la vista
         self.assertEqual(len(resp.context['usuarios']), 1)
+        self.assertEqual(User.objects.count(), 1)
         #Se manda informacion erronea en la que no tiene contraseña el usuario
         data = { 'first_name':"Test", 'last_name':"Testerino", 'username':"Admond", 'email':"test@test.com", 'is_superuser':'True', 'is_staff':'True' }
-        self.client.post(reverse('usuarios:lista_usuarios'), data)
-        #Se checa que se haya no se haya creado el usuario sin contraseña
+        resp2 = self.client.post(reverse('usuarios:lista_usuarios'), data)
+        #Se checa que se no se haya creado el usuario sin contraseña
         self.assertEqual(User.objects.count(), 1)
 
     #No puede haber usuarios sin nombre de usuaro
@@ -103,7 +104,7 @@ class TestCrearUsuario(TestCase):
         #Checo que se imprima el usuario que ya existe desde el setup en la vista
         self.assertEqual(len(resp.context['usuarios']), 1)
         #Se manda informacion erronea en la que no tiene nombre el usuario
-        data = { 'password':"test", 'first_name':"Test", 'last_name':"Testerino", 'email':"test@test.com", 'is_superuser':'True', 'is_staff':'True' }
+        data = { 'username':"", 'password':"test", 'first_name':"Test", 'last_name':"Testerino", 'email':"test@test.com", 'is_superuser':'True', 'is_staff':'True' }
         self.client.post(reverse('usuarios:lista_usuarios'), data)
         #Se checa que se haya no se haya creado el usuario sin contraseña
         self.assertEqual(User.objects.count(), 1)
@@ -114,6 +115,7 @@ class TestEliminarUsuario(TestCase):
     def setUp(self):
         #El setup sirve para crear un usuario en la base de datos, pero no inicia sesion
         Group.objects.create(name="admin")
+        Group.objects.create(name="superadmin")
         user = User.objects.create_user(username='temporary', email='temporary@gmail.com', password='temporary', is_superuser='True')
         #Guarda el usuario que se creó
         user.save()
@@ -129,7 +131,7 @@ class TestEliminarUsuario(TestCase):
         #Checo que se imprima el usuario que ya existe desde el setup en la vista
         self.assertEqual(len(resp.context['usuarios']), 1)
         #Se crea un usuario pero ahora con la sesion iniciada
-        data = { 'password':"test", 'first_name':"Test", 'last_name':"Testerino", 'username':"Admond", 'email':"test@test.com", 'is_superuser':'True', 'is_staff':'True' }
+        data = { 'password':"test1", 'first_name':"user 1", 'last_name':"user 1", 'username':"user1", 'email':"test1@test.com", 'is_superuser':'True', 'is_staff':'True' }
         self.client.post(reverse('usuarios:lista_usuarios'), data)
         #Se checa que se haya creado el usuario
         self.assertEqual(User.objects.count(), 2)
@@ -140,23 +142,19 @@ class TestEliminarUsuario(TestCase):
         #Se muestra en la lista correctamente
         self.assertEqual(len(resp2.context['usuarios']), 2)
         #cerrar sesion
-        resp3 = self.client.get("/logout")
-        self.assertEqual(resp3.status_code, 301)
+        resp3 = self.client.get("/logout/")
+        self.assertRedirects(resp3, "/login/")
         #Se crea la informacion del usuario que se va a mandar
-        data = {'username':"Admond", 'password':"test"}
-        loginresp = self.client.post("/login", data)
+        loginresp = self.client.login(username="user1", password="test1")
         #Inicio de sesion exitoso
-        self.assertEqual(loginresp.status_code, 301)
-        deleted_user = User.objects.get(username="temporary")
+        self.assertTrue(loginresp)
+        self.client.logout()
+        self.client.login(username='temporary', password="temporary")
+        deleted_user = User.objects.get(username="user1")
         #Usando el deleted_user se borra ese usuario con su id
-        self.client.post(reverse('usuarios:borrar_usuario', kwargs={'id_usuario':deleted_user.id}))
-        obj = User.objects.filter(is_active=1)
-        #See checa que el estatus del usuario que queda sea de activo
-        self.assertEqual(obj[0].username, 'Admond')
-        self.client.get("/logout")
-        data = {'username':"temporary", 'password':"temporary"}
-        loginresp = self.client.post("/login", data)
-        self.assertEqual(loginresp.status_code, 200)
+        self.client.get(reverse('usuarios:borrar_usuario', kwargs={'id_usuario':deleted_user.id}))
+        loginresp2 = self.client.login(username="user1", password="test1")
+        self.assertFalse(loginresp2)
 
     def test_ac50_2_Eliminados_no_salen_en_lista(self):
         #Inicio de sesion
@@ -183,8 +181,6 @@ class TestEliminarUsuario(TestCase):
         self.client.post(reverse('usuarios:borrar_usuario', kwargs={'id_usuario':deleted_user.id}))
         #Aqui checo la lista al acceder al nuevo url
         listresp = self.client.get(reverse('usuarios:lista_usuarios'))
-        self.assertEqual(listresp.status_code, 200)
-
         self.assertEqual(len(listresp.context['usuarios']), 1)
 
         self.assertNotEqual(listresp.context['usuarios'], deleted_user.username)
@@ -197,6 +193,7 @@ class TestTerminarSesion(TestCase):
     def setUp(self):
         #El setup sirve para crear un usuario en la base de datos, pero no inicia sesion
         Group.objects.create(name="admin")
+        Group.objects.create(name="superadmin")
         user = User.objects.create_user(username='temporary', email='temporary@gmail.com', password='temporary', is_superuser='True')
         #Guarda el usuario que se creó
         user.save()
