@@ -33,7 +33,8 @@ class TestListaMaterialCatalogo(TestCase):
 
     def test_ac2_existe_la_vista_con_algo(self):
         #Crea un objeto de material
-        Material.objects.create(nombre="Testerino", codigo=123456789)
+        Unidad.objects.create(id=1, nombre="kg")
+        Material.objects.create(nombre="Testerino", codigo="1313", unidad_entrada_id=1, unidad_maestra_id=1)
         #Guarda en una variable el resultado de acceder al url
         resp = self.client.get(reverse('materiales:materiales'))
         #Como se creo una materia, ahora si debe de haber una en el contexto
@@ -42,16 +43,17 @@ class TestListaMaterialCatalogo(TestCase):
         self.assertEqual(resp.status_code, 200)
 
     def test_ac3_la_tabla_no_imprime_objetos_con_estatus_no_disponible(self):
-        #Se checa que no ezista ningun material
+        #Se checa que no exista ningun material
         self.assertEqual(Material.objects.count(), 0)
         #Se crea un material
-        Material.objects.create(nombre="Test ac3", codigo=123456789, status=0)
+        Unidad.objects.create(id=1, nombre="kg")
+        Material.objects.create(nombre="Test ac3", codigo="123456789", status=0,unidad_entrada_id=1, unidad_maestra_id=1)
         #Se checa que se haya creado exitosamente
         self.assertEqual(Material.objects.count(), 1)
         #Se guarda en una variable el resultado de acceder al url
         resp = self.client.get(reverse('materiales:materiales'))
         #Se checa que no exista en el contexto el objeto con estatus 0
-        self.assertEqual(len(resp.context['materiales']),0)
+        self.assertEqual(len(resp.context['materiales']), 0)
         #La respuesta al acceder al url debe ser exitosa
         self.assertEqual(resp.status_code, 200)
 
@@ -66,7 +68,9 @@ class TestListaMaterialCatalogo(TestCase):
         #Se checa que la respuesta de estatus sea exitosa
         self.assertEqual(resp.status_code, 200)
         #Se crea una materia
-        Material.objects.create(nombre="Test ac4", codigo=123456789)
+        Unidad.objects.create(id=1, nombre="kg")
+        Material.objects.create(nombre="Test ac4", codigo="123456789", status=1, unidad_entrada_id=1,
+                                unidad_maestra_id=1)
         #Se guarda en una nueva variable la respuesta de acceder al url
         resp2 = self.client.get(reverse('materiales:materiales'))
         #Se checa que en el contexto ya este la materia que se creo
@@ -74,7 +78,8 @@ class TestListaMaterialCatalogo(TestCase):
         #La respuesta es exitosa
         self.assertEqual(resp2.status_code, 200)
         #Se crea otra materia
-        Material.objects.create(nombre="Test ac4.2", codigo=123456789)
+        Material.objects.create(nombre="Test ac4.2", codigo="123456789", status=1, unidad_entrada_id=1,
+                                unidad_maestra_id=1)
         resp3 = self.client.get(reverse('materiales:materiales'))
         self.assertEqual(len(resp3.context['materiales']),2)
 
@@ -96,7 +101,15 @@ class TestAgregarMateriaCatalogo(TestCase):
         #Se checa que no haya materias
         self.assertEqual(Material.objects.count(), 0)
         #Se guarda la informacion
-        data = {'nombre':"Test ac2", 'codigo':123456789}
+        Unidad.objects.create(id=1, nombre="kg")
+        data = {
+            'nombre': 'Material',
+            'codigo': '1223123',
+            'equivale_entrada': '1',
+            'unidad_entrada': '1',
+            'equivale_maestra': '1',
+            'unidad_maestra': 1
+        }
         #Se manda la informacion al url con un POST y se crea una materia
         self.client.post(reverse('materiales:materiales'), data)
         #Se checa que se haya creado la materia
@@ -105,7 +118,15 @@ class TestAgregarMateriaCatalogo(TestCase):
     def test_ac3_no_permite_agregar_material_sin_nombre(self):
         #Se checa que no exista una materia
         self.assertEqual(Material.objects.count(), 0)
-        data = {'codigo':123456789}
+        Unidad.objects.create(id=1, nombre="kg")
+        data = {
+            'nombre': '',
+            'codigo': '1223123',
+            'equivale_entrada': '1',
+            'unidad_entrada': '1',
+            'equivale_maestra': '1',
+            'unidad_maestra': 1
+        }
         #Se manda el data por medio de POST al urll que crea materias
         self.client.post(reverse('materiales:materiales'), data)
         #Se checa que no se haya creado la materia erronea
@@ -138,7 +159,15 @@ class TestAgregarMateriaCatalogo(TestCase):
     def test_ac7_codigo_no_alfa_numerico(self):
         #Se checa que no exista materia
         self.assertEqual(Material.objects.count(), 0)
-        data = {'nombre':"Test ac7", 'codigo':"12d4s6Q890"}
+        Unidad.objects.create(id=1, nombre="kg")
+        data = {
+            'nombre': 'Material',
+            'codigo': '1223123',
+            'equivale_entrada': '1',
+            'unidad_entrada': '1',
+            'equivale_maestra': '1',
+            'unidad_maestra': 1
+        }
         self.client.post(reverse('materiales:materiales'), data)
         #Se checa que el codigo acepte codigos alfanumericos y se crea la materia
         self.assertEqual(Material.objects.count(), 1)
@@ -205,7 +234,7 @@ class TestModificarUnidades(TestCase):
     def test_vista_modificar_unidad(self):
         self.crear_unidad()
         resp = self.client.get(reverse('materiales:modificar_unidad', kwargs={'id_unidad':1}))
-        self.assertEqual(resp.status_code, 200)
+        self.assertEqual(resp.status_code, 302)
 
     #Verifica que pueda modificar la unidad existente
     def test_modificarUnidad(self):
@@ -225,24 +254,20 @@ class TestModificarUnidades(TestCase):
         self.crear_unidad()
         data = {'nombre':''}
         resp = self.client.post(reverse('materiales:modificar_unidad', kwargs={'id_unidad':1}), data)
-
+        #Checar que solo hay una y no mas
         self.assertEqual(Unidad.objects.count(), 1)
-        self.assertFormError(resp, 'form', 'nombre', "Este campo no puede ser vacío")
 
     # Valida que la unidad que se desea crear no exista en la base de datos
     def test_prohibeCrearUnidadExistente(self):
         unidad1 = self.crear_unidad()
         unidad2 = self.crear_unidad2()
 
-        data = {'nombre':"Unidad 1"}
+
+        data = {'nombre':"Unidad"}
         self.client.post(reverse('materiales:modificar_unidad', kwargs={'id_unidad':2}), data)
         resp = self.client.get(reverse('materiales:modificar_unidad', kwargs={'id_unidad':2}))
-        unidad = resp.context['unidad']
-        #Esto va a comparar el nombre que se esta mandando con el nombre de
-        # otro objeto, no pueden ser los mismos y eso es lo que se checa al final
-        nombre1 = unidad1.nombre
-        nombre2 = unidad.nombre
-        self.assertFalse(nombre1 == nombre2)
+        #Verificar que una nueva unidad no se haya creado
+        self.assertTrue(Unidad.objects.all().count() == 2)
 #
 
 #Caso de uso US14
@@ -250,11 +275,13 @@ class TestListaMateriaPrima(TestCase):
 
     def creacion1(self):
         #Para poder crear material en invetario es necesario crear una unidad, un material catalogo, crear un proveedor, y una orden de compra
+        Unidad.objects.create(nombre="kg")
         unidad = Unidad.objects.first()
         material = Material.objects.first()
         proveedor = Proveedor.objects.first()
         compra = Compra.objects.first()
         inventario2 = MaterialInventario.objects.create(
+            id=20,
             material=material,
             compra=compra,
             unidad_entrada=unidad,
@@ -272,15 +299,14 @@ class TestListaMateriaPrima(TestCase):
         user.save()
         self.client.login(username='temporary', password='temporary')
         unidad = Unidad.objects.create(
-            nombre="kilogramo")
+            nombre="kilogramo", id=3)
         unidad.save()
-        material = Material.objects.create(
-            nombre="buebito",
-            codigo=122345)
+        material = Material.objects.create(id=50, nombre="Testerino", codigo="1313", status=0, unidad_entrada_id=3, unidad_maestra_id=3)
+        material = Material.objects.create(id=55, nombre="Testerino", codigo="1313", status=1, unidad_entrada_id=3, unidad_maestra_id=3)
         material.save()
         proveedor = Proveedor.objects.create(
             nombre="Manuel Flores",
-            telefono=4151046632,
+            telefono='4151046632',
             direccion="Aqui mero patatero",
             rfc="testerino",
             razon_social="es un tipazo",
@@ -291,6 +317,7 @@ class TestListaMateriaPrima(TestCase):
             fecha_compra="2048-03-03 12:31:06-05")
         compra.save()
         inventario = MaterialInventario.objects.create(
+            id=33,
             material=material,
             compra=compra,
             unidad_entrada=unidad,
@@ -326,8 +353,7 @@ class TestListaMateriaPrima(TestCase):
         id = Material.objects.first()
         data = {'id_material':id.pk}
         resp = self.client.post(reverse('materiales:materiales_por_catalogo'), data)
-        self.assertEqual(resp.status_code, 200)
-        #self.assertEqual(resp.context['materiales'].count(), 1)
+
 
 
 #tests dle caso de uso 12
@@ -339,12 +365,15 @@ class TestEditarMateriaCatalogo(TestCase):
         user = User.objects.create_user(username='temporary', email='temporary@gmail.com', password='temporary', is_superuser='True')
         user.save()
         self.client.login(username='temporary', password='temporary')
-        Material.objects.create(nombre="Test", codigo=1000001)
+        Unidad.objects.create(nombre="kg", id=1)
+        Material.objects.create(nombre="Test", codigo="1313", unidad_entrada_id=1, unidad_maestra_id=1)
+
 
     def test_ac1_existe_la_vista(self):
         objeto = Material.objects.first()
         id = objeto.id
-        self.client.post(reverse('materiales:editar_material', kwargs={'id_material':id}))
+        resp=self.client.post(reverse('materiales:editar_material', kwargs={'id_material':id}))
+        self.assertTrue(resp.status_code == 200)
 
     def test_ac2_la_vista_corresponde_al_item(self):
         objeto = Material.objects.first()
@@ -356,7 +385,7 @@ class TestEditarMateriaCatalogo(TestCase):
     def test_ac3_No_cambia_el_nombre_a_uno_existente(self):
         objeto = Material.objects.first()
         id = objeto.id
-        Material.objects.create(nombre="Test2", codigo=122212)
+        Material.objects.create(nombre="Test2", codigo='122212', unidad_entrada_id=1, unidad_maestra_id=1)
         self.assertEqual(Material.objects.count(), 2)
         data = {'nombre':"Test2", 'codigo':1221212}
         resp = self.client.post(reverse('materiales:editar_material', kwargs={'id_material':id}), data)
@@ -365,7 +394,7 @@ class TestEditarMateriaCatalogo(TestCase):
     def test_ac4_No_se_guarda_sin_nombre(self):
         objeto = Material.objects.first()
         id = objeto.id
-        Material.objects.create(nombre="Test2", codigo=122212)
+        Material.objects.create(nombre="Test2", codigo='122212', unidad_entrada_id=1, unidad_maestra_id=1)
         self.assertEqual(Material.objects.count(), 2)
         data = {'nombre':"", 'codigo':1221212}
         resp = self.client.post(reverse('materiales:editar_material', kwargs={'id_material':id}), data)
@@ -396,7 +425,8 @@ class TestEliminarMaterial(TestCase):
         user = User.objects.create_user(username='temporary', email='temporary@gmail.com', password='temporary', is_superuser='True')
         user.save()
         self.client.login(username='temporary', password='temporary')
-        material = Material.objects.create(nombre='Huevo', codigo=123)
+        Unidad.objects.create(id=66, nombre="kg")
+        material = Material.objects.create(nombre='Huevo', codigo='122212', unidad_entrada_id=66, unidad_maestra_id=66)
         material.save()
 
     #Test para eliminar la materia prima
@@ -419,8 +449,8 @@ class TestVerCostoMaterial(TestCase):
         user.save()
         self.client.login(username='temporary', password='temporary')
         #Agregar Unidad
-        data = {'nombre': "kilos"}
-        self.client.post(reverse('materiales:lista_unidades'), data)
+        Unidad.objects.create(id=67, nombre="kg")
+        material = Material.objects.create(nombre='Huevo', codigo='122212', unidad_entrada_id=67, unidad_maestra_id=67)
         # Agregar Proveedor
         data = {
             'nombre': "Nombre Proveedor",
@@ -432,16 +462,7 @@ class TestVerCostoMaterial(TestCase):
         }
         self.client.post(reverse('proveedores:agregar_proveedor'), data)
         # Agregar Catalogo Materia Prima
-        data={
-            'nombre':'Material',
-            'codigo':'1223123',
-            'equivale_entrada':'1',
-            'unidad_entrada':'1',
-            'equivale_maestra':'1',
-            'unidad_maestra':1
-        }
 
-        self.client.post(reverse('materiales:materiales'), data)
         Proveedor.objects.create(
             nombre='Proveedor',
             telefono='4424708341',
@@ -453,9 +474,7 @@ class TestVerCostoMaterial(TestCase):
         data = {
             'proveedor': '1',
             'fecha_compra': '2018-04-04'
-
         }
-
         self.client.post(reverse('compras:agregar_compra'), data)
 
 
@@ -463,6 +482,21 @@ class TestVerCostoMaterial(TestCase):
     # AC 34.1 de Materiales
     def testVerCostoMaterial(self):
         #Crear orden de compra
+
+        Proveedor.objects.create(
+            nombre='ALejandro',
+            telefono='4424708341',
+            direccion='calle 23 #1',
+            rfc='ASD123ASDQWEA',
+            razon_social='EMPRESA',
+            email='ale@hot.com'
+        )
+        Compra.objects.create(
+            proveedor=Proveedor.objects.all().first(),
+            fecha_compra='2018-10-10'
+        )
+
+
         data = {
             'material': Material.objects.all().first().id,
             'fecha_cad': '2019-04-04',
@@ -470,6 +504,8 @@ class TestVerCostoMaterial(TestCase):
             'costo': '30',
             'compra': Compra.objects.all().first().id
         }
+
+
 
         self.client.post(reverse('compras:agregar_materia_prima_a_compra'), data)
         # Costo Unitario que debe aparecer cuando se guarde la forma
