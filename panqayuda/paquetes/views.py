@@ -297,9 +297,6 @@ def costo_paquetes_inventario_recetas(paquete,cantidad):
         for receta_inventario in recetas_inventario:
             # La necesitada es mayor que la cantidad que este 'lote' tiene
             costo+=receta_inventario.costo
-            # print('---------Costo calculado-----------')
-            # print(costo)
-            # print('--------------------')
     return costo
 
 def eliminar_paquetes_inventario_recetas(paquete,cantidad):
