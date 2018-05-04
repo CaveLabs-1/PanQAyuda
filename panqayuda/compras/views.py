@@ -10,14 +10,14 @@ from django.contrib import messages
 from django.http import HttpResponseRedirect, HttpResponse, HttpResponseNotFound
 from django.db.models import Sum
 from panqayuda.decorators import group_required
-import datetime
+from django.utils import timezone
 
 """
     Función que enlista las compras y permite agregar una compra a la base de datos.
 """
 @group_required('admin')
 def compras(request):
-    compras =  Compra.objects.filter(deleted_at__isnull=True)
+    compras =  Compra.objects.all()
     return render (request, 'compras/compras.html', {'compras': compras})
 
 
@@ -97,11 +97,11 @@ def agregar_materia_prima_a_compra(request):
             id_material = int(request.POST.get('material'))
             materia_prima = get_object_or_404(Material, id=id_material)
             fecha_cad= request.POST.get('fecha_cad')
-            cantidad = int(request.POST.get('cantidad'))
+            cantidad = float(request.POST.get('cantidad'))
             id_unidad = materia_prima.unidad_entrada.id
             porciones = cantidad * materia_prima.equivale_maestra / materia_prima.equivale_entrada
-            costo = int(request.POST.get('costo'))
-            costo_unitario = int(request.POST.get('costo'))/porciones
+            costo = float(request.POST.get('costo'))
+            costo_unitario = float(request.POST.get('costo'))/porciones
             id_compra =  request.POST.get('compra')
 
             compra = get_object_or_404(Compra, id=id_compra)
@@ -114,8 +114,8 @@ def agregar_materia_prima_a_compra(request):
 
             #generar forma html
             forma = MaterialInventarioForm()
-            unidades = Unidad.objects.filter(deleted_at__isnull=True);
-            materia_primas = Material.objects.filter(deleted_at__isnull=True);
+            unidades = Unidad.objects.filter(deleted_at__isnull=True)
+            materia_primas = Material.objects.filter(deleted_at__isnull=True)
             formahtml = render_to_string('compras/forma_agregar_compra.html', {'materia_primas':materia_primas, 'unidades':unidades, 'id_compra':id_compra, 'forma':forma})
 
             #generar lista_materia_prima_por_compra
@@ -143,10 +143,24 @@ def agregar_materia_prima_a_compra(request):
 def eliminar_compra(request, id_compra):
     #Se obtiene el objeto compra
     compra = get_object_or_404(Compra, pk=id_compra)
+
+    #Se verifica que los materiales inventarios que están asociados a esta compra no hayan sido ya ocupados
+    materiales_compra = compra.materialinventario_set.all()
+
+    for material_compra in materiales_compra:
+        #Verificar que no se hayan utilizado porciones de este material inventario
+        if material_compra.porciones_disponible != material_compra.porciones:
+            messages.error(request, "No se ha podido cancelar la compra porque algunos de las materias primas que se compraron ya han sido utilizadas en producción.")
+            return redirect('compras:compras')
+
+    #Eliminar los materiales inventario de esta compra
+    for material_compra in materiales_compra:
+        material_compra.deleted_at= timezone.now()
+        material_compra.save()
     compra.estatus = 0
     #Se borra la compra
-    compra.deleted_at = datetime.datetime.now()
+    compra.deleted_at = timezone.now()
     compra.save()
-    messages.success(request, '¡Se ha borrado exitosamente la compra!')
+    messages.success(request, '¡Se ha cancelado exitosamente la compra!')
     #Se regresa a la lista de compras
     return redirect('compras:compras')

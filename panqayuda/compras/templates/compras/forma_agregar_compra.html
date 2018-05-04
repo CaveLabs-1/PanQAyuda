@@ -19,12 +19,12 @@
   </div>
   <div class="row">
     <div class="input-field col m4">
-      <input type="number"  id='{{forma.cantidad.id_for_label}}' class="validate" name="{{forma.cantidad.html_name}}" required>
-      <label for="{{forma.cantidad.id_for_label}}">Cantidad</label>
+      <input type="number"  id='{{forma.cantidad.id_for_label}}' class="validate" placeholder="0.00" name="{{forma.cantidad.html_name}}" step=".01" required>
+      <label for="{{forma.cantidad.id_for_label}}">Cantidad total</label>
     </div>
     <div class="input-field col m4">
-      <input type="number" id="{{forma.costo.id_for_label}}" name="{{forma.costo.html_name}}">
-      <label for="{{forma.costo.id_for_label}}">Costo</label>
+      <input type="number" id="{{forma.costo.id_for_label}}" placeholder="0.00" step=".01" name="{{forma.costo.html_name}}">
+      <label for="{{forma.costo.id_for_label}}">Costo total</label>
     </div>
     <!--Id de compra-->
     <div class="hidden">
