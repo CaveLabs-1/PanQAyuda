@@ -4,7 +4,7 @@
 
 {% block header %}
     <header class="">
-        <h1 class="center-align">Generar nueva venta</h1>
+        <h1 class="center-align">Cotizaciones/Generar órden de venta</h1>
     </header>
 {% endblock header %}
 
@@ -39,6 +39,7 @@
                                         {% endfor %}
                                     </select>
                                     <label for="{{forma_paquete_venta.paquete.id_for_label}}">Paquete</label>
+                                    <span id="cantidad_producto_terminado" class="helper-text"></span>
                                 </div>
                                 <div class="input-field col s4">
                                     <input id="seleccionar_cantidad" type="number">
@@ -105,6 +106,23 @@
 
         $('select').formSelect();
 
+
+        //función que muestra la cantidad en paquete inventario
+        $('#seleccionar_paquete').change(function(){
+            //actualizar cantidad de paquetes
+            var id_paquete = $('#seleccionar_paquete').val();
+            $.ajax({
+                    url: "{% url 'paquetes:obtener_cantidad_inventario' %}",
+                    data: {"id_paquete": id_paquete},
+                    success: function(result){
+                        $('#cantidad_producto_terminado').show();
+                        $('#cantidad_producto_terminado').html(result);
+                    },
+                    error: function(result){
+                        $('#cantidad_producto_terminado').hide();
+                    },
+            });
+        });
         //variable para mensaje en caso de que se quiera salir sin guardar la venta
         var modificado = 0;
         //Agregar venta a resumen de venta

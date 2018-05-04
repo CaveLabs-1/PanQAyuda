@@ -86,7 +86,7 @@ def ordenes (request):
         # Filtrar ordenes qeu están por entregar.
         ordenes = Orden.ordenes_por_entregar()
         # Listas de recetas para genrar el select.
-        recetas = Receta.objects.filter(deleted_at__isnull=True)
+        recetas = Receta.objects_sin_empaquetado.filter(deleted_at__isnull=True)
         # Render de la página con la forma vacía y lista de ordenes por entregar.
         tabla = render_to_string('ordenes/tabla_ordenes.html', {'ordenes': ordenes})
         return render(request, 'ordenes/ordenes.html', {'forma': forma, 'ordenes': ordenes, 'recetas':recetas, 'tabla':tabla})

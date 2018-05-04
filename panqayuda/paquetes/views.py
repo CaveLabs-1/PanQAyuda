@@ -12,6 +12,8 @@ from django.db.models.functions import Concat
 from panqayuda.decorators import group_required
 import datetime
 from django.utils import timezone
+from django.core.exceptions import ObjectDoesNotExist
+
 import json
 
 """
@@ -106,7 +108,7 @@ def agregar_paquete_inventario(request):
             cantidad_post = forma_post.instance.cantidad
             #Verificar que hay suficiente cantidad en inventario para agregar el paquete
             if agregar_paquetes_inventario_recetas(paquete,cantidad_post) == False:
-                messages.error(request, 'No hay inventario suficiente para agregar este producto terminado')
+                messages.success(request, 'No hay inventario suficiente para agregar este producto terminado')
                 return HttpResponseRedirect(reverse('paquetes:agregar_inventario'))
             costo= costo_paquetes_inventario_recetas(paquete, cantidad_post)
             PaqueteInventario.objects.create(nombre=data['nombre'], cantidad=data['cantidad'], fecha_cad=data['fecha_cad'], costo=costo)
@@ -114,7 +116,7 @@ def agregar_paquete_inventario(request):
             return HttpResponseRedirect(reverse('paquetes:lista_paquete_inventario'))
         #Si la forma no es válida, manda un mensaje de error y regresa a agregar paquete en inventario
         else:
-            messages.error(request, 'Hubo un error y no se agregó el producto terminado al inventario.')
+            messages.success(request, 'Hubo un error y no se agregó el producto terminado al inventario.')
             return HttpResponseRedirect(reverse('paquetes:agregar_inventario'))
     #Si no se manda por método POST
     else:
@@ -172,7 +174,7 @@ def agregar_recetas_a_paquete(request, id_paquete):
         raise Http404
     forma = FormRecetasPorPaquete()
     recetas_por_paquete = RecetasPorPaquete.objects.filter(paquete=paquete).filter(deleted_at__isnull=True)
-    recetas = Receta.objects_con_empaquetado.filter(deleted_at__isnull=True).exclude(id__in=recetas_por_paquete.values('receta'))
+    recetas = Receta.objects.filter(deleted_at__isnull=True).exclude(id__in=recetas_por_paquete.values('receta'))
     formahtml = render_to_string('paquetes/forma_agregar_recetas_paquete.html', {'forma': forma, 'recetas': recetas, 'paquete': paquete})
     lista_recetas = render_to_string('paquetes/lista_recetas_por_paquete.html', {'recetas_por_paquete': recetas_por_paquete})
     return render(request, 'paquetes/agregar_recetas_a_paquete.html',
@@ -186,7 +188,7 @@ def agregar_receta_a_paquete(request):
         if forma.is_valid():
             id_receta = int(request.POST.get('receta'))
             receta = get_object_or_404(Receta, id=id_receta)
-            cantidad = int(request.POST.get('cantidad'))
+            cantidad = float(request.POST.get('cantidad'))
             id_paquete = int(request.POST.get('paquete'))
             paquete = get_object_or_404(Paquete, id=id_paquete)
             forma = FormRecetasPorPaquete()
@@ -324,3 +326,13 @@ def eliminar_paquetes_inventario_recetas(paquete,cantidad):
                         cantidad_a_sumar -= receta_inventario.ocupados
                         receta_inventario.ocupados = 0
                         receta_inventario.save()
+
+@group_required('admin')
+#Función que devuelve el número de paquetes en inventario para cierto paquete
+def obtener_cantidad_inventario(request):
+    if request.GET.get('id_paquete'):
+        id_paquete = int(request.GET.get('id_paquete'))
+        paquete = get_object_or_404(Paquete, pk=id_paquete)
+        return HttpResponse("Cantidad en inventario: "+ str(paquete.obtener_disponibles_inventario()))
+    else:
+        return HttpResponseNotFound()

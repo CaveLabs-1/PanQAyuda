@@ -15,9 +15,9 @@ import datetime
 
 @group_required('admin')
 def lista_mermas_receta(request):
-    mermas = list(MermaReceta.objects.all())
+    mermas = list(MermaReceta.objects_sin_empaquetado.all())
     forma = MermaRecetaForm()
-    recetas_catalogo = Receta.objects.filter(deleted_at__isnull=True)
+    recetas_catalogo = Receta.objects_sin_empaquetado.filter(deleted_at__isnull=True)
     return render (request, 'mermas/lista_mermas_receta.html', {'forma': forma, 'mermas': mermas, 'recetas_catalogo':recetas_catalogo})
 
 @group_required('admin')

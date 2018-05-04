@@ -13,12 +13,14 @@ from django.http import HttpResponseRedirect, HttpResponse
 from django.db.models import Sum
 from panqayuda.decorators import group_required
 import datetime
+from django.utils import timezone
+
 
 @group_required('admin')
 def reporte(request):
     materiales = Material.objects.filter(deleted_at__isnull=False)
     paquetes = Paquete.objects.filter(deleted_at__isnull=False)
-    recetas = Receta.objects.filter(deleted_at__isnull=False)
+    recetas = Receta.objects_sin_empaquetado.filter(deleted_at__isnull=False)
     clientes = Cliente.objects.filter(deleted_at__isnull=False)
     compras = Compra.objects.filter(deleted_at__isnull=False)
     ventas = Venta.objects.filter(deleted_at__isnull=False)
