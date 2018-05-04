@@ -25,7 +25,7 @@
        {% for compra in compras %}
         <tr>
           <td>{{compra.id}}</td>
-          <td>{{compra.proveedor}}</td>
+          <td>{{compra.proveedor.razon_social }}</td>
           <td>{{compra.fecha_compra.date}}</td>
           <td> $ {{ compra.monto }}</td>
 

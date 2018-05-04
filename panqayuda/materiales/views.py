@@ -9,7 +9,7 @@ from proveedores.models import Proveedor
 from ventas.models import  Venta
 from clientes.models import Cliente
 from django.contrib import messages
-from django.http import HttpResponseRedirect, HttpResponse
+from django.http import HttpResponseRedirect, HttpResponse, HttpResponseNotFound
 from django.db.models import Sum
 from panqayuda.decorators import group_required
 import datetime
@@ -214,3 +214,26 @@ def editar_material(request, id_material):
     form = MaterialForm()
     unidades = Unidad.objects.filter(deleted_at__isnull=True)
     return render(request, 'materiales/editar_material.html', {'form': form, 'material': material, 'unidades': unidades})
+
+
+@group_required('admin')
+# Función que devuelve el número de paquetes en inventario para cierto paquete
+def obtener_cantidad_inventario_con_caducados(request):
+    print("LULZ")
+    if request.GET.get('material_catalogo_id'):
+        id_material = int(request.GET.get('material_catalogo_id'))
+        material = get_object_or_404(Material, pk=id_material)
+        return HttpResponse("Cantidad en inventario: " + str(material.obtener_cantidad_inventario_fisico()))
+    else:
+        return HttpResponseNotFound()
+
+
+@group_required('admin')
+# Función que devuelve el número de paquetes en inventario para cierto paquete
+def obtener_cantidad_lote(request):
+    if request.GET.get('material_inventario_id'):
+        id_material_inventario = int(request.GET.get('material_inventario_id'))
+        material_inventario = get_object_or_404(MaterialInventario, pk=id_material_inventario)
+        return HttpResponse("Cantidad disponible de este lote: " + str(material_inventario.porciones_disponible))
+    else:
+        return HttpResponseNotFound()

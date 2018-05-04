@@ -35,12 +35,14 @@
            {% endfor %}
         </select>
         <label for="recetas_catalogo">Producto Semiterminado</label>
+        <span id="cantidad_receta_inventario" class="helper-text"></span>
       </div>
       <div class="input-field col s6">
          <select id="{{forma.nombre.id_for_label}}" name="{{forma.nombre.html_name}}">
               <option value="" selected="">---------</option>
           </select>
           <label for="{{forma.nombre.id_for_label}}">Lote</label>
+          <span id="cantidad_receta_lote" class="helper-text"></span>
         </div>
       </div>
       <div class="row">
@@ -130,6 +132,27 @@
             success: function(response){
                 $('#{{forma.nombre.id_for_label}}').html(response);
                 $('select').formSelect();
+            }
+        });
+
+        //Mostrar cantidad disponible en inventario de la receta
+        $.ajax({
+            url: "{% url 'recetas:obtener_cantidad_inventario_con_caducados' %}",
+            data:{'receta_catalogo_id':receta_catalogo_id},
+            success: function(response){
+                $('#cantidad_receta_inventario').html(response);
+            }
+        });
+    });
+
+    $('#id_nombre').change(function(){
+        var receta_inventario_id = $('#id_nombre').val();
+        //Mostrar cantidad disponible en inventario de la receta
+        $.ajax({
+            url: "{% url 'recetas:obtener_cantidad_lote' %}",
+            data:{'receta_inventario_id':receta_inventario_id},
+            success: function(response){
+                $('#cantidad_receta_lote').html(response);
             }
         });
     });
