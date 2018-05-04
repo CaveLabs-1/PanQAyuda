@@ -34,6 +34,7 @@
           {% endfor %}
         </select>
         <label for="materiales_catalogo">Materia Prima</label>
+        <span id="cantidad_material_catalogo" class="helper-text"></span>
       </div>
 
       <!-- Material del inventario -->
@@ -42,6 +43,7 @@
           <option selected="" value="">---------</option>
         </select>
         <label for="{{forma.nombre.id_for_label}}"> Lote </label>
+        <span id="cantidad_material_lote" class="helper-text"></span>
       </div>
 
       <!-- Cantidad a ajustar -->
@@ -138,6 +140,28 @@
                 $('select').formSelect();
             }
         });
+
+        //Mostrar cantidad disponible en inventario de el paquete
+        $.ajax({
+            url: "{% url 'materiales:obtener_cantidad_inventario_con_caducados' %}",
+            data:{'material_catalogo_id':material_catalogo_id},
+            success: function(response){
+                $('#cantidad_material_catalogo').html(response);
+            }
+        });
     });
+
+
+    $('#id_nombre').change(function(){
+        var material_inventario_id = $('#id_nombre').val();
+        //Mostrar cantidad disponible en inventario de la receta
+        $.ajax({
+            url: "{% url 'materiales:obtener_cantidad_lote' %}",
+            data:{'material_inventario_id':material_inventario_id},
+            success: function(response){
+                $('#cantidad_material_lote').html(response);
+            }
+        });
+      });
   </script>
 {% endblock js %}

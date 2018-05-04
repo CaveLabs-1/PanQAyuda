@@ -336,3 +336,24 @@ def obtener_cantidad_inventario(request):
         return HttpResponse("Cantidad en inventario: "+ str(paquete.obtener_disponibles_inventario()))
     else:
         return HttpResponseNotFound()
+
+@group_required('admin')
+# Función que devuelve el número de paquetes en inventario para cierto paquete
+def obtener_cantidad_inventario_con_caducados(request):
+    if request.GET.get('paquete_catalogo'):
+        id_paquete = int(request.GET.get('paquete_catalogo'))
+        paquete = get_object_or_404(Paquete, pk=id_paquete)
+        return HttpResponse("Cantidad en inventario: " + str(paquete.obtener_inventario_fisico()))
+    else:
+        return HttpResponseNotFound()
+
+@group_required('admin')
+# Función que devuelve el número de paquetes en inventario para cierto paquete
+def obtener_cantidad_lote(request):
+    if request.GET.get('paquete_inventario'):
+        id_paquete = int(request.GET.get('paquete_inventario'))
+        paquete = get_object_or_404(PaqueteInventario, pk=id_paquete)
+        return HttpResponse("Cantidad disponible de este lote: " + str(paquete.disponibles()))
+    else:
+        return HttpResponseNotFound()
+

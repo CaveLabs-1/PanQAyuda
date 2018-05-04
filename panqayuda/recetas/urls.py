@@ -18,4 +18,6 @@ urlpatterns = [
     path('lista_recetas_inventario', views.lista_recetas_inventario, name='lista_recetas_inventario'),
     path('detalle_recetas_inventario', views.detalle_recetas_inventario, name='detalle_recetas_inventario'),
     path('obtener_cantidad_que_produce/', views.obtener_cantidad_que_produce, name='obtener_cantidad_que_produce'),
+    path('obtener_cantidad_inventario_con_caducados/', views.obtener_cantidad_inventario_con_caducados, name='obtener_cantidad_inventario_con_caducados'),
+    path('obtener_cantidad_lote/', views.obtener_cantidad_lote,name='obtener_cantidad_lote'),
 ]

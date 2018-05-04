@@ -32,12 +32,14 @@
           {% endfor %}
         </select>
         <label for="paquetes_catalogo">Producto terminado</label>
+        <span id="cantidad_paquete_catalogo" class="helper-text"></span>
       </div>
       <div class="input-field col s6">
         <select name="nombre" required="" id="id_nombre">
           <option value="" selected="">---------</option>
         </select>
         <label for="nombre">Lote</label>
+        <span id="cantidad_paquete_lote" class="helper-text"></span>
       </div>
       <div class="input-field col s11">
         <label for="{{forma.cantidad.id_for_label}}">Cantidad</label>
@@ -126,7 +128,28 @@
                    $('select').formSelect();
                 },
           });
+
+        //Mostrar cantidad disponible en inventario de el paquete
+        $.ajax({
+            url: "{% url 'paquetes:obtener_cantidad_inventario_con_caducados' %}",
+            data:{'paquete_catalogo':paquete_catalogo},
+            success: function(response){
+                $('#cantidad_paquete_catalogo').html(response);
+            }
+        });
       });
+
+       $('#id_nombre').change(function(){
+          var paquete_inventario_id = $('#id_nombre').val();
+          //Mostrar cantidad disponible en inventario de la receta
+          $.ajax({
+              url: "{% url 'paquetes:obtener_cantidad_lote' %}",
+              data:{'paquete_inventario':paquete_inventario_id},
+              success: function(response){
+                  $('#cantidad_paquete_lote').html(response);
+              }
+          });
+        });
     });
   </script>
 {% endblock js %}

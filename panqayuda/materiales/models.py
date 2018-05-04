@@ -106,3 +106,9 @@ class MaterialInventario(models.Model):
 
     def __str__(self):
         return self.material.nombre + " " + self.fecha_cad.strftime('%d/%m/%Y')
+
+    def es_caducado(self):
+        if self.fecha_cad < timezone.now():
+            return True
+        else:
+            return False
