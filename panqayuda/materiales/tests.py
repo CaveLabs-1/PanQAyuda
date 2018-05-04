@@ -281,7 +281,7 @@ class TestListaMateriaPrima(TestCase):
         proveedor = Proveedor.objects.first()
         compra = Compra.objects.first()
         inventario2 = MaterialInventario.objects.create(
-            id=3,
+            id=20,
             material=material,
             compra=compra,
             unidad_entrada=unidad,
@@ -299,9 +299,10 @@ class TestListaMateriaPrima(TestCase):
         user.save()
         self.client.login(username='temporary', password='temporary')
         unidad = Unidad.objects.create(
-            nombre="kilogramo", id=2)
+            nombre="kilogramo", id=3)
         unidad.save()
-        material = Material.objects.create(id=3, nombre="Testerino", codigo="1313", unidad_entrada_id=2, unidad_maestra_id=2)
+        material = Material.objects.create(id=50, nombre="Testerino", codigo="1313", status=0, unidad_entrada_id=3, unidad_maestra_id=3)
+        material = Material.objects.create(id=55, nombre="Testerino", codigo="1313", status=1, unidad_entrada_id=3, unidad_maestra_id=3)
         material.save()
         proveedor = Proveedor.objects.create(
             nombre="Manuel Flores",
@@ -316,6 +317,7 @@ class TestListaMateriaPrima(TestCase):
             fecha_compra="2048-03-03 12:31:06-05")
         compra.save()
         inventario = MaterialInventario.objects.create(
+            id=33,
             material=material,
             compra=compra,
             unidad_entrada=unidad,
@@ -423,8 +425,8 @@ class TestEliminarMaterial(TestCase):
         user = User.objects.create_user(username='temporary', email='temporary@gmail.com', password='temporary', is_superuser='True')
         user.save()
         self.client.login(username='temporary', password='temporary')
-        Unidad.objects.create(id=1, nombre="kg")
-        material = Material.objects.create(nombre='Huevo', codigo='122212', unidad_entrada_id=1, unidad_maestra_id=1)
+        Unidad.objects.create(id=66, nombre="kg")
+        material = Material.objects.create(nombre='Huevo', codigo='122212', unidad_entrada_id=66, unidad_maestra_id=66)
         material.save()
 
     #Test para eliminar la materia prima
@@ -447,8 +449,8 @@ class TestVerCostoMaterial(TestCase):
         user.save()
         self.client.login(username='temporary', password='temporary')
         #Agregar Unidad
-        data = {'nombre': "kilos"}
-        self.client.post(reverse('materiales:lista_unidades'), data)
+        Unidad.objects.create(id=67, nombre="kg")
+        material = Material.objects.create(nombre='Huevo', codigo='122212', unidad_entrada_id=67, unidad_maestra_id=67)
         # Agregar Proveedor
         data = {
             'nombre': "Nombre Proveedor",
@@ -460,7 +462,7 @@ class TestVerCostoMaterial(TestCase):
         }
         self.client.post(reverse('proveedores:agregar_proveedor'), data)
         # Agregar Catalogo Materia Prima
-        Material.objects.create(id=5, nombre='Huevo', codigo='122212', unidad_entrada_id=1, unidad_maestra_id=1)
+
         Proveedor.objects.create(
             nombre='Proveedor',
             telefono='4424708341',
@@ -502,7 +504,7 @@ class TestVerCostoMaterial(TestCase):
             'costo': '30',
             'compra': Compra.objects.all().first().id
         }
-        print("ALE MIRA: "+str(Compra.objects.all().first()))
+
 
 
         self.client.post(reverse('compras:agregar_materia_prima_a_compra'), data)
