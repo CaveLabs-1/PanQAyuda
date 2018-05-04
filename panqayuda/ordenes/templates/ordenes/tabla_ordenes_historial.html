@@ -1,0 +1,24 @@
+<table id="table_historial" class="datatable">
+<thead>
+<th> ID </th>
+<th>Producto semiterminado</th>
+<th>Cantidad</th>
+<th>Fecha de Entrega</th>
+<th>Fecha creación</th>
+<th>Estatus</th>
+</thead>
+<tbody>
+{% for orden in ordenes %}
+<tr {% if orden.estatus == '0' %} class="pink-text" {% endif %}>
+    <td> {{ orden.id }} </td>
+  <td>{{orden.receta.nombre}}</td>
+  <td>{% widthratio orden.receta.cantidad 1 orden.multiplicador %}</td>
+  <td>{{orden.fecha_fin}}</td>
+    <td> {{ orden.created_at.date }} </td>
+  <td>
+      {{ orden.get_estatus_display }}
+  </td>
+</tr>
+{% endfor %}
+</tbody>
+</table>
