@@ -2,11 +2,37 @@ from django.shortcuts import render, reverse, redirect, get_object_or_404
 from django.template.loader import render_to_string
 from .forms import MaterialForm, UnidadForm
 from .models import Material, MaterialInventario, Unidad
+from recetas.models import RecetaInventario, Receta
+from paquetes.models import PaqueteInventario, Paquete
+from compras.models import Compra
+from proveedores.models import Proveedor
+from ventas.models import  Venta
+from clientes.models import Cliente
 from django.contrib import messages
 from django.http import HttpResponseRedirect, HttpResponse
 from django.db.models import Sum
 from panqayuda.decorators import group_required
 import datetime
+from django.utils import timezone
+
+
+@group_required('admin')
+def reporte(request):
+    materiales = Material.objects.filter(deleted_at__isnull=False)
+    paquetes = Paquete.objects.filter(deleted_at__isnull=False)
+    recetas = Receta.objects_sin_empaquetado.filter(deleted_at__isnull=False)
+    clientes = Cliente.objects.filter(deleted_at__isnull=False)
+    compras = Compra.objects.filter(deleted_at__isnull=False)
+    ventas = Venta.objects.filter(deleted_at__isnull=False)
+    proveedores = Proveedor.objects.filter(deleted_at__isnull=False)
+
+
+
+    return render (request, 'materiales/reporte.html', { 'materiales': materiales,
+                                    'paquetes': paquetes, 'recetas': recetas,
+                                    'clientes': clientes, 'compras': compras,
+                                    'ventas': ventas, 'proveedores':proveedores })
+
 
 """
     En caso de ser GET regresa una lista de materiales y la forma para agregar un material
@@ -18,6 +44,11 @@ def materiales(request):
         forma_post = MaterialForm(request.POST)
         if forma_post.is_valid():
             forma_post.save()
+            #Verificar si el material es material de empaque
+            if request.POST.get('material_empaque'):
+                #Crear 'receta' con el mismo nombre que el material de empaque y asociada a este material
+                receta = Receta.objects.create(nombre=forma_post.instance.nombre, cantidad=1, duration=timezone.timedelta(days=450000),material_empaque=forma_post.instance)
+                receta.save()
             messages.success(request, 'Se ha agregado una nueva materia prima.')
         else:
             # Si no es válida la forma devuelve un mensaje de error.
@@ -63,7 +94,7 @@ def eliminar_unidad(request, id_unidad):
     unidad = get_object_or_404(Unidad, pk=id_unidad)
     unidad.estatus = 0
     #Borrado del objeto
-    unidad.deleted_at = datetime.datetime.now()
+    unidad.deleted_at = timezone.datetime.now()
     unidad.save()
     messages.success(request, '¡Se ha borrado exitosamente la unidad del catálogo!')
     #Regresar a listado de materiales
@@ -77,8 +108,13 @@ def eliminar_material(request, id_material):
     #Obtienes la materia primas
     material = get_object_or_404(Material, pk=id_material)
     material.estatus = 0
+    #Verificar si es material de empaquetado para eliminar la receta también
+    if Receta.objects.filter(material_empaque=material).count() > 0:
+        receta = Receta.objects.filter(material_empaque=material).first()
+        receta.deleted_at = timezone.datetime.now()
+        receta.save()
     #Se hace el borrado
-    material.deleted_at = datetime.datetime.now()
+    material.deleted_at = timezone.datetime.now()
     material.save()
     messages.success(request, '¡Se ha borrado exitosamente la materia prima del catálogo!')
     #Regresa a la lista de materiales

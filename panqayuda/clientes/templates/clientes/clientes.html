@@ -15,6 +15,7 @@
       <table id="table_id" class="datatable">
       <thead>
       <th>Nombre</th>
+      <th>Nombre Contacto</th>
       <th>Teléfono</th>
       <th>Email</th>
       <th>RFC</th>
@@ -26,12 +27,13 @@
        {% for cliente in clientes %}
       <tr>
         <td>{{cliente.nombre}}</td>
+        <td>{{cliente.nombreContacto}}</td>
         <td>{{cliente.telefono}}</td>
         <td>{{cliente.email}}</td>
         <td>{{cliente.rfc}}</td>
         <td><a href="{% url 'clientes:editar_cliente' cliente.id %}"><i class="material-icons">edit</i></a></td>
         <!--Se manda llamar la función de eliminar_cliente mandando el id de cliente-->
-        <td><a href="{% url 'clientes:eliminar_cliente' cliente.id %}" class="modal-trigger" onclick="return confirm('Vas a eliminar un Cliente del catálogo. ¿Continuar?')" ><i class="material-icons">delete</i></a></td>
+        <td><a href="{% url 'clientes:eliminar_cliente' cliente.id %}" class="modal-trigger" onclick="deleteRegister(this, event)"><i class="material-icons">delete</i></a></td>
         <td><a href="{% url 'clientes:historial_cliente' cliente.id %}"><i class="material-icons">history</i></a> </td>
       </tr>
       {% endfor %}
@@ -53,5 +55,28 @@
         $(document).ready(function(){
             $('.modal').modal();
         });
+    </script>
+    <script type="text/javascript">
+        //eliminar compra
+        function deleteRegister(element, event) {
+          event.preventDefault();
+          $.confirm({
+            title: '¿Deseas Continuar?',
+            content: 'El Cliente se eliminará permanentemente.',
+            type: 'red',
+            closeIcon: true,
+            columnClass: 'col l6 offset-l3 s12',
+            typeAnimated: true,
+            buttons: {
+              continuar: {
+                text: 'Eliminar',
+                btnClass: 'btn-red',
+                action: function () {
+                  window.location.href = $(element).attr("href");
+                }
+              }
+           }
+         });
+        }
     </script>
 {% endblock js %}

@@ -20,6 +20,7 @@ urlpatterns = [
     path('paquetes_por_catalogo/', views.paquetes_por_catalogo, name='paquetes_por_catalogo'),
     path('borrar_paquete_inventario/<int:id_paquete>', views.borrar_paquete_inventario, name='borrar_paquete_inventario'),
     path('quitar_receta_paquete', views.quitar_receta_paquete, name='quitar_receta_paquete'),
+    path('obtener_cantidad_inventario/', views.obtener_cantidad_inventario, name='obtener_cantidad_inventario'),
                   #path('prueba_view/', views.prueba_view, name='prueba_view')
     #path('prueba_view/', views.prueba_view, name='prueba_view')
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

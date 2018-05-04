@@ -11,7 +11,7 @@ from recetas.models import Receta
 from django.utils import timezone
 from materiales.models import Material, MaterialInventario, Unidad
 from django.db.models import F
-
+import datetime
 '''
     Lista de odenes de trabajo, con forma para dar de alta una nueva orden de trbajo.
     En caso de que se de de alta una nueva orden de trabajo, se descuenta el material
@@ -51,9 +51,10 @@ def ordenes (request):
             materiales_receta = RelacionRecetaMaterial.objects.filter(receta = receta)
             for material_receta in materiales_receta:
                 materiales_inventario = MaterialInventario.objects.filter(material = material_receta.material).filter(
-                    deleted_at__isnull=True).order_by('-fecha_cad')
+                    fecha_cad__gte=datetime.datetime.now(),deleted_at__isnull=True).order_by('fecha_cad')
                 # Calcula la cantidad que se debe restar de dicho material en el inventario.
                 cantidad_a_restar = float(material_receta.cantidad * multiplicador)
+                cantidad_a_restar_inicial = cantidad_a_restar
                 # Modifica el inventario por recetas, tomando en cuenta la fecha de caducidself.
                 for material_inventario in materiales_inventario:
                     # Si la cantidad disponible de dicho registro es mayor a la cantidad que se necesita restar,
@@ -61,15 +62,15 @@ def ordenes (request):
                     if  material_inventario.porciones_disponible > cantidad_a_restar:
                         material_inventario.porciones_disponible -= cantidad_a_restar
                         material_inventario.save()
-                        costo+=material_inventario.costo_unitario
+                        costo+= (material_inventario.costo_unitario * cantidad_a_restar)/cantidad_a_restar_inicial
                         break
-
                     else:
                         # En caso de que no exista suficiente material en dicho registro, ocupa todo lo que existe
                         # y pasa al siguiente registro.
-                        cantidad_a_restar -= material_inventario.porciones_disponible
+                        costo+=(material_inventario.costo_unitario * material_inventario.porciones_disponible)/cantidad_a_restar_inicial
+                        cantidad_a_restar -= (material_inventario.porciones_disponible)
                         material_inventario.porciones_disponible = 0
-                        costo+=material_inventario.costo_unitario
+                        material_inventario.save()
 
             Orden.objects.create(receta=data['receta'], multiplicador=data['multiplicador'], fecha_fin=data['fecha_fin'], costo=costo)
             messages.success(request, 'Se ha agregado una nueva orden de trabajo.')
@@ -85,10 +86,12 @@ def ordenes (request):
         # Filtrar ordenes qeu están por entregar.
         ordenes = Orden.ordenes_por_entregar()
         # Listas de recetas para genrar el select.
-        recetas = Receta.objects.filter(deleted_at__isnull=True)
+        recetas = Receta.objects_sin_empaquetado.filter(deleted_at__isnull=True)
         # Render de la página con la forma vacía y lista de ordenes por entregar.
         tabla = render_to_string('ordenes/tabla_ordenes.html', {'ordenes': ordenes})
-        return render(request, 'ordenes/ordenes.html', {'forma': forma, 'ordenes': ordenes, 'recetas':recetas, 'tabla':tabla})
+        ordenes = Orden.objects.all()
+        tabla_historial = render_to_string('ordenes/tabla_ordenes_historial.html', {'ordenes': ordenes})
+        return render(request, 'ordenes/ordenes.html', {'forma': forma, 'tabla_historial':tabla_historial, 'recetas':recetas, 'tabla':tabla})
 
 '''
     Cuando una orden de trabajo se marca como terminada, se agrega las recetas que

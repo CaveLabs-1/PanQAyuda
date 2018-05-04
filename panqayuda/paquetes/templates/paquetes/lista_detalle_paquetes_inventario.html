@@ -20,10 +20,33 @@
             <td>{{i.fecha_cad.date}}</td>
             <td>{{i.multiplicar_costo_cantidad|floatformat:2}}</td>
             <td><a href='{% url "paquetes:editar_paquete_inventario" i.id %}' class="modal-trigger"><i class="material-icons">edit</i> </a></td>
-            <td><a href='{% url "paquetes:borrar_paquete_inventario" i.id %}' class="modal-trigger" onclick="return confirm('Vas a eliminar una producto del Inventario. ¿Continuar?')"><i class="material-icons">delete</i> </a></td>
+            <td><a href='{% url "paquetes:borrar_paquete_inventario" i.id %}' class="modal-trigger" onclick="deleteRegister(this, event)"><i class="material-icons">delete</i> </a></td>
         </tr>
     {% endif %}
 
 {% endfor %}
     </tbody>
   </table>
+  <script type="text/javascript">
+      //eliminar compra
+      function deleteRegister(element, event) {
+        event.preventDefault();
+        $.confirm({
+          title: '¿Deseas Continuar?',
+          content: 'El Producto Terminado se eliminará permanentemente.',
+          type: 'red',
+          closeIcon: true,
+          columnClass: 'col l6 offset-l3 s12',
+          typeAnimated: true,
+          buttons: {
+            continuar: {
+              text: 'Eliminar',
+              btnClass: 'btn-red',
+              action: function () {
+                window.location.href = $(element).attr("href");
+              }
+            }
+         }
+       });
+      }
+  </script>

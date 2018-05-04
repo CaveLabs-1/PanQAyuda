@@ -3,7 +3,7 @@ from .models import Receta, RelacionRecetaMaterial, RecetaInventario
 from django.contrib import messages
 from materiales.models import Material
 from .forms import RecetaForm, MaterialRecetaForm
-from django.http import HttpResponse, HttpResponseRedirect
+from django.http import HttpResponse, HttpResponseRedirect, HttpResponseNotFound
 from panqayuda.decorators import group_required
 import datetime
 from django.utils import timezone
@@ -25,7 +25,7 @@ from django.db.models import Sum, F
 @group_required('admin')
 def lista_recetas(request):
     template_name = 'lista_recetas.html'
-    recetas = list(Receta.objects.filter(status=1))
+    recetas = list(Receta.objects_sin_empaquetado.filter(status=1))
     return render(request, 'recetas/lista_recetas.html', {'recetas': recetas})
 
 
@@ -158,7 +158,7 @@ def borrar_material(request, id_material):
 @group_required('admin')
 def lista_recetas_inventario(request):
     #recetas_inventario = list(RecetaInventario.objects.filter(deleted_at__isnull=True).filter(estatus=1))
-    catalogo_recetas=Receta.objects.filter(deleted_at__isnull=True).filter(status=1)
+    catalogo_recetas=Receta.objects_sin_empaquetado.filter(deleted_at__isnull=True).filter(status=1)
 
     return render(request, 'recetas/lista_recetas_inventario.html', {'catalogo_recetas': catalogo_recetas})
 
@@ -177,3 +177,13 @@ def detalle_recetas_inventario(request):
         response = render_to_string('recetas/lista_detalle_recetas_inventario.html', {'detalle_recetas_en_inventario': detalle_recetas_en_inventario, 'receta': receta})
         return HttpResponse(response)
     return HttpResponse('Algo ha salido mal.')
+
+
+@group_required('admin')
+def obtener_cantidad_que_produce (request):
+    if request.GET.get('id_receta'):
+        id_receta = int(request.GET.get('id_receta'))
+        receta = get_object_or_404(Receta, pk=id_receta)
+        return HttpResponse("Cantidad que produce: " + str(receta.cantidad))
+    else:
+        return HttpResponseNotFound()

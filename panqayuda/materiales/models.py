@@ -1,5 +1,5 @@
 from django.db import models
-from django.db.models import Sum
+from django.db.models import Sum, F
 from compras.models import Compra
 from django.utils import timezone
 
@@ -13,6 +13,9 @@ class Unidad(models.Model):
     created_at = models.DateTimeField(default=timezone.now)
     updated_at = models.DateTimeField(default=timezone.now)
     deleted_at = models.DateTimeField(blank=True, null=True)
+
+    class Meta:
+        ordering = ['nombre']
 
     def __str__(self):
         return self.nombre
@@ -35,11 +38,52 @@ class Material(models.Model):
 
     #Obtiene la cantidad en inventario disponible para hacer recetas
     def obtener_cantidad_inventario(self):
-        return MaterialInventario.objects.filter(material=self,
-        deleted_at__isnull=True, fecha_cad__gte=timezone.now()).aggregate(Sum('porciones_disponible'))['porciones_disponible__sum'] or 0
+        return MaterialInventario.objects.filter(material=self,deleted_at__isnull=True, fecha_cad__gte=timezone.now()).aggregate(Sum('porciones_disponible'))['porciones_disponible__sum'] or 0
+
+    #Obtiene la cantidad en inventario con mermas
+    def obtener_cantidad_inventario_fisico(self):
+        return MaterialInventario.objects.filter(material=self,deleted_at__isnull=True).\
+            aggregate(Sum('porciones_disponible'))['porciones_disponible__sum'] or 0
+
+    #Obtiene los objetos MaterialesInventario con caducados
+    def obtener_materiales_inventario_con_caducados(self):
+        return MaterialInventario.objects.filter(material=self, deleted_at__isnull=True, porciones_disponible__gt=0)
+
+    #Función que se utiliza cuando se agregan productos terminados al inventario y se utiliza el material de empaque
+    def restar_inventario(self,cantidad):
+        #Obtener los materiales inventario asociados
+        materiales_inventario = MaterialInventario.objects.filter(material=self).filter(deleted_at__isnull=True).order_by('-fecha_cad')
+        # Modifica el inventario por recetas, tomando en cuenta la fecha de caducidself.
+        for material_inventario in materiales_inventario:
+            # Si la cantidad disponible de dicho registro es mayor a la cantidad que se necesita restar,
+            # se resta directamente y se termina el proceso.
+            if material_inventario.porciones_disponible > cantidad:
+                material_inventario.porciones_disponible -= cantidad
+                material_inventario.save()
+                break
+
+    #Función que se utiliza cuando se eliminan productos terminados y se reeabastece el material de empaque
+    def agregar_inventario(self, cantidad):
+        materiales_inventario = MaterialInventario.objects.filter(material=self, deleted_at__isnull=True,
+                                                                  porciones_disponible__lt=F('porciones')).order_by('-fecha_cad')
+        # Abastecer materiales inventario hasta que la cantidad a sumar sea 0
+        for material_inventario in materiales_inventario:
+            # Este material inventario no puede recibirlo todo
+            if cantidad > (material_inventario.porciones - material_inventario.porciones_disponible):
+                cantidad -= (material_inventario.porciones - material_inventario.porciones_disponible)
+                material_inventario.porciones_disponible = material_inventario.porciones
+                material_inventario.save()
+            else:
+                # Este material inventario puede recibirlo todo
+                material_inventario.porciones_disponible += cantidad
+                material_inventario.save()
+                break
 
     def __str__(self):
         return self.nombre
+
+    class Meta:
+        ordering = ['nombre']
 
 # Modelo para registros de la materia prima en el inventario.
 class MaterialInventario(models.Model):

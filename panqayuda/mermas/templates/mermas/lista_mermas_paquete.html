@@ -13,7 +13,7 @@
   <div class="modal-content">
     <div class="row">
       <div class="col s11">
-        <h3>Agregar Merma Producto Terminado</h3>
+        <h3>Ajuste Inventario Producto Terminado</h3>
       </div>
       <div class="col s1">
         <a class="black-text modal-close">
@@ -26,6 +26,7 @@
       <div class="input-field col s6">
         <select name="paquetes_catalogo" id="paquetes_catalogo">
           <option value="" selected="">---------</option>
+          <!-- Carga lista de paquetes_catalogo para el select -->
           {% for paquete in paquetes_catalogo %}
             <option value="{{paquete.id}}">{{paquete.nombre}}</option>
           {% endfor %}
@@ -38,15 +39,14 @@
         </select>
         <label for="nombre">Lote</label>
       </div>
-      <div class="input-field col s6">
+      <div class="input-field col s11">
         <label for="{{forma.cantidad.id_for_label}}">Cantidad</label>
         <input id="{{forma.cantidad.id_for_label}}" name="{{forma.cantidad.html_name}}" type="number" required>
       </div>
-      <div class="row">
-        <div class="input-field col s6">
-          <input class="datepicker" id="{{forma.fecha.id_for_label}}" type="text" class="required" name="{{forma.fecha.html_name}}" required>
-          <label for="{{forma.fecha_fin.id_for_label}}">Fecha</label>
-        </div>
+      <div class="col s1">
+        <a class="tooltipped btnAyuda" data-position="top" data-delay="50" data-tooltip="Si escribe un número positivo se agregará al inventario, si escribe uno negativo se restará. ">
+          <i class="material-icons">help</i>
+        </a>
       </div>
       <div class="row">
         <div class="input-field col s12">
@@ -80,7 +80,7 @@
   </div>
 </div>
   <div class="container">
-    <!-- Carga donde carga todo -->
+    <!-- Tabla -->
       <table id="table_id">
           <thead>
             <tr>
@@ -91,6 +91,7 @@
             </tr>
           </thead>
           <tbody>
+            <!-- Añade lista mermas_paquete -->
             {% for merma in mermas %}
             <tr>
                 <td>{{ merma.nombre }}</td>
@@ -114,6 +115,7 @@
     $(document).ready(function(){
       $('.collapsible').collapsible();
 
+      // Agrega lista de manera dinamica
       $('#paquetes_catalogo').change(function(){
           var paquete_catalogo = $('#paquetes_catalogo').val();
           $.ajax({

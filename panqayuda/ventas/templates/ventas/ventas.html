@@ -27,7 +27,7 @@
             <td> {{ venta.created_at|date:"Y-m-d" }}</td>
             <td><a onclick="detalleVenta({{venta.id}})" href="#modal_detalle" class="modal-trigger"><i class="material-icons">view_list</i> </a></td>
             <!--Se manda llamar la función de cancelar_venta mandando el id de venta-->
-            <td><a href="{% url 'ventas:cancelar_venta' venta.id %}" class="modal-trigger" onclick="return confirm('Vas a cancelar esta venta. ¿Deseas continuar?')"><i class="material-icons">cancel</i></a></td>
+            <td><a onclick="deleteRegister(this, event)" href="{% url 'ventas:cancelar_venta' venta.id %}" class="modal-trigger"><i class="material-icons">cancel</i></a></td>
             </tr>
           </tr>
          {% endfor %}

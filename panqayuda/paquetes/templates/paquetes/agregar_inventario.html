@@ -3,7 +3,7 @@
 {% block navbar %}{% include "navbar.html" %}{% endblock navbar %}
 {% block header %}
   <header>
-    <h2 class="center-align">Agregar Producto Terminado</h2>
+    <h2 class="center-align">Agregar Orden de Empaquetado</h2>
   </header>
 {% endblock header %}
 {% block content %}
@@ -29,7 +29,7 @@
           </div>
           <!--fecha de caducidad-->
           <div class="input-field col m3">
-            <input type="text" class="datepicker" name="fecha_cad">
+            <input type="text" class="datepicker" name="fecha_cad" id="fecha_cad" onchange="validateFecha('fecha_cad');">
             <label for="fecha_cad">Fecha de caducidad</label>
           </div>
           {%csrf_token%}
@@ -51,6 +51,7 @@
   </div>
 {% endblock content %}
 
+
 {% block js %}
 <script type="text/javascript">
   $('select').formSelect();
@@ -65,5 +66,7 @@
       minDate: new Date(),
     });
   });
+
+
   </script>
 {% endblock js %}

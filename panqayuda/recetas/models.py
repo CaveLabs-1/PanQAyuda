@@ -3,8 +3,20 @@ from django.utils import timezone
 from django.core.validators import MinValueValidator
 import datetime
 from django.db.models import Sum, F
+from materiales.models import Material
+
+class RecetasManager(models.Manager):
+    def get_queryset(self):
+        return super(RecetasManager, self).get_queryset().exclude(material_empaque__isnull=False)
 
 class Receta(models.Model):
+    class Meta:
+        ordering = ['nombre']
+
+    #Siempre filtrará los objetos de receta y excluirá los que son material de empaque
+    objects = models.Manager()
+    objects_sin_empaquetado = RecetasManager()
+
     nombre = models.CharField(max_length=100, null=True, blank=False)
     cantidad = models.IntegerField(null=True, blank=False, validators=[MinValueValidator(1, "Debes seleccionar un número entero mayor a 0.")])
     duration = models.DurationField(null=True, blank=False)
@@ -13,16 +25,21 @@ class Receta(models.Model):
     updated_at = models.DateTimeField(default=timezone.now)
     deleted_at = models.DateTimeField(blank = True, null = True)
     status = models.IntegerField(default=1)
+    material_empaque = models.OneToOneField(Material, on_delete=models.CASCADE, null=True,related_name='material_empaque')
 
     def __str__(self):
         return self.nombre
 
     #Para agregar o quitar paquetes
     def obtener_cantidad_inventario(self):
-        return RecetaInventario.objects.filter(nombre=self).filter(deleted_at__isnull=True). \
-                   filter(fecha_cad__gte=datetime.datetime.now()).filter(cantidad__gt=0). \
-                   annotate(disponible=Sum(F('cantidad') - F('ocupados'))). \
-                   aggregate(porciones_disponible=Sum('disponible'))['porciones_disponible'] or -1
+        #Si es material de empaque, devuelve la cantidad que hay del material de catálogo
+        if self.material_empaque != None:
+            return self.material_empaque.obtener_cantidad_inventario()
+        else:
+            return RecetaInventario.objects.filter(nombre=self).filter(deleted_at__isnull=True). \
+                       filter(fecha_cad__gte=datetime.datetime.now()).filter(cantidad__gt=0). \
+                       annotate(disponible=Sum(F('cantidad') - F('ocupados'))). \
+                       aggregate(porciones_disponible=Sum('disponible'))['porciones_disponible'] or -1
 
     #Para el detalle de las recetas inventario
     def obtener_cantidad_inventario_con_caducados(self):
@@ -34,11 +51,11 @@ class Receta(models.Model):
     #Devuelve True si hay paquetes caducados, y False en caso contrario
     def tiene_caducados(self):
         #Filtrar: quitar los que están ocupados totalmente y los que están eliminados
-        recetas_inventario = self.obtener_recetas_inventario().filter(fecha_cad__gte=datetime.datetime.now())
+        recetas_inventario = self.obtener_recetas_inventario().exclude(fecha_cad__gte=datetime.datetime.now())
         if recetas_inventario.count() > 0:
-            return False
-        else:
             return True
+        else:
+            return False
 
     #Obtener las recetas inventrio de cierta receta
     def obtener_recetas_inventario(self):

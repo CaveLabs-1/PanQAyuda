@@ -23,24 +23,30 @@
       <form class="" method="post" action="{% url 'ordenes:ordenes' %}">
         {% csrf_token %}
         <div class="row">
+          <!--Producto Semiterminado -->
           <div class="input-field col s7 ">
             <select required id="id_receta" name="receta">
-              <option value="" disabled selected>Escoger Receta</option>
+              <option value="" disabled selected>Escoger Producto Semiterminado</option>
               {% for receta in recetas %}
               <option value="{{receta.id}}">{{receta.nombre}}</option>
               {% endfor %}
             </select>
+            <label for="id_receta">Producto semiterminado</label>
+            <span id="cantidad_produce_semiterminado" class="helper-text"></span>
           </div>
+          <!--Fecha de entrega -->
           <div class="input-field col s5">
-            <input class="datepicker" id="{{forma.fecha_fin.id_for_label}}" type="text" class="required" name="{{forma.fecha_fin.html_name}}" required>
+            <input class="datepicker" id="{{forma.fecha_fin.id_for_label}}" type="text" class="required" name="{{forma.fecha_fin.html_name}}" required onchange="validateFecha('{{forma.fecha_fin.id_for_label}}');">
             <label for="{{forma.fecha_fin.id_for_label}}">Fecha de Entrega</label>
           </div>
         </div>
         <div class="row">
+          <!-- Multiplicador -->
           <div class="input-field col s5">
             <input id="{{forma.multiplicador.id_for_label}}" type="number" class="validate" name="{{forma.multiplicador.html_name}}" required>
             <label for="{{forma.multiplicador.id_for_label}}">Multiplicador</label>
           </div>
+          <!--Ayuda multiplicador -->
           <div class="col s1">
             <a class="tooltipped btnAyuda" data-position="top" data-delay="50" data-tooltip="El multiplicador decidira la cantidad de veces que se producirá la receta seleccionada con la cantidad fija de ésta.">
               <i class="material-icons">help</i>
@@ -50,11 +56,13 @@
           </div>
         <div class="row">
           <br>
+          <!-- Botón regresar -->
           <div class="col s6">
             <a class="btn waves-effect waves-light pink modal-close" >Regresar
               <i class="material-icons left">chevron_left</i>
             </a>
           </div>
+          <!-- Botón agregar -->
           <div class="col s6 right-align">
             <button type="submit"class="btn waves-effect waves-light pink">Agregar <i class="material-icons right">send</i></button>
           </div>
@@ -63,10 +71,18 @@
     </div>
   </div>
   {# ----------  Termina modal  --------------  #}
-
+  <!--Órdenes de trabajo pendientes -->
   <div class="row">
     <div class="col s10 offset-s1">
-      {{tabla}}
+      <h3>Órdenes de trabajo pendientes</h3>
+      {{ tabla }}
+    </div>
+  </div>
+  <!--Historial de órdenes de trabajo -->
+   <div class="row">
+    <div class="col s10 offset-s1">
+      <h3> Historial de órdenes de trabajo</h3>
+      {{ tabla_historial }}
     </div>
   </div>
   <div class="fixed-action-btn ">
@@ -99,6 +115,23 @@
       minDate: new Date(),
     });
 
+  });
+
+  //función que muestra la cantidad que produce el producto semiterminado
+  $('#id_receta').change(function(){
+      //actualizar cantidad de paquetes
+      var id_receta = $('#id_receta').val();
+      $.ajax({
+              url: "{% url 'recetas:obtener_cantidad_que_produce' %}",
+              data: {"id_receta": id_receta},
+              success: function(result){
+                  $('#cantidad_produce_semiterminado').show();
+                  $('#cantidad_produce_semiterminado').html(result);
+              },
+              error: function(result){
+                  $('#cantidad_produce_semiterminado').hide();
+              },
+      });
   });
 
   function changeStatus(id){
@@ -140,6 +173,46 @@
      }
      initDataTable();
   }
+  $('#table_historial').DataTable({
+    dom: 'Bfrtip',
+    buttons: ['excel'],
+    // language:{
+    //   "search":         "Search:",
+    //   url: "//cdn.datatables.net/plug-ins/1.10.13/i18n/Spanish.json" //Cambia idioma a español
+    // },
+    // "scrollY": (window.innerHeight - 500) + "px",
+    paging: true,
+      "oLanguage": {
+        	"sProcessing":     "Procesando...",
+        	"sLengthMenu":     "Mostrar _MENU_ registros",
+        	"sZeroRecords":    "No se encontraron resultados",
+        	"sEmptyTable":     "Ningún dato disponible en esta tabla",
+        	"sInfo":           "Mostrando registros del _START_ al _END_ de un total de _TOTAL_ registros",
+        	"sInfoEmpty":      "Mostrando registros del 0 al 0 de un total de 0 registros",
+        	"sInfoFiltered":   "(filtrado de un total de _MAX_ registros)",
+        	"sInfoPostFix":    "",
+        	"sSearch":         "Buscar en todos los campos presentes:",
+        	"sUrl":            "",
+        	"sInfoThousands":  ",",
+        	"sLoadingRecords": "Cargando...",
+        	"oPaginate": {
+        		"sFirst":    "Primero",
+        		"sLast":     "Último",
+        		"sNext":     "Siguiente",
+        		"sPrevious": "Anterior"
+        	},
+        	"oAria": {
+        		"sSortAscending":  ": Activar para ordenar la columna de manera ascendente",
+        		"sSortDescending": ": Activar para ordenar la columna de manera descendente"
+	         }
+      },
+    columnDefs: [
+           {
+               targets: [ 0, 1, 2 ],
+               className: 'mdl-data-table__cell--non-numeric'
+           }
+       ],
+  });
 </script>
 
 {% endblock js %}

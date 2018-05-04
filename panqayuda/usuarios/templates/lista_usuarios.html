@@ -16,8 +16,8 @@
           <thead>
             <tr>
               <th>Nombre</th>
+              <th>Nombre de usuario</th>
               <th>Email</th>
-              <th>Editar</th>
               <th>Eliminar</th>
             </tr>
           </thead>
@@ -26,9 +26,8 @@
             <input class="hidden disabled usuarios" value='{{ usuario.username }}'>
             <tr>
                 <td>{{ usuario.first_name }} {{ usuario.last_name }}</td>
+                <td> {{ usuario.username }}</td>
                 <td>{{ usuario.email }}</td>
-                <!-- Editar usuario -->
-                <td><a><i class="material-icons">edit</i></a></td>
                 <!-- Eliminar usuario -->
                 <td>
                   <a onclick="deleteRegister(this, event)" href="{% url 'usuarios:borrar_usuario' usuario.id %}">

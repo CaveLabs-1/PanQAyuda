@@ -25,19 +25,25 @@
               <br>
               {% csrf_token %}
               <div class="row">
-                <div class="input-field col m3">
+                <div class="input-field col m6">
                   <input class = "validate"  type="text" name="{{form.nombre.html_name}}" id="{{form.nombre.id_for_label}}" value="{{cliente.nombre}}" required>
                   <label for="{{form.nombre.id_for_label}}" data-error='Nombre inválido'  data-success="Nombre correcto">Nombre</label>
                 </div>
-                <div class="input-field col m3">
+                <div class="input-field col m6">
+                  <input class = "validate"  type="text" name="{{form.nombreContacto.html_name}}" id="{{form.nombreContacto.id_for_label}}" value="{{cliente.nombreContacto}}" required>
+                  <label for="{{form.nombreContacto.id_for_label}}" data-error='Nombre inválido'  data-success="Nombre correcto">Nombre Contato</label>
+                </div>
+              </div>
+              <div class="row">
+                <div class="input-field col m4">
                   <input type="number" step = "0.50" name="{{form.telefono.html_name}}" id={{form.telefono.id_for_label}} value="{{cliente.telefono}}" min="0" required>
                   <label for="{{form.telefono.id_for_label}}" data-error='telefono inválido'  data-success="telefono correcto">Teléfono</label>
                 </div>
-                <div class="input-field col m3">
+                <div class="input-field col m4">
                   <input type="email" step = "0.50" name="{{form.email.html_name}}" id={{form.email.id_for_label}} value="{{cliente.email}}" required>
                   <label for="{{form.email.id_for_label}}" data-error='Email inválido'  data-success="Email correcto">Email</label>
                 </div>
-                <div class="input-field col m3">
+                <div class="input-field col m4">
                   <input type="text" step = "0.50" name="{{form.rfc.html_name}}" id={{form.rfc.id_for_label}} value="{{cliente.rfc}}" required>
                   <label for="{{form.rfc.id_for_label}}" data-error='rfc inválido'  data-success="rfc correcto">RFC</label>
                 </div>
