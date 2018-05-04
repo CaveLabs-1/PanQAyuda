@@ -10,4 +10,4 @@ DEBUG = False
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/2.0/howto/deployment/checklist/
 
-ALLOWED_HOSTS = ['138.68.224.112','panqayuda.com.mx']
+ALLOWED_HOSTS = ['138.68.224.112','panqayuda.com.mx', 'sistema.panqayuda.com.mx']
