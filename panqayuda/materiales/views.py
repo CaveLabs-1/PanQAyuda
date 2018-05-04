@@ -108,6 +108,11 @@ def eliminar_material(request, id_material):
     #Obtienes la materia primas
     material = get_object_or_404(Material, pk=id_material)
     material.estatus = 0
+    #Verificar si es material de empaquetado para eliminar la receta también
+    if Receta.objects.filter(material_empaque=material).count() > 0:
+        receta = Receta.objects.filter(material_empaque=material).first()
+        receta.deleted_at = timezone.datetime.now()
+        receta.save()
     #Se hace el borrado
     material.deleted_at = timezone.datetime.now()
     material.save()
