@@ -1,4 +1,4 @@
 <option value="" selected="">---------</option>
 {% for receta_inventario in recetas_inventario %}
-    <option value="{{receta_inventario.id}}"> {{receta_inventario}} </option>
+    <option value="{{receta_inventario.id}}"> {{receta_inventario}} {% if receta_inventario.es_caducado %} - Caducados {% endif %}</option>
 {% endfor %}

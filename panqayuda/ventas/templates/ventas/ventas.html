@@ -25,10 +25,15 @@
             <td>{{venta.cliente}}</td>
             <td>$ {{venta.monto_total|floatformat:2 }}</td>
             <td> {{ venta.created_at|date:"Y-m-d" }}</td>
+            {% if venta.deleted_at %}
+            <td class="pink-text"> Cancelada </td>
+            <td></td>
+            {% else %}
             <td><a onclick="detalleVenta({{venta.id}})" href="#modal_detalle" class="modal-trigger"><i class="material-icons">view_list</i> </a></td>
             <!--Se manda llamar la función de cancelar_venta mandando el id de venta-->
             <td><a onclick="deleteRegister(this, event)" href="{% url 'ventas:cancelar_venta' venta.id %}" class="modal-trigger"><i class="material-icons">cancel</i></a></td>
             </tr>
+            {% endif %}
           </tr>
          {% endfor %}
         </tbody>

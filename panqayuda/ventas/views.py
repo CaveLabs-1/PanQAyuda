@@ -28,7 +28,7 @@ def ventas(request):
         return HttpResponseRedirect(reverse('ventas:ventas'))
     else:
         forma = VentaForm()
-        ventas =  Venta.objects.filter(deleted_at__isnull=True)
+        ventas =  Venta.objects.all()
         return render (request, 'ventas/ventas.html', {'forma': forma, 'ventas': ventas})
 
 """

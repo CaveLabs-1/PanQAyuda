@@ -187,3 +187,21 @@ def obtener_cantidad_que_produce (request):
         return HttpResponse("Cantidad que produce: " + str(receta.cantidad))
     else:
         return HttpResponseNotFound()
+
+@group_required('admin')
+def obtener_cantidad_inventario_con_caducados(request):
+    if request.GET.get('receta_catalogo_id'):
+        id_receta = int(request.GET.get('receta_catalogo_id'))
+        receta = get_object_or_404(Receta, pk=id_receta)
+        return HttpResponse("Cantidad en inventario: " + str(receta.obtener_cantidad_inventario_con_caducados()))
+    else:
+        return HttpResponseNotFound()
+
+@group_required('admin')
+def obtener_cantidad_lote(request):
+    if request.GET.get('receta_inventario_id'):
+        id_receta = int(request.GET.get('receta_inventario_id'))
+        receta_inventario = get_object_or_404(RecetaInventario, pk=id_receta)
+        return HttpResponse("Cantidad disponible de este lote: " + str(receta_inventario.disponibles()))
+    else:
+        return HttpResponseNotFound()

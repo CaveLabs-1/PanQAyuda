@@ -18,7 +18,7 @@
             <select id="{{forma.proveedor.id_for_label}}" class="" name="{{forma.proveedor.html_name}}" required>
               <option disabled selected>Selecciona un proveedor</option>
               {% for proveedor in proveedores %}
-              <option value="{{proveedor.id}}">{{proveedor.nombre}}</option>
+              <option value="{{proveedor.id}}">{{proveedor.razon_social}}</option>
               {% endfor %}
             </select>
           </div>

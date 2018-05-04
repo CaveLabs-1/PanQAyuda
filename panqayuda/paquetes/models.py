@@ -88,3 +88,9 @@ class PaqueteInventario (models.Model):
 
 	def multiplicar_costo_cantidad(self):
 		return self.cantidad * self.costo
+
+	def es_caducado(self):
+		if self.fecha_cad < timezone.now():
+			return True
+		else:
+			return False
