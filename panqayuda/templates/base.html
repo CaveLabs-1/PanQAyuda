@@ -49,9 +49,9 @@
     {% block js %}{% endblock js %}
     {% if messages %}
     <script type="text/javascript">
-      {% for message in messages %}
-          M.toast({html: '{{ message }}'});
-      {% endfor %}
+        {% for message in messages %}
+          M.toast({html: '{{ message }}'})
+        {% endfor %}
     </script>
 
     {% endif %}

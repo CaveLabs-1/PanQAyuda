@@ -26,16 +26,24 @@ class TestListaCompras(TestCase):
         )
         #Se crea una compra
         self.compra = Compra.objects.create(proveedor=self.proveedor, fecha_compra="2059-03-03 12:31:06-05")
-        #Se crea un material catalogo
-        self.material = Material.objects.create(nombre="Material Test", codigo=12344)
         #Se agrega una unidad
         self.unidad = Unidad.objects.create(nombre="Unidad")
+        #Se crea un material catalogo
+        self.material = Material.objects.create(
+            nombre="Material Test",
+            codigo=12344,
+            unidad_entrada = self.unidad,
+            unidad_maestra = self.unidad,
+            equivale_entrada = 1,
+            equivale_maestra = 1
+        )
         #Se crea material al inventario
         materialinv = MaterialInventario.objects.create(
             material=self.material,
             compra=self.compra,
             unidad_entrada=self.unidad,
             cantidad=12,
+            porciones = 12,
             porciones_disponible=12,
             costo=100,
             fecha_cad="2059-03-03 12:31:06-05"
@@ -72,7 +80,53 @@ class TestListaCompras(TestCase):
         self.assertEqual(resp.status_code, 200)
         self.assertEqual(resp.context['compra'].proveedor, id.proveedor)
 
-    #US 7
+
+
+#Test US7
+'''
+    Probar que es posible generar una compra.
+'''
+class TestGenerarCompra(TestCase):
+    def setUp(self):
+        #El setup crea un usuario e inicia sesion para poder iniciar con los tests
+        Group.objects.create(name="admin")
+        user = User.objects.create_user(username='temporary', email='temporary@gmail.com', password='temporary', is_superuser='True')
+        user.save()
+        self.client.login(username='temporary', password='temporary')
+        #Se crea un proveedor
+        self.proveedor = Proveedor.objects.create(
+            nombre="TestLista",
+            telefono=4151043944,
+            direccion="Aqui mero patatero",
+            rfc="12342121",
+            razon_social="Un tipazo",
+            email="test@ejemplo.com"
+        )
+        #Se crea una compra
+        self.compra = Compra.objects.create(proveedor=self.proveedor, fecha_compra="2059-03-03 12:31:06-05")
+        #Se agrega una unidad
+        self.unidad = Unidad.objects.create(nombre="Unidad")
+        #Se crea un material catalogo
+        self.material = Material.objects.create(
+            nombre="Material Test",
+            codigo=12344,
+            unidad_entrada = self.unidad,
+            unidad_maestra = self.unidad,
+            equivale_entrada = 1,
+            equivale_maestra = 1
+        )
+        #Se crea material al inventario
+        materialinv = MaterialInventario.objects.create(
+            material=self.material,
+            compra=self.compra,
+            unidad_entrada=self.unidad,
+            cantidad=12,
+            porciones_disponible=12,
+            costo=100,
+            fecha_cad="2059-03-03 12:31:06-05"
+        )
+
+
     def test_ac1_compra_se_crea(self):
         #Contar numero de registros antes de crear la compra
         cuenta_prepost = Compra.objects.count()
@@ -157,7 +211,6 @@ class TestListaCompras(TestCase):
         self.assertContains(response, '999')
 
 class TestEliminarCompra(TestCase):
-
     #Generación de lo necesario para el ambiente de pruebas
     def setUp(self):
         #El setup crea un usuario e inicia sesion para poder iniciar con los tests
@@ -192,13 +245,3 @@ class TestEliminarCompra(TestCase):
         self.client.get(reverse('compras:eliminar_compra', kwargs={'id_compra':objetos.id}))
         #Se revisa que no haya objetos con el campo vacío de deleted_at
         self.assertEqual(Compra.objects.filter(deleted_at__isnull=True).count(), 0)
-
-
-
-
-
-    #             cuenta_prepost=MaterialInventario.objects.filter(compra=self.compra.id).count()
-    #             data = {'material':self.material.id, 'fecha_cad':'2059-03-03', 'cantidad':'10', 'unidad_entrada':self.unidad.id, 'porciones':'200', 'costo':'100',  'compra':self.compra .id}
-    #             resp = self.client.post(reverse('compras:agregar_materia_prima_a_compra'), data)
-    #             cuenta_postpost=MaterialInventario.objects.filter(compra=self.compra.id).count()
-    #             self.assertEqual(cuenta_prepost+1, cuenta_postpost)

@@ -89,7 +89,9 @@ def ordenes (request):
         recetas = Receta.objects_sin_empaquetado.filter(deleted_at__isnull=True)
         # Render de la página con la forma vacía y lista de ordenes por entregar.
         tabla = render_to_string('ordenes/tabla_ordenes.html', {'ordenes': ordenes})
-        return render(request, 'ordenes/ordenes.html', {'forma': forma, 'ordenes': ordenes, 'recetas':recetas, 'tabla':tabla})
+        ordenes = Orden.objects.all()
+        tabla_historial = render_to_string('ordenes/tabla_ordenes_historial.html', {'ordenes': ordenes})
+        return render(request, 'ordenes/ordenes.html', {'forma': forma, 'tabla_historial':tabla_historial, 'recetas':recetas, 'tabla':tabla})
 
 '''
     Cuando una orden de trabajo se marca como terminada, se agrega las recetas que

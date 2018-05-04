@@ -40,7 +40,7 @@ function initDataTable(){
         	"sInfoEmpty":      "Mostrando registros del 0 al 0 de un total de 0 registros",
         	"sInfoFiltered":   "(filtrado de un total de _MAX_ registros)",
         	"sInfoPostFix":    "",
-        	"sSearch":         "Buscar en todos los camos presentes:",
+        	"sSearch":         "Buscar en todos los campos presentes:",
         	"sUrl":            "",
         	"sInfoThousands":  ",",
         	"sLoadingRecords": "Cargando...",

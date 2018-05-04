@@ -12,6 +12,8 @@ from django.db.models.functions import Concat
 from panqayuda.decorators import group_required
 import datetime
 from django.utils import timezone
+from django.core.exceptions import ObjectDoesNotExist
+
 import json
 
 """
@@ -324,3 +326,13 @@ def eliminar_paquetes_inventario_recetas(paquete,cantidad):
                         cantidad_a_sumar -= receta_inventario.ocupados
                         receta_inventario.ocupados = 0
                         receta_inventario.save()
+
+@group_required('admin')
+#Función que devuelve el número de paquetes en inventario para cierto paquete
+def obtener_cantidad_inventario(request):
+    if request.GET.get('id_paquete'):
+        id_paquete = int(request.GET.get('id_paquete'))
+        paquete = get_object_or_404(Paquete, pk=id_paquete)
+        return HttpResponse("Cantidad en inventario: "+ str(paquete.obtener_disponibles_inventario()))
+    else:
+        return HttpResponseNotFound()

@@ -3,7 +3,7 @@ from .models import Receta, RelacionRecetaMaterial, RecetaInventario
 from django.contrib import messages
 from materiales.models import Material
 from .forms import RecetaForm, MaterialRecetaForm
-from django.http import HttpResponse, HttpResponseRedirect
+from django.http import HttpResponse, HttpResponseRedirect, HttpResponseNotFound
 from panqayuda.decorators import group_required
 import datetime
 from django.utils import timezone
@@ -177,3 +177,13 @@ def detalle_recetas_inventario(request):
         response = render_to_string('recetas/lista_detalle_recetas_inventario.html', {'detalle_recetas_en_inventario': detalle_recetas_en_inventario, 'receta': receta})
         return HttpResponse(response)
     return HttpResponse('Algo ha salido mal.')
+
+
+@group_required('admin')
+def obtener_cantidad_que_produce (request):
+    if request.GET.get('id_receta'):
+        id_receta = int(request.GET.get('id_receta'))
+        receta = get_object_or_404(Receta, pk=id_receta)
+        return HttpResponse("Cantidad que produce: " + str(receta.cantidad))
+    else:
+        return HttpResponseNotFound()
