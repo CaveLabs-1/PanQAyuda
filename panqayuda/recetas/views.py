@@ -25,7 +25,7 @@ from django.db.models import Sum, F
 @group_required('admin')
 def lista_recetas(request):
     template_name = 'lista_recetas.html'
-    recetas = list(Receta.objects.filter(status=1))
+    recetas = list(Receta.objects_sin_empaquetado.filter(status=1))
     return render(request, 'recetas/lista_recetas.html', {'recetas': recetas})
 
 
@@ -158,7 +158,7 @@ def borrar_material(request, id_material):
 @group_required('admin')
 def lista_recetas_inventario(request):
     #recetas_inventario = list(RecetaInventario.objects.filter(deleted_at__isnull=True).filter(estatus=1))
-    catalogo_recetas=Receta.objects.filter(deleted_at__isnull=True).filter(status=1)
+    catalogo_recetas=Receta.objects_sin_empaquetado.filter(deleted_at__isnull=True).filter(status=1)
 
     return render(request, 'recetas/lista_recetas_inventario.html', {'catalogo_recetas': catalogo_recetas})
 

@@ -7,16 +7,15 @@ from materiales.models import Material
 
 class RecetasManager(models.Manager):
     def get_queryset(self):
-        return super(RecetasManager, self).get_queryset().filter(material_empaque__isnull=True)
+        return super(RecetasManager, self).get_queryset().exclude(material_empaque__isnull=False)
 
 class Receta(models.Model):
     class Meta:
         ordering = ['nombre']
 
     #Siempre filtrará los objetos de receta y excluirá los que son material de empaque
-    objects = RecetasManager()
-
-    objects_con_empaquetado = models.Manager()
+    objects = models.Manager()
+    objects_sin_empaquetado = RecetasManager()
 
     nombre = models.CharField(max_length=100, null=True, blank=False)
     cantidad = models.IntegerField(null=True, blank=False, validators=[MinValueValidator(1, "Debes seleccionar un número entero mayor a 0.")])
