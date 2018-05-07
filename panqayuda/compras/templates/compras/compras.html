@@ -32,6 +32,7 @@
           <!-- Verificar si la compra está cancelada -->
           {% if compra.deleted_at %}
           <td class="pink-text"> Cancelada </td>
+          <td></td>
           {% else %}
           <!--Ver detalle de la compra-->
           <td><a onclick="detalleCompra({{compra.id}})" href="#modal_detalle" class="modal-trigger"><i class="material-icons">view_list</i> </a></td>

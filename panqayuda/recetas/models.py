@@ -70,8 +70,7 @@ class RelacionRecetaMaterial(models.Model):
     #Relacion a la llave del Modelo de Receta
     receta = models.ForeignKey('Receta', on_delete = models.CASCADE)
     material = models.ForeignKey('materiales.Material',  on_delete = models.CASCADE)
-    cantidad = models.DecimalField(null=True, blank=False,max_digits=10, decimal_places=5,
-                                   validators=[MinValueValidator(0.000001, "Debes seleccionar una cantidad mayor a 0.")])
+    cantidad = models.FloatField(null=True, blank=False,validators=[MinValueValidator(0.000001, "Debes seleccionar una cantidad mayor a 0.")])
     status = models.IntegerField(default=1)
     def __str__(self):
         return self.receta.nombre
