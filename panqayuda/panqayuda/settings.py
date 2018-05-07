@@ -31,14 +31,14 @@ SECRET_KEY = '1*yt_mox3++ki9r^6gcy9glammohks$3kt6=aypexc(5d9k41v'
 
 # SECURITY WARNING: don't run with debug turned on in production!
 
-DEBUG = True
+DEBUG = False
 
 
 ALLOWED_HOSTS = ['sistema.panqayuda.com.mx', 'localhost', '127.0.0.1']
 
-CSRF_COOKIE_SECURE = False
+CSRF_COOKIE_SECURE = True
 
-SESSION_COOKIE_SECURE = False
+SESSION_COOKIE_SECURE = True
 
 # Application definition
 
