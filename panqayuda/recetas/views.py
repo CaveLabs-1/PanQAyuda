@@ -144,6 +144,7 @@ def borrar_material(request, id_material):
     material = get_object_or_404(RelacionRecetaMaterial, pk=id_material)
     # id_receta = material.receta.id
     material.status = 0
+    material.deleted_at = timezone.now()
     material.save()
     # messages.add_message(request, SUCCESS, 'Receta borrada exitosamente.')
     return HttpResponseRedirect(request.META.get('HTTP_REFERER', '/'))
