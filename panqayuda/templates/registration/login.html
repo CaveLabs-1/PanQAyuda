@@ -44,5 +44,9 @@
 {% endblock content %}
 
 {% block js %}
-
+<script>
+  {% if form.errors %}
+        M.toast({html: 'El usuario introducido y/o la contraseña son incorrectos.' });
+  {% endif %}
+</script>
 {% endblock js %}
