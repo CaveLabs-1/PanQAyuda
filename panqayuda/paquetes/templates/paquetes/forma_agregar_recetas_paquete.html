@@ -4,7 +4,7 @@
     <!--Receta-->
     <div class="input-field col m6">
       <select id="id_receta" class="" name="receta" required>
-        <option value="0">Selecciona un producto terminado o un material de empaque </option>
+        <option value="0">Selecciona un producto semi-terminado o un material de empaque </option>
         {% for receta in recetas %}
         <option value="{{receta.id}}">{{receta.nombre}}</option>
         {% endfor %}
