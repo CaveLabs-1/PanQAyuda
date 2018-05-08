@@ -15,7 +15,7 @@
                 <span class="card-title">
                     <div class="row">
                         <div class="col s6">
-                          <a class="btn waves-effect waves-light pink"  onClick="window.history.back();return false;" >Regresar
+                          <a class="btn waves-effect waves-light pink"  href="{% url 'recetas:lista_de_recetas' %}">Regresar
                             <i class="material-icons left">chevron_left</i>
                           </a>
                         </div>
@@ -71,7 +71,7 @@
                                 {% for material in materiales %}
                                 <tr>
                                     <td>{{ material.material.nombre }}</td>
-                                    <td>{{ material.cantidad | floatformat:"0" }}</td>
+                                    <td>{{ material.cantidad | floatformat:"2" }}</td>
                                     <td>{{ material.material.unidad_maestra }}</td>
                                     <!-- <td><a href="borrar_material/{{ material.id }}"><i class="material-icons">delete</i></a></td> -->
                                 </tr>

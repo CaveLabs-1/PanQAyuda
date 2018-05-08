@@ -36,9 +36,9 @@ DEBUG = True
 
 ALLOWED_HOSTS = ['sistema.panqayuda.com.mx', 'localhost', '127.0.0.1']
 
-CSRF_COOKIE_SECURE = True
+CSRF_COOKIE_SECURE = False
 
-SESSION_COOKIE_SECURE = True
+SESSION_COOKIE_SECURE = False
 
 # Application definition
 

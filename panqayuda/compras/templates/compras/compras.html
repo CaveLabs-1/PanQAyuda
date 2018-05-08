@@ -30,14 +30,12 @@
           <td>{{compra.fecha_compra.date}}</td>
           <td> $ {{ compra.monto }}</td>
           <td class="hide">{{compra.created_at}}</td>
-
-
+          <td><a onclick="detalleCompra({{compra.id}})" href="#modal_detalle" class="modal-trigger"><i class="material-icons">view_list</i> </a></td>
           <!-- Verificar si la compra está cancelada -->
           {% if compra.deleted_at %}
-          <td class="pink-text"> Cancelada </td>
+                    <td class="pink-text"> Cancelada </td>
           {% else %}
           <!--Ver detalle de la compra-->
-          <td><a onclick="detalleCompra({{compra.id}})" href="#modal_detalle" class="modal-trigger"><i class="material-icons">view_list</i> </a></td>
           <!--Editar compra-->
           <!-- <td><a href="editar_compra/{{ compra.id }}"><i class="material-icons">edit</i></a></td> -->
           <!--Se manda llamar la función de eliminar_compra mandando el id de compra-->

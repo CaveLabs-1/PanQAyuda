@@ -1,7 +1,7 @@
 {% load mathfilters %}
 <h4>Detalle de la compra no. {{compra.id}} </h4>
 <h5>Fecha: {{ compra.fecha_compra.date }} </h5>
-<h5>Proveedor: {{compra.proveedor}}</h5>
+<h5>Proveedor: {{compra.proveedor.razon_social }}</h5>
 <h1>{{compramaterial}}</h1>
 <table>
   <thead>
