@@ -6,6 +6,7 @@
 <th>Fecha de Entrega</th>
 <th>Fecha creación</th>
 <th>Estatus</th>
+<th class="hide"> Fecha de Creación </th>
 </thead>
 <tbody>
 {% for orden in ordenes %}
@@ -18,6 +19,8 @@
   <td>
       {{ orden.get_estatus_display }}
   </td>
+  <td class="hide">{{orden.created_at}}</td>
+
 </tr>
 {% endfor %}
 </tbody>
