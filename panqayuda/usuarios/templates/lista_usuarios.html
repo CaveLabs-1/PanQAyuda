@@ -19,6 +19,8 @@
               <th>Nombre de usuario</th>
               <th>Email</th>
               <th>Eliminar</th>
+              <th class="hide"> Fecha de Creación </th>
+
             </tr>
           </thead>
           <tbody>
@@ -34,6 +36,8 @@
                     <i class="material-icons">delete</i>
                   </a>
                 </td>
+                <td class="hide">{{usuario.created_at}}</td>
+
             </tr>
             {% endfor %}
           </tbody>

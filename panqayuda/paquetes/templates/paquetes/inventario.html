@@ -17,6 +17,7 @@
         <th>Cantidad</th>
         <th>Fecha de Caducidad</th>
         <th> </th>
+        <th class="hide"> Fecha de Creación </th>
       </thead>
       <tbody>
         {% for item in Paquete_Inventario %}
@@ -38,6 +39,7 @@
               </div>
             </div>
           </td>
+          <td class="hide">{{item.created_at}}</td>
         </tr>
         {% endfor %}
       </tbody>

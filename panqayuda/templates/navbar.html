@@ -3,7 +3,7 @@
   <ul id="slide-out" class="sidenav sidenav-fixed">
     <li><div class="user-view">
       <div class="background navbar-color"></div>
-      <a href="#!user"><img class="navbar-logo" src="{% static "img/navbar/panqayudalogo.png" %}"></a>
+      <a href="#!user"><img class="navbar-logo" src="{% static "img/navbar/panqayudalogo.png" %}" style="width: 65%;height: auto;"></a>
     </div></li>
 
     <li><div class="divider"></div></li>
@@ -28,7 +28,7 @@
                           <div class="collapsible-body">
                             <ul>
                               <li><a href="{% url 'clientes:clientes' %}">Clientes</a></li>
-                              <li><a href="{% url 'proveedores:lista_proveedores' %}">Proovedores</a></li>
+                              <li><a href="{% url 'proveedores:lista_proveedores' %}">Proveedores</a></li>
                               <li><a href="{% url 'materiales:lista_unidades' %}">Unidades</a></li>
                               <li><a href="{% url 'materiales:materiales' %}">Materia Prima</a></li>
                               <li><a href="{% url 'recetas:lista_de_recetas' %}">Producto Semi-Terminado</a></li>
@@ -47,7 +47,7 @@
                     <ul>
                       <li><a href="{% url 'compras:compras' %}">&Oacute;rdenes de Compra</a></li>
                       <li><a href="{% url 'ordenes:ordenes' %}"> &Oacute;rdenes de Trabajo Semi-Terminado</a></li>
-                      <li><a href="{% url 'paquetes:agregar_inventario' %}"> &Oacute;rdenes Trabajo Producto Terminado</a></li>
+                      <li><a href="{% url 'paquetes:agregar_inventario' %}"> &Oacute;rdenes Trabajo Terminado</a></li>
                       <li><a href="{% url 'ventas:ventas' %}"> &Oacute;rdenes de Venta</a></li>
                     </ul>
                   </div>

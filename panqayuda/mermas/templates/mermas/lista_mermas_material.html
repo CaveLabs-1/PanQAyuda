@@ -101,6 +101,7 @@
               <th>Cantidad</th>
               <th>Descripcion</th>
               <th>Fecha</th>
+              <th class="hide"> Fecha de Creación </th>
             </tr>
           </thead>
           <tbody>
@@ -111,6 +112,7 @@
                 <td>{{ merma.cantidad }}</td>
                 <td>{{ merma.descripcion }}</td>
                 <td>{{ merma.fecha }}</td>
+                <td class="hide">{{merma.created_at}}</td>
             </tr>
             {% endfor %}
           </tbody>

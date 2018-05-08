@@ -16,6 +16,7 @@
         <th>Nombre</th>
         <th>Editar</th>
         <th>Eliminar</th>
+        <th class="hide"> Fecha de Creación </th>
       </thead>
       <tbody>
        {% for unidad in unidades %}
@@ -24,6 +25,7 @@
           <td><a href="{% url 'materiales:modificar_unidad' unidad.id %}" class="modal-trigger"><i class="material-icons">edit</i></a></td>
           <!--Manda a la vista de eliminar_unidad con el id de unidad -->
           <td><a href="{% url 'materiales:eliminar_unidad' unidad.id %}" class="modal-trigger" onclick="deleteRegister(this, event)"><i class="material-icons">delete</i></a></td>
+          <td class="hide">{{unidad.created_at}}</td>
         </tr>
        {% endfor %}
       </tbody>

@@ -17,6 +17,7 @@
             <th>Nombre</th>
             <th>Cantidad en inventario</th>
             <th>Ver detalle</th>
+            <th class="hide"> Fecha de Creación </th>
           </tr>
         </thead>
         <tbody>
@@ -25,6 +26,7 @@
                 <td>{{receta_inventario.nombre}}</td>
                 <td>{{ receta_inventario.obtener_cantidad_inventario_con_caducados }} {% if receta_inventario.tiene_caducados%} -  <span class="pink-text"> Existen caducados </span> {% endif %}</td>
                 <td><a onclick="detalleRecetas({{receta_inventario.id}})" href="#modal_detalle" class="modal-trigger"><i class="material-icons">view_list</i> </a></td>
+                <td class="hide">{{receta_inventario.created_at}}</td>
             </tr>
           {% endfor %}
         </tbody>
