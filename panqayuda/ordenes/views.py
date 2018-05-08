@@ -51,7 +51,7 @@ def ordenes (request):
             materiales_receta = RelacionRecetaMaterial.objects.filter(receta = receta)
             for material_receta in materiales_receta:
                 materiales_inventario = MaterialInventario.objects.filter(material = material_receta.material).filter(
-                    fecha_cad__gte=datetime.datetime.now(),deleted_at__isnull=True).order_by('fecha_cad')
+                    fecha_cad__gte=timezone.now(),deleted_at__isnull=True).order_by('fecha_cad')
                 # Calcula la cantidad que se debe restar de dicho material en el inventario.
                 cantidad_a_restar = float(material_receta.cantidad * multiplicador)
                 cantidad_a_restar_inicial = cantidad_a_restar
@@ -101,10 +101,11 @@ def ordenes (request):
 def terminar_orden (request):
     if request.method == 'POST':
          orden= get_object_or_404(Orden, pk=request.POST['id'])
-         orden.estatus=request.POST['estatus']
-         total_creadas = orden.receta.cantidad * orden.multiplicador
-         RecetaInventario.objects.create(nombre = orden.receta, cantidad = total_creadas, fecha_cad = (timezone.now() + orden.receta.duration), costo= orden.costo)
-         orden.save()
+         if orden.estatus == '1':
+             orden.estatus=request.POST['estatus']
+             total_creadas = orden.receta.cantidad * orden.multiplicador
+             RecetaInventario.objects.create(nombre = orden.receta, cantidad = total_creadas, fecha_cad = (timezone.now() + orden.receta.duration), costo= orden.costo)
+             orden.save()
     ordenes = Orden.ordenes_por_entregar()
     data = render_to_string('ordenes/tabla_ordenes.html', {'ordenes': ordenes})
     return HttpResponse(data)
