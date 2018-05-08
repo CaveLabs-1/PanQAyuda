@@ -28,6 +28,7 @@
             <th>Total</th>
             <th>Precio</th>
             <th>Ver detalle</th>
+            <th class="hide"> Fecha de Creación </th>
           </tr>
         </thead>
         <tbody>
@@ -39,6 +40,7 @@
                 <td>{% if catalogo_paquete.total %} {{ catalogo_paquete.total }} {% else %} 0 {% endif %}</td>
                 <td>$ {{catalogo_paquete.precio}}</td>
                 <td><a onclick="detallePaquetes({{catalogo_paquete.id}})" href="#modal_detalle" class="modal-trigger"><i class="material-icons">view_list</i> </a></td>
+                <td class="hide">{{catalogo_paquete.created_at}}</td>
             </tr>
           {% endfor %}
         </tbody>

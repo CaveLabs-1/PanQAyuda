@@ -16,8 +16,7 @@
               <th>Nombre</th>
               <th>Cantidad que produce</th>
               <th>Duración</th>
-              <!--<th>Editar Materia Prima</th>
-              <th>Eliminar</th>-->
+              <th class="hide"> Fecha de Creación </th>
             </tr>
           </thead>
           <tbody>
@@ -26,8 +25,7 @@
                 <td><a href="{% url 'recetas:detallar_receta' receta.id %}">{{ receta.nombre }}</a></td>
                 <td>{{ receta.cantidad }}</td>
                 <td>{{ receta.duration.days }} días</td>
-                <!-- <td><a href="agregar_materiales/{{ receta.id }}"><i class="material-icons">edit</i></a></td> #} -->
-                <!--<td><a onclick="return confirm('¿Seguro que quieres borrar la receta de {{receta.nombre}}?')" href="borrar_receta/{{ receta.id }}"><i class="material-icons">delete</i></a></td>-->
+                <td class="hide">{{receta.created_at}}</td>
             </tr>
             {% endfor %}
           </tbody>

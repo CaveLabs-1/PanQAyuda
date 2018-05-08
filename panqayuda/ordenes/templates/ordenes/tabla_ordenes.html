@@ -4,6 +4,7 @@
 <th>Cantidad</th>
 <th>Fecha de Entrega</th>
 <th>Estatus</th>
+<th class="hide"> Fecha de Creación </th>
 </thead>
 <tbody>
 {% for orden in ordenes %}
@@ -11,6 +12,7 @@
   <td>{{orden.receta.nombre}}</td>
   <td>{% widthratio orden.receta.cantidad 1 orden.multiplicador %}</td>
   <td>{{orden.fecha_fin}}</td>
+
   <td id="celda_estatus">
     {% if orden.estatus == '1' %}
   <div class=row>
@@ -27,6 +29,7 @@
     {{orden.estatus}}
   {% endif %}
   </td>
+  <td class="hide">{{orden.created_at}}</td>
 </tr>
 {% endfor %}
 </tbody>
