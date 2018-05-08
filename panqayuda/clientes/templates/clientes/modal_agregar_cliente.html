@@ -29,8 +29,8 @@
                 </div>
                 <!-- RFC -->
                 <div class="input-field col s6">
-                    <input pattern="[a-zA-Z0-9]{13,13}"class="validate"  maxlength="13" type="text" name="{{forma.rfc.html_name}}" maxlength="10" id="{{forma.rfc.id_for_label}}" value="">
-                    <label for="{{forma.rfc.id_for_label}}" data-error='Teléfono inválido'  data-success="">RFC</label>
+                    <input pattern="[a-zA-Z0-9]{12,13}" class="validate"  maxlength="13" type="text" name="{{forma.rfc.html_name}}" maxlength="13" id="{{forma.rfc.id_for_label}}" value="">
+                    <label for="{{forma.rfc.id_for_label}}" data-error='RFC inválido'  data-success="">RFC</label>
                     <span class="helper-text" data-error="RFC inválido"></span>
                     <span class="red-text">{%if forma.rfc.errors %} {{forma.rfc.errors}} {% endif %}</span>
                 </div>
