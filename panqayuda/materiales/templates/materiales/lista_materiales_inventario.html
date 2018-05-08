@@ -28,6 +28,7 @@
             <th>Existencia </th>
             <th>Unidades</th>
             <th>Ver detalle</th>
+            <th class="hide"> Fecha de Creación </th>
           </tr>
         </thead>
         <tbody>
@@ -44,6 +45,8 @@
                     <i class="material-icons" >view_list</i>
                   </a>
               </td>
+              <td class="hide">{{material.created_at}}</td>
+
             </tr>
           {% endfor %}
         </tbody>

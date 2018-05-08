@@ -20,6 +20,7 @@
         <th>Detalle</th>
         <!-- <th>Editar</th> -->
         <th>Eliminar</th>
+        <th class="hide"> Fecha de Creación </th>
       </thead>
       <tbody>
        {% for compra in compras %}
@@ -28,6 +29,8 @@
           <td>{{compra.proveedor.razon_social }}</td>
           <td>{{compra.fecha_compra.date}}</td>
           <td> $ {{ compra.monto }}</td>
+          <td class="hide">{{compra.created_at}}</td>
+
 
           <!-- Verificar si la compra está cancelada -->
           {% if compra.deleted_at %}
