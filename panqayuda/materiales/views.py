@@ -219,11 +219,19 @@ def editar_material(request, id_material):
 @group_required('admin')
 # Función que devuelve el número de paquetes en inventario para cierto paquete
 def obtener_cantidad_inventario_con_caducados(request):
-    print("LULZ")
     if request.GET.get('material_catalogo_id'):
         id_material = int(request.GET.get('material_catalogo_id'))
         material = get_object_or_404(Material, pk=id_material)
-        return HttpResponse("Cantidad en inventario: " + str(material.obtener_cantidad_inventario_fisico()))
+        return HttpResponse("Cantidad en inventario: " + str(material.obtener_cantidad_inventario_fisico()) + " " + str(material.unidad_maestra))
+    else:
+        return HttpResponseNotFound()
+
+@group_required('admin')
+def obtener_unidad_inventario_con_caducados(request):
+    if request.GET.get('material_catalogo_id'):
+        id_material = int(request.GET.get('material_catalogo_id'))
+        material = get_object_or_404(Material, pk=id_material)
+        return HttpResponse("Unidad de ajuste: " + str(material.unidad_maestra))
     else:
         return HttpResponseNotFound()
 
@@ -234,6 +242,6 @@ def obtener_cantidad_lote(request):
     if request.GET.get('material_inventario_id'):
         id_material_inventario = int(request.GET.get('material_inventario_id'))
         material_inventario = get_object_or_404(MaterialInventario, pk=id_material_inventario)
-        return HttpResponse("Cantidad disponible de este lote: " + str(material_inventario.porciones_disponible))
+        return HttpResponse("Cantidad disponible de este lote: " + str(material_inventario.porciones_disponible) + " " + str(material_inventario.material.unidad_maestra))
     else:
         return HttpResponseNotFound()

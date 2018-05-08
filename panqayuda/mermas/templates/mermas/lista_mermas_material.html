@@ -50,6 +50,7 @@
       <div class="input-field col s11">
         <label for="{{forma.cantidad.id_for_label}}">Cantidad</label>
         <input id="{{forma.cantidad.id_for_label}}" name="{{forma.cantidad.html_name}}" type="number" required>
+        <span id="unidad_a_usar" class="helper-text"></span>
       </div>
       <div class="col s1">
         <a class="tooltipped btnAyuda" data-position="top" data-delay="50" data-tooltip="Si escribe un número positivo se agregará al inventario, si escribe uno negativo se restará. ">
@@ -149,6 +150,14 @@
             data:{'material_catalogo_id':material_catalogo_id},
             success: function(response){
                 $('#cantidad_material_catalogo').html(response);
+            }
+        });
+
+        $.ajax({
+            url: "{% url 'materiales:obtener_unidad_inventario_con_caducados' %}",
+            data:{'material_catalogo_id':material_catalogo_id},
+            success: function(response){
+                $('#unidad_a_usar').html(response);
             }
         });
     });
