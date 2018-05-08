@@ -17,5 +17,6 @@ urlpatterns = [
     path('lista_materiales/eliminar_material/<int:id_material>', views.eliminar_material, name='eliminar_material'),
     path('lista_materiales/eliminar_unidad/<int:id_unidad>', views.eliminar_unidad, name='eliminar_unidad'),
     path('obtener_cantidad_inventario_con_caducados', views.obtener_cantidad_inventario_con_caducados,name='obtener_cantidad_inventario_con_caducados'),
+    path('obtener_unidad_inventario_con_caducados', views.obtener_unidad_inventario_con_caducados,name='obtener_unidad_inventario_con_caducados'),
     path('obtener_cantidad_lote', views.obtener_cantidad_lote,name='obtener_cantidad_lote'),
 ]+ static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
