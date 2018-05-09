@@ -24,7 +24,7 @@ class Paquete (models.Model):
 	#Devuelve el número de paquetes en inventario disponibles para este tipo de paquete
 	def obtener_disponibles_inventario(self):
 		return PaqueteInventario.objects.filter(nombre=self).filter(deleted_at__isnull=True).\
-			filter(fecha_cad__gte=datetime.datetime.now()).annotate(disponible=Sum(F('cantidad')- F('ocupados'))).\
+			filter(fecha_cad__gte=timezone.now()).annotate(disponible=Sum(F('cantidad')- F('ocupados'))).\
 			aggregate(porciones_disponible=Sum('disponible'))['porciones_disponible'] or 0
 
 	#Devuelve el número de paquetes incluyendo las mermas
@@ -36,14 +36,14 @@ class Paquete (models.Model):
 	#Devuelve la lista de paquetes_inventario que tienen paquetes disponibles
 	def obtener_paquetes_inventario_disponibles(self):
 		return PaqueteInventario.objects.filter(nombre=self).filter(deleted_at__isnull=True). \
-			filter(fecha_cad__gte=datetime.datetime.now()).annotate(disponible=Sum(F('cantidad') - F('ocupados'))). \
+			filter(fecha_cad__gte=timezone.now()).annotate(disponible=Sum(F('cantidad') - F('ocupados'))). \
 			filter(disponible__gt=0).order_by('fecha_cad')
 
 #-----------------------------------------------------------------
 	#Devuelve la lista de paquetes_inventario que tienen algun paquete ocupado
 	def obtener_paquetes_inventario_ocupado(self):
 		return PaqueteInventario.objects.filter(nombre=self).filter(deleted_at__isnull=True). \
-			filter(fecha_cad__gte=datetime.datetime.now()). \
+			filter(fecha_cad__gte=timezone.now()). \
 			exclude(ocupados=0).order_by('fecha_cad')
 
 #-----------------------------------------------------------------
@@ -52,6 +52,15 @@ class Paquete (models.Model):
 	def obtener_paquetes_inventario_con_caducados(self):
 		return PaqueteInventario.objects.filter(nombre=self).filter(deleted_at__isnull=True). \
 			annotate(disponible=Sum(F('cantidad') - F('ocupados'))).filter(disponible__gte=0).order_by('fecha_cad')
+
+	# Devuelve True si hay paquetes caducados, y False en caso contrario
+	def tiene_caducados(self):
+		# Filtrar: quitar los que están ocupados totalmente y los que están eliminados
+		paquetes_inventario = self.obtener_paquetes_inventario_con_caducados().exclude(fecha_cad__gte=timezone.now())
+		if paquetes_inventario.count() > 0:
+			return True
+		else:
+			return False
 
 class RecetasPorPaquete (models.Model):
 	paquete=models.ForeignKey(Paquete, on_delete=models.CASCADE)

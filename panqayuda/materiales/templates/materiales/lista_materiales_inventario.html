@@ -34,7 +34,7 @@
         <tbody>
           {% for material in catalogo_materiales %}
             <tr>
-                <td>{{ material.nombre }}</td>
+                <td>{{ material.nombre }}  {% if material.tiene_caducados %} -  <span class="pink-text"> Existen caducados </span> {% endif %}  </td>
                 {% with aux=material.total|mul:material.equivale_entrada %}
                 <td>{{ aux|div:material.equivale_maestra}}</td>
                 {% endwith %}
