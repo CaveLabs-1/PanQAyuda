@@ -23,8 +23,8 @@
         <tbody>
           {% for receta_inventario in catalogo_recetas %}
             <tr>
-                <td>{{receta_inventario.nombre}}</td>
-                <td>{{ receta_inventario.obtener_cantidad_inventario_con_caducados }} {% if receta_inventario.tiene_caducados%} -  <span class="pink-text"> Existen caducados </span> {% endif %}</td>
+                <td>{{receta_inventario.nombre}} {% if receta_inventario.tiene_caducados%} -  <span class="pink-text"> Existen caducados </span> {% endif %}</td>
+                <td>{{ receta_inventario.obtener_cantidad_inventario_con_caducados }} </td>
                 <td><a onclick="detalleRecetas({{receta_inventario.id}})" href="#modal_detalle" class="modal-trigger"><i class="material-icons">view_list</i> </a></td>
                 <td class="hide">{{receta_inventario.created_at}}</td>
             </tr>

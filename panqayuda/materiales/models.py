@@ -79,6 +79,15 @@ class Material(models.Model):
                 material_inventario.save()
                 break
 
+    # Devuelve True si hay materiales inventario caducados, y False en caso contrario
+    def tiene_caducados(self):
+        # Filtrar: quitar los que están ocupados totalmente y los que están eliminados
+        paquetes_inventario = MaterialInventario.objects.filter(material=self, porciones_disponible__gt=0, fecha_cad__lte=timezone.now())
+        if paquetes_inventario.count() > 0:
+            return True
+        else:
+            return False
+
     def __str__(self):
         return self.nombre
 

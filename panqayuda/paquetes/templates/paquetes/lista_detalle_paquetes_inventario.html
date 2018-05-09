@@ -13,7 +13,7 @@
   <tbody>
 {% for i in detalle_paquetes_en_inventario %}
     {% if i.disponibles > 0 %}
-        <tr>
+        <tr class="{% if i.es_caducado %} pink-text {% endif %}">
           <td>{{paquete.nombre}}</td>
             <td>{{i.disponibles}}</td>
             <!-- <td>{{ i.costo }}</td> -->
