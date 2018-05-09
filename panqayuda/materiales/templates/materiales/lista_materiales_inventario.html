@@ -28,6 +28,7 @@
             <th>Existencia </th>
             <th>Unidades</th>
             <th>Ver detalle</th>
+            <th class="hide"> Fecha de Creación </th>
           </tr>
         </thead>
         <tbody>
@@ -35,15 +36,17 @@
             <tr>
                 <td>{{ material.nombre }}</td>
                 {% with aux=material.total|mul:material.equivale_entrada %}
-                <td>{{ aux|div:material.equivale_maestra}} {{material.unidad_entrada}}</td>
+                <td>{{ aux|div:material.equivale_maestra}}</td>
                 {% endwith %}
-                <td>{{ material.total }} {{ material.unidad_maestra}} </td>
+                <td>{{ material.unidad_maestra}} </td>
                 <!--mostrar detalle-->
                 <td>
                   <a onclick="detalleMateriales({{material.id}})" href="#modal_detalle" class="modal-trigger">
                     <i class="material-icons" >view_list</i>
                   </a>
               </td>
+              <td class="hide">{{material.created_at}}</td>
+
             </tr>
           {% endfor %}
         </tbody>

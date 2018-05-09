@@ -123,9 +123,9 @@ def agregar_merma_materiales(request):
                 #agregar nuevo registro
                 materia_prima = pack.material
                 fecha_cad= pack.fecha_cad
-                cantidad = merma.cantidad
+                porciones = merma.cantidad
                 unidad = pack.unidad_entrada
-                porciones = cantidad * materia_prima.equivale_maestra / materia_prima.equivale_entrada
+                cantidad = porciones * (materia_prima.equivale_entrada / materia_prima.equivale_maestra)
                 costo_unitario = pack.costo_unitario
 
 

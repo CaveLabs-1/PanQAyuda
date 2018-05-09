@@ -204,3 +204,201 @@ class TestEliminarProveedor(TestCase):
         #Se valida que no haya objetos Proveedor que tenga vacío el campio deleted_at
         self.assertEqual(Proveedor.objects.filter(deleted_at__isnull=True).count(), 0)
 # Create your tests here.
+
+#Test US 2 Editar Proveedor
+class TestEditarProveedor(TestCase):
+    # Generación para el ambiente de pruebas de eliminar proveedor
+    def setUp(self):
+        Group.objects.create(name="admin")
+        user = User.objects.create_user(username='temporary', email='temporary@gmail.com', password='temporary',
+                                        is_superuser='True')
+        user.save()
+        self.client.login(username='temporary', password='temporary')
+        proveedor = Proveedor.objects.create(
+            nombre='Juan',
+            telefono=12345678,
+            direccion='el tec',
+            rfc='holirfc',
+            razon_social='eltecholi',
+            email='prueba@prueba.com'
+        )
+        proveedor.save()
+
+    def test_ac_1_no_editar_si_nombre_esta_vacio(self):
+        proveedor1 = Proveedor.objects.all().first()
+
+        # Datos del editar sin nombre pero lo demas bien
+        data = {
+            'nombre':'',
+            'telefono':'4424708341',
+            'email':'prueba@hotmail.com',
+            'direccion':'panqayuda',
+            'rfc':'ASD123DSA1234',
+            'razon_social':'Pan Que Ayuda',
+        }
+
+        # Checar que el objecto antes de intetento de cambio es igual al de la base de datos
+        resp = self.client.post(reverse('proveedores:editar_proveedor', kwargs={'id_proveedor': proveedor1.id}), data)
+        proveedor2 = Proveedor.objects.all().first()
+        self.assertEqual(proveedor1.email, Proveedor.objects.get(id=proveedor1.id).email)
+
+    def test_ac_2_no_editar_si_telfeono_esta_vacio(self):
+        proveedor1 = Proveedor.objects.all().first()
+
+        # Datos del editar sin nombre pero lo demas bien
+        data = {
+            'nombre':'Alejandro',
+            'telefono':'',
+            'email':'prueba@hotmail.com',
+            'direccion':'panqayuda',
+            'rfc':'ASD123DSA1234',
+            'razon_social':'Pan Que Ayuda',
+        }
+
+        # Checar que el objecto antes de intetento de cambio es igual al de la base de datos
+        resp = self.client.post(reverse('proveedores:editar_proveedor', kwargs={'id_proveedor': proveedor1.id}), data)
+        proveedor2 = Proveedor.objects.all().first()
+        self.assertEqual(proveedor1.email, Proveedor.objects.get(id=proveedor1.id).email)
+
+    def test_ac_2_no_editar_si_telfeono_no_es_valido(self):
+        proveedor1 = Proveedor.objects.all().first()
+
+        # Datos del editar sin nombre pero lo demas bien
+        data = {
+            'nombre':'Alejandro',
+            'telefono':'442470834asd',
+            'email':'prueba@hotmail.com',
+            'direccion':'panqayuda',
+            'rfc':'ASD123DSA1234',
+            'razon_social':'Pan Que Ayuda',
+        }
+
+        # Checar que el objecto antes de intetento de cambio es igual al de la base de datos
+        resp = self.client.post(reverse('proveedores:editar_proveedor', kwargs={'id_proveedor': proveedor1.id}), data)
+        proveedor2 = Proveedor.objects.all().first()
+        self.assertEqual(proveedor1.email, Proveedor.objects.get(id=proveedor1.id).email)
+
+
+    def test_ac_3_no_editar_si_direccion_esta_valido(self):
+        proveedor1 = Proveedor.objects.all().first()
+
+        # Datos del editar sin nombre pero lo demas bien
+        data = {
+            'nombre':'Alejandro',
+            'telefono':'4424708341',
+            'email':'prueba@hotmail.com',
+            'direccion':'',
+            'rfc':'ASD123DSA1234',
+            'razon_social':'Pan Que Ayuda',
+        }
+
+        # Checar que el objecto antes de intetento de cambio es igual al de la base de datos
+        resp = self.client.post(reverse('proveedores:editar_proveedor', kwargs={'id_proveedor': proveedor1.id}), data)
+        proveedor2 = Proveedor.objects.all().first()
+        self.assertEqual(proveedor1.email, Proveedor.objects.get(id=proveedor1.id).email)
+
+    def test_ac_4_no_editar_si_rfc_esta_vacio(self):
+        proveedor1 = Proveedor.objects.all().first()
+
+        # Datos del editar sin nombre pero lo demas bien
+        data = {
+            'nombre':'Alejandro',
+            'telefono':'4424708341',
+            'email':'prueba@hotmail.com',
+            'direccion':'calle pan que ayuda',
+            'rfc':'',
+            'razon_social':'Pan Que Ayuda',
+        }
+
+        # Checar que el objecto antes de intetento de cambio es igual al de la base de datos
+        resp = self.client.post(reverse('proveedores:editar_proveedor', kwargs={'id_proveedor': proveedor1.id}), data)
+        proveedor2 = Proveedor.objects.all().first()
+        self.assertEqual(proveedor1.email, Proveedor.objects.get(id=proveedor1.id).email)
+
+    def test_ac_5_no_editar_si_email_esta_vacio(self):
+        proveedor1 = Proveedor.objects.all().first()
+
+        # Datos del editar sin nombre pero lo demas bien
+        data = {
+            'nombre':'Alejandro',
+            'telefono':'4424708341',
+            'email':'',
+            'direccion':'calle pan que ayuda',
+            'rfc':'ASD123DSA1234',
+            'razon_social':'Pan Que Ayuda',
+        }
+
+        # Checar que el objecto antes de intetento de cambio es igual al de la base de datos
+        resp = self.client.post(reverse('proveedores:editar_proveedor', kwargs={'id_proveedor': proveedor1.id}), data)
+        proveedor2 = Proveedor.objects.all().first()
+        self.assertEqual(proveedor1.email, Proveedor.objects.get(id=proveedor1.id).email)
+
+    def test_ac_5_no_editar_si_email_no_es_valido(self):
+        proveedor1 = Proveedor.objects.all().first()
+
+        # Datos del editar sin nombre pero lo demas bien
+        data = {
+            'nombre':'Alejandro',
+            'telefono':'4424708341',
+            'email':'unemailnovalido.com',
+            'direccion':'calle pan que ayuda',
+            'rfc':'ASD123DSA1234',
+            'razon_social':'Pan Que Ayuda',
+        }
+
+        # Checar que el objecto antes de intetento de cambio es igual al de la base de datos
+        resp = self.client.post(reverse('proveedores:editar_proveedor', kwargs={'id_proveedor': proveedor1.id}), data)
+        proveedor2 = Proveedor.objects.all().first()
+        self.assertEqual(proveedor1.email, Proveedor.objects.get(id=proveedor1.id).email)
+
+
+    def test_ac_6_no_editar_si_razonSocial_esta_vacio(self):
+        proveedor1 = Proveedor.objects.all().first()
+
+        # Datos del editar sin nombre pero lo demas bien
+        data = {
+            'nombre':'Alejandro',
+            'telefono':'4424708341',
+            'email':'prueba@gmail.com',
+            'direccion':'calle pan que ayuda',
+            'rfc':'ASD123DSA1234',
+            'razon_social':'',
+        }
+
+        # Checar que el objecto antes de intetento de cambio es igual al de la base de datos
+        resp = self.client.post(reverse('proveedores:editar_proveedor', kwargs={'id_proveedor': proveedor1.id}), data)
+        proveedor2 = Proveedor.objects.all().first()
+        self.assertEqual(proveedor1.email, Proveedor.objects.get(id=proveedor1.id).email)
+
+    def test_ac_7_editar_si_todoe_esta_correcto(self):
+        proveedor1 = Proveedor.objects.all().first()
+
+        # Datos del editar sin nombre pero lo demas bien
+        data = {
+            'nombre':'Alejandro',
+            'telefono':'4424708341',
+            'email':'prueba@gmail.com',
+            'direccion':'calle pan que ayuda',
+            'rfc':'ASD123DSA1234',
+            'razon_social':'Pan Que Ayuda',
+        }
+
+        # Checar que el objecto antes de intetento de cambio es igual al de la base de datos
+        resp = self.client.post(reverse('proveedores:editar_proveedor', kwargs={'id_proveedor': proveedor1.id}), data)
+        proveedor2 = Proveedor.objects.all().first()
+        self.assertFalse(proveedor1.email == Proveedor.objects.get(id=proveedor1.id).email)
+        self.assertEqual(data['email'], Proveedor.objects.get(id=proveedor1.id).email)
+
+
+
+
+
+
+
+
+
+
+
+
+
+

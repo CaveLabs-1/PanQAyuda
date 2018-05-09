@@ -22,6 +22,7 @@
       <th>Editar</th>
       <th>Eliminar</th>
       <th> Historial </th>
+      <th class="hide"> Fecha de Creación </th>
       </thead>
       <tbody>
        {% for cliente in clientes %}
@@ -35,6 +36,7 @@
         <!--Se manda llamar la función de eliminar_cliente mandando el id de cliente-->
         <td><a href="{% url 'clientes:eliminar_cliente' cliente.id %}" class="modal-trigger" onclick="deleteRegister(this, event)"><i class="material-icons">delete</i></a></td>
         <td><a href="{% url 'clientes:historial_cliente' cliente.id %}"><i class="material-icons">history</i></a> </td>
+        <td class="hide">{{cliente.created_at}}</td>
       </tr>
       {% endfor %}
       </tbody>

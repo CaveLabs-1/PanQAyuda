@@ -17,6 +17,7 @@
           <th>Fecha </th>
           <th>Detalle </th>
           <th>Cancelar</th>
+          <th class="hide"> Fecha de Creación </th>
         </thead>
         <tbody>
          {% for venta in ventas %}
@@ -32,6 +33,7 @@
             <td><a onclick="detalleVenta({{venta.id}})" href="#modal_detalle" class="modal-trigger"><i class="material-icons">view_list</i> </a></td>
             <!--Se manda llamar la función de cancelar_venta mandando el id de venta-->
             <td><a onclick="deleteRegister(this, event)" href="{% url 'ventas:cancelar_venta' venta.id %}" class="modal-trigger"><i class="material-icons">cancel</i></a></td>
+            <td class="hide">{{venta.created_at}}</td>
             </tr>
             {% endif %}
           </tr>
