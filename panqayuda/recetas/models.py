@@ -37,7 +37,7 @@ class Receta(models.Model):
             return self.material_empaque.obtener_cantidad_inventario()
         else:
             return RecetaInventario.objects.filter(nombre=self).filter(deleted_at__isnull=True). \
-                       filter(fecha_cad__gte=datetime.datetime.now()).filter(cantidad__gt=0). \
+                       filter(fecha_cad__gte=timezone.now()).filter(cantidad__gt=0). \
                        annotate(disponible=Sum(F('cantidad') - F('ocupados'))). \
                        aggregate(porciones_disponible=Sum('disponible'))['porciones_disponible'] or -1
 
@@ -51,7 +51,7 @@ class Receta(models.Model):
     #Devuelve True si hay paquetes caducados, y False en caso contrario
     def tiene_caducados(self):
         #Filtrar: quitar los que están ocupados totalmente y los que están eliminados
-        recetas_inventario = self.obtener_recetas_inventario().exclude(fecha_cad__gte=datetime.datetime.now())
+        recetas_inventario = self.obtener_recetas_inventario().exclude(fecha_cad__gte=timezone.now())
         if recetas_inventario.count() > 0:
             return True
         else:
@@ -92,13 +92,13 @@ class RecetaInventario(models.Model):
 
     def obtener_cantidad_inventario(receta):
             return RecetaInventario.objects.filter(nombre=receta).filter(deleted_at__isnull=True).\
-            filter(fecha_cad__gte=datetime.datetime.now()).filter(cantidad__gt=0).\
+            filter(fecha_cad__gte=timezone.now()).filter(cantidad__gt=0).\
             annotate(disponible=Sum(F('cantidad')-F('ocupados'))).\
             aggregate(porciones_disponible=Sum('disponible'))['porciones_disponible'] or -1
 
     def obtener_disponibles(receta):
         return RecetaInventario.objects.filter(nombre=receta).filter(deleted_at__isnull=True).\
-        filter(fecha_cad__gte=datetime.datetime.now()).annotate(disponible=Sum(F('cantidad')-F('ocupados'))).\
+        filter(fecha_cad__gte=timezone.now()).annotate(disponible=Sum(F('cantidad')-F('ocupados'))).\
         filter(disponible__gt=0).order_by('fecha_cad')
 
     def es_caducado(self):

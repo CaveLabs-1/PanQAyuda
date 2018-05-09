@@ -35,7 +35,7 @@
           {% for catalogo_paquete in catalogo_paquetes %}
 
             <tr>
-                <td>{{ catalogo_paquete.nombre }}</td>
+                <td>{{ catalogo_paquete.nombre }} {% if catalogo_paquete.tiene_caducados %} -  <span class="pink-text"> Existen caducados </span> {% endif %} </td>
                 <td>{{ catalogo_paquete.codigo}}</td>
                 <td>{% if catalogo_paquete.total %} {{ catalogo_paquete.total }} {% else %} 0 {% endif %}</td>
                 <td>$ {{catalogo_paquete.precio}}</td>

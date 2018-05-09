@@ -12,9 +12,9 @@
   </thead>
   <tbody>
     {% for i in detalle_materiales_en_inventario %}
-        <tr>
+        <tr class="{% if i.es_caducado %} pink-text {% endif %}">
           <td>{{material.nombre}}</td>
-          <td>{{i.compra}}</td>
+          <td>{{i.compra.proveedor.razon_social}}</td>
           <td>{{i.porciones_disponible}} {{i.material.unidad_maestra}}</td>
           <td>{{i.costo_unitario|floatformat:2}}</td>
           <td>{{i.fecha_cad.date}}</td>
