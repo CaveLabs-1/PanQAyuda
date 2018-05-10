@@ -17,8 +17,9 @@ class Receta(models.Model):
     objects = models.Manager()
     objects_sin_empaquetado = RecetasManager()
 
+    codigo = models.CharField(max_length=100, null=True, blank=False)
     nombre = models.CharField(max_length=100, null=True, blank=False)
-    cantidad = models.IntegerField(null=True, blank=False, validators=[MinValueValidator(1, "Debes seleccionar un número entero mayor a 0.")])
+    cantidad = models.FloatField(null=True, blank=False, validators=[MinValueValidator(1, "Debes seleccionar un número entero mayor a 0.")])
     duration = models.DurationField(null=True, blank=False)
     material = models.ManyToManyField('materiales.Material', through = 'RelacionRecetaMaterial')
     created_at = models.DateTimeField(default=timezone.now)
