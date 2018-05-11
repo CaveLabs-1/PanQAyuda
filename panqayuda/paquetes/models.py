@@ -65,7 +65,7 @@ class Paquete (models.Model):
 class RecetasPorPaquete (models.Model):
 	paquete=models.ForeignKey(Paquete, on_delete=models.CASCADE)
 	receta=models.ForeignKey(Receta, on_delete=models.CASCADE)
-	cantidad=models.IntegerField(default=1, blank=False,validators=[MinValueValidator(1,"Debes seleccionar un número entero mayor a 0.") ])
+	cantidad=models.FloatField(default=1, blank=False,validators=[MinValueValidator(0.1,"Debes seleccionar un número mayor a 0.") ])
 	estatus = models.IntegerField(default=1)
 	created_at = models.DateTimeField(default=timezone.now)
 	updated_at = models.DateTimeField(default=timezone.now)
