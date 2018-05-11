@@ -37,7 +37,7 @@ def ordenes (request):
                 return HttpResponseRedirect(reverse('ordenes:ordenes'))
 
             # Filtra la lista de materiales a solo los materiales usados en dicha receta.
-            materiales_receta = RelacionRecetaMaterial.objects.filter(receta = receta)
+            materiales_receta = RelacionRecetaMaterial.objects.filter(receta = receta).filter(status = 1)
 
             # En caso de que no exista material suficiente en el invenario no permite generar la orden de trabajo.
             for material_receta in materiales_receta:
