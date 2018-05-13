@@ -29,7 +29,7 @@ class TestAgregarReceta(TestCase):
         self.client.login(username='temporary', password='temporary')
 
     def crear_receta_prueba(self):
-        return Receta.objects.create(nombre="Producto semiterminado de prueba", cantidad=20, duration=timezone.timedelta(days=1))
+        return Receta.objects.create(nombre="Producto semiterminado de prueba", codigo='2342', cantidad=20, duration=timezone.timedelta(days=1))
 
     def crear_material_prueba(self):
         unidad_entrada = Unidad.objects.first()
@@ -56,7 +56,7 @@ class TestAgregarReceta(TestCase):
         self.assertEqual(Receta.objects.count(), 0)
 
         #Simular POST con información correcta
-        data = {'nombre': "Producto semiterminado de prueba", 'cantidad': 20, 'duracion_en_dias':'1'}
+        data = {'nombre': "Producto semiterminado de prueba", 'codigo':'2342', 'cantidad': 20, 'duracion_en_dias':'1'}
         self.client.post(reverse('recetas:agregar_receta'), data)
 
         #Verificar que se creó el objeto
@@ -68,7 +68,7 @@ class TestAgregarReceta(TestCase):
         self.assertEqual(resp.context['recetas'][0].nombre, "Producto semiterminado de prueba")
 
         #Crear receta con caracteres especiales
-        data = {'nombre': "Canción de náàvïda", 'cantidad': 20, 'duracion_en_dias': '1'}
+        data = {'nombre': "Canción de náàvïda", 'codigo':'2342', 'cantidad': 20, 'duracion_en_dias': '1'}
         self.client.post(reverse('recetas:agregar_receta'), data)
         self.assertEqual(Receta.objects.count(), 2)
 
@@ -88,21 +88,21 @@ class TestAgregarReceta(TestCase):
     #AC 27.3 La cantidad de producto que genera la receta sólo puede ser un número positivo entero.
     def test_ac_27_3(self):
         #POST con cantidad negativa
-        data = {'nombre': 'Producto semiterminado de prueba', 'cantidad': '-5', 'duracion_en_dias': '1'}
+        data = {'nombre': 'Producto semiterminado de prueba', 'codigo':'2342', 'cantidad': '-5', 'duracion_en_dias': '1'}
         resp = self.client.post(reverse('recetas:agregar_receta'), data)
 
         #Verificar que no se haya creado
         self.assertEqual(Receta.objects.count(),0)
 
         #POST con cantidad decimal
-        data = {'nombre': 'Producto semiterminado de prueba', 'cantidad': '0.05', 'duracion_en_dias': '1'}
+        data = {'nombre': 'Producto semiterminado de prueba', 'codigo':'2342', 'cantidad': '0.05', 'duracion_en_dias': '1'}
         resp = self.client.post(reverse('recetas:agregar_receta'), data)
 
         # Verificar que no se haya creado
         self.assertEqual(Receta.objects.count(), 0)
 
         #POST con cantidad entera positiva
-        data = {'nombre': 'Producto semiterminado de prueba', 'cantidad': '1', 'duracion_en_dias': '1'}
+        data = {'nombre': 'Producto semiterminado de prueba', 'codigo': '2342', 'cantidad': '1', 'duracion_en_dias': '1'}
         resp = self.client.post(reverse('recetas:agregar_receta'), data)
         self.assertEqual(Receta.objects.count(), 1)
 
@@ -130,7 +130,7 @@ class TestAgregarReceta(TestCase):
         #Crear PST de prueba con nombre 'Producto semiterminado de prueba'
         r = self.crear_receta_prueba()
         # POST con nombre repetido
-        data = {'nombre': 'Producto semiterminado de prueba', 'cantidad': '10', 'duracion_en_dias': '1 days'}
+        data = {'nombre': 'Producto semiterminado de prueba', 'codigo': '2342', 'cantidad': '10', 'duracion_en_dias': '1 days'}
         resp = self.client.post(reverse('recetas:agregar_receta'), data)
 
         #Verificar que no se haya creado la receta
@@ -205,7 +205,7 @@ class TestAgregarReceta(TestCase):
     #AC 27.12 El nombre de la receta no puede estar vacío
     def ac_27_12(self):
         # Simular POST con información correcta
-        data = {'nombre': "", 'cantidad': 20, 'duracion_en_dias': '1'}
+        data = {'nombre': "", 'codigo': '2342', 'cantidad': 20, 'duracion_en_dias': '1'}
         self.client.post(reverse('recetas:agregar_receta'), data)
 
         self.assertEqual(Receta.objects.count(),0)
@@ -239,7 +239,7 @@ class TestEditarReceta(TestCase):
         self.client.login(username='temporary', password='temporary')
 
     def crear_receta_prueba(self):
-        return Receta.objects.create(nombre="Producto semiterminado de prueba", cantidad=20, duration=timezone.timedelta(days=1))
+        return Receta.objects.create(nombre="Producto semiterminado de prueba", codigo='2342', cantidad=20, duration=timezone.timedelta(days=1))
 
     def crear_material_prueba(self):
         unidad_entrada = Unidad.objects.first()
@@ -268,12 +268,12 @@ class TestEditarReceta(TestCase):
         r = self.crear_receta_prueba()
 
         #Agregar nuevo producto semiterminado
-        data = {'nombre': 'Producto semiterminado 2', 'cantidad': '10', 'duracion_en_dias': '1'}
+        data = {'nombre': 'Producto semiterminado 2', 'codigo': '2342', 'cantidad': '10', 'duracion_en_dias': '1'}
         self.client.post(reverse('recetas:agregar_receta'), data)
 
         r2 = Receta.objects.get(nombre="Producto semiterminado 2")
         #Tratar de editar producto semiterminado recién creado y asignarle el nombre del primero
-        data = {'nombre': 'Producto semiterminado de prueba', 'cantidad': '10', 'duracion_en_dias': '1'}
+        data = {'nombre': 'Producto semiterminado de prueba', 'codigo': '2342', 'cantidad': '10', 'duracion_en_dias': '1'}
         resp = self.client.post(reverse('recetas:editar_receta', kwargs={'id_receta': r2.id}), data)
         # Verificar que no se haya editado la receta
         self.assertEqual(r2.nombre, "Producto semiterminado 2")
@@ -287,7 +287,7 @@ class TestEditarReceta(TestCase):
         r = self.crear_receta_prueba()
 
         # Simular POST con información correcta
-        data = {'nombre': "", 'cantidad': 20, 'duracion_en_dias': '1'}
+        data = {'nombre': "", 'codigo': '2342', 'cantidad': 20, 'duracion_en_dias': '1'}
         self.client.post(reverse('recetas:editar_receta', kwargs={'id_receta': r.id}), data)
 
         #Verificar que no se editó el producto semiterminado
@@ -300,21 +300,21 @@ class TestEditarReceta(TestCase):
         r = self.crear_receta_prueba()
 
         #POST con cantidad negativa
-        data = {'nombre': 'Producto semiterminado de prueba', 'cantidad': '-5', 'duracion_en_dias': '1'}
+        data = {'nombre': 'Producto semiterminado de prueba', 'codigo': '2342', 'cantidad': '-5', 'duracion_en_dias': '1'}
         resp = self.client.post(reverse('recetas:editar_receta', kwargs={'id_receta': r.id}), data)
 
         #Verificar que no se haya editado
         self.assertTrue(r.cantidad is not -5)
 
         #POST con cantidad decimal
-        data = {'nombre': 'Producto semiterminado de prueba', 'cantidad': '0.05', 'duracion_en_dias': '1'}
+        data = {'nombre': 'Producto semiterminado de prueba', 'codigo': '2342', 'cantidad': '0.05', 'duracion_en_dias': '1'}
         resp = self.client.post(reverse('recetas:editar_receta', kwargs={'id_receta': r.id}), data)
 
         # Verificar que no se haya creado
         self.assertTrue(r.cantidad is not 0.05)
 
         #POST con cantidad entera positiva
-        data = {'nombre': 'Producto semiterminado de prueba', 'cantidad': '1', 'duracion_en_dias': '1'}
+        data = {'nombre': 'Producto semiterminado de prueba', 'codigo': '2342', 'cantidad': '1', 'duracion_en_dias': '1'}
         resp = self.client.post(reverse('recetas:editar_receta', kwargs={'id_receta': r.id}), data)
         self.assertTrue(r.cantidad,1)
 
@@ -324,7 +324,7 @@ class TestEditarReceta(TestCase):
             r = self.crear_receta_prueba()
 
             # POST con cantidad entera positiva
-            data = {'nombre': 'Producto semiterminado', 'cantidad': '5', 'duracion_en_dias': '10'}
+            data = {'nombre': 'Producto semiterminado', 'codigo': '2342', 'cantidad': '5', 'duracion_en_dias': '10'}
             self.client.post(reverse('recetas:editar_receta', kwargs={'id_receta': r.id}), data)
             self.assertEqual(r.cantidad, 5)
             self.assertEqual(r.nombre, "Producto semiterminado")
@@ -346,7 +346,7 @@ class TestBorrarReceta(TestCase):
         self.client.login(username='temporary', password='temporary')
 
     def crear_receta(self):
-        return Receta.objects.create(nombre="Prueba de Bolillo", cantidad=12, duration=timezone.timedelta(days=1))
+        return Receta.objects.create(nombre="Prueba de Bolillo", codigo='2342', cantidad=12, duration=timezone.timedelta(days=1))
 
     #Al borrar sigue existiendo en la base de datos
     def test_ac_29_1(self):
@@ -381,7 +381,7 @@ class TestListaRecetasInventario(TestCase):
         RecetaInventario.objects.create(nombre=Receta.objects.first(), cantidad=10, fecha_cad=timezone.now() + timezone.timedelta(days=10))
 
         #Crear Receta Inventario con algunos ocupados
-        RecetaInventario.objects.create(nombre=Receta.objects.first(),cantidad=10, ocupados=5, fecha_cad=timezone.now() + timezone.timedelta(days=5))
+        RecetaInventario.objects.create(nombre=Receta.objects.first(), cantidad=10, ocupados=5, fecha_cad=timezone.now() + timezone.timedelta(days=5))
 
         #Crear Receta Inventario con todos ocupados
         RecetaInventario.objects.create(nombre=Receta.objects.first(), cantidad=10, ocupados=10, fecha_cad=timezone.now() + timezone.timedelta(days=10))
@@ -393,7 +393,7 @@ class TestListaRecetasInventario(TestCase):
         RecetaInventario.objects.create(nombre=Receta.objects.first(), cantidad=10, ocupados=0,fecha_cad=timezone.now() + timezone.timedelta(days=1), estatus=0, deleted_at=timezone.now())
 
         #Crear Receta eliminada
-        Receta.objects.create(nombre="Receta de prueba eliminada", duration=timezone.timedelta(days=1), status=0)
+        Receta.objects.create(nombre="Receta de prueba eliminada", codigo='2342', duration=timezone.timedelta(days=1), status=0)
 
     def test_vista_existente(self):
         resp = self.client.get(reverse('recetas:lista_recetas_inventario'))
@@ -479,6 +479,7 @@ class TestVerCostoRecetaInventario(TestCase):
         #Crear Receta
         data = {
             'nombre':'Receta Semi-Terminado',
+            'codigo':'2342',
             'cantidad':'1',
             'duracion_en_dias':'10',
 

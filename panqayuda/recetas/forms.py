@@ -10,7 +10,7 @@ class RecetaForm(ModelForm):
 
     class Meta:
         model = Receta
-        fields = ('nombre', 'cantidad', 'duracion_en_dias')
+        fields = ('nombre', 'codigo', 'cantidad', 'duracion_en_dias')
 
     def clean_nombre(self):
         nombre=self.cleaned_data['nombre']
