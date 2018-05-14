@@ -11,6 +11,8 @@ from django.http import HttpResponseRedirect, HttpResponse, HttpResponseNotFound
 from django.db.models import Sum
 from panqayuda.decorators import group_required
 from django.utils import timezone
+from django.db import connection
+
 
 """
     Función que enlista las compras y permite agregar una compra a la base de datos.
@@ -83,7 +85,7 @@ def agregar_materias_primas_a_compra(request, id_compra):
      total=aux['costo__sum']
      lista_materia_prima_por_compra = render_to_string('compras/lista_materia_prima_por_compra.html', {'materias_primas_de_compra':materias_primas_de_compra, 'total': total})
 
-     return render (request, 'compras/agregar_materias_primas_a_compra.html', {'formahtml':formahtml, 'lista_materia_prima_por_compra':lista_materia_prima_por_compra})
+     return render (request, 'compras/agregar_materias_primas_a_compra.html', {'formahtml':formahtml, 'compra':compra, 'lista_materia_prima_por_compra':lista_materia_prima_por_compra})
 
 """
     Función agrega materias primas a una compra
@@ -135,8 +137,18 @@ def agregar_materia_prima_a_compra(request):
                      mensaje_error+=error + "\n"
             return HttpResponseNotFound('Hubo un problema agregando la materia prima a la compra: '+ mensaje_error)
 
+@group_required('admin')
+def terminar_compra(request, id_compra):
+    #Onbtener compra
+    compra = get_object_or_404(Compra,pk=id_compra)
 
+    #Verificar si tiene materiales agregados
+    if compra.materialinventario_set.count() < 1:
+        auto_increment = compra.pk
+        compra.delete()
 
+    #Redireccionar a compras
+    return redirect('compras:compras')
 
 #Función para borrar una compra
 @group_required('admin')
