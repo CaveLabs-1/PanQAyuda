@@ -14,6 +14,7 @@
           <thead>
             <tr>
               <th>Nombre</th>
+              <th>Código</th>
               <th>Cantidad que produce</th>
               <th>Duración</th>
               <th class="hide"> Fecha de Creación </th>
@@ -23,6 +24,7 @@
             {% for receta in recetas %}
             <tr>
                 <td><a href="{% url 'recetas:detallar_receta' receta.id %}">{{ receta.nombre }}</a></td>
+                <td>{{ receta.codigo }}</td>
                 <td>{{ receta.cantidad }}</td>
                 <td>{{ receta.duration.days }} días</td>
                 <td class="hide">{{receta.created_at}}</td>
