@@ -38,7 +38,7 @@
                 {% with aux=material.total|mul:material.equivale_entrada %}
                 <td>{{ aux|div:material.equivale_maestra}}</td>
                 {% endwith %}
-                <td>{{ material.unidad_maestra}} </td>
+                <td>{{ material.unidad_entrada}} </td>
                 <!--mostrar detalle-->
                 <td>
                   <a onclick="detalleMateriales({{material.id}})" href="#modal_detalle" class="modal-trigger">
