@@ -18,10 +18,10 @@
                             <a class='dropdown-trigger btn pink' href='#' data-target='dropdown1'>Opciones<i class="material-icons">expand_more</i></a>
                             <ul id='dropdown1' class='dropdown-content'>
                             <li>
-                                <!-- <a href="editar_proveedor/{{ proveedor.id }}">
+                                <a href="{% url 'proveedores:editar_proveedor' proveedor.id %}">
                                     <i class="material-icons">edit</i>
                                     Editar Proveedor
-                                </a> -->
+                                </a>
                             </li>
                             <li class="divider" tabindex="-1"></li>
                             <li>
