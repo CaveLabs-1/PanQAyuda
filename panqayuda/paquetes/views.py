@@ -107,8 +107,10 @@ def agregar_paquete_inventario(request):
 
             cantidad_post = forma_post.instance.cantidad
             #Verificar que hay suficiente cantidad en inventario para agregar el paquete
-            if agregar_paquetes_inventario_recetas(paquete,cantidad_post) == False:
-                messages.success(request, 'No hay inventario suficiente para agregar este producto terminado')
+            agregar_paquete_inventario = agregar_paquetes_inventario_recetas(paquete,cantidad_post)
+            if agregar_paquete_inventario != None:
+                receta = agregar_paquete_inventario.receta.nombre
+                messages.success(request, 'No hay inventario suficiente de ' + receta +' para agregar este producto terminado')
                 return HttpResponseRedirect(reverse('paquetes:agregar_inventario'))
             costo= costo_paquetes_inventario_recetas(paquete, cantidad_post)
             PaqueteInventario.objects.create(nombre=data['nombre'], cantidad=data['cantidad'], fecha_cad=data['fecha_cad'], costo=costo)
@@ -151,8 +153,10 @@ def editar_paquete_inventario(request, id_paquete):
             else:
                 cantidad = cantidad_nueva - cantidad_anterior
                 #Verificiar que hay cantidad suficiente en inventario para agregar los paquetes
-                if agregar_paquetes_inventario_recetas(paquete_inventario.nombre,cantidad) == False:
-                    messages.error(request, 'No hay inventario suficiente para agregar este paquete')
+                agregar_paquetes_inventario =  agregar_paquetes_inventario_recetas(paquete_inventario.nombre,cantidad)
+                if agregar_paquetes_inventario != None:
+                    receta = agregar_paquetes_inventario.receta.nombre
+                    messages.error(request, 'No hay inventario suficiente de '+ receta +' para agregar este paquete')
                     return HttpResponseRedirect(reverse('paquetes:agregar_inventario'))
 
             paquete_inventario = form.save()
@@ -262,7 +266,7 @@ def agregar_paquetes_inventario_recetas(paquete,cantidad):
         # RecetaInventario.obtener_cantidad_inventario(receta.receta)
 
         if cantidad_real > cantidad_inv:
-            return False
+            return receta
     # #Restar inventario
     for receta in recetas:
         # Obtener recetas del inventario disponibles para restar ordenadas por fecha de caducidad

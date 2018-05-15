@@ -19,4 +19,5 @@ urlpatterns = [
     path('obtener_cantidad_inventario_con_caducados', views.obtener_cantidad_inventario_con_caducados,name='obtener_cantidad_inventario_con_caducados'),
     path('obtener_unidad_inventario_con_caducados', views.obtener_unidad_inventario_con_caducados,name='obtener_unidad_inventario_con_caducados'),
     path('obtener_cantidad_lote', views.obtener_cantidad_lote,name='obtener_cantidad_lote'),
+    path('obtener_equivalencia_compras', views.obtener_equivalencia_compras, name='obtener_equivalencia_compras')
 ]+ static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
