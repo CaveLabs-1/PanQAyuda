@@ -26,6 +26,14 @@
               {% csrf_token %}
                 <!-- Nombre de receta -->
               <div class="row">
+
+
+
+                  <div class="input-field col m4">
+                      <input class = "validate"  type="text" name="{{form.codigo.html_name}}" id="{{form.codigo.id_for_label}}" value="{% if receta.codigo != None %} {{receta.codigo}} {% endif %}" required>
+                      <label for="{{form.codigo.id_for_label}}" data-error='Codigo inválido'  data-success="Codigo correcto">Codigo</label>
+                  </div>
+
                 <div class="input-field col m4">
                   <input class = "validate"  type="text" name="{{form.nombre.html_name}}" id="{{form.nombre.id_for_label}}" value="{{receta.nombre}}" required>
                   <label for="{{form.nombre.id_for_label}}" data-error='Nombre inválido'  data-success="Nombre correcto">Nombre</label>
