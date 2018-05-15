@@ -58,8 +58,17 @@
           minDate: new Date(),
         });
     });
-
     $('select').formSelect();
+    $(document.body).on('change', '#id_material', function(){
+        var materia_prima_id = $('#id_material').val();
+        $.ajax({
+            url: "{% url 'materiales:obtener_equivalencia_compras' %}",
+            data:{'materia_prima_id':materia_prima_id},
+            success: function(response){
+                $('#equivalencia').html(response);
+            }
+        });
+    });
 
     $(document.body).on('click', '#agrega_select', function(e){
 
