@@ -245,3 +245,11 @@ def obtener_cantidad_lote(request):
         return HttpResponse("Cantidad disponible de este lote: " + str(material_inventario.porciones_disponible) + " " + str(material_inventario.material.unidad_maestra))
     else:
         return HttpResponseNotFound()
+
+@group_required('admin')
+def obtener_equivalencia_compras(request):
+    if request.GET.get('materia_prima_id'):
+        id_material = int(request.GET.get('materia_prima_id'))
+        materia_prima = get_object_or_404(Material, pk=id_material)
+        mensaje = str(materia_prima.equivale_entrada) + " " + str(materia_prima.unidad_entrada) + " = " + str(materia_prima.equivale_maestra) + " " + str(materia_prima.unidad_maestra)
+        return HttpResponse(mensaje)
