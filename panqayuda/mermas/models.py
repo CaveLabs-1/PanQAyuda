@@ -15,7 +15,7 @@ class MermaReceta(models.Model):
     deleted_at = models.DateTimeField(blank = True, null = True)
 
     def __str__(self):
-        return self.fecha + self.nombre
+        return self.fecha.strftime('%d/%m/%Y') + " " + str(self.nombre)
 
 class MermaPaquete(models.Model):
     #Llave al paquete invenrario del cual se mermo
@@ -28,7 +28,7 @@ class MermaPaquete(models.Model):
     deleted_at = models.DateTimeField(blank = True, null = True)
 
     def __str__(self):
-        return self.fecha + self.nombre
+        return self.fecha.strftime('%d/%m/%Y') + " " + str(self.nombre)
 
 class MermaMaterial(models.Model):
     #Llave al modelo del material que se mermo
@@ -41,4 +41,4 @@ class MermaMaterial(models.Model):
     deleted_at = models.DateTimeField(blank = True, null = True)
 
     def __str__(self):
-        return self.fecha + self.nombre
+        return self.fecha.strftime('%d/%m/%Y') + " " + str(self.nombre)
