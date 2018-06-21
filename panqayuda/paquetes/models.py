@@ -7,9 +7,7 @@ from django.core.validators import MinValueValidator
 
 # Create your models here.
 class Paquete (models.Model):
-	class Meta:
-        ordering = ['nombre']
-		
+
 	nombre = models.CharField(max_length=70)
 	codigo = models.CharField(max_length=10, null=True, blank=False)
 	recetas = models.ManyToManyField(Receta, through='RecetasPorPaquete', through_fields=('paquete', 'receta'),)
@@ -20,6 +18,9 @@ class Paquete (models.Model):
 	deleted_at = models.DateTimeField(blank=True, null=True)
 
 	#Devuelve el nombre del paquete
+	class Meta:
+		ordering = ['nombre']
+
 	def __str__(self):
 		return self.nombre
 
